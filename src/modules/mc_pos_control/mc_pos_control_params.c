@@ -585,7 +585,7 @@ PARAM_DEFINE_FLOAT(MPC_TKO_RAMP_T, 0.4f);
  * @decimal 2
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_XY, 2.0f);
+PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_XY, 5.0f);
 
 /**
  * Maximum horizontal acceleration for auto mode z
@@ -597,7 +597,7 @@ PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_XY, 2.0f);
  * @decimal 2
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_Z, 2.0f);
+PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_Z, 5.0f);
 
 /**
  * Maximum horizontal acceleration for manual mode
