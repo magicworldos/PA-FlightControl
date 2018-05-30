@@ -1492,6 +1492,8 @@ Commander::set_home_position(orb_advert_t &homePub, home_position_s &home,
 		homePub = orb_advertise(ORB_ID(home_position), &home);
 	}
 
+	mavlink_log_info(&mavlink_log_pub, "[cmd] home %.8f %.8f %.2f", (double )home.lon, (double )home.lat, (double )home.alt);
+
 	return true;
 }
 
