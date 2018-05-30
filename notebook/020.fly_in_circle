@@ -1,0 +1,12 @@
+void MulticopterPositionControl::control_auto_stop(float dt)
+{
+	_pos_sp(0) = _pos(0);
+	_pos_sp(1) = _pos(1);
+
+	_run_pos_control = false;
+
+	_att_sp.yaw_body += 0.001f;
+	_vel_sp(0) = 20.0f * cosf(_yaw);
+	_vel_sp(1) = 20.0f * sinf(_yaw);
+	_vel_sp(2) = 0.0f;
+}

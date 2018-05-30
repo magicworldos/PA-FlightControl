@@ -1,0 +1,2 @@
+mavlink_log_info(&mavlink_log_pub, "main state: %d", internal_state.main_state);
+mavlink_log_info(&mavlink_log_pub, "nav state: %d", status.nav_state);
