@@ -124,8 +124,8 @@ execute_process(
 	WORKING_DIRECTORY ${PX4_SOURCE_DIR}
 	)
 
-px4_add_git_submodule(TARGET git_ecl PATH "src/lib/ecl")
-px4_add_git_submodule(TARGET git_matrix PATH "src/lib/matrix")
+
+
 
 define_property(GLOBAL PROPERTY PX4_LIBRARIES
                  BRIEF_DOCS "PX4 libs"
@@ -352,7 +352,7 @@ px4_generate_airframes_xml(BOARD ${BOARD})
 # DriverFramework
 #
 
-px4_add_git_submodule(TARGET git_driverframework PATH "src/lib/DriverFramework")
+
 
 # List the DriverFramework drivers
 if (DEFINED config_df_driver_list)

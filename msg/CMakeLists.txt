@@ -126,8 +126,8 @@ set(msg_files
 	extctl_sp.msg
 	)
 
-px4_add_git_submodule(TARGET git_gencpp PATH tools/gencpp)
-px4_add_git_submodule(TARGET git_genmsg PATH tools/genmsg)
+
+
 
 # headers
 set(msg_out_path ${PX4_BINARY_DIR}/uORB/topics)

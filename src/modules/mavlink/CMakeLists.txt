@@ -31,7 +31,7 @@
 #
 ############################################################################
 
-px4_add_git_submodule(TARGET git_mavlink_v2 PATH "${PX4_SOURCE_DIR}/mavlink/include/mavlink/v2.0")
+
 
 px4_add_module(
 	MODULE modules__mavlink
@@ -60,5 +60,4 @@ px4_add_module(
 		mavlink_ulog.cpp
 	DEPENDS
 		platforms__common
-		git_mavlink_v2
 	)

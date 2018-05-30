@@ -6,7 +6,6 @@ if (NOT FW_NAME)
 endif()
 
 add_executable(${FW_NAME} ${PX4_SOURCE_DIR}/src/platforms/empty.c)
-add_dependencies(${FW_NAME} git_nuttx nuttx_build)
 
 get_property(module_libraries GLOBAL PROPERTY PX4_LIBRARIES)
 

@@ -41,5 +41,4 @@ px4_add_module(
 		ekf2_main.cpp
 	DEPENDS
 		platforms__common
-		git_ecl
 	)

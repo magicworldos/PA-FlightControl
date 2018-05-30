@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
-px4_add_git_submodule(TARGET git_nuttx PATH "nuttx")
-px4_add_git_submodule(TARGET git_nuttx_apps PATH "apps")
+
+
 
 if(NOT BOARD)
 	message(FATAL_ERROR "BOARD must be set (eg px4fmu-v2)")
@@ -48,7 +48,6 @@ file(RELATIVE_PATH CP_DST ${CMAKE_SOURCE_DIR} ${PX4_BINARY_DIR}/NuttX)
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/nuttx_copy.stamp
 	COMMAND ${cp_cmd} ${cp_opts} ${CP_SRC} ${CP_DST}
 	COMMAND cmake -E touch ${CMAKE_CURRENT_BINARY_DIR}/nuttx_copy.stamp
-	DEPENDS ${copy_nuttx_files} git_nuttx
 	COMMENT "Copying NuttX/nuttx to ${CMAKE_CURRENT_BINARY_DIR}"
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	)
@@ -59,7 +58,6 @@ file(RELATIVE_PATH CP_DST ${CMAKE_SOURCE_DIR} ${PX4_BINARY_DIR}/NuttX)
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/apps_copy.stamp
 	COMMAND ${cp_cmd} ${cp_opts} ${CP_SRC} ${CP_DST}
 	COMMAND cmake -E touch ${CMAKE_CURRENT_BINARY_DIR}/apps_copy.stamp
-	DEPENDS ${copy_apps_files} git_nuttx_apps
 	COMMENT "Copying NuttX/apps to ${CMAKE_CURRENT_BINARY_DIR}"
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	)
