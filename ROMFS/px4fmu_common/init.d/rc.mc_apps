@@ -38,7 +38,9 @@ then
 fi
 #---------------------------------------
 
-#extern control by rpi
+#
+# Start extern control
+#
 extctl start
 
 mc_att_control start
@@ -50,7 +52,4 @@ mc_pos_control start
 #
 land_detector start multicopter
 
-#
-# Start extern control
-#
-extctl start
+

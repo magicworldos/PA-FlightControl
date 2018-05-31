@@ -12,6 +12,8 @@ uint16_t crc16table[256] = { 0x2ae2, 0xf965, 0xa429, 0x1b33, 0xd0ce, 0xd13a, 0x6
 s_buff _recv;
 uint8_t _buff[SIZE_BUFF];
 
+sem_t sem_w;
+
 static bool _should_exit = false;
 static int _serial_fd = -1;
 static int frame_pos_head0 = 0;
@@ -122,6 +124,7 @@ int send_frame_data(char *frame, int len)
 
 int start(int argc, char *argv[])
 {
+	sem_init(&sem_w, 0, 1);
 	_recv.head = 0;
 	_recv.tail = 0;
 	_recv.size = SIZE_BUFF;
@@ -230,6 +233,7 @@ int frame_parse()
 					if (crc16_check(&_buff[frame_pos_head0], frameLen - 4, crc16))
 					{
 						ret = 1;
+						goto _ret;
 					}
 					parse_packet_step = PAR_HEAD;
 					packet_index = 0;
@@ -241,6 +245,9 @@ int frame_parse()
 		}
 		tail = (tail + 1) % _recv.size;
 	}
+
+	_ret:;
+
 	if (ret == 1)
 	{
 		_recv.tail = tail;
@@ -390,7 +397,9 @@ int task_main_write(int argc, char* argv[])
 
 		if (status_pos)
 		{
+			sem_wait(&sem_w);
 			send_data_pos(&pos);
+			sem_post(&sem_w);
 		}
 		usleep(DEV_RW_USLEEP);
 	}
@@ -419,7 +428,9 @@ int task_main_write_rc(int argc, char* argv[])
 			{
 				rc.values[i] = in_rc.values[i];
 			}
+			sem_wait(&sem_w);
 			send_data_rc(&rc);
+			sem_post(&sem_w);
 		}
 		usleep(DEV_RW_USLEEP_RC);
 	}

@@ -38,7 +38,7 @@
 
 #define SIGMA_SINGLE_OP			0.000001f
 #define SIGMA_NORM				0.001f
-#define TIMEOUT_EXTCTL			(500 * 1000)
+#define TIMEOUT_EXTCTL			(1000 * 1000)
 /**
  * Multicopter position control app start / stop handling function
  *

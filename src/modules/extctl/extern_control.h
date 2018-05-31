@@ -33,6 +33,7 @@
 #include <systemlib/systemlib.h>
 #include <systemlib/err.h>
 #include <termios.h>
+#include <semaphore.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_global_position.h>
 #include <uORB/topics/input_rc.h>
@@ -40,8 +41,8 @@
 
 #define DEV_NAME			"/dev/ttyS2"
 #define DEV_BAUDRATE		(B115200)
-#define DEV_RW_RATE			(100)
-#define DEV_RW_RATE_RC		(5)
+#define DEV_RW_RATE			(10)
+#define DEV_RW_RATE_RC		(10)
 #define DEV_RW_USLEEP		(1000 * 1000 / DEV_RW_RATE)
 #define DEV_RW_USLEEP_RC	(1000 * 1000 / DEV_RW_RATE_RC)
 
