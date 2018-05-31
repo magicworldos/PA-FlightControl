@@ -79,7 +79,7 @@ PARAM_DEFINE_FLOAT(MC_PITCH_TC, 0.2f);
  * @increment 0.1
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLL_P, 6.5f);
+PARAM_DEFINE_FLOAT(MC_ROLL_P, 4.0f);
 
 /**
  * Roll rate P gain
@@ -92,7 +92,7 @@ PARAM_DEFINE_FLOAT(MC_ROLL_P, 6.5f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.13f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.11f);
 
 /**
  * Roll rate I gain
@@ -104,7 +104,7 @@ PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.13f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_I, 0.04f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_I, 0.28f);
 
 /**
  * Roll rate integrator limit
@@ -129,7 +129,7 @@ PARAM_DEFINE_FLOAT(MC_RR_INT_LIM, 0.30f);
  * @increment 0.0005
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_D, 0.005f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_D, 0.003f);
 
 /**
  * Roll rate feedforward
@@ -154,7 +154,7 @@ PARAM_DEFINE_FLOAT(MC_ROLLRATE_FF, 0.0f);
  * @increment 0.1
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCH_P, 6.5f);
+PARAM_DEFINE_FLOAT(MC_PITCH_P, 4.0f);
 
 /**
  * Pitch rate P gain
@@ -167,7 +167,7 @@ PARAM_DEFINE_FLOAT(MC_PITCH_P, 6.5f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.13f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.11f);
 
 /**
  * Pitch rate I gain
@@ -179,19 +179,7 @@ PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.13f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_I, 0.04f);
-
-/**
- * Pitch rate integrator limit
- *
- * Pitch rate integrator limit. Can be set to increase the amount of integrator available to counteract disturbances or reduced to improve settling time after large pitch moment trim changes.
- *
- * @min 0.0
- * @decimal 2
- * @increment 0.01
- * @group Multicopter Attitude Control
- */
-PARAM_DEFINE_FLOAT(MC_PR_INT_LIM, 0.30f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_I, 0.28f);
 
 /**
  * Pitch rate D gain
@@ -203,7 +191,7 @@ PARAM_DEFINE_FLOAT(MC_PR_INT_LIM, 0.30f);
  * @increment 0.0005
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_D, 0.005f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_D, 0.003f);
 
 /**
  * Pitch rate feedforward
@@ -228,7 +216,7 @@ PARAM_DEFINE_FLOAT(MC_PITCHRATE_FF, 0.0f);
  * @increment 0.1
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_YAW_P, 1.8f);
+PARAM_DEFINE_FLOAT(MC_YAW_P, 2.0f);
 
 /**
  * Yaw rate P gain
@@ -241,7 +229,7 @@ PARAM_DEFINE_FLOAT(MC_YAW_P, 1.8f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_YAWRATE_P, 0.12f);
+PARAM_DEFINE_FLOAT(MC_YAWRATE_P, 0.25f);
 
 /**
  * Yaw rate I gain
@@ -253,7 +241,7 @@ PARAM_DEFINE_FLOAT(MC_YAWRATE_P, 0.12f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_YAWRATE_I, 0.1f);
+PARAM_DEFINE_FLOAT(MC_YAWRATE_I, 0.2f);
 
 /**
  * Yaw rate integrator limit
@@ -321,7 +309,7 @@ PARAM_DEFINE_FLOAT(MC_YAW_FF, 0.5f);
  * @increment 5
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_MAX, 220.0f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_MAX, 60.0f);
 
 /**
  * Max pitch rate
@@ -340,7 +328,7 @@ PARAM_DEFINE_FLOAT(MC_ROLLRATE_MAX, 220.0f);
  * @increment 5
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_MAX, 220.0f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_MAX, 60.0f);
 
 /**
  * Max yaw rate
@@ -380,7 +368,7 @@ PARAM_DEFINE_FLOAT(MC_YAWRAUTO_MAX, 45.0f);
  * @increment 5
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ACRO_R_MAX, 720.0f);
+PARAM_DEFINE_FLOAT(MC_ACRO_R_MAX, 90.0f);
 
 /**
  * Max acro pitch rate
@@ -393,7 +381,7 @@ PARAM_DEFINE_FLOAT(MC_ACRO_R_MAX, 720.0f);
  * @increment 5
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ACRO_P_MAX, 720.0f);
+PARAM_DEFINE_FLOAT(MC_ACRO_P_MAX, 90.0f);
 
 /**
  * Max acro yaw rate
@@ -406,7 +394,7 @@ PARAM_DEFINE_FLOAT(MC_ACRO_P_MAX, 720.0f);
  * @increment 5
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ACRO_Y_MAX, 540.0f);
+PARAM_DEFINE_FLOAT(MC_ACRO_Y_MAX, 90.0f);
 
 /**
  * Acro Expo factor
