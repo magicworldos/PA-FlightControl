@@ -182,6 +182,18 @@ PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.11f);
 PARAM_DEFINE_FLOAT(MC_PITCHRATE_I, 0.28f);
 
 /**
+ * Pitch rate integrator limit
+ *
+ * Pitch rate integrator limit. Can be set to increase the amount of integrator available to counteract disturbances or reduced to improve settling time after large pitch moment trim changes.
+ *
+ * @min 0.0
+ * @decimal 2
+ * @increment 0.01
+ * @group Multicopter Attitude Control
+ */
+PARAM_DEFINE_FLOAT(MC_PR_INT_LIM, 0.30f);
+
+/**
  * Pitch rate D gain
  *
  * Pitch rate differential gain. Small values help reduce fast oscillations. If value is too big oscillations will appear again.
