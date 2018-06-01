@@ -45,6 +45,12 @@
 #include <uORB/topics/actuator_armed.h>
 #include <uORB/topics/vehicle_attitude.h>
 
+
+#define roll_p 0.7
+#define pitch_p 0.7
+#define yaw_p 0.25
+#define alt_p 1.0
+
 /**
  * Multicopter attitude control app start / stop handling function
  *
@@ -638,11 +644,6 @@ void HilSim::HIL_Dynamics_Cal(void)
 	double AltRef = ref_alt; //100.0;
 
 #if PLANE_TYPE == 1
-
-#define roll_p 0.7
-#define pitch_p 0.7
-#define yaw_p 0.25
-#define alt_p 1.0
 
 	//\B6\A8\D2\E5ֱ\C9\FD\BB\FA\B6\AF\C1\A6ѧ\B2ο\BCģ\D0\CD
 	float RollModelNum[10] =
