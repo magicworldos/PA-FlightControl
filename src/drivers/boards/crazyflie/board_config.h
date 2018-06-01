@@ -55,7 +55,6 @@
 /* Crazyflie GPIOs **********************************************************************************/
 /* LEDs */
 
-
 /* Radio TX indicator */
 #define GPIO_LED_RED_L       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
 			      GPIO_OUTPUT_CLEAR|GPIO_PORTC|GPIO_PIN0)
@@ -78,9 +77,7 @@
 #define GPIO_FSYNC_MPU9250		(GPIO_OUTPUT|GPIO_PORTC|GPIO_PIN14) // Needs to be set low
 #define GPIO_DRDY_MPU9250		(GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTC|GPIO_PIN13)
 
-
 #define GPIO_NRF_TXEN			(GPIO_INPUT|GPIO_PULLUP|GPIO_EXTI|GPIO_PORTA|GPIO_PIN4)
-
 
 /*
  * I2C busses
@@ -95,9 +92,6 @@
 
 #define BOARD_NUMBER_I2C_BUSES  3
 #define BOARD_I2C_BUS_CLOCK_INIT {PX4_I2C_BUS_ONBOARD_HZ, 100000, PX4_I2C_BUS_EXPANSION_HZ}
-
-
-
 
 /* Devices on the onboard bus.
  *
@@ -132,16 +126,16 @@
 #define GPIO_TONE_ALARM_NEG (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN3)
 
 /* PWM
-*
-* Four PWM motor outputs are configured.
-*
-* Pins:
-*
-* CH1 : PA1  : TIM2_CH2
-* CH2 : PB11 : TIM2_CH4
-* CH3 : PA15 : TIM2_CH1
-* CH4 : PB9  : TIM4_CH4
-*/
+ *
+ * Four PWM motor outputs are configured.
+ *
+ * Pins:
+ *
+ * CH1 : PA1  : TIM2_CH2
+ * CH2 : PB11 : TIM2_CH4
+ * CH3 : PA15 : TIM2_CH1
+ * CH4 : PB9  : TIM4_CH4
+ */
 
 #define GPIO_TIM2_CH2OUT	GPIO_TIM2_CH2OUT_1
 #define GPIO_TIM2_CH4OUT	GPIO_TIM2_CH4OUT_2
@@ -154,12 +148,10 @@
 #define GPIO_TIM2_CH1IN		GPIO_TIM2_CH1IN_2
 #define GPIO_TIM4_CH4IN		GPIO_TIM4_CH4IN_1
 
-
 /* This board overrides the defaults by providing
  * PX4_PWM_ALTERNATE_RANGES and a replacement set of
  * constants
  */
-
 
 /* PWM directly wired to transistor. Duty cycle directly corresponds to power
  * So we need to override the defaults
@@ -175,13 +167,11 @@
 #define PWM_LOWEST_MAX 255
 #define PWM_DEFAULT_TRIM 1500
 
-
 /* High-resolution timer */
 #define HRT_TIMER		8	/* use timer8 for the HRT */
 #define HRT_TIMER_CHANNEL	1	/* use capture/compare channel */
 
 #define	BOARD_NAME "CRAZYFLIE"
-
 
 #define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
 

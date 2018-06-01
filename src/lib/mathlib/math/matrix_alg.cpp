@@ -54,7 +54,7 @@ float *mat_mul(float *A, float *B, uint8_t n)
 {
 	float *ret = new float[n * n];
 	memset(ret, 0.0f, n * n * sizeof(float));
-
+	
 	for (uint8_t i = 0; i < n; i++)
 	{
 		for (uint8_t j = 0; j < n; j++)
@@ -65,7 +65,7 @@ float *mat_mul(float *A, float *B, uint8_t n)
 			}
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -95,11 +95,11 @@ static void mat_pivot(float *A, float *pivot, uint8_t n)
 			pivot[i * n + j] = (i == j);
 		}
 	}
-
+	
 	for (uint8_t i = 0; i < n; i++)
 	{
 		uint8_t max_j = i;
-
+		
 		for (uint8_t j = i; j < n; j++)
 		{
 			if (fabsf(A[j * n + i]) > fabsf(A[max_j * n + i]))
@@ -107,7 +107,7 @@ static void mat_pivot(float *A, float *pivot, uint8_t n)
 				max_j = j;
 			}
 		}
-
+		
 		if (max_j != i)
 		{
 			for (uint8_t k = 0; k < n; k++)
@@ -132,14 +132,14 @@ static void mat_forward_sub(float *L, float *out, uint8_t n)
 	for (int i = 0; i < n; i++)
 	{
 		out[i * n + i] = 1 / L[i * n + i];
-
+		
 		for (int j = i + 1; j < n; j++)
 		{
 			for (int k = i; k < j; k++)
 			{
 				out[j * n + i] -= L[j * n + k] * out[k * n + i];
 			}
-
+			
 			out[j * n + i] /= L[j * n + j];
 		}
 	}
@@ -159,14 +159,14 @@ static void mat_back_sub(float *U, float *out, uint8_t n)
 	for (int i = n - 1; i >= 0; i--)
 	{
 		out[i * n + i] = 1 / U[i * n + i];
-
+		
 		for (int j = i - 1; j >= 0; j--)
 		{
 			for (int k = i; k > j; k--)
 			{
 				out[j * n + i] -= U[j * n + k] * out[k * n + i];
 			}
-
+			
 			out[j * n + i] /= U[j * n + j];
 		}
 	}
@@ -187,14 +187,14 @@ static void mat_LU_decompose(float *A, float *L, float *U, float *P, uint8_t n)
 	memset(U, 0, n * n * sizeof(float));
 	memset(P, 0, n * n * sizeof(float));
 	mat_pivot(A, P, n);
-
+	
 	float *APrime = mat_mul(P, A, n);
-
+	
 	for (uint8_t i = 0; i < n; i++)
 	{
 		L[i * n + i] = 1;
 	}
-
+	
 	for (uint8_t i = 0; i < n; i++)
 	{
 		for (uint8_t j = 0; j < n; j++)
@@ -202,27 +202,27 @@ static void mat_LU_decompose(float *A, float *L, float *U, float *P, uint8_t n)
 			if (j <= i)
 			{
 				U[j * n + i] = APrime[j * n + i];
-
+				
 				for (uint8_t k = 0; k < j; k++)
 				{
 					U[j * n + i] -= L[j * n + k] * U[k * n + i];
 				}
 			}
-
+			
 			if (j >= i)
 			{
 				L[j * n + i] = APrime[j * n + i];
-
+				
 				for (uint8_t k = 0; k < i; k++)
 				{
 					L[j * n + i] -= L[j * n + k] * U[k * n + i];
 				}
-
+				
 				L[j * n + i] /= U[i * n + i];
 			}
 		}
 	}
-
+	
 	delete[] APrime;
 }
 
@@ -243,23 +243,23 @@ bool mat_inverse(float *A, float *inv, uint8_t n)
 	U = new float[n * n];
 	P = new float[n * n];
 	mat_LU_decompose(A, L, U, P, n);
-
+	
 	float *L_inv = new float[n * n];
 	float *U_inv = new float[n * n];
-
+	
 	memset(L_inv, 0, n * n * sizeof(float));
 	mat_forward_sub(L, L_inv, n);
-
+	
 	memset(U_inv, 0, n * n * sizeof(float));
 	mat_back_sub(U, U_inv, n);
-
+	
 	// decomposed matrices no longer required
 	delete[] L;
 	delete[] U;
-
+	
 	float *inv_unpivoted = mat_mul(U_inv, L_inv, n);
 	float *inv_pivoted = mat_mul(inv_unpivoted, P, n);
-
+	
 	//check sanity of results
 	for (uint8_t i = 0; i < n; i++)
 	{
@@ -271,9 +271,9 @@ bool mat_inverse(float *A, float *inv, uint8_t n)
 			}
 		}
 	}
-
+	
 	memcpy(inv, inv_pivoted, n * n * sizeof(float));
-
+	
 	//free memory
 	delete[] inv_pivoted;
 	delete[] inv_unpivoted;
@@ -287,132 +287,52 @@ bool inverse4x4(float m[], float invOut[])
 {
 	float inv[16], det;
 	uint8_t i;
-
-	inv[0] = m[5]  * m[10] * m[15] -
-		 m[5]  * m[11] * m[14] -
-		 m[9]  * m[6]  * m[15] +
-		 m[9]  * m[7]  * m[14] +
-		 m[13] * m[6]  * m[11] -
-		 m[13] * m[7]  * m[10];
-
-	inv[4] = -m[4]  * m[10] * m[15] +
-		 m[4]  * m[11] * m[14] +
-		 m[8]  * m[6]  * m[15] -
-		 m[8]  * m[7]  * m[14] -
-		 m[12] * m[6]  * m[11] +
-		 m[12] * m[7]  * m[10];
-
-	inv[8] = m[4]  * m[9] * m[15] -
-		 m[4]  * m[11] * m[13] -
-		 m[8]  * m[5] * m[15] +
-		 m[8]  * m[7] * m[13] +
-		 m[12] * m[5] * m[11] -
-		 m[12] * m[7] * m[9];
-
-	inv[12] = -m[4]  * m[9] * m[14] +
-		  m[4]  * m[10] * m[13] +
-		  m[8]  * m[5] * m[14] -
-		  m[8]  * m[6] * m[13] -
-		  m[12] * m[5] * m[10] +
-		  m[12] * m[6] * m[9];
-
-	inv[1] = -m[1]  * m[10] * m[15] +
-		 m[1]  * m[11] * m[14] +
-		 m[9]  * m[2] * m[15] -
-		 m[9]  * m[3] * m[14] -
-		 m[13] * m[2] * m[11] +
-		 m[13] * m[3] * m[10];
-
-	inv[5] = m[0]  * m[10] * m[15] -
-		 m[0]  * m[11] * m[14] -
-		 m[8]  * m[2] * m[15] +
-		 m[8]  * m[3] * m[14] +
-		 m[12] * m[2] * m[11] -
-		 m[12] * m[3] * m[10];
-
-	inv[9] = -m[0]  * m[9] * m[15] +
-		 m[0]  * m[11] * m[13] +
-		 m[8]  * m[1] * m[15] -
-		 m[8]  * m[3] * m[13] -
-		 m[12] * m[1] * m[11] +
-		 m[12] * m[3] * m[9];
-
-	inv[13] = m[0]  * m[9] * m[14] -
-		  m[0]  * m[10] * m[13] -
-		  m[8]  * m[1] * m[14] +
-		  m[8]  * m[2] * m[13] +
-		  m[12] * m[1] * m[10] -
-		  m[12] * m[2] * m[9];
-
-	inv[2] = m[1]  * m[6] * m[15] -
-		 m[1]  * m[7] * m[14] -
-		 m[5]  * m[2] * m[15] +
-		 m[5]  * m[3] * m[14] +
-		 m[13] * m[2] * m[7] -
-		 m[13] * m[3] * m[6];
-
-	inv[6] = -m[0]  * m[6] * m[15] +
-		 m[0]  * m[7] * m[14] +
-		 m[4]  * m[2] * m[15] -
-		 m[4]  * m[3] * m[14] -
-		 m[12] * m[2] * m[7] +
-		 m[12] * m[3] * m[6];
-
-	inv[10] = m[0]  * m[5] * m[15] -
-		  m[0]  * m[7] * m[13] -
-		  m[4]  * m[1] * m[15] +
-		  m[4]  * m[3] * m[13] +
-		  m[12] * m[1] * m[7] -
-		  m[12] * m[3] * m[5];
-
-	inv[14] = -m[0]  * m[5] * m[14] +
-		  m[0]  * m[6] * m[13] +
-		  m[4]  * m[1] * m[14] -
-		  m[4]  * m[2] * m[13] -
-		  m[12] * m[1] * m[6] +
-		  m[12] * m[2] * m[5];
-
-	inv[3] = -m[1] * m[6] * m[11] +
-		 m[1] * m[7] * m[10] +
-		 m[5] * m[2] * m[11] -
-		 m[5] * m[3] * m[10] -
-		 m[9] * m[2] * m[7] +
-		 m[9] * m[3] * m[6];
-
-	inv[7] = m[0] * m[6] * m[11] -
-		 m[0] * m[7] * m[10] -
-		 m[4] * m[2] * m[11] +
-		 m[4] * m[3] * m[10] +
-		 m[8] * m[2] * m[7] -
-		 m[8] * m[3] * m[6];
-
-	inv[11] = -m[0] * m[5] * m[11] +
-		  m[0] * m[7] * m[9] +
-		  m[4] * m[1] * m[11] -
-		  m[4] * m[3] * m[9] -
-		  m[8] * m[1] * m[7] +
-		  m[8] * m[3] * m[5];
-
-	inv[15] = m[0] * m[5] * m[10] -
-		  m[0] * m[6] * m[9] -
-		  m[4] * m[1] * m[10] +
-		  m[4] * m[2] * m[9] +
-		  m[8] * m[1] * m[6] -
-		  m[8] * m[2] * m[5];
-
+	
+	inv[0] = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
+	
+	inv[4] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
+	
+	inv[8] = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
+	
+	inv[12] = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9];
+	
+	inv[1] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
+	
+	inv[5] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
+	
+	inv[9] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
+	
+	inv[13] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
+	
+	inv[2] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7] - m[13] * m[3] * m[6];
+	
+	inv[6] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7] + m[12] * m[3] * m[6];
+	
+	inv[10] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7] - m[12] * m[3] * m[5];
+	
+	inv[14] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6] + m[12] * m[2] * m[5];
+	
+	inv[3] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11] - m[5] * m[3] * m[10] - m[9] * m[2] * m[7] + m[9] * m[3] * m[6];
+	
+	inv[7] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11] + m[4] * m[3] * m[10] + m[8] * m[2] * m[7] - m[8] * m[3] * m[6];
+	
+	inv[11] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11] - m[4] * m[3] * m[9] - m[8] * m[1] * m[7] + m[8] * m[3] * m[5];
+	
+	inv[15] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10] + m[4] * m[2] * m[9] + m[8] * m[1] * m[6] - m[8] * m[2] * m[5];
+	
 	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-
+	
 	if (fabsf(det) < 1.1755e-38f)
 	{
 		return false;
 	}
-
+	
 	det = 1.0f / det;
-
+	
 	for (i = 0; i < 16; i++)
 	{
 		invOut[i] = inv[i] * det;
 	}
-
+	
 	return true;
 }

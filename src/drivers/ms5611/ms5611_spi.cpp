@@ -64,45 +64,45 @@
 device::Device *MS5611_spi_interface(ms5611::prom_u &prom_buf, bool external_bus);
 
 class MS5611_SPI : public device::SPI
-{
+{	
 public:
 	MS5611_SPI(uint8_t bus, uint32_t device, ms5611::prom_u &prom_buf);
 	virtual ~MS5611_SPI();
 
-	virtual int	init();
-	virtual int	read(unsigned offset, void *data, unsigned count);
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int init();
+	virtual int read(unsigned offset, void *data, unsigned count);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 private:
-	ms5611::prom_u	&_prom;
+	ms5611::prom_u &_prom;
 
 	/**
 	 * Send a reset command to the MS5611.
 	 *
 	 * This is required after any bus reset.
 	 */
-	int		_reset();
+	int _reset();
 
 	/**
 	 * Send a measure command to the MS5611.
 	 *
 	 * @param addr		Which address to use for the measure operation.
 	 */
-	int		_measure(unsigned addr);
+	int _measure(unsigned addr);
 
 	/**
 	 * Read the MS5611 PROM
 	 *
 	 * @return		OK if the PROM reads successfully.
 	 */
-	int		_read_prom();
+	int _read_prom();
 
 	/**
 	 * Read a 16-bit register value.
 	 *
 	 * @param reg		The register to read.
 	 */
-	uint16_t	_reg16(unsigned reg);
+	uint16_t _reg16(unsigned reg);
 
 	/**
 	 * Wrapper around transfer() that prevents interrupt-context transfers
@@ -110,16 +110,16 @@ private:
 	 * that are polled from interrupt context (or we may be pre-empted)
 	 * so we need to guarantee that transfers complete without interruption.
 	 */
-	int		_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	int _transfer(uint8_t *send, uint8_t *recv, unsigned len);
 };
 
 device::Device *
 MS5611_spi_interface(ms5611::prom_u &prom_buf, uint8_t busnum)
-{
+{	
 #ifdef PX4_SPI_BUS_EXT
-
+	
 	if (busnum == PX4_SPI_BUS_EXT)
-	{
+	{	
 #ifdef PX4_SPIDEV_EXT_BARO
 		return new MS5611_SPI(busnum, PX4_SPIDEV_EXT_BARO, prom_buf);
 #else
@@ -132,29 +132,29 @@ MS5611_spi_interface(ms5611::prom_u &prom_buf, uint8_t busnum)
 }
 
 MS5611_SPI::MS5611_SPI(uint8_t bus, uint32_t device, ms5611::prom_u &prom_buf) :
-	SPI("MS5611_SPI", nullptr, bus, device, SPIDEV_MODE3, 20 * 1000 * 1000 /* will be rounded to 10.4 MHz */),
-	_prom(prom_buf)
-{
+SPI("MS5611_SPI", nullptr, bus, device, SPIDEV_MODE3, 20 * 1000 * 1000 /* will be rounded to 10.4 MHz */),
+_prom(prom_buf)
+{	
 }
 
 MS5611_SPI::~MS5611_SPI()
-{
+{	
 }
 
 int
 MS5611_SPI::init()
-{
+{	
 	int ret;
 
 #if defined(PX4_SPI_BUS_RAMTRON) && \
 	(PX4_SPI_BUS_BARO == PX4_SPI_BUS_RAMTRON)
 	SPI::set_lockmode(LOCK_THREADS);
 #endif
-
+	
 	ret = SPI::init();
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("SPI init failed");
 		goto out;
 	}
@@ -163,7 +163,7 @@ MS5611_SPI::init()
 	ret = _reset();
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("reset failed");
 		goto out;
 	}
@@ -172,30 +172,31 @@ MS5611_SPI::init()
 	ret = _read_prom();
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("prom readout failed");
 		goto out;
 	}
 
-out:
+	out:
 	return ret;
 }
 
 int
 MS5611_SPI::read(unsigned offset, void *data, unsigned count)
-{
+{	
 	union _cvt
-	{
-		uint8_t	b[4];
+	{	
+		uint8_t b[4];
 		uint32_t w;
-	} *cvt = (_cvt *)data;
-	uint8_t buf[4] = { 0 | DIR_WRITE, 0, 0, 0 };
+	}*cvt = (_cvt *)data;
+	uint8_t buf[4] =
+	{	0 | DIR_WRITE, 0, 0, 0};
 
 	/* read the most recent measurement */
 	int ret = _transfer(&buf[0], &buf[0], sizeof(buf));
 
 	if (ret == OK)
-	{
+	{	
 		/* fetch the raw value */
 		cvt->b[0] = buf[3];
 		cvt->b[1] = buf[2];
@@ -210,25 +211,25 @@ MS5611_SPI::read(unsigned offset, void *data, unsigned count)
 
 int
 MS5611_SPI::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 		case IOCTL_RESET:
-			ret = _reset();
-			break;
+		ret = _reset();
+		break;
 
 		case IOCTL_MEASURE:
-			ret = _measure(arg);
-			break;
+		ret = _measure(arg);
+		break;
 
 		default:
-			ret = EINVAL;
+		ret = EINVAL;
 	}
 
 	if (ret != OK)
-	{
+	{	
 		errno = ret;
 		return -1;
 	}
@@ -238,24 +239,23 @@ MS5611_SPI::ioctl(unsigned operation, unsigned &arg)
 
 int
 MS5611_SPI::_reset()
-{
+{	
 	uint8_t cmd = ADDR_RESET_CMD | DIR_WRITE;
 
-	return  _transfer(&cmd, nullptr, 1);
+	return _transfer(&cmd, nullptr, 1);
 }
 
 int
 MS5611_SPI::_measure(unsigned addr)
-{
+{	
 	uint8_t cmd = addr | DIR_WRITE;
 
 	return _transfer(&cmd, nullptr, 1);
 }
 
-
 int
 MS5611_SPI::_read_prom()
-{
+{	
 	/*
 	 * Wait for PROM contents to be in the device (2.8 ms) in the case we are
 	 * called immediately after reset.
@@ -266,12 +266,12 @@ MS5611_SPI::_read_prom()
 	bool all_zero = true;
 
 	for (int i = 0; i < 8; i++)
-	{
+	{	
 		uint8_t cmd = (ADDR_PROM_SETUP + (i * 2));
 		_prom.c[i] = _reg16(cmd);
 
 		if (_prom.c[i] != 0)
-		{
+		{	
 			all_zero = false;
 		}
 
@@ -282,12 +282,12 @@ MS5611_SPI::_read_prom()
 	int ret = ms5611::crc4(&_prom.c[0]) ? OK : -EIO;
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("crc failed");
 	}
 
 	if (all_zero)
-	{
+	{	
 		DEVICE_DEBUG("prom all zero");
 		ret = -EIO;
 	}
@@ -297,8 +297,9 @@ MS5611_SPI::_read_prom()
 
 uint16_t
 MS5611_SPI::_reg16(unsigned reg)
-{
-	uint8_t cmd[3] = { (uint8_t)(reg | DIR_READ), 0, 0 };
+{	
+	uint8_t cmd[3] =
+	{	(uint8_t)(reg | DIR_READ), 0, 0};
 
 	_transfer(cmd, cmd, sizeof(cmd));
 
@@ -307,7 +308,7 @@ MS5611_SPI::_reg16(unsigned reg)
 
 int
 MS5611_SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
-{
+{	
 	return transfer(send, recv, len);
 }
 

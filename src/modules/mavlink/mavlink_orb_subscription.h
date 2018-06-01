@@ -49,7 +49,7 @@ class MavlinkOrbSubscription
 {
 public:
 	MavlinkOrbSubscription *next;	///< pointer to next subscription in list
-
+	
 	MavlinkOrbSubscription(const orb_id_t topic, int instance);
 	~MavlinkOrbSubscription();
 
@@ -93,8 +93,11 @@ public:
 	orb_id_t get_topic() const;
 	int get_instance() const;
 
-	int get_fd() { return _fd; }
-
+	int get_fd()
+	{
+		return _fd;
+	}
+	
 private:
 	const orb_id_t _topic;		///< topic metadata
 	int _fd;			///< subscription handle
@@ -102,11 +105,10 @@ private:
 	bool _published;		///< topic was ever published
 	bool _subscribe_from_beginning; ///< we need to subscribe from the beginning, e.g. for vehicle_command_acks
 	hrt_abstime _last_pub_check;	///< when we checked last
-
+	
 	/* do not allow copying this class */
 	MavlinkOrbSubscription(const MavlinkOrbSubscription &);
 	MavlinkOrbSubscription operator=(const MavlinkOrbSubscription &);
 };
-
 
 #endif /* MAVLINK_ORB_SUBSCRIPTION_H_ */

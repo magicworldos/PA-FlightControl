@@ -16,7 +16,7 @@
 
 namespace std
 {
-    typedef unsigned long size_t;
+typedef unsigned long size_t;
 }
 
 namespace uavcan
@@ -24,22 +24,22 @@ namespace uavcan
 
 void handleFatalError(const char* msg)
 {
-    __coverity_panic__();
+	__coverity_panic__();
 }
 
-template <std::size_t PoolSize, std::size_t BlockSize>
+template<std::size_t PoolSize, std::size_t BlockSize>
 class PoolAllocator
 {
 public:
-    void* allocate(std::size_t size)
-    {
-        return __coverity_alloc__(size);
-    }
-
-    void deallocate(const void* ptr)
-    {
-        __coverity_free__(ptr);
-    }
+	void* allocate(std::size_t size)
+	{
+		return __coverity_alloc__(size);
+	}
+	
+	void deallocate(const void* ptr)
+	{
+		__coverity_free__(ptr);
+	}
 };
 
 }

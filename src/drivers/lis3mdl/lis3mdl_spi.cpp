@@ -68,42 +68,42 @@
 device::Device *LIS3MDL_SPI_interface(int bus);
 
 class LIS3MDL_SPI : public device::SPI
-{
+{	
 public:
 	LIS3MDL_SPI(int bus, uint32_t device);
 	virtual ~LIS3MDL_SPI();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 };
 
 device::Device *
 LIS3MDL_SPI_interface(int bus)
-{
+{	
 	return new LIS3MDL_SPI(bus, PX4_SPIDEV_LIS);
 }
 
 LIS3MDL_SPI::LIS3MDL_SPI(int bus, uint32_t device) :
-	SPI("LIS3MDL_SPI", nullptr, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz */)
-{
+SPI("LIS3MDL_SPI", nullptr, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz */)
+{	
 	_device_id.devid_s.devtype = DRV_MAG_DEVTYPE_LIS3MDL;
 }
 
 LIS3MDL_SPI::~LIS3MDL_SPI()
-{
+{	
 }
 
 int
 LIS3MDL_SPI::init()
-{
+{	
 	int ret;
 
 	ret = SPI::init();
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("SPI init failed");
 		return -EIO;
 	}
@@ -112,12 +112,12 @@ LIS3MDL_SPI::init()
 	uint8_t data = 0;
 
 	if (read(ADDR_WHO_AM_I, &data, 1))
-	{
+	{	
 		DEVICE_DEBUG("LIS3MDL read_reg fail");
 	}
 
 	if (data != ID_WHO_AM_I)
-	{
+	{	
 		DEVICE_DEBUG("LIS3MDL bad ID: %02x", data);
 		return -EIO;
 	}
@@ -127,27 +127,27 @@ LIS3MDL_SPI::init()
 
 int
 LIS3MDL_SPI::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 
 		case MAGIOCGEXTERNAL:
-			/*
-			 * Even if this sensor is on the external SPI
-			 * bus it is still internal to the autopilot
-			 * assembly, so always return 0 for internal.
-			 */
-			return 0;
+		/*
+		 * Even if this sensor is on the external SPI
+		 * bus it is still internal to the autopilot
+		 * assembly, so always return 0 for internal.
+		 */
+		return 0;
 
 		case DEVIOCGDEVICEID:
-			return CDev::ioctl(nullptr, operation, arg);
+		return CDev::ioctl(nullptr, operation, arg);
 
 		default:
-			{
-				ret = -EINVAL;
-			}
+		{	
+			ret = -EINVAL;
+		}
 	}
 
 	return ret;
@@ -155,11 +155,11 @@ LIS3MDL_SPI::ioctl(unsigned operation, unsigned &arg)
 
 int
 LIS3MDL_SPI::write(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t buf[32];
 
 	if (sizeof(buf) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 
@@ -171,11 +171,11 @@ LIS3MDL_SPI::write(unsigned address, void *data, unsigned count)
 
 int
 LIS3MDL_SPI::read(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t buf[32];
 
 	if (sizeof(buf) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 

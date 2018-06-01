@@ -101,7 +101,7 @@ xcpt_t board_button_irq(int id, xcpt_t irqhandler);
  ****************************************************************************/
 
 void board_button_initialize(void)
-{
+{	
 	stm32_configgpio(BUTTON_BOOT0n);
 }
 
@@ -118,7 +118,7 @@ void board_button_initialize(void)
  ****************************************************************************/
 
 uint32_t board_buttons(void)
-{
+{	
 	return stm32_gpioread(BUTTON_BOOT0n) ? 0 : BUTTON_BOOT0_MASK;
 }
 
@@ -138,13 +138,13 @@ uint32_t board_buttons(void)
 
 #ifdef CONFIG_ARCH_IRQBUTTONS
 xcpt_t board_button_irq(int id, xcpt_t irqhandler)
-{
+{	
 	xcpt_t oldhandler = NULL;
 
 	/* The following should be atomic */
 
 	if (id == IRQBUTTON)
-	{
+	{	
 		oldhandler = stm32_gpiosetevent(BUTTON_BOOT0n, true, true, true, irqhandler);
 	}
 

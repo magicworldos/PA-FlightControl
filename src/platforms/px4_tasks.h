@@ -90,10 +90,10 @@ typedef int px4_task_t;
 typedef int px4_task_t;
 
 typedef struct
-{
+{	
 	int argc;
 	char **argv;
-} px4_task_args_t;
+}px4_task_args_t;
 #else
 #error "No target OS defined"
 #endif
@@ -151,15 +151,11 @@ __BEGIN_DECLS
 
 /** Reboots the board (without waiting for clean shutdown). Modules should use px4_shutdown_request() in most cases.
  */
-__EXPORT void px4_systemreset(bool to_bootloader) noreturn_function;
+__EXPORT void px4_systemreset(bool to_bootloader)
+noreturn_function;
 
 /** Starts a task and performs any specific accounting, scheduler setup, etc. */
-__EXPORT px4_task_t px4_task_spawn_cmd(const char *name,
-				       int scheduler,
-				       int priority,
-				       int stack_size,
-				       px4_main_t entry,
-				       char *const argv[]);
+__EXPORT px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int stack_size, px4_main_t entry, char * const argv[]);
 
 /** Deletes a task - does not do resource cleanup **/
 __EXPORT int px4_task_delete(px4_task_t pid);

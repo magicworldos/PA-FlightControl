@@ -33,7 +33,8 @@
 #define __TIMER_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup TIMER_11XX CHIP: LPC11xx 16/32-bit Timer driver
@@ -44,20 +45,33 @@ extern "C" {
 /**
  * @brief 32-bit Standard timer register block structure
  */
-typedef struct {					/*!< TIMERn Structure       */
-	__IO uint32_t IR;				/*!< Interrupt Register. The IR can be written to clear interrupts. The IR can be read to identify which of eight possible interrupt sources are pending. */
-	__IO uint32_t TCR;				/*!< Timer Control Register. The TCR is used to control the Timer Counter functions. The Timer Counter can be disabled or reset through the TCR. */
-	__IO uint32_t TC;				/*!< Timer Counter. The 32 bit TC is incremented every PR+1 cycles of PCLK. The TC is controlled through the TCR. */
-	__IO uint32_t PR;				/*!< Prescale Register. The Prescale Counter (below) is equal to this value, the next clock increments the TC and clears the PC. */
-	__IO uint32_t PC;				/*!< Prescale Counter. The 32 bit PC is a counter which is incremented to the value stored in PR. When the value in PR is reached, the TC is incremented and the PC is cleared. The PC is observable and controllable through the bus interface. */
-	__IO uint32_t MCR;				/*!< Match Control Register. The MCR is used to control if an interrupt is generated and if the TC is reset when a Match occurs. */
-	__IO uint32_t MR[4];			/*!< Match Register. MR can be enabled through the MCR to reset the TC, stop both the TC and PC, and/or generate an interrupt every time MR matches the TC. */
-	__IO uint32_t CCR;				/*!< Capture Control Register. The CCR controls which edges of the capture inputs are used to load the Capture Registers and whether or not an interrupt is generated when a capture takes place. */
-	__IO uint32_t CR[4];			/*!< Capture Register. CR is loaded with the value of TC when there is an event on the CAPn.0 input. */
-	__IO uint32_t EMR;				/*!< External Match Register. The EMR controls the external match pins MATn.0-3 (MAT0.0-3 and MAT1.0-3 respectively). */
-	__I  uint32_t RESERVED0[12];
-	__IO uint32_t CTCR;				/*!< Count Control Register. The CTCR selects between Timer and Counter mode, and in Counter mode selects the signal and edge(s) for counting. */
-	__IO uint32_t PWMC;
+typedef struct
+{ /*!< TIMERn Structure       */
+	__IO
+	uint32_t IR; /*!< Interrupt Register. The IR can be written to clear interrupts. The IR can be read to identify which of eight possible interrupt sources are pending. */
+	__IO
+	uint32_t TCR; /*!< Timer Control Register. The TCR is used to control the Timer Counter functions. The Timer Counter can be disabled or reset through the TCR. */
+	__IO
+	uint32_t TC; /*!< Timer Counter. The 32 bit TC is incremented every PR+1 cycles of PCLK. The TC is controlled through the TCR. */
+	__IO
+	uint32_t PR; /*!< Prescale Register. The Prescale Counter (below) is equal to this value, the next clock increments the TC and clears the PC. */
+	__IO
+	uint32_t PC; /*!< Prescale Counter. The 32 bit PC is a counter which is incremented to the value stored in PR. When the value in PR is reached, the TC is incremented and the PC is cleared. The PC is observable and controllable through the bus interface. */
+	__IO
+	uint32_t MCR; /*!< Match Control Register. The MCR is used to control if an interrupt is generated and if the TC is reset when a Match occurs. */
+	__IO
+	uint32_t MR[4]; /*!< Match Register. MR can be enabled through the MCR to reset the TC, stop both the TC and PC, and/or generate an interrupt every time MR matches the TC. */
+	__IO
+	uint32_t CCR; /*!< Capture Control Register. The CCR controls which edges of the capture inputs are used to load the Capture Registers and whether or not an interrupt is generated when a capture takes place. */
+	__IO
+	uint32_t CR[4]; /*!< Capture Register. CR is loaded with the value of TC when there is an event on the CAPn.0 input. */
+	__IO
+	uint32_t EMR; /*!< External Match Register. The EMR controls the external match pins MATn.0-3 (MAT0.0-3 and MAT1.0-3 respectively). */
+	__I
+	uint32_t RESERVED0[12];__IO
+	uint32_t CTCR; /*!< Count Control Register. The CTCR selects between Timer and Counter mode, and in Counter mode selects the signal and edge(s) for counting. */
+	__IO
+	uint32_t PWMC;
 } LPC_TIMER_T;
 
 /** Macro to clear interrupt pending */
@@ -387,11 +401,12 @@ STATIC INLINE void Chip_TIMER_CaptureDisableInt(LPC_TIMER_T *pTMR, int8_t capnum
 /**
  * @brief Standard timer initial match pin state and change state
  */
-typedef enum IP_TIMER_PIN_MATCH_STATE {
-	TIMER_EXTMATCH_DO_NOTHING = 0,	/*!< Timer match state does nothing on match pin */
-	TIMER_EXTMATCH_CLEAR      = 1,	/*!< Timer match state sets match pin low */
-	TIMER_EXTMATCH_SET        = 2,	/*!< Timer match state sets match pin high */
-	TIMER_EXTMATCH_TOGGLE     = 3	/*!< Timer match state toggles match pin */
+typedef enum IP_TIMER_PIN_MATCH_STATE
+{
+	TIMER_EXTMATCH_DO_NOTHING = 0, /*!< Timer match state does nothing on match pin */
+	TIMER_EXTMATCH_CLEAR = 1, /*!< Timer match state sets match pin low */
+	TIMER_EXTMATCH_SET = 2, /*!< Timer match state sets match pin high */
+	TIMER_EXTMATCH_TOGGLE = 3 /*!< Timer match state toggles match pin */
 } TIMER_PIN_MATCH_STATE_T;
 
 /**
@@ -406,17 +421,17 @@ typedef enum IP_TIMER_PIN_MATCH_STATE {
  * @note	For the pin selected with matchnum, sets the function of the pin that occurs on
  * a terminal count match for the match count.
  */
-void Chip_TIMER_ExtMatchControlSet(LPC_TIMER_T *pTMR, int8_t initial_state,
-								   TIMER_PIN_MATCH_STATE_T matchState, int8_t matchnum);
+void Chip_TIMER_ExtMatchControlSet(LPC_TIMER_T *pTMR, int8_t initial_state, TIMER_PIN_MATCH_STATE_T matchState, int8_t matchnum);
 
 /**
  * @brief Standard timer clock and edge for count source
  */
-typedef enum IP_TIMER_CAP_SRC_STATE {
-	TIMER_CAPSRC_RISING_PCLK  = 0,	/*!< Timer ticks on PCLK rising edge */
-	TIMER_CAPSRC_RISING_CAPN  = 1,	/*!< Timer ticks on CAPn.x rising edge */
-	TIMER_CAPSRC_FALLING_CAPN = 2,	/*!< Timer ticks on CAPn.x falling edge */
-	TIMER_CAPSRC_BOTH_CAPN    = 3	/*!< Timer ticks on CAPn.x both edges */
+typedef enum IP_TIMER_CAP_SRC_STATE
+{
+	TIMER_CAPSRC_RISING_PCLK = 0, /*!< Timer ticks on PCLK rising edge */
+	TIMER_CAPSRC_RISING_CAPN = 1, /*!< Timer ticks on CAPn.x rising edge */
+	TIMER_CAPSRC_FALLING_CAPN = 2, /*!< Timer ticks on CAPn.x falling edge */
+	TIMER_CAPSRC_BOTH_CAPN = 3 /*!< Timer ticks on CAPn.x both edges */
 } TIMER_CAP_SRC_STATE_T;
 
 /**
@@ -428,9 +443,7 @@ typedef enum IP_TIMER_CAP_SRC_STATE {
  * @return	Nothing
  * @note	If CapSrc selected a CAPn pin, select the specific CAPn pin with the capnum value.
  */
-STATIC INLINE void Chip_TIMER_TIMER_SetCountClockSrc(LPC_TIMER_T *pTMR,
-													 TIMER_CAP_SRC_STATE_T capSrc,
-													 int8_t capnum)
+STATIC INLINE void Chip_TIMER_TIMER_SetCountClockSrc(LPC_TIMER_T *pTMR, TIMER_CAP_SRC_STATE_T capSrc, int8_t capnum)
 {
 	pTMR->CTCR = (uint32_t) capSrc | ((uint32_t) capnum) << 2;
 }

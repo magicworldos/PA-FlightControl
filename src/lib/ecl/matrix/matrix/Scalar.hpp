@@ -17,40 +17,43 @@ template<typename Type>
 class Scalar
 {
 public:
-    Scalar() : _value()
-    {
-    }
-
-    Scalar(const Matrix<Type, 1, 1> & other)
-    {
-        _value = other(0,0);
-    }
-
-    Scalar(Type other)
-    {
-        _value = other;
-    }
-
-    operator Type &()
-    {
-        return _value;
-    }
-
-    operator Matrix<Type, 1, 1>() const {
-        Matrix<Type, 1, 1> m;
-        m(0, 0) = _value;
-        return m;
-    }
-
-    operator Vector<Type, 1>() const {
-        Vector<Type, 1> m;
-        m(0) = _value;
-        return m;
-    }
-
+	Scalar() :
+			    _value()
+	{
+	}
+	
+	Scalar(const Matrix<Type, 1, 1> & other)
+	{
+		_value = other(0, 0);
+	}
+	
+	Scalar(Type other)
+	{
+		_value = other;
+	}
+	
+	operator Type &()
+	{
+		return _value;
+	}
+	
+	operator Matrix<Type, 1, 1>() const
+	{
+		Matrix<Type, 1, 1> m;
+		m(0, 0) = _value;
+		return m;
+	}
+	
+	operator Vector<Type, 1>() const
+	{
+		Vector<Type, 1> m;
+		m(0) = _value;
+		return m;
+	}
+	
 private:
-    Type _value;
-
+	Type _value;
+	
 };
 
 typedef Scalar<float> Scalarf;

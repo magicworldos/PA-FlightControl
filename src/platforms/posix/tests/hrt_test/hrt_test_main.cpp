@@ -45,11 +45,11 @@
 int PX4_MAIN(int argc, char **argv)
 {
 	px4::init(argc, argv, "hrt_test");
-
+	
 	printf("starting\n");
 	HRTTest test;
 	test.main();
-
+	
 	printf("goodbye\n");
 	return 0;
 }

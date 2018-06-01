@@ -39,14 +39,14 @@
 #include <sys/time.h>
 #include <sys/timespec.h>
 
-typedef	unsigned long	__fd_mask;
+typedef unsigned long __fd_mask;
 #if __BSD_VISIBLE
-typedef	__fd_mask	fd_mask;
+typedef __fd_mask fd_mask;
 #endif
 
 #ifndef _SIGSET_T_DECLARED
 #define	_SIGSET_T_DECLARED
-typedef	__sigset_t	sigset_t;
+typedef __sigset_t sigset_t;
 #endif
 
 /*
@@ -68,8 +68,9 @@ typedef	__sigset_t	sigset_t;
 #define	_howmany(x, y)	(((x) + ((y) - 1)) / (y))
 #endif
 
-typedef	struct fd_set {
-	__fd_mask	__fds_bits[_howmany(FD_SETSIZE, _NFDBITS)];
+typedef struct fd_set
+{
+	__fd_mask	 __fds_bits [_howmany(FD_SETSIZE, _NFDBITS)];
 } fd_set;
 #if __BSD_VISIBLE
 #define	fds_bits	__fds_bits
@@ -95,12 +96,11 @@ typedef	struct fd_set {
 #ifndef _KERNEL
 
 __BEGIN_DECLS
-int pselect(int, fd_set *__restrict, fd_set *__restrict, fd_set *__restrict,
-	    const struct timespec *__restrict, const sigset_t *__restrict);
+int pselect(int, fd_set *__restrict, fd_set *__restrict, fd_set *__restrict, const struct timespec *__restrict, const sigset_t *__restrict);
 #ifndef _SELECT_DECLARED
 #define	_SELECT_DECLARED
 /* XXX missing restrict type-qualifier */
-int	select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
+int select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
 #endif
 __END_DECLS
 #endif /* !_KERNEL */

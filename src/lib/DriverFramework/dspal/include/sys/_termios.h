@@ -137,7 +137,6 @@
 #define	CCAR_OFLOW	0x00100000	/* DCD flow control of output */
 #endif
 
-
 /*
  * "Local" flags - dumping ground for other state
  *
@@ -205,18 +204,19 @@
 #define	EXTB	38400
 #endif  /* !_POSIX_SOURCE */
 
-typedef unsigned int	tcflag_t;
-typedef unsigned char	cc_t;
-typedef unsigned int	speed_t;
+typedef unsigned int tcflag_t;
+typedef unsigned char cc_t;
+typedef unsigned int speed_t;
 
-struct termios {
-	tcflag_t	c_iflag;	/* input flags */
-	tcflag_t	c_oflag;	/* output flags */
-	tcflag_t	c_cflag;	/* control flags */
-	tcflag_t	c_lflag;	/* local flags */
-	cc_t		c_cc[NCCS];	/* control chars */
-	speed_t		c_ispeed;	/* input speed */
-	speed_t		c_ospeed;	/* output speed */
+struct termios
+{
+	tcflag_t c_iflag; /* input flags */
+	tcflag_t c_oflag; /* output flags */
+	tcflag_t c_cflag; /* control flags */
+	tcflag_t c_lflag; /* local flags */
+	cc_t c_cc[NCCS]; /* control chars */
+	speed_t c_ispeed; /* input speed */
+	speed_t c_ospeed; /* output speed */
 };
 
 #endif /* !_SYS__TERMIOS_H_ */

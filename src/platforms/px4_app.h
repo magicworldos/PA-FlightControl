@@ -46,22 +46,43 @@ namespace px4
 class AppState
 {
 public:
-	~AppState() {}
-
+	~AppState()
+	{
+	}
+	
 #if defined(__PX4_ROS)
-	AppState() {}
+	AppState()
+	{}
 
-	bool exitRequested() { return !ros::ok(); }
-	void requestExit() { ros::shutdown(); }
+	bool exitRequested()
+	{	return !ros::ok();}
+	void requestExit()
+	{	ros::shutdown();}
 #else
-	AppState() : _exitRequested(false), _isRunning(false) {}
-
-	bool exitRequested() { return _exitRequested; }
-	void requestExit() { _exitRequested = true; }
-
-	bool isRunning() { return _isRunning; }
-	void setRunning(bool running) { _isRunning = running; }
-
+	AppState() :
+			    _exitRequested(false),
+			    _isRunning(false)
+	{
+	}
+	
+	bool exitRequested()
+	{
+		return _exitRequested;
+	}
+	void requestExit()
+	{
+		_exitRequested = true;
+	}
+	
+	bool isRunning()
+	{
+		return _isRunning;
+	}
+	void setRunning(bool running)
+	{
+		_isRunning = running;
+	}
+	
 protected:
 	bool _exitRequested;
 	bool _isRunning;

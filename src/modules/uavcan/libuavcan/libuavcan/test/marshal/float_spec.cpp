@@ -7,7 +7,6 @@
 #include <uavcan/marshal/types.hpp>
 #include <uavcan/transport/transfer_buffer.hpp>
 
-
 TEST(FloatSpec, Sizes)
 {
     uavcan::StaticAssert<sizeof(uavcan::NativeFloatSelector<16>::Type) == 4>::check();
@@ -138,47 +137,42 @@ TEST(FloatSpec, Basic)
 
     for (int i = 0; i < NumValues; i++)
     {
-        CHECK(F16S, float(ValuesF16S[i]));
-        CHECK(F16T, float(ValuesF16T[i]));
-        CHECK(F32S, float(Values[i]));
-        CHECK(F32T, float(Values[i]));
-        CHECK(F64S, double(Values[i]));
-        CHECK(F64T, double(Values[i]));
-    }
+        CHECK(F16S, float(ValuesF16S[i]));CHECK(F16T, float(ValuesF16T[i]));CHECK(F32S, float(Values[i]));CHECK(F32T, float(Values[i]));CHECK(F64S, double(Values[i]));CHECK(F64T, double(Values[i]));
+}
 
 #undef CHECK
 }
 
 TEST(FloatSpec, Float16Representation)
 {
-    using uavcan::FloatSpec;
-    using uavcan::CastModeSaturate;
-    using uavcan::CastModeTruncate;
+using uavcan::FloatSpec;
+using uavcan::CastModeSaturate;
+using uavcan::CastModeTruncate;
 
-    typedef FloatSpec<16, CastModeSaturate> F16S;
-    typedef FloatSpec<16, CastModeTruncate> F16T;
+typedef FloatSpec<16, CastModeSaturate> F16S;
+typedef FloatSpec<16, CastModeTruncate> F16T;
 
-    uavcan::StaticTransferBuffer<2 * 6> buf;
-    uavcan::BitStream bs_wr(buf);
-    uavcan::ScalarCodec sc_wr(bs_wr);
+uavcan::StaticTransferBuffer<2 * 6> buf;
+uavcan::BitStream bs_wr(buf);
+uavcan::ScalarCodec sc_wr(bs_wr);
 
-    ASSERT_EQ(1, F16S::encode(0.0, sc_wr, uavcan::TailArrayOptDisabled));
-    ASSERT_EQ(1, F16S::encode(1.0, sc_wr, uavcan::TailArrayOptDisabled));
-    ASSERT_EQ(1, F16S::encode(-2.0, sc_wr, uavcan::TailArrayOptDisabled));
-    ASSERT_EQ(1, F16T::encode(999999, sc_wr, uavcan::TailArrayOptDisabled));         // +inf
-    ASSERT_EQ(1, F16S::encode(-999999, sc_wr, uavcan::TailArrayOptDisabled));        // -max
-    ASSERT_EQ(1, F16S::encode(float(nan("")), sc_wr, uavcan::TailArrayOptDisabled)); // nan
+ASSERT_EQ(1, F16S::encode(0.0, sc_wr, uavcan::TailArrayOptDisabled));
+ASSERT_EQ(1, F16S::encode(1.0, sc_wr, uavcan::TailArrayOptDisabled));
+ASSERT_EQ(1, F16S::encode(-2.0, sc_wr, uavcan::TailArrayOptDisabled));
+ASSERT_EQ(1, F16T::encode(999999, sc_wr, uavcan::TailArrayOptDisabled));         // +inf
+ASSERT_EQ(1, F16S::encode(-999999, sc_wr, uavcan::TailArrayOptDisabled));// -max
+ASSERT_EQ(1, F16S::encode(float(nan("")), sc_wr, uavcan::TailArrayOptDisabled));// nan
 
-    ASSERT_EQ(0, F16S::encode(0, sc_wr, uavcan::TailArrayOptDisabled));  // Out of buffer space now
+ASSERT_EQ(0, F16S::encode(0, sc_wr, uavcan::TailArrayOptDisabled));// Out of buffer space now
 
-    // Keep in mind that this is LITTLE ENDIAN representation
-    static const std::string Reference =
-        "00000000 00000000 " // 0.0
-        "00000000 00111100 " // 1.0
-        "00000000 11000000 " // -2.0
-        "00000000 01111100 " // +inf
-        "11111111 11111011 " // -max
-        "11111111 01111111"; // nan
+// Keep in mind that this is LITTLE ENDIAN representation
+static const std::string Reference =
+"00000000 00000000 "// 0.0
+"00000000 00111100 "// 1.0
+"00000000 11000000 "// -2.0
+"00000000 01111100 "// +inf
+"11111111 11111011 "// -max
+"11111111 01111111";// nan
 
-    ASSERT_EQ(Reference, bs_wr.toString());
+ASSERT_EQ(Reference, bs_wr.toString());
 }

@@ -57,7 +57,7 @@ static char hw_info[] = HW_INFO_INIT;
  * Protected Functions
  ****************************************************************************/
 /****************************************************************************
-  * Name: determin_hw_version
+ * Name: determin_hw_version
  *
  * Description:
  *
@@ -66,37 +66,37 @@ static char hw_info[] = HW_INFO_INIT;
  * that will be returned by board_get_hw_version and board_get_hw_revision API
  *
  *  This will return OK on success and -1 on not supported
-*
+ *
  *
  ****************************************************************************/
 
 static int dn_to_ordinal(uint16_t dn)
-{
+{	
 
 	const struct
-	{
+	{	
 		uint16_t low;  // High(n-1) + 1
-		uint16_t high; // Average High(n)+Low(n+1) EX. 1356 = AVRG(1331,1382)
-	} dn2o[] =
-	{
+		uint16_t high;// Average High(n)+Low(n+1) EX. 1356 = AVRG(1331,1382)
+	}dn2o[] =
+	{	
 		//   R1(up) R2(down)    V min       V Max       DN Min DN Max
-		{0,   0   },   // 0                     No Resistors
-		{1,   579 },   // 1  24.9K   442K   0.166255191  0.44102252    204    553
-		{580, 967 },   // 2  32.4K   174K   0.492349322  0.770203609   605    966
-		{968, 1356},   // 3  38.3K   115K   0.787901749  1.061597759   968    1331
-		{1357, 1756},  // 4  46.4K   84.5K  1.124833577  1.386007306   1382   1738
-		{1757, 2137},  // 5  51.1K   61.9K  1.443393279  1.685367869   1774   2113
-		{2138, 2519},  // 6  61.9K   51.1K  1.758510242  1.974702534   2161   2476
-		{2520, 2919},  // 7  84.5K   46.4K  2.084546498  2.267198261   2562   2842
-		{2920, 3308},  // 8  115K    38.3K  2.437863827  2.57656294    2996   3230
-		{3309, 3699},  // 9  174K    32.4K  2.755223792  2.847933804   3386   3571
-		{3700, 4095},  // 10 442K    24.9K  3.113737849  3.147347506   3827   3946
+		{	0, 0},   // 0                     No Resistors
+		{	1, 579},   // 1  24.9K   442K   0.166255191  0.44102252    204    553
+		{	580, 967},   // 2  32.4K   174K   0.492349322  0.770203609   605    966
+		{	968, 1356},   // 3  38.3K   115K   0.787901749  1.061597759   968    1331
+		{	1357, 1756},  // 4  46.4K   84.5K  1.124833577  1.386007306   1382   1738
+		{	1757, 2137},  // 5  51.1K   61.9K  1.443393279  1.685367869   1774   2113
+		{	2138, 2519},  // 6  61.9K   51.1K  1.758510242  1.974702534   2161   2476
+		{	2520, 2919},  // 7  84.5K   46.4K  2.084546498  2.267198261   2562   2842
+		{	2920, 3308},  // 8  115K    38.3K  2.437863827  2.57656294    2996   3230
+		{	3309, 3699},  // 9  174K    32.4K  2.755223792  2.847933804   3386   3571
+		{	3700, 4095},  // 10 442K    24.9K  3.113737849  3.147347506   3827   3946
 	};
 
 	for (unsigned int i = 0; i < arraySize(dn2o); i++)
-	{
+	{	
 		if (dn >= dn2o[i].low && dn <= dn2o[i].high)
-		{
+		{	
 			return i;
 		}
 	}
@@ -137,9 +137,9 @@ static int dn_to_ordinal(uint16_t dn)
  ************************************************************************************/
 
 static int read_id_dn(int *id, uint32_t gpio_drive, uint32_t gpio_sense, int adc_channel)
-{
+{	
 	int rv = -EIO;
-	const unsigned int samples  = 16;
+	const unsigned int samples = 16;
 	/*
 	 * Step one is there resistors?
 	 *
@@ -160,13 +160,11 @@ static int read_id_dn(int *id, uint32_t gpio_drive, uint32_t gpio_sense, int adc
 
 	stm32_configgpio(_MK_GPIO_OUTPUT(gpio_sense));
 
-
 	up_udelay(100); /* About 10 TC assuming 485 K */
 
 	/*  Read Drive lines while sense are driven low */
 
 	int low = stm32_gpioread(_MK_GPIO_INPUT(gpio_drive));
-
 
 	/*  Write the sense lines HIGH */
 
@@ -194,29 +192,28 @@ static int read_id_dn(int *id, uint32_t gpio_drive, uint32_t gpio_sense, int adc
 	uint16_t dn = 0;
 
 	if ((high ^ low) && low == 0)
-	{
-
+	{	
 
 		/* Yes - Fire up the ADC (it has once control) */
 
 		if (board_adc_init() == OK)
-		{
+		{	
 
 			/* Read the value */
 			for (unsigned av = 0; av < samples; av++)
-			{
+			{	
 				dn = board_adc_sample(adc_channel);
 
 				if (dn == 0xffff)
-				{
+				{	
 					break;
 				}
 
-				dn_sum  += dn;
+				dn_sum += dn;
 			}
 
 			if (dn != 0xffff)
-			{
+			{	
 				*id = dn_sum / samples;
 				rv = OK;
 			}
@@ -224,7 +221,7 @@ static int read_id_dn(int *id, uint32_t gpio_drive, uint32_t gpio_sense, int adc
 
 	}
 	else
-	{
+	{	
 		/* No - No Resistors is ID 0 */
 		*id = 0;
 		rv = OK;
@@ -236,20 +233,19 @@ static int read_id_dn(int *id, uint32_t gpio_drive, uint32_t gpio_sense, int adc
 	return rv;
 }
 
-
 static int determine_hw_info(int *revision, int *version)
-{
+{	
 	int dn;
 	int rv = read_id_dn(&dn, GPIO_HW_REV_DRIVE, GPIO_HW_REV_SENSE, ADC_HW_REV_SENSE_CHANNEL);
 
 	if (rv == OK)
-	{
-		*revision =  dn_to_ordinal(dn);
+	{	
+		*revision = dn_to_ordinal(dn);
 		rv = read_id_dn(&dn, GPIO_HW_VER_DRIVE, GPIO_HW_VER_SENSE, ADC_HW_VER_SENSE_CHANNEL);
 
 		if (rv == OK)
-		{
-			*version =  dn_to_ordinal(dn);
+		{	
+			*version = dn_to_ordinal(dn);
 		}
 	}
 
@@ -274,7 +270,7 @@ static int determine_hw_info(int *revision, int *version)
  ************************************************************************************/
 
 __EXPORT const char *board_get_hw_type_name()
-{
+{	
 	return (const char *) hw_info;
 }
 
@@ -295,8 +291,8 @@ __EXPORT const char *board_get_hw_type_name()
  ************************************************************************************/
 
 __EXPORT int board_get_hw_version()
-{
-	return  hw_version;
+{	
+	return hw_version;
 }
 
 /************************************************************************************
@@ -316,12 +312,12 @@ __EXPORT int board_get_hw_version()
  ************************************************************************************/
 
 __EXPORT int board_get_hw_revision()
-{
-	return  hw_revision;
+{	
+	return hw_revision;
 }
 
 /************************************************************************************
-  * Name: board_determine_hw_info
+ * Name: board_determine_hw_info
  *
  * Description:
  *	Uses the HW revision and version detection added in FMUv5.
@@ -343,11 +339,11 @@ __EXPORT int board_get_hw_revision()
  ************************************************************************************/
 
 int board_determine_hw_info()
-{
+{	
 	int rv = determine_hw_info(&hw_revision, &hw_version);
 
 	if (rv == OK)
-	{
+	{	
 		hw_info[HW_INFO_INIT_REV] = board_get_hw_revision() + '0';
 		hw_info[HW_INFO_INIT_VER] = board_get_hw_version() + '0';
 	}

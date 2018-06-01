@@ -75,7 +75,6 @@
 #define PX4IO_SERIAL_CLOCK	STM32_PCLK2_FREQUENCY
 #define PX4IO_SERIAL_BITRATE	1500000			/* 1.5Mbps -> max rate for IO */
 
-
 /* PX4FMU GPIOs ***********************************************************************************/
 /* LEDs */
 
@@ -141,7 +140,6 @@
  * OFFIng PE4, not associated with SPI1 on V2, but would back feed an MPUxxxx on V3
  *
  */
-
 
 /*----------------------------------------------------------*/
 /*            FMUv2 SPI chip selects and DRDY               */
@@ -354,8 +352,6 @@
 #define GPIO_SPI1_EXTI_20608_DRDY_PC14   (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTC|GPIO_PIN14)
 
 #define PX4_SPIDEV_ICM_20608         6   /* ICM_20608 on PC15 */
-
-
 
 /*
  * ADC channels

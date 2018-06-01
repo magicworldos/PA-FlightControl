@@ -49,8 +49,8 @@ namespace control
 {
 
 Block::Block(SuperBlock *parent, const char *name) :
-	_name(name),
-	_parent(parent)
+		    _name(name),
+		    _parent(parent)
 {
 	if (getParent() != nullptr)
 	{
@@ -65,19 +65,19 @@ void Block::getName(char *buf, size_t n)
 		strncpy(buf, _name, n);
 		// ensure string is terminated
 		buf[n - 1] = '\0';
-
+		
 	}
 	else
 	{
 		char parentName[blockNameLengthMax];
 		getParent()->getName(parentName, n);
-
+		
 		if (!strcmp(_name, ""))
 		{
 			strncpy(buf, parentName, n);
 			// ensure string is terminated
 			buf[n - 1] = '\0';
-
+			
 		}
 		else
 		{
@@ -90,7 +90,7 @@ void Block::updateParams()
 {
 	BlockParamBase *param = getParams().getHead();
 	int count = 0;
-
+	
 	while (param != nullptr)
 	{
 		if (count++ > maxParamsPerBlock)
@@ -100,7 +100,7 @@ void Block::updateParams()
 			PX4_ERR("exceeded max params for block: %s", name);
 			break;
 		}
-
+		
 		//printf("updating param: %s\n", param->getName());
 		param->update();
 		param = param->getSibling();
@@ -111,7 +111,7 @@ void Block::updateSubscriptions()
 {
 	uORB::SubscriptionNode *sub = getSubscriptions().getHead();
 	int count = 0;
-
+	
 	while (sub != nullptr)
 	{
 		if (count++ > maxSubscriptionsPerBlock)
@@ -121,7 +121,7 @@ void Block::updateSubscriptions()
 			PX4_ERR("exceeded max subscriptions for block: %s", name);
 			break;
 		}
-
+		
 		sub->update();
 		sub = sub->getSibling();
 	}
@@ -131,7 +131,7 @@ void Block::updatePublications()
 {
 	uORB::PublicationNode *pub = getPublications().getHead();
 	int count = 0;
-
+	
 	while (pub != nullptr)
 	{
 		if (count++ > maxPublicationsPerBlock)
@@ -141,7 +141,7 @@ void Block::updatePublications()
 			PX4_ERR("exceeded max publications for block: %s", name);
 			break;
 		}
-
+		
 		pub->update();
 		pub = pub->getSibling();
 	}
@@ -152,7 +152,7 @@ void SuperBlock::setDt(float dt)
 	Block::setDt(dt);
 	Block *child = getChildren().getHead();
 	int count = 0;
-
+	
 	while (child != nullptr)
 	{
 		if (count++ > maxChildrenPerBlock)
@@ -162,7 +162,7 @@ void SuperBlock::setDt(float dt)
 			PX4_ERR("exceeded max children for block: %s", name);
 			break;
 		}
-
+		
 		child->setDt(dt);
 		child = child->getSibling();
 	}
@@ -172,7 +172,7 @@ void SuperBlock::updateChildParams()
 {
 	Block *child = getChildren().getHead();
 	int count = 0;
-
+	
 	while (child != nullptr)
 	{
 		if (count++ > maxChildrenPerBlock)
@@ -182,7 +182,7 @@ void SuperBlock::updateChildParams()
 			PX4_ERR("exceeded max children for block: %s", name);
 			break;
 		}
-
+		
 		child->updateParams();
 		child = child->getSibling();
 	}
@@ -192,7 +192,7 @@ void SuperBlock::updateChildSubscriptions()
 {
 	Block *child = getChildren().getHead();
 	int count = 0;
-
+	
 	while (child != nullptr)
 	{
 		if (count++ > maxChildrenPerBlock)
@@ -202,7 +202,7 @@ void SuperBlock::updateChildSubscriptions()
 			PX4_ERR("exceeded max children for block: %s", name);
 			break;
 		}
-
+		
 		child->updateSubscriptions();
 		child = child->getSibling();
 	}
@@ -212,7 +212,7 @@ void SuperBlock::updateChildPublications()
 {
 	Block *child = getChildren().getHead();
 	int count = 0;
-
+	
 	while (child != nullptr)
 	{
 		if (count++ > maxChildrenPerBlock)
@@ -222,7 +222,7 @@ void SuperBlock::updateChildPublications()
 			PX4_ERR("exceeded max children for block: %s", name);
 			break;
 		}
-
+		
 		child->updatePublications();
 		child = child->getSibling();
 	}
@@ -230,6 +230,6 @@ void SuperBlock::updateChildPublications()
 
 } // namespace control
 
-template class List<uORB::SubscriptionNode *>;
-template class List<uORB::PublicationNode *>;
-template class List<control::BlockParamBase *>;
+template class List<uORB::SubscriptionNode *> ;
+template class List<uORB::PublicationNode *> ;
+template class List<control::BlockParamBase *> ;

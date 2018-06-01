@@ -57,7 +57,6 @@
 //#define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */
 //#define FARF_MEDIUM 1
 //#define FARF_LOW    1
-
 #define LOG_INFO(...) FARF(ALWAYS, __VA_ARGS__);
 #define LOG_ERR(...) FARF(ALWAYS, __VA_ARGS__);
 #define LOG_DEBUG(...) FARF(MEDIUM, __VA_ARGS__);
@@ -72,7 +71,6 @@
 #define FAIL(msg) { \
 		{ test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
 	}
-
 
 __BEGIN_DECLS
 

@@ -74,39 +74,39 @@ int QShell::main()
 	int rc;
 	appState.setRunning(true);
 	int sub_qshell_req = orb_subscribe(ORB_ID(qshell_req));
-
+	
 	if (sub_qshell_req == PX4_ERROR)
 	{
 		PX4_ERR("Error subscribing to qshell_req topic");
 		return -1;
 	}
-
+	
 	int i = 0;
-
+	
 	while (!appState.exitRequested())
 	{
 		bool updated = false;
-
+		
 		if (orb_check(sub_qshell_req, &updated) == 0)
 		{
 			if (updated)
 			{
 				PX4_DEBUG("[%d]qshell_req status is updated... reading new value", i);
-
+				
 				if (orb_copy(ORB_ID(qshell_req), sub_qshell_req, &m_qshell_req) != 0)
 				{
 					PX4_ERR("[%d]Error calling orb copy for qshell_req... ", i);
 					break;
 				}
-
+				
 				char current_char;
 				std::string arg;
 				std::vector<std::string> appargs;
-
+				
 				for (size_t str_idx = 0; str_idx < m_qshell_req.strlen; str_idx++)
 				{
 					current_char = m_qshell_req.string[str_idx];
-
+					
 					if (isspace(current_char))   // split at spaces
 					{
 						if (arg.length())
@@ -114,37 +114,37 @@ int QShell::main()
 							appargs.push_back(arg);
 							arg = "";
 						}
-
+						
 					}
 					else
 					{
 						arg += current_char;
 					}
 				}
-
+				
 				appargs.push_back(arg);  // push last argument
-
+				
 				int ret = run_cmd(appargs);
-
+				
 				if (ret)
 				{
 					PX4_ERR("Failed to execute command");
 				}
 			}
-
+			
 		}
 		else
 		{
 			PX4_ERR("[%d]Error checking the updated status for qshell_req ", i);
 			break;
 		}
-
+		
 		// sleep for 1/2 sec.
 		usleep(500000);
-
+		
 		++i;
 	}
-
+	
 	return 0;
 	appState.setRunning(false);
 	return rc;
@@ -154,13 +154,13 @@ int QShell::run_cmd(const std::vector<std::string> &appargs)
 {
 	// command is appargs[0]
 	std::string command = appargs[0];
-
+	
 	if (command.compare("help") == 0)
 	{
 		list_builtins(m_apps);
 		return 0;
 	}
-
+	
 	//replaces app.find with iterator code to avoid null pointer exception
 	for (apps_map_type::iterator it = m_apps.begin(); it != m_apps.end(); ++it)
 	{
@@ -168,38 +168,38 @@ int QShell::run_cmd(const std::vector<std::string> &appargs)
 		{
 			// one for command name, one for null terminator
 			const char *arg[MAX_ARGS + 2];
-
+			
 			unsigned int i = 0;
-
+			
 			if (appargs.size() > MAX_ARGS + 1)
 			{
 				PX4_ERR("%d too many arguments in run_cmd", appargs.size() - (MAX_ARGS + 1));
 				return 1;
 			}
-
+			
 			while (i < appargs.size() && appargs[i].c_str()[0] != '\0')
 			{
-				arg[i] = (char *)appargs[i].c_str();
+				arg[i] = (char *) appargs[i].c_str();
 				PX4_DEBUG("  arg%d = '%s'\n", i, arg[i]);
 				++i;
 			}
-
-			arg[i] = (char *)0;
-
+			
+			arg[i] = (char *) 0;
+			
 			//PX4_DEBUG_PRINTF(i);
 			if (m_apps[command] == NULL)
 			{
 				PX4_ERR("Null function !!\n");
-
+				
 			}
 			else
 			{
-				return m_apps[command](i, (char **)arg);
+				return m_apps[command](i, (char **) arg);
 			}
-
+			
 		}
 	}
-
+	
 	PX4_ERR("Command %s not found", command.c_str());
 	return 1;
 }

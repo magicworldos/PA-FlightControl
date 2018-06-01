@@ -47,17 +47,16 @@ namespace DriverFramework
 
 #define AK8963_SLAVE_ADDRESS 0x0D
 
-
-class AK8963 : public MagSensor
+class AK8963: public MagSensor
 {
 public:
 	AK8963(const char *device_path) :
-		MagSensor(device_path, AK8963_MEASURE_INTERVAL_US)
+			    MagSensor(device_path, AK8963_MEASURE_INTERVAL_US)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_AK8963;
 		m_id.dev_id_s.address = AK8963_SLAVE_ADDRESS;
 	}
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start();
 
@@ -79,4 +78,6 @@ private:
 	bool in_range(float value, float min, float max);
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

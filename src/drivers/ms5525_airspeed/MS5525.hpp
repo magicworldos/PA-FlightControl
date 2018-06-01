@@ -56,35 +56,35 @@ static constexpr unsigned MEAS_RATE = 100;
 static constexpr float MEAS_DRIVER_FILTER_FREQ = 1.2f;
 static constexpr uint64_t CONVERSION_INTERVAL = (1000000 / MEAS_RATE); /* microseconds */
 
-class MS5525 : public Airspeed
+class MS5525: public Airspeed
 {
 public:
 	MS5525(uint8_t bus, uint8_t address = I2C_ADDRESS_1_MS5525DSO, const char *path = PATH_MS5525) :
-		Airspeed(bus, address, CONVERSION_INTERVAL, path)
+			    Airspeed(bus, address, CONVERSION_INTERVAL, path)
 	{
 	}
-
+	
 	~MS5525() override = default;
-
+	
 private:
-
+	
 	/**
-	* Perform a poll cycle; collect from the previous measurement
-	* and start a new one.
-	*/
+	 * Perform a poll cycle; collect from the previous measurement
+	 * and start a new one.
+	 */
 	void cycle() override;
 
 	int measure() override;
 	int collect() override;
 
 	// temperature is read once every 10 cycles
-	math::LowPassFilter2p _filter{MEAS_RATE * 0.9, MEAS_DRIVER_FILTER_FREQ};
+	math::LowPassFilter2p _filter { MEAS_RATE * 0.9, MEAS_DRIVER_FILTER_FREQ };
 
 	static constexpr uint8_t CMD_RESET = 0x1E; // ADC reset command
 	static constexpr uint8_t CMD_ADC_READ = 0x00; // ADC read command
-
+	
 	static constexpr uint8_t CMD_PROM_START = 0xA0; // Prom read command (first)
-
+	
 	// D1 - pressure convert commands
 	// Convert D1 (OSR=256)  0x40
 	// Convert D1 (OSR=512)  0x42
@@ -101,9 +101,9 @@ private:
 	// Convert D2 (OSR=4096) 0x58
 	static constexpr uint8_t CMD_CONVERT_TEMP = 0x54;
 
-	uint8_t _current_cmd{CMD_CONVERT_PRES};
+	uint8_t _current_cmd { CMD_CONVERT_PRES };
 
-	unsigned _pressure_count{0};
+	unsigned _pressure_count { 0 };
 
 	// Qx Coefficients Matrix by Pressure Range
 	//  5525DSO-pp001DS (Pmin = -1, Pmax = 1)
@@ -115,24 +115,24 @@ private:
 	static constexpr uint8_t Q6 = 21;
 
 	// calibration coefficients from prom
-	uint16_t C1{0};
-	uint16_t C2{0};
-	uint16_t C3{0};
-	uint16_t C4{0};
-	uint16_t C5{0};
-	uint16_t C6{0};
+	uint16_t C1 { 0 };
+	uint16_t C2 { 0 };
+	uint16_t C3 { 0 };
+	uint16_t C4 { 0 };
+	uint16_t C5 { 0 };
+	uint16_t C6 { 0 };
 
-	int64_t Tref{0};
+	int64_t Tref { 0 };
 
 	// last readings for D1 (uncompensated pressure) and D2 (uncompensated temperature)
-	uint32_t D1{0};
-	uint32_t D2{0};
+	uint32_t D1 { 0 };
+	uint32_t D2 { 0 };
 
 	bool init_ms5525();
-	bool _inited{false};
+	bool _inited { false };
 
 	uint8_t prom_crc4(uint16_t n_prom[]) const;
-
+	
 };
 
 #endif /* DRIVERS_MS5525_AIRSPEED_HPP_ */

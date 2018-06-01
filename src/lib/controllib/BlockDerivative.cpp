@@ -48,11 +48,11 @@ namespace control
 float BlockDerivative::update(float input)
 {
 	float output;
-
+	
 	if (_initialized)
 	{
 		output = _lowPass.update((input - getU()) / getDt());
-
+		
 	}
 	else
 	{
@@ -65,7 +65,7 @@ float BlockDerivative::update(float input)
 		output = 0.0f;
 		_initialized = true;
 	}
-
+	
 	setU(input);
 	return output;
 }

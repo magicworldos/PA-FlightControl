@@ -41,9 +41,9 @@
 #define PIN_DIRECTION_BUFFER_MAX (30 + PIN_INDEX_BUFFER_MAX)
 #define PIN_VALUE_BUFFER_MAX (26 + PIN_INDEX_BUFFER_MAX)
 
-LinuxGPIO::LinuxGPIO(unsigned int pin)
-	: _pin(pin)
-	, _fd(-1)
+LinuxGPIO::LinuxGPIO(unsigned int pin) :
+		    _pin(pin),
+		    _fd(-1)
 {
 }
 
@@ -62,41 +62,41 @@ int LinuxGPIO::exportPin()
 	char valuePath[PIN_VALUE_BUFFER_MAX];
 	int fd = -1;
 	int bytes_to_write;
-
+	
 	struct stat statbuf;
-
+	
 	/* If GPIO was already opened, close it */
 	if (_fd != -1)
 	{
 		close(_fd);
 		_fd = -1;
 	}
-
+	
 	/* Check if GPIO is already exported */
 	snprintf(valuePath, PIN_VALUE_BUFFER_MAX, "/sys/class/gpio/gpio%d/value", _pin);
 	ret = stat(valuePath, &statbuf);
-
+	
 	if (ret == -1)
 	{
 		/* GPIO is not exported */
 		fd = open("/sys/class/gpio/export", O_WRONLY);
-
+		
 		if (fd == -1)
 		{
 			int err = errno;
 			PX4_ERR("export %u: open: %s (%d)", _pin, strerror(err), err);
 			return -1;
 		}
-
+		
 		bytes_to_write = snprintf(pinIndex, PIN_INDEX_BUFFER_MAX, "%u", _pin);
 		ret = write(fd, pinIndex, bytes_to_write);
-
+		
 		if (ret == -1)
 		{
 			int err = errno;
 			PX4_ERR("export %u: write: %s (%d)", _pin, strerror(err), err);
 			goto cleanup;
-
+			
 		}
 		else if (ret != bytes_to_write)
 		{
@@ -104,9 +104,9 @@ int LinuxGPIO::exportPin()
 			goto cleanup;
 		}
 	}
-
+	
 	_fd = open(valuePath, O_RDWR);
-
+	
 	if (_fd == -1)
 	{
 		int err = errno;
@@ -114,16 +114,16 @@ int LinuxGPIO::exportPin()
 		PX4_ERR("export %u: open: %s (%d)", _pin, strerror(err), err);
 		goto cleanup;
 	}
-
+	
 	ret = 0;
-
-cleanup:
+	
+	cleanup:
 
 	if (fd != -1)
 	{
 		close(fd);
 	}
-
+	
 	return ret;
 }
 
@@ -133,43 +133,42 @@ int LinuxGPIO::unexportPin()
 	int fd;
 	int ret;
 	int bytes_to_write;
-
+	
 	if (_fd != -1)
 	{
 		close(_fd);
 		_fd = -1;
 	}
-
+	
 	fd = open("/sys/class/gpio/unexport", O_WRONLY);
-
+	
 	if (fd == -1)
 	{
 		int err = errno;
 		PX4_ERR("unexport %u: open: %s (%d)", _pin, strerror(err), err);
 		return -1;
 	}
-
+	
 	bytes_to_write = snprintf(pinIndex, PIN_INDEX_BUFFER_MAX, "%u", _pin);
 	ret = write(fd, pinIndex, bytes_to_write);
-
+	
 	if (ret == -1)
 	{
 		int err = errno;
 		PX4_ERR("unexport %u: write: %s (%d)", _pin, strerror(err), err);
 		goto cleanup;
-
+		
 	}
 	else if (ret != bytes_to_write)
 	{
 		PX4_ERR("unexport %u: write incomplete %d != %d", _pin, ret, bytes_to_write);
 		goto cleanup;
 	}
-
+	
 	ret = 0;
-
-cleanup:
-	close(fd);
-
+	
+	cleanup: close(fd);
+	
 	return ret;
 }
 
@@ -178,39 +177,38 @@ int LinuxGPIO::setDirection(LinuxGPIO::Direction dir)
 	char path[PIN_DIRECTION_BUFFER_MAX];
 	int fd;
 	int ret;
-
+	
 	snprintf(path, PIN_DIRECTION_BUFFER_MAX, "/sys/class/gpio/gpio%d/direction", _pin);
 	fd = open(path, O_WRONLY);
-
+	
 	if (fd == -1)
 	{
 		int err = errno;
 		PX4_ERR("dir %u: open: %s (%d)", _pin, strerror(err), err);
 		return -1;
 	}
-
+	
 	if (dir == Direction::IN)
 	{
 		ret = write(fd, "in", 2);
-
+		
 	}
 	else
 	{
 		ret = write(fd, "out", 3);
 	}
-
+	
 	if (ret == -1)
 	{
 		int err = errno;
 		PX4_ERR("dir %u: write: %s (%d)", _pin, strerror(err), err);
 		goto cleanup;
 	}
-
+	
 	ret = 0;
-
-cleanup:
-	close(fd);
-
+	
+	cleanup: close(fd);
+	
 	return ret;
 }
 
@@ -218,18 +216,18 @@ int LinuxGPIO::readValue()
 {
 	char buf[2];
 	int ret;
-
+	
 	ret = ::read(_fd, buf, sizeof(buf));
-
+	
 	if (ret == -1)
 	{
 		int err = errno;
 		PX4_ERR("readValue %u: read: %s (%d)", _pin, strerror(err), err);
 		return ret;
 	}
-
+	
 	ret = strtol(buf, nullptr, 10);
-
+	
 	return ret;
 }
 
@@ -237,22 +235,22 @@ int LinuxGPIO::writeValue(LinuxGPIO::Value value)
 {
 	char buf[2];
 	int ret;
-
+	
 	if (value != Value::LOW && value != Value::HIGH)
 	{
 		return -EINVAL;
 	}
-
-	int buflen = snprintf(buf, sizeof(buf), "%u", (unsigned int)value);
-
+	
+	int buflen = snprintf(buf, sizeof(buf), "%u", (unsigned int) value);
+	
 	ret = ::write(_fd, buf, buflen);
-
+	
 	if (ret == -1)
 	{
 		int err = errno;
 		PX4_ERR("writeValue %u: write: %s (%d)", _pin, strerror(err), err);
 		return ret;
 	}
-
+	
 	return 0;
 }

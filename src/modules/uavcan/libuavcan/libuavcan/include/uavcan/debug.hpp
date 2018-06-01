@@ -17,13 +17,13 @@
 __attribute__ ((format(printf, 2, 3)))
 # endif
 static void UAVCAN_TRACE(const char* src, const char* fmt, ...)
-{
-    va_list args;
-    (void)std::printf("UAVCAN: %s: ", src);
-    va_start(args, fmt);
-    (void)std::vprintf(fmt, args);
-    va_end(args);
-    (void)std::puts("");
+{	
+	va_list args;
+	(void)std::printf("UAVCAN: %s: ", src);
+	va_start(args, fmt);
+	(void)std::vprintf(fmt, args);
+	va_end(args);
+	(void)std::puts("");
 }
 
 #else

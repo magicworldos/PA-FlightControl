@@ -44,7 +44,7 @@ namespace device
 {
 
 VFile::VFile(const char *fname, mode_t mode) :
-	CDev("vfile", fname)
+		    CDev("vfile", fname)
 {
 }
 
@@ -52,7 +52,7 @@ VFile *VFile::createFile(const char *fname, mode_t mode)
 {
 	VFile *me = new VFile(fname, mode);
 	px4_file_operations_t *fops = nullptr;
-	register_driver(fname, fops, 0666, (void *)me);
+	register_driver(fname, fops, 0666, (void *) me);
 	return me;
 }
 
@@ -60,7 +60,7 @@ ssize_t VFile::write(file_t *handlep, const char *buffer, size_t buflen)
 {
 	// ignore what was written, but let pollers know something was written
 	poll_notify(POLLIN);
-
+	
 	return buflen;
 }
 

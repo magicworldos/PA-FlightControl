@@ -68,7 +68,7 @@ void PRINT_MODULE_USAGE_COMMAND_DESCR(const char *name, const char *description)
 	if (description)
 	{
 		printf("\n   %-13s %s\n", name, description);
-
+		
 	}
 	else
 	{
@@ -81,14 +81,13 @@ void PRINT_MODULE_USAGE_PARAM_COMMENT(const char *comment)
 	printf("\n %s\n", comment);
 }
 
-void PRINT_MODULE_USAGE_PARAM_INT(char option_char, int default_val, int min_val, int max_val,
-				  const char *description, bool is_optional)
+void PRINT_MODULE_USAGE_PARAM_INT(char option_char, int default_val, int min_val, int max_val, const char *description, bool is_optional)
 {
 	if (is_optional)
 	{
 		printf("     [-%c <val>]  %s\n", option_char, description);
 		printf("                 default: %i\n", default_val);
-
+		
 	}
 	else
 	{
@@ -96,14 +95,13 @@ void PRINT_MODULE_USAGE_PARAM_INT(char option_char, int default_val, int min_val
 	}
 }
 
-void PRINT_MODULE_USAGE_PARAM_FLOAT(char option_char, float default_val, float min_val, float max_val,
-				    const char *description, bool is_optional)
+void PRINT_MODULE_USAGE_PARAM_FLOAT(char option_char, float default_val, float min_val, float max_val, const char *description, bool is_optional)
 {
 	if (is_optional)
 	{
 		printf("     [-%c <val>]  %s\n", option_char, description);
-		printf("                 default: %.1f\n", (double)default_val);
-
+		printf("                 default: %.1f\n", (double) default_val);
+		
 	}
 	else
 	{
@@ -116,7 +114,7 @@ void PRINT_MODULE_USAGE_PARAM_FLAG(char option_char, const char *description, bo
 	if (is_optional)
 	{
 		printf("     [-%c]        %s\n", option_char, description);
-
+		
 	}
 	else
 	{
@@ -124,31 +122,30 @@ void PRINT_MODULE_USAGE_PARAM_FLAG(char option_char, const char *description, bo
 	}
 }
 
-void PRINT_MODULE_USAGE_PARAM_STRING(char option_char, const char *default_val, const char *values,
-				     const char *description, bool is_optional)
+void PRINT_MODULE_USAGE_PARAM_STRING(char option_char, const char *default_val, const char *values, const char *description, bool is_optional)
 {
 	if (is_optional)
 	{
 		printf("     [-%c <val>]  %s\n", option_char, description);
-
+		
 	}
 	else
 	{
 		printf("     -%c <val>    %s\n", option_char, description);
 	}
-
+	
 	if (values)
 	{
 		if (default_val)
 		{
 			printf("                 values: %s, default: %s\n", values, default_val);
-
+			
 		}
 		else
 		{
 			printf("                 values: %s\n", values);
 		}
-
+		
 	}
 	else
 	{
@@ -159,13 +156,12 @@ void PRINT_MODULE_USAGE_PARAM_STRING(char option_char, const char *default_val, 
 	}
 }
 
-
 void PRINT_MODULE_USAGE_ARG(const char *values, const char *description, bool is_optional)
 {
 	if (is_optional)
 	{
 		printf("     [%-9s] %s\n", values, description);
-
+		
 	}
 	else
 	{

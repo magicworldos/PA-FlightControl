@@ -55,41 +55,44 @@
 int test_adc(int argc, char *argv[])
 {
 	int fd = px4_open(ADC0_DEVICE_PATH, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		PX4_ERR("ERROR: can't open ADC device");
 		return 1;
 	}
-
+	
 	for (unsigned i = 0; i < 5; i++)
 	{
 		/* make space for a maximum number of channels */
 		px4_adc_msg_t data[PX4_MAX_ADC_CHANNELS];
 		/* read all channels available */
 		ssize_t count = px4_read(fd, data, sizeof(data));
-
+		
 		if (count < 0)
 		{
 			goto errout_with_dev;
 		}
-
+		
 		unsigned channels = count / sizeof(data[0]);
-
+		
 		for (unsigned j = 0; j < channels; j++)
 		{
 			printf("%d: %u  ", data[j].am_channel, data[j].am_data);
 		}
-
+		
 		printf("\n");
 		usleep(150000);
 	}
-
+	
 	printf("\t ADC test successful.\n");
+	
+	errout_with_dev:
 
-errout_with_dev:
-
-	if (fd != 0) { px4_close(fd); }
-
+	if (fd != 0)
+	{
+		px4_close(fd);
+	}
+	
 	return OK;
 }

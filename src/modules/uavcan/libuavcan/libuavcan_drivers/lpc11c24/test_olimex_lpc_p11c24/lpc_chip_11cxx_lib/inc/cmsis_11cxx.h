@@ -36,7 +36,8 @@
 #include "sys_config.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup CMSIS_11CXX CHIP: LPC11Cxx CMSIS include file
@@ -48,19 +49,19 @@ extern "C" {
 
 #if defined(__ARMCC_VERSION)
 // Kill warning "#pragma push with no matching #pragma pop"
-  #pragma diag_suppress 2525
-  #pragma push
-  #pragma anon_unions
+#pragma diag_suppress 2525
+#pragma push
+#pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+#pragma push
+#pragma cpp_extensions on
 #elif defined(__GNUC__)
 /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
 //  #pragma push // FIXME not usable for IAR
-  #pragma language=extended
+#pragma language=extended
 #else
-  #error Not supported compiler type
+#error Not supported compiler type
 #endif
 
 /*
@@ -77,45 +78,46 @@ extern "C" {
  * @{
  */
 
-typedef enum LPC11CXX_IRQn {
-	NonMaskableInt_IRQn           = -14,	/*!< 2 Non Maskable Interrupt                           */
-	HardFault_IRQn                = -13,	/*!< 3 Cortex-M0 Hard Fault Interrupt                   */
-	SVCall_IRQn                   = -5,		/*!< 11 Cortex-M0 SV Call Interrupt                     */
-	PendSV_IRQn                   = -2,		/*!< 14 Cortex-M0 Pend SV Interrupt                     */
-	SysTick_IRQn                  = -1,		/*!< 15 Cortex-M0 System Tick Interrupt                 */
-
-	PIO0_0_IRQn                   = 0,		/*!< GPIO port 0, pin 0 Interrupt                      */
-	PIO0_1_IRQn                   = 1,		/*!< GPIO port 0, pin 1 Interrupt                      */
-	PIO0_2_IRQn                   = 2,		/*!< GPIO port 0, pin 2 Interrupt                      */
-	PIO0_3_IRQn                   = 3,		/*!< GPIO port 0, pin 3 Interrupt                      */
-	PIO0_4_IRQn                   = 4,		/*!< GPIO port 0, pin 4 Interrupt                      */
-	PIO0_5_IRQn                   = 5,		/*!< GPIO port 0, pin 5 Interrupt                      */
-	PIO0_6_IRQn                   = 6,		/*!< GPIO port 0, pin 6 Interrupt                      */
-	PIO0_7_IRQn                   = 7,		/*!< GPIO port 0, pin 7 Interrupt                      */
-	PIO0_8_IRQn                   = 8,		/*!< GPIO port 0, pin 8 Interrupt                      */
-	PIO0_9_IRQn                   = 9,		/*!< GPIO port 0, pin 9 Interrupt                      */
-	PIO0_10_IRQn                  = 10,		/*!< GPIO port 0, pin 10 Interrupt                     */
-	PIO0_11_IRQn                  = 11,		/*!< GPIO port 0, pin 11 Interrupt                     */
-	PIO1_0_IRQn                   = 12,		/*!< GPIO port 1, pin 0 Interrupt                      */
-	CAN_IRQn                      = 13,		/*!< CAN Interrupt                                    */
-	SSP1_IRQn                     = 14,		/*!< SSP1 Interrupt                                   */
-	I2C0_IRQn                     = 15,		/*!< I2C Interrupt                                    */
-	TIMER_16_0_IRQn               = 16,		/*!< 16-bit Timer0 Interrupt                          */
-	TIMER_16_1_IRQn               = 17,		/*!< 16-bit Timer1 Interrupt                          */
-	TIMER_32_0_IRQn               = 18,		/*!< 32-bit Timer0 Interrupt                          */
-	TIMER_32_1_IRQn               = 19,		/*!< 32-bit Timer1 Interrupt                          */
-	SSP0_IRQn                     = 20,		/*!< SSP0 Interrupt                                   */
-	UART0_IRQn                    = 21,		/*!< UART Interrupt                                   */
-	Reserved22_IRQn               = 22,
-	Reserved23_IRQn               = 23,
-	ADC_IRQn                      = 24,		/*!< A/D Converter Interrupt                          */
-	WDT_IRQn                      = 25,		/*!< Watchdog timer Interrupt                         */
-	BOD_IRQn                      = 26,		/*!< Brown Out Detect(BOD) Interrupt                  */
-	Reserved27_IRQn               = 27,
-	EINT3_IRQn                    = 28,		/*!< External Interrupt 3 Interrupt                   */
-	EINT2_IRQn                    = 29,		/*!< External Interrupt 2 Interrupt                   */
-	EINT1_IRQn                    = 30,		/*!< External Interrupt 1 Interrupt                   */
-	EINT0_IRQn                    = 31,		/*!< External Interrupt 0 Interrupt                   */
+typedef enum LPC11CXX_IRQn
+{
+	NonMaskableInt_IRQn = -14, /*!< 2 Non Maskable Interrupt                           */
+	HardFault_IRQn = -13, /*!< 3 Cortex-M0 Hard Fault Interrupt                   */
+	SVCall_IRQn = -5, /*!< 11 Cortex-M0 SV Call Interrupt                     */
+	PendSV_IRQn = -2, /*!< 14 Cortex-M0 Pend SV Interrupt                     */
+	SysTick_IRQn = -1, /*!< 15 Cortex-M0 System Tick Interrupt                 */
+	
+	PIO0_0_IRQn = 0, /*!< GPIO port 0, pin 0 Interrupt                      */
+	PIO0_1_IRQn = 1, /*!< GPIO port 0, pin 1 Interrupt                      */
+	PIO0_2_IRQn = 2, /*!< GPIO port 0, pin 2 Interrupt                      */
+	PIO0_3_IRQn = 3, /*!< GPIO port 0, pin 3 Interrupt                      */
+	PIO0_4_IRQn = 4, /*!< GPIO port 0, pin 4 Interrupt                      */
+	PIO0_5_IRQn = 5, /*!< GPIO port 0, pin 5 Interrupt                      */
+	PIO0_6_IRQn = 6, /*!< GPIO port 0, pin 6 Interrupt                      */
+	PIO0_7_IRQn = 7, /*!< GPIO port 0, pin 7 Interrupt                      */
+	PIO0_8_IRQn = 8, /*!< GPIO port 0, pin 8 Interrupt                      */
+	PIO0_9_IRQn = 9, /*!< GPIO port 0, pin 9 Interrupt                      */
+	PIO0_10_IRQn = 10, /*!< GPIO port 0, pin 10 Interrupt                     */
+	PIO0_11_IRQn = 11, /*!< GPIO port 0, pin 11 Interrupt                     */
+	PIO1_0_IRQn = 12, /*!< GPIO port 1, pin 0 Interrupt                      */
+	CAN_IRQn = 13, /*!< CAN Interrupt                                    */
+	SSP1_IRQn = 14, /*!< SSP1 Interrupt                                   */
+	I2C0_IRQn = 15, /*!< I2C Interrupt                                    */
+	TIMER_16_0_IRQn = 16, /*!< 16-bit Timer0 Interrupt                          */
+	TIMER_16_1_IRQn = 17, /*!< 16-bit Timer1 Interrupt                          */
+	TIMER_32_0_IRQn = 18, /*!< 32-bit Timer0 Interrupt                          */
+	TIMER_32_1_IRQn = 19, /*!< 32-bit Timer1 Interrupt                          */
+	SSP0_IRQn = 20, /*!< SSP0 Interrupt                                   */
+	UART0_IRQn = 21, /*!< UART Interrupt                                   */
+	Reserved22_IRQn = 22,
+	Reserved23_IRQn = 23,
+	ADC_IRQn = 24, /*!< A/D Converter Interrupt                          */
+	WDT_IRQn = 25, /*!< Watchdog timer Interrupt                         */
+	BOD_IRQn = 26, /*!< Brown Out Detect(BOD) Interrupt                  */
+	Reserved27_IRQn = 27,
+	EINT3_IRQn = 28, /*!< External Interrupt 3 Interrupt                   */
+	EINT2_IRQn = 29, /*!< External Interrupt 2 Interrupt                   */
+	EINT1_IRQn = 30, /*!< External Interrupt 1 Interrupt                   */
+	EINT0_IRQn = 31, /*!< External Interrupt 0 Interrupt                   */
 } LPC11CXX_IRQn_Type;
 
 /**

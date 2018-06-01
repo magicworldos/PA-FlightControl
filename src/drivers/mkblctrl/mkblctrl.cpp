@@ -99,7 +99,6 @@
 #define RC_MIN_VALUE					1010
 #define RC_MAX_VALUE					2100
 
-
 struct MotorData_t
 {
 	unsigned int Version;                        // the version of the BL (0 = old)
@@ -116,10 +115,7 @@ struct MotorData_t
 	unsigned int RoundCount;
 };
 
-
-
-
-class MK : public device::I2C
+class MK: public device::I2C
 {
 public:
 	enum MappingMode
@@ -137,68 +133,62 @@ public:
 	MK(int bus, const char *_device_path);
 	~MK();
 
-	virtual int	ioctl(file *filp, int cmd, unsigned long arg);
-	virtual int	init(unsigned motors);
-	virtual ssize_t	write(file *filp, const char *buffer, size_t len);
+	virtual int ioctl(file *filp, int cmd, unsigned long arg);
+	virtual int init(unsigned motors);
+	virtual ssize_t write(file *filp, const char *buffer, size_t len);
 
-	int		set_motor_count(unsigned count);
-	int		set_motor_test(bool motortest);
-	int		set_overrideSecurityChecks(bool overrideSecurityChecks);
-	void		set_px4mode(int px4mode);
-	void		set_frametype(int frametype);
-	unsigned int		mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C);
-	void		set_rc_min_value(unsigned value);
-	void		set_rc_max_value(unsigned value);
+	int set_motor_count(unsigned count);
+	int set_motor_test(bool motortest);
+	int set_overrideSecurityChecks(bool overrideSecurityChecks);
+	void set_px4mode(int px4mode);
+	void set_frametype(int frametype);
+	unsigned int mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C);
+	void set_rc_min_value(unsigned value);
+	void set_rc_max_value(unsigned value);
 
 private:
-	static const unsigned	_max_actuators = MAX_MOTORS;
-	static const bool		showDebug = false;
+	static const unsigned _max_actuators = MAX_MOTORS;
+	static const bool showDebug = false;
 
-	int 					_update_rate;
-	int						_task;
-	int						_t_actuators;
-	int						_t_actuator_armed;
-	unsigned int			_motor;
-	int    					_px4mode;
-	int    					_frametype;
-	char					_device[20];
-	orb_advert_t			_t_outputs;
-	orb_advert_t			_t_esc_status;
-	unsigned int			_num_outputs;
-	bool					_primary_pwm_device;
-	bool     				_motortest;
-	bool 					_overrideSecurityChecks;
-	volatile bool			_task_should_exit;
-	bool					_armed;
-	unsigned long			debugCounter;
-	MixerGroup				*_mixers;
-	bool					_indicate_esc;
-	unsigned				_rc_min_value;
-	unsigned				_rc_max_value;
-	param_t					_param_indicate_esc;
-	actuator_controls_s 	_controls;
-	MotorData_t 			Motor[MAX_MOTORS];
+	int _update_rate;
+	int _task;
+	int _t_actuators;
+	int _t_actuator_armed;
+	unsigned int _motor;
+	int _px4mode;
+	int _frametype;
+	char _device[20];
+	orb_advert_t _t_outputs;
+	orb_advert_t _t_esc_status;
+	unsigned int _num_outputs;
+	bool _primary_pwm_device;
+	bool _motortest;
+	bool _overrideSecurityChecks;
+	volatile bool _task_should_exit;
+	bool _armed;
+	unsigned long debugCounter;
+	MixerGroup *_mixers;
+	bool _indicate_esc;
+	unsigned _rc_min_value;
+	unsigned _rc_max_value;
+	param_t _param_indicate_esc;
+	actuator_controls_s _controls;
+	MotorData_t Motor[MAX_MOTORS];
 
-	static void				task_main_trampoline(int argc, char *argv[]);
-	void					task_main();
+	static void task_main_trampoline(int argc, char *argv[]);
+	void task_main();
 
-	static int				control_callback(uintptr_t handle,
-			uint8_t control_group,
-			uint8_t control_index,
-			float &input);
+	static int control_callback(uintptr_t handle, uint8_t control_group, uint8_t control_index, float &input);
 
-	int						pwm_ioctl(file *filp, int cmd, unsigned long arg);
-	int						mk_servo_arm(bool status);
-	int 					mk_servo_set(unsigned int chan, short val);
-	int 					mk_servo_test(unsigned int chan);
-	int 					mk_servo_locate();
-	short					scaling(float val, float inMin, float inMax, float outMin, float outMax);
-	void					play_beep(int count);
-
+	int pwm_ioctl(file *filp, int cmd, unsigned long arg);
+	int mk_servo_arm(bool status);
+	int mk_servo_set(unsigned int chan, short val);
+	int mk_servo_test(unsigned int chan);
+	int mk_servo_locate();
+	short scaling(float val, float inMin, float inMax, float outMin, float outMax);
+	void play_beep(int count);
+	
 };
-
-
-
 
 const int blctrlAddr_quad_plus[] = { 2, 2, -2, -2, 0, 0, 0, 0 };	// Addresstranslator for Quad + configuration
 const int blctrlAddr_hexa_plus[] = { 0, 2, 2, -2, 1, -3, 0, 0 };	// Addresstranslator for Hexa + configuration
@@ -208,38 +198,38 @@ const int blctrlAddr_quad_x[] = { 2, 2, -2, -2, 0, 0, 0, 0 };		// Addresstransla
 const int blctrlAddr_hexa_x[] = { 2, 4, -2, 0, -3, -1, 0, 0 };		// Addresstranslator for Hexa X configuration
 const int blctrlAddr_octo_x[] = { 1, 4, 0, 1, -4, 1, 1, -4 };		// Addresstranslator for Octo X configuration
 
-const int blctrlAddr_px4[]  = { 0, 0, 0, 0, 0, 0, 0, 0};			// Native PX4 order - nothing to translate
+const int blctrlAddr_px4[] = { 0, 0, 0, 0, 0, 0, 0, 0 };			// Native PX4 order - nothing to translate
 
-int addrTranslator[] = {0, 0, 0, 0, 0, 0, 0, 0};					// work copy
+int addrTranslator[] = { 0, 0, 0, 0, 0, 0, 0, 0 };					// work copy
 
 namespace
 {
 
-MK	*g_mk;
+MK *g_mk;
 
 } // namespace
 
 MK::MK(int bus, const char *_device_path) :
-	I2C("mkblctrl", "/dev/mkblctrl0", bus, 0, I2C_BUS_SPEED),
-	_update_rate(UPDATE_RATE),
-	_task(-1),
-	_t_actuators(-1),
-	_t_actuator_armed(-1),
-	_motor(-1),
-	_px4mode(MAPPING_MK),
-	_frametype(FRAME_PLUS),
-	_t_outputs(0),
-	_t_esc_status(0),
-	_num_outputs(0),
-	_primary_pwm_device(false),
-	_motortest(false),
-	_overrideSecurityChecks(false),
-	_task_should_exit(false),
-	_armed(false),
-	_mixers(nullptr),
-	_indicate_esc(false),
-	_rc_min_value(RC_MIN_VALUE),
-	_rc_max_value(RC_MAX_VALUE)
+		    I2C("mkblctrl", "/dev/mkblctrl0", bus, 0, I2C_BUS_SPEED),
+		    _update_rate(UPDATE_RATE),
+		    _task(-1),
+		    _t_actuators(-1),
+		    _t_actuator_armed(-1),
+		    _motor(-1),
+		    _px4mode(MAPPING_MK),
+		    _frametype(FRAME_PLUS),
+		    _t_outputs(0),
+		    _t_esc_status(0),
+		    _num_outputs(0),
+		    _primary_pwm_device(false),
+		    _motortest(false),
+		    _overrideSecurityChecks(false),
+		    _task_should_exit(false),
+		    _armed(false),
+		    _mixers(nullptr),
+		    _indicate_esc(false),
+		    _rc_min_value(RC_MIN_VALUE),
+		    _rc_max_value(RC_MAX_VALUE)
 {
 	strncpy(_device, _device_path, sizeof(_device));
 	/* enforce null termination */
@@ -252,257 +242,239 @@ MK::~MK()
 	{
 		/* tell the task we want it to go away */
 		_task_should_exit = true;
-
+		
 		unsigned i = 10;
-
+		
 		do
 		{
 			/* wait 50ms - it should wake every 100ms or so worst-case */
 			usleep(50000);
-
+			
 			/* if we have given up, kill it */
 			if (--i == 0)
 			{
 				task_delete(_task);
 				break;
 			}
-
+			
 		}
 		while (_task != -1);
 	}
-
+	
 	/* clean up the alternate device node */
 	if (_primary_pwm_device)
 	{
 		unregister_driver(_device);
 	}
-
+	
 	g_mk = nullptr;
 }
 
-int
-MK::init(unsigned motors)
+int MK::init(unsigned motors)
 {
-	_param_indicate_esc	= param_find("MKBLCTRL_TEST");
-
+	_param_indicate_esc = param_find("MKBLCTRL_TEST");
+	
 	_num_outputs = motors;
 	debugCounter = 0;
 	int ret;
 	ASSERT(_task == -1);
-
+	
 	ret = I2C::init();
-
+	
 	if (ret != OK)
 	{
 		warnx("I2C init failed");
 		return ret;
 	}
-
+	
 	usleep(500000);
-
+	
 	if (sizeof(_device) > 0)
 	{
-		ret = register_driver(_device, &fops, 0666, (void *)this);
-
+		ret = register_driver(_device, &fops, 0666, (void *) this);
+		
 		if (ret == OK)
 		{
 			DEVICE_LOG("creating alternate output device");
 			_primary_pwm_device = true;
 		}
-
+		
 	}
-
+	
 	/* start the IO interface task */
-	_task = px4_task_spawn_cmd("mkblctrl",
-				   SCHED_DEFAULT,
-				   SCHED_PRIORITY_MAX - 20,
-				   1500,
-				   (main_t)&MK::task_main_trampoline,
-				   nullptr);
-
-
+	_task = px4_task_spawn_cmd("mkblctrl", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 20, 1500, (main_t) & MK::task_main_trampoline, nullptr);
+	
 	if (_task < 0)
 	{
 		DEVICE_DEBUG("task start failed: %d", errno);
 		return -errno;
 	}
-
+	
 	return OK;
 }
 
-void
-MK::task_main_trampoline(int argc, char *argv[])
+void MK::task_main_trampoline(int argc, char *argv[])
 {
 	g_mk->task_main();
 }
 
-void
-MK::set_px4mode(int px4mode)
+void MK::set_px4mode(int px4mode)
 {
 	_px4mode = px4mode;
 }
 
-void
-MK::set_frametype(int frametype)
+void MK::set_frametype(int frametype)
 {
 	_frametype = frametype;
 }
 
-void
-MK::set_rc_min_value(unsigned value)
+void MK::set_rc_min_value(unsigned value)
 {
 	_rc_min_value = value;
 	fprintf(stderr, "[mkblctrl] rc_min = %i\n", _rc_min_value);
 }
 
-void
-MK::set_rc_max_value(unsigned value)
+void MK::set_rc_max_value(unsigned value)
 {
 	_rc_max_value = value;
 	fprintf(stderr, "[mkblctrl] rc_max = %i\n", _rc_max_value);
 }
 
-int
-MK::set_motor_count(unsigned count)
+int MK::set_motor_count(unsigned count)
 {
 	if (count > 0)
 	{
-
+		
 		_num_outputs = count;
-
+		
 		if (_px4mode == MAPPING_MK)
 		{
 			if (_frametype == FRAME_PLUS)
 			{
 				fprintf(stderr, "[mkblctrl] Mikrokopter ESC addressing. Frame: +\n");
-
+				
 			}
 			else if (_frametype == FRAME_X)
 			{
 				fprintf(stderr, "[mkblctrl] Mikrokopter ESC addressing. Frame: X\n");
 			}
-
+			
 			if (_num_outputs == 4)
 			{
 				if (_frametype == FRAME_PLUS)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_quad_plus, sizeof(blctrlAddr_quad_plus));
-
+					
 				}
 				else if (_frametype == FRAME_X)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_quad_x, sizeof(blctrlAddr_quad_x));
 				}
-
+				
 			}
 			else if (_num_outputs == 6)
 			{
 				if (_frametype == FRAME_PLUS)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_hexa_plus, sizeof(blctrlAddr_hexa_plus));
-
+					
 				}
 				else if (_frametype == FRAME_X)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_hexa_x, sizeof(blctrlAddr_hexa_x));
 				}
-
+				
 			}
 			else if (_num_outputs == 8)
 			{
 				if (_frametype == FRAME_PLUS)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_octo_plus, sizeof(blctrlAddr_octo_plus));
-
+					
 				}
 				else if (_frametype == FRAME_X)
 				{
 					memcpy(&addrTranslator, &blctrlAddr_octo_x, sizeof(blctrlAddr_octo_x));
 				}
 			}
-
+			
 		}
 		else
 		{
 			fprintf(stderr, "[mkblctrl] PX4 ESC addressing.\n");
 			memcpy(&addrTranslator, &blctrlAddr_px4, sizeof(blctrlAddr_px4));
 		}
-
+		
 		if (_num_outputs == 4)
 		{
 			fprintf(stderr, "[mkblctrl] 4 ESCs = Quadrocopter\n");
-
+			
 		}
-		else 	if (_num_outputs == 6)
+		else if (_num_outputs == 6)
 		{
 			fprintf(stderr, "[mkblctrl] 6 ESCs = Hexacopter\n");
-
+			
 		}
-		else 	if (_num_outputs == 8)
+		else if (_num_outputs == 8)
 		{
 			fprintf(stderr, "[mkblctrl] 8 ESCs = Octocopter\n");
 		}
-
+		
 		return OK;
-
+		
 	}
 	else
 	{
 		return -1;
 	}
-
+	
 }
 
-int
-MK::set_motor_test(bool motortest)
+int MK::set_motor_test(bool motortest)
 {
 	_motortest = motortest;
 	return OK;
 }
 
-int
-MK::set_overrideSecurityChecks(bool overrideSecurityChecks)
+int MK::set_overrideSecurityChecks(bool overrideSecurityChecks)
 {
 	_overrideSecurityChecks = overrideSecurityChecks;
 	return OK;
 }
 
-short
-MK::scaling(float val, float inMin, float inMax, float outMin, float outMax)
+short MK::scaling(float val, float inMin, float inMax, float outMin, float outMax)
 {
 	short retVal = 0;
-
+	
 	retVal = (val - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
-
+	
 	if (retVal < outMin)
 	{
 		retVal = outMin;
-
+		
 	}
 	else if (retVal > outMax)
 	{
 		retVal = outMax;
 	}
-
+	
 	return retVal;
 }
 
-void
-MK::play_beep(int count)
+void MK::play_beep(int count)
 {
 	int buzzer = ::open(TONEALARM0_DEVICE_PATH, O_WRONLY);
-
+	
 	for (int i = 0; i < count; i++)
 	{
 		::ioctl(buzzer, TONE_SET_ALARM, TONE_SINGLE_BEEP_TUNE);
 		usleep(300000);
 	}
-
+	
 	::close(buzzer);
 }
 
-void
-MK::task_main()
+void MK::task_main()
 {
 	int32_t param_mkblctrl_test = 0;
 	/*
@@ -510,60 +482,58 @@ MK::task_main()
 	 * primary PWM output or not.
 	 */
 	_t_actuators = orb_subscribe(ORB_ID(actuator_controls_0));
-	orb_set_interval(_t_actuators, int(1000 / _update_rate));	/* set the topic update rate (200Hz)*/
-
+	orb_set_interval(_t_actuators, int(1000 / _update_rate)); /* set the topic update rate (200Hz)*/
+	
 	/*
 	 * Subscribe to actuator_armed topic.
 	 */
 	_t_actuator_armed = orb_subscribe(ORB_ID(actuator_armed));
-	orb_set_interval(_t_actuator_armed, 200);		/* 5Hz update rate */
-
+	orb_set_interval(_t_actuator_armed, 200); /* 5Hz update rate */
+	
 	/*
 	 * advertise the mixed control outputs.
 	 */
 	actuator_outputs_s outputs;
 	memset(&outputs, 0, sizeof(outputs));
 	int dummy;
-	_t_outputs = orb_advertise_multi(ORB_ID(actuator_outputs),
-					 &outputs, &dummy, ORB_PRIO_HIGH);
-
+	_t_outputs = orb_advertise_multi(ORB_ID(actuator_outputs), &outputs, &dummy, ORB_PRIO_HIGH);
+	
 	/*
 	 * advertise the blctrl status.
 	 */
 	esc_status_s esc;
 	memset(&esc, 0, sizeof(esc));
 	_t_esc_status = orb_advertise(ORB_ID(esc_status), &esc);
-
-
+	
 	pollfd fds[2];
 	fds[0].fd = _t_actuators;
 	fds[0].events = POLLIN;
 	fds[1].fd = _t_actuator_armed;
 	fds[1].events = POLLIN;
-
-	up_pwm_servo_set_rate(_update_rate);	/* unnecessary ? */
-
+	
+	up_pwm_servo_set_rate(_update_rate); /* unnecessary ? */
+	
 	DEVICE_LOG("starting");
-
+	
 	/* loop until killed */
 	while (!_task_should_exit)
 	{
-
+		
 		param_get(_param_indicate_esc, &param_mkblctrl_test);
-
+		
 		if (param_mkblctrl_test > 0)
 		{
 			_indicate_esc = true;
-
+			
 		}
 		else
 		{
 			_indicate_esc = false;
 		}
-
+		
 		/* waiting for data */
 		int ret = ::poll(&fds[0], 2, CONTROL_INPUT_DROP_LIMIT_MS);
-
+		
 		/* this would be bad... */
 		if (ret < 0)
 		{
@@ -571,36 +541,33 @@ MK::task_main()
 			usleep(1000000);
 			continue;
 		}
-
+		
 		/* do we have a control update? */
 		if (fds[0].revents & POLLIN)
 		{
-
+			
 			bool changed = false;
 			orb_check(_t_actuators, &changed);
-
+			
 			if (changed)
 			{
-
+				
 				/* get controls - must always do this to avoid spinning */
 				orb_copy(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, _t_actuators, &_controls);
-
+				
 				/* can we mix? */
 				if (_mixers != nullptr)
 				{
-
+					
 					/* do mixing */
 					outputs.noutputs = _mixers->mix(&outputs.output[0], _num_outputs);
 					outputs.timestamp = hrt_absolute_time();
-
+					
 					/* iterate actuators */
 					for (unsigned int i = 0; i < _num_outputs; i++)
 					{
 						/* last resort: catch NaN, INF and out-of-band errors */
-						if (i < outputs.noutputs &&
-								PX4_ISFINITE(outputs.output[i]) &&
-								outputs.output[i] >= -1.0f &&
-								outputs.output[i] <= 1.0f)
+						if (i < outputs.noutputs && PX4_ISFINITE(outputs.output[i]) && outputs.output[i] >= -1.0f && outputs.output[i] <= 1.0f)
 						{
 							/* scale for PWM output 900 - 2100us */
 							/* nothing to do here */
@@ -615,19 +582,19 @@ MK::task_main()
 							if (outputs.output[i] < -1.0f)
 							{
 								outputs.output[i] = -1.0f;
-
+								
 							}
 							else if (outputs.output[i] > 1.0f)
 							{
 								outputs.output[i] = 1.0f;
-
+								
 							}
 							else
 							{
 								outputs.output[i] = -1.0f;
 							}
 						}
-
+						
 						if (!_overrideSecurityChecks)
 						{
 							/* don't go under BLCTRL_MIN_VALUE */
@@ -636,31 +603,30 @@ MK::task_main()
 								outputs.output[i] = BLCTRL_MIN_VALUE;
 							}
 						}
-
+						
 						/* output to BLCtrl's */
 						if (_motortest != true && _indicate_esc != true)
 						{
 							Motor[i].SetPoint_PX4 = outputs.output[i];
-							mk_servo_set(i, scaling(outputs.output[i], -1.0f, 1.0f, 0,
-										2047));	// scale the output to 0 - 2047 and sent to output routine
+							mk_servo_set(i, scaling(outputs.output[i], -1.0f, 1.0f, 0, 2047));	// scale the output to 0 - 2047 and sent to output routine
 						}
 					}
 				}
 			}
 		}
-
+		
 		/* how about an arming update? */
 		if (fds[1].revents & POLLIN)
 		{
 			actuator_armed_s aa;
-
+			
 			/* get new value */
 			orb_copy(ORB_ID(actuator_armed), _t_actuator_armed, &aa);
-
+			
 			/* update PWM servo armed status if armed and not locked down */
 			mk_servo_arm(aa.armed && !aa.lockdown);
 		}
-
+		
 		/*
 		 * Only update esc topic every half second.
 		 */
@@ -671,7 +637,7 @@ MK::task_main()
 			esc.timestamp = hrt_absolute_time();
 			esc.esc_count = (uint8_t) _num_outputs;
 			esc.esc_connectiontype = esc_status_s::ESC_CONNECTION_TYPE_I2C;
-
+			
 			for (unsigned int i = 0; i < _num_outputs; i++)
 			{
 				esc.esc[i].esc_address = (uint8_t) BLCTRL_BASE_ADDR + i;
@@ -681,51 +647,50 @@ MK::task_main()
 				esc.esc[i].esc_current = static_cast<float>(Motor[i].Current) * 0.1F;
 				esc.esc[i].esc_rpm = (uint16_t) 0;
 				esc.esc[i].esc_setpoint = (float) Motor[i].SetPoint_PX4;
-
+				
 				if (Motor[i].Version == 1)
 				{
 					// BLCtrl 2.0 (11Bit)
-					esc.esc[i].esc_setpoint_raw = (uint16_t)(Motor[i].SetPoint << 3) | Motor[i].SetPointLowerBits;
-
+					esc.esc[i].esc_setpoint_raw = (uint16_t) (Motor[i].SetPoint << 3) | Motor[i].SetPointLowerBits;
+					
 				}
 				else
 				{
 					// BLCtrl < 2.0 (8Bit)
 					esc.esc[i].esc_setpoint_raw = (uint16_t) Motor[i].SetPoint;
 				}
-
+				
 				esc.esc[i].esc_temperature = static_cast<float>(Motor[i].Temperature);
 				esc.esc[i].esc_state = (uint16_t) Motor[i].State;
 				esc.esc[i].esc_errorcount = (uint16_t) 0;
-
+				
 				// if motortest is requested - do it... (deprecated in future)
 				if (_motortest == true)
 				{
 					mk_servo_test(i);
 				}
-
+				
 				// if esc locate is requested
 				if (_indicate_esc == true)
 				{
 					mk_servo_locate();
 				}
 			}
-
+			
 			orb_publish(ORB_ID(esc_status), _t_esc_status, &esc);
-
+			
 		}
-
+		
 	}
-
+	
 	::close(_t_actuators);
 	::close(_t_actuator_armed);
-
-
+	
 	/* make sure servos are off */
 	up_pwm_servo_deinit();
-
+	
 	DEVICE_LOG("stopping");
-
+	
 	/* note - someone else is responsible for restoring the GPIO config */
 
 	/* tell the dtor that we are exiting */
@@ -733,26 +698,22 @@ MK::task_main()
 	_exit(0);
 }
 
-
-int
-MK::mk_servo_arm(bool status)
+int MK::mk_servo_arm(bool status)
 {
 	_armed = status;
 	return 0;
 }
 
-
-unsigned int
-MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
+unsigned int MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
 {
 	if (initI2C)
 	{
 		I2C::init();
 	}
-
+	
 	_retries = 50;
 	uint8_t foundMotorCount = 0;
-
+	
 	for (unsigned i = 0; i < MAX_MOTORS; i++)
 	{
 		Motor[i].Version = 0;
@@ -766,18 +727,18 @@ MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
 		Motor[i].Temperature = 0;
 		Motor[i].RoundCount = 0;
 	}
-
+	
 	uint8_t msg = 0;
 	uint8_t result[3];
-
+	
 	for (unsigned i = 0; i < count; i++)
 	{
 		result[0] = 0;
 		result[1] = 0;
 		result[2] = 0;
-
+		
 		set_device_address(BLCTRL_BASE_ADDR + i);
-
+		
 		if (OK == transfer(&msg, 1, &result[0], 3))
 		{
 			Motor[i].Current = result[0];
@@ -785,11 +746,11 @@ MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
 			Motor[i].Temperature = result[2];
 			Motor[i].State |= MOTOR_STATE_PRESENT_MASK; // set present bit;
 			foundMotorCount++;
-
+			
 			if ((Motor[i].MaxPWM & 252) == 248)
 			{
 				Motor[i].Version = BLCTRL_NEW;
-
+				
 			}
 			else
 			{
@@ -797,18 +758,16 @@ MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
 			}
 		}
 	}
-
+	
 	if (showOutput)
 	{
 		fprintf(stderr, "[mkblctrl] MotorsFound: %i\n", foundMotorCount);
-
+		
 		for (unsigned i = 0; i < foundMotorCount; i++)
 		{
-			fprintf(stderr, "[mkblctrl] blctrl[%i] : found=%i\tversion=%i\tcurrent=%i\tmaxpwm=%i\ttemperature=%i\n", i,
-				Motor[i].State, Motor[i].Version, Motor[i].Current, Motor[i].MaxPWM, Motor[i].Temperature);
+			fprintf(stderr, "[mkblctrl] blctrl[%i] : found=%i\tversion=%i\tcurrent=%i\tmaxpwm=%i\ttemperature=%i\n", i, Motor[i].State, Motor[i].Version, Motor[i].Current, Motor[i].MaxPWM, Motor[i].Temperature);
 		}
-
-
+		
 		if (!_overrideSecurityChecks)
 		{
 			if (foundMotorCount != 4 && foundMotorCount != 6 && foundMotorCount != 8)
@@ -817,50 +776,49 @@ MK::mk_check_for_blctrl(unsigned int count, bool showOutput, bool initI2C)
 			}
 		}
 	}
-
+	
 	return foundMotorCount;
 }
 
-int
-MK::mk_servo_set(unsigned int chan, short val)
+int MK::mk_servo_set(unsigned int chan, short val)
 {
 	short tmpVal = 0;
 	_retries = 0;
 	uint8_t result[3] = { 0, 0, 0 };
 	uint8_t msg[2] = { 0, 0 };
 	uint8_t bytesToSendBL2 = 2;
-
+	
 	tmpVal = val;
-
+	
 	if (tmpVal > 2047)
 	{
 		tmpVal = 2047;
-
+		
 	}
 	else if (tmpVal < 0)
 	{
 		tmpVal = 0;
 	}
-
-	Motor[chan].SetPoint = (uint8_t)(tmpVal >> 3) & 0xff;
-	Motor[chan].SetPointLowerBits = ((uint8_t)tmpVal % 8) & 0x07;
-
+	
+	Motor[chan].SetPoint = (uint8_t) (tmpVal >> 3) & 0xff;
+	Motor[chan].SetPointLowerBits = ((uint8_t) tmpVal % 8) & 0x07;
+	
 	if (_armed == false)
 	{
 		Motor[chan].SetPoint = 0;
 		Motor[chan].SetPointLowerBits = 0;
 	}
-
+	
 	//if(Motor[chan].State & MOTOR_STATE_PRESENT_MASK) {
 	set_device_address(BLCTRL_BASE_ADDR + (chan + addrTranslator[chan]));
-
+	
 	if (Motor[chan].Version == BLCTRL_OLD)
 	{
 		/*
-		*	Old BL-Ctrl 8Bit served. Version < 2.0
-		*/
+		 *	Old BL-Ctrl 8Bit served. Version < 2.0
+		 */
 		msg[0] = Motor[chan].SetPoint;
-
+		
 		if (Motor[chan].RoundCount >= 16)
 		{
 			// on each 16th cyle we read out the status messages from the blctrl
@@ -869,38 +827,44 @@ MK::mk_servo_set(unsigned int chan, short val)
 				Motor[chan].Current = result[0];
 				Motor[chan].MaxPWM = result[1];
 				Motor[chan].Temperature = 255;
-
+				
 			}
 			else
 			{
-				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK) { Motor[chan].State++; }	// error
+				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK)
+				{
+					Motor[chan].State++;
+				}	// error
 			}
-
+			
 			Motor[chan].RoundCount = 0;
-
+			
 		}
 		else
 		{
 			if (OK != transfer(&msg[0], 1, nullptr, 0))
 			{
-				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK) { Motor[chan].State++; }	// error
+				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK)
+				{
+					Motor[chan].State++;
+				}	// error
 			}
 		}
-
+		
 	}
 	else
 	{
 		/*
-		*	New BL-Ctrl 11Bit served. Version >= 2.0
-		*/
+		 *	New BL-Ctrl 11Bit served. Version >= 2.0
+		 */
 		msg[0] = Motor[chan].SetPoint;
 		msg[1] = Motor[chan].SetPointLowerBits;
-
+		
 		if (Motor[chan].SetPointLowerBits == 0)
 		{
 			bytesToSendBL2 = 1;	// if setpoint lower bits are zero, we send only the higher bits - this saves time
 		}
-
+		
 		if (Motor[chan].RoundCount >= 16)
 		{
 			// on each 16th cyle we read out the status messages from the blctrl
@@ -909,73 +873,76 @@ MK::mk_servo_set(unsigned int chan, short val)
 				Motor[chan].Current = result[0];
 				Motor[chan].MaxPWM = result[1];
 				Motor[chan].Temperature = result[2];
-
+				
 			}
 			else
 			{
-				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK) { Motor[chan].State++; }	// error
+				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK)
+				{
+					Motor[chan].State++;
+				}	// error
 			}
-
+			
 			Motor[chan].RoundCount = 0;
-
+			
 		}
 		else
 		{
 			if (OK != transfer(&msg[0], bytesToSendBL2, nullptr, 0))
 			{
-				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK) { Motor[chan].State++; }	// error
+				if ((Motor[chan].State & MOTOR_STATE_ERROR_MASK) < MOTOR_STATE_ERROR_MASK)
+				{
+					Motor[chan].State++;
+				}	// error
 			}
 		}
-
+		
 	}
-
+	
 	Motor[chan].RoundCount++;
 	//}
-
+	
 	if (showDebug == true)
 	{
 		debugCounter++;
-
+		
 		if (debugCounter == 2000)
 		{
 			debugCounter = 0;
-
+			
 			for (unsigned int i = 0; i < _num_outputs; i++)
 			{
 				if (Motor[i].State & MOTOR_STATE_PRESENT_MASK)
 				{
-					fprintf(stderr, "[mkblctrl] #%i:\tVer: %i\tVal: %i\tCurr: %i\tMaxPWM: %i\tTemp: %i\tState: %i\n", i, Motor[i].Version,
-						Motor[i].SetPoint, Motor[i].Current, Motor[i].MaxPWM, Motor[i].Temperature, Motor[i].State);
+					fprintf(stderr, "[mkblctrl] #%i:\tVer: %i\tVal: %i\tCurr: %i\tMaxPWM: %i\tTemp: %i\tState: %i\n", i, Motor[i].Version, Motor[i].SetPoint, Motor[i].Current, Motor[i].MaxPWM, Motor[i].Temperature, Motor[i].State);
 				}
 			}
-
+			
 			fprintf(stderr, "\n");
 		}
 	}
-
+	
 	return 0;
 }
 
-
-int
-MK::mk_servo_test(unsigned int chan)
+int MK::mk_servo_test(unsigned int chan)
 {
 	int ret = 0;
 	float tmpVal = 0;
 	float val = -1;
 	_retries = 0;
 	uint8_t msg[2] = { 0, 0 };
-
+	
 	if (debugCounter >= MOTOR_SPINUP_COUNTER)
 	{
 		debugCounter = 0;
 		_motor++;
-
+		
 		if (_motor < _num_outputs)
 		{
 			fprintf(stderr, "[mkblctrl] Motortest - #%i:\tspinup\n", _motor);
 		}
-
+		
 		if (_motor >= _num_outputs)
 		{
 			_motor = -1;
@@ -983,335 +950,319 @@ MK::mk_servo_test(unsigned int chan)
 			fprintf(stderr, "[mkblctrl] Motortest finished...\n");
 		}
 	}
-
+	
 	debugCounter++;
-
+	
 	if (_motor == chan)
 	{
 		val = BLCTRL_MIN_VALUE;
-
+		
 	}
 	else
 	{
 		val = -1;
 	}
-
+	
 	tmpVal = (511 + (511 * val));
-
+	
 	if (tmpVal > 1024)
 	{
 		tmpVal = 1024;
 	}
-
-	Motor[chan].SetPoint = (uint8_t)(tmpVal / 4);
-
+	
+	Motor[chan].SetPoint = (uint8_t) (tmpVal / 4);
+	
 	if (_motor != chan)
 	{
 		Motor[chan].SetPoint = 0;
 		Motor[chan].SetPointLowerBits = 0;
 	}
-
+	
 	if (Motor[chan].Version == BLCTRL_OLD)
 	{
 		msg[0] = Motor[chan].SetPoint;
-
+		
 	}
 	else
 	{
 		msg[0] = Motor[chan].SetPoint;
 		msg[1] = Motor[chan].SetPointLowerBits;
 	}
-
+	
 	set_device_address(BLCTRL_BASE_ADDR + (chan + addrTranslator[chan]));
-
+	
 	if (Motor[chan].Version == BLCTRL_OLD)
 	{
 		ret = transfer(&msg[0], 1, nullptr, 0);
-
+		
 	}
 	else
 	{
 		ret = transfer(&msg[0], 2, nullptr, 0);
 	}
-
+	
 	return ret;
 }
 
-
-int
-MK::mk_servo_locate()
+int MK::mk_servo_locate()
 {
 	int ret = 0;
 	static unsigned int chan = 0;
 	static uint64_t last_timestamp = 0;
 	_retries = 0;
 	uint8_t msg[2] = { 0, 0 };
-
-
+	
 	if (hrt_absolute_time() - last_timestamp > MOTOR_LOCATE_DELAY)
 	{
 		last_timestamp = hrt_absolute_time();
-
+		
 		set_device_address(BLCTRL_BASE_ADDR + (chan + addrTranslator[chan]));
 		chan++;
-
+		
 		if (chan <= _num_outputs)
 		{
 			fprintf(stderr, "[mkblctrl] ESC Locate - #%i:\tgreen\n", chan);
 			play_beep(chan);
 		}
-
+		
 		if (chan > _num_outputs)
 		{
 			chan = 0;
 		}
 	}
-
+	
 	// do i2c transfer to selected esc
 	ret = transfer(&msg[0], 1, nullptr, 0);
-
+	
 	return ret;
 }
 
-
-int
-MK::control_callback(uintptr_t handle,
-		     uint8_t control_group,
-		     uint8_t control_index,
-		     float &input)
+int MK::control_callback(uintptr_t handle, uint8_t control_group, uint8_t control_index, float &input)
 {
-	const actuator_controls_s *controls = (actuator_controls_s *)handle;
-
+	const actuator_controls_s *controls = (actuator_controls_s *) handle;
+	
 	input = controls->control[control_index];
 	return 0;
 }
 
-int
-MK::ioctl(file *filp, int cmd, unsigned long arg)
+int MK::ioctl(file *filp, int cmd, unsigned long arg)
 {
 	int ret;
-
+	
 	ret = pwm_ioctl(filp, cmd, arg);
-
+	
 	/* if nobody wants it, let CDev have it */
 	if (ret == -ENOTTY)
 	{
 		ret = CDev::ioctl(filp, cmd, arg);
 	}
-
+	
 	return ret;
 }
 
-int
-MK::pwm_ioctl(file *filp, int cmd, unsigned long arg)
+int MK::pwm_ioctl(file *filp, int cmd, unsigned long arg)
 {
 	int ret = OK;
-
+	
 	lock();
-
+	
 	switch (cmd)
 	{
 		case PWM_SERVO_ARM:
 			mk_servo_arm(true);
 			break;
-
+			
 		case PWM_SERVO_SET_ARM_OK:
 		case PWM_SERVO_CLEAR_ARM_OK:
 			// these are no-ops, as no safety switch
 			break;
-
+			
 		case PWM_SERVO_DISARM:
 			mk_servo_arm(false);
 			break;
-
+			
 		case PWM_SERVO_SET_UPDATE_RATE:
 			ret = OK;
 			break;
-
+			
 		case PWM_SERVO_GET_UPDATE_RATE:
-			*(uint32_t *)arg = _update_rate;
+			*(uint32_t *) arg = _update_rate;
 			break;
-
+			
 		case PWM_SERVO_SET_SELECT_UPDATE_RATE:
 			ret = OK;
 			break;
-
-
+			
 		case PWM_SERVO_SET(0) ... PWM_SERVO_SET(_max_actuators - 1):
 			if (arg < 2150)
 			{
-				Motor[cmd - PWM_SERVO_SET(0)].RawPwmValue = (unsigned short)arg;
+				Motor[cmd - PWM_SERVO_SET(0)].RawPwmValue = (unsigned short) arg;
 				mk_servo_set(cmd - PWM_SERVO_SET(0), scaling(arg, _rc_min_value, _rc_max_value, 0, 2047));
-
+				
 			}
 			else
 			{
 				ret = -EINVAL;
 			}
-
+			
 			break;
-
+			
 		case PWM_SERVO_GET(0) ... PWM_SERVO_GET(_max_actuators - 1):
 			/* copy the current output value from the channel */
-			*(servo_position_t *)arg = Motor[cmd - PWM_SERVO_GET(0)].RawPwmValue;
-
+			*(servo_position_t *) arg = Motor[cmd - PWM_SERVO_GET(0)].RawPwmValue;
+			
 			break;
-
+			
 		case PWM_SERVO_GET_RATEGROUP(0):
 		case PWM_SERVO_GET_RATEGROUP(1):
 		case PWM_SERVO_GET_RATEGROUP(2):
 		case PWM_SERVO_GET_RATEGROUP(3):
 			//*(uint32_t *)arg = up_pwm_servo_get_rate_group(cmd - PWM_SERVO_GET_RATEGROUP(0));
 			break;
-
+			
 		case PWM_SERVO_GET_COUNT:
 		case MIXERIOCGETOUTPUTCOUNT:
-			*(unsigned *)arg = _num_outputs;
+			*(unsigned *) arg = _num_outputs;
 			break;
-
+			
 		case MIXERIOCRESET:
 			if (_mixers != nullptr)
 			{
 				delete _mixers;
 				_mixers = nullptr;
 			}
-
+			
 			break;
-
+			
 		case MIXERIOCADDSIMPLE:
+		{
+			mixer_simple_s *mixinfo = (mixer_simple_s *) arg;
+			
+			SimpleMixer *mixer = new SimpleMixer(control_callback, (uintptr_t) &_controls, mixinfo);
+			
+			if (mixer->check())
 			{
-				mixer_simple_s *mixinfo = (mixer_simple_s *)arg;
-
-				SimpleMixer *mixer = new SimpleMixer(control_callback,
-								     (uintptr_t)&_controls, mixinfo);
-
-				if (mixer->check())
-				{
-					delete mixer;
-					ret = -EINVAL;
-
-				}
-				else
-				{
-					if (_mixers == nullptr)
-						_mixers = new MixerGroup(control_callback,
-									 (uintptr_t)&_controls);
-
-					_mixers->add_mixer(mixer);
-				}
-
-				break;
+				delete mixer;
+				ret = -EINVAL;
+				
 			}
-
+			else
+			{
+				if (_mixers == nullptr)
+					_mixers = new MixerGroup(control_callback, (uintptr_t) &_controls);
+				
+				_mixers->add_mixer(mixer);
+			}
+			
+			break;
+		}
+			
 		case MIXERIOCLOADBUF:
+		{
+			const char *buf = (const char *) arg;
+			unsigned buflen = strnlen(buf, 1024);
+			
+			if (_mixers == nullptr)
 			{
-				const char *buf = (const char *)arg;
-				unsigned buflen = strnlen(buf, 1024);
-
-				if (_mixers == nullptr)
-				{
-					_mixers = new MixerGroup(control_callback, (uintptr_t)&_controls);
-				}
-
-				if (_mixers == nullptr)
-				{
-					ret = -ENOMEM;
-
-				}
-				else
-				{
-
-					ret = _mixers->load_from_buf(buf, buflen);
-
-					if (ret != 0)
-					{
-						DEVICE_DEBUG("mixer load failed with %d", ret);
-						delete _mixers;
-						_mixers = nullptr;
-						ret = -EINVAL;
-					}
-				}
-
-				break;
+				_mixers = new MixerGroup(control_callback, (uintptr_t) &_controls);
 			}
-
+			
+			if (_mixers == nullptr)
+			{
+				ret = -ENOMEM;
+				
+			}
+			else
+			{
+				
+				ret = _mixers->load_from_buf(buf, buflen);
+				
+				if (ret != 0)
+				{
+					DEVICE_DEBUG("mixer load failed with %d", ret);
+					delete _mixers;
+					_mixers = nullptr;
+					ret = -EINVAL;
+				}
+			}
+			
+			break;
+		}
+			
 		case PWM_SERVO_SET_MIN_PWM:
+		{
+			struct pwm_output_values *pwm = (struct pwm_output_values *) arg;
+			
+			if (pwm->channel_count > _max_actuators)
+			/* fail with error */
 			{
-				struct pwm_output_values *pwm = (struct pwm_output_values *)arg;
-
-				if (pwm->channel_count > _max_actuators)
-					/* fail with error */
-				{
-					return -E2BIG;
-				}
-
-				set_rc_min_value((unsigned)pwm->values[0]);
-				ret = OK;
-				break;
+				return -E2BIG;
 			}
-
+			
+			set_rc_min_value((unsigned) pwm->values[0]);
+			ret = OK;
+			break;
+		}
+			
 		case PWM_SERVO_GET_MIN_PWM:
 			ret = OK;
 			break;
-
+			
 		case PWM_SERVO_SET_MAX_PWM:
+		{
+			struct pwm_output_values *pwm = (struct pwm_output_values *) arg;
+			
+			if (pwm->channel_count > _max_actuators)
+			/* fail with error */
 			{
-				struct pwm_output_values *pwm = (struct pwm_output_values *)arg;
-
-				if (pwm->channel_count > _max_actuators)
-					/* fail with error */
-				{
-					return -E2BIG;
-				}
-
-				set_rc_max_value((unsigned)pwm->values[0]);
-				ret = OK;
-				break;
+				return -E2BIG;
 			}
-
+			
+			set_rc_max_value((unsigned) pwm->values[0]);
+			ret = OK;
+			break;
+		}
+			
 		case PWM_SERVO_GET_MAX_PWM:
 			ret = OK;
 			break;
-
-
+			
 		default:
 			ret = -ENOTTY;
 			break;
 	}
-
+	
 	unlock();
-
+	
 	return ret;
 }
 
 /*
-  this implements PWM output via a write() method, for compatibility
-  with px4io
+ this implements PWM output via a write() method, for compatibility
+ with px4io
  */
-ssize_t
-MK::write(file *filp, const char *buffer, size_t len)
+ssize_t MK::write(file *filp, const char *buffer, size_t len)
 {
 	unsigned count = len / 2;
 	uint16_t values[8];
-
+	
 	if (count > _num_outputs)
 	{
 		// we only have 8 I2C outputs in the driver
 		count = _num_outputs;
 	}
-
+	
 	// allow for misaligned values
 	memcpy(values, buffer, count * 2);
-
+	
 	for (uint8_t i = 0; i < count; i++)
 	{
-		Motor[i].RawPwmValue = (unsigned short)values[i];
+		Motor[i].RawPwmValue = (unsigned short) values[i];
 		mk_servo_set(i, scaling(values[i], _rc_min_value, _rc_max_value, 0, 2047));
 	}
-
+	
 	return count * 2;
 }
-
 
 namespace
 {
@@ -1328,112 +1279,106 @@ enum FrameType
 	FRAME_X,
 };
 
-
-int
-mk_new_mode(int motorcount, bool motortest, int px4mode, int frametype, bool overrideSecurityChecks, unsigned rcmin,
-	    unsigned rcmax)
+int mk_new_mode(int motorcount, bool motortest, int px4mode, int frametype, bool overrideSecurityChecks, unsigned rcmin, unsigned rcmax)
 {
 	int shouldStop = 0;
-
+	
 	/* set rc min pulse value */
 	g_mk->set_rc_min_value(rcmin);
-
+	
 	/* set rc max pulse value */
 	g_mk->set_rc_max_value(rcmax);
-
+	
 	/* native PX4 addressing) */
 	g_mk->set_px4mode(px4mode);
-
+	
 	/* set frametype (geometry) */
 	g_mk->set_frametype(frametype);
-
+	
 	/* motortest if enabled */
 	g_mk->set_motor_test(motortest);
-
+	
 	/* ovveride security checks if enabled */
 	g_mk->set_overrideSecurityChecks(overrideSecurityChecks);
-
+	
 	/* count used motors */
 	do
 	{
 		if (g_mk->mk_check_for_blctrl(8, false, false) != 0)
 		{
 			shouldStop = 4;
-
+			
 		}
 		else
 		{
 			shouldStop++;
 		}
-
+		
 		sleep(1);
 	}
 	while (shouldStop < 3);
-
+	
 	g_mk->set_motor_count(g_mk->mk_check_for_blctrl(8, true, false));
-
+	
 	return OK;
 }
 
-int
-mk_start(unsigned motors, const char *device_path)
+int mk_start(unsigned motors, const char *device_path)
 {
 	int ret;
-
+	
 	// try i2c3 first
 	g_mk = new MK(3, device_path);
-
+	
 	if (!g_mk)
 	{
 		return -ENOMEM;
 	}
-
+	
 	if (OK == g_mk->init(motors))
 	{
 		warnx("[mkblctrl] scanning i2c3...\n");
 		ret = g_mk->mk_check_for_blctrl(8, false, false);
-
+		
 		if (ret > 0)
 		{
 			return OK;
 		}
 	}
-
+	
 	delete g_mk;
 	g_mk = nullptr;
-
+	
 	// fallback to bus 1
 	g_mk = new MK(1, device_path);
-
+	
 	if (!g_mk)
 	{
 		return -ENOMEM;
 	}
-
+	
 	if (OK == g_mk->init(motors))
 	{
 		warnx("[mkblctrl] scanning i2c1...\n");
 		ret = g_mk->mk_check_for_blctrl(8, false, false);
-
+		
 		if (ret > 0)
 		{
 			return OK;
 		}
 	}
-
+	
 	delete g_mk;
 	g_mk = nullptr;
-
+	
 	return -ENXIO;
 }
-
 
 } // namespace
 
 extern "C" __EXPORT int mkblctrl_main(int argc, char *argv[]);
 
-int
-mkblctrl_main(int argc, char *argv[])
+int mkblctrl_main(int argc, char *argv[])
 {
 	int motorcount = 8;
 	int px4mode = MAPPING_PX4;
@@ -1446,13 +1391,13 @@ mkblctrl_main(int argc, char *argv[])
 	unsigned rc_min_value = RC_MIN_VALUE;
 	unsigned rc_max_value = RC_MAX_VALUE;
 	char *ep;
-
+	
 	/*
 	 * optional parameters
 	 */
 	for (int i = 1; i < argc; i++)
 	{
-
+		
 		/* look for the optional frame parameter */
 		if (strcmp(argv[i], "-mkmode") == 0 || strcmp(argv[i], "--mkmode") == 0)
 		{
@@ -1462,23 +1407,23 @@ mkblctrl_main(int argc, char *argv[])
 				{
 					px4mode = MAPPING_MK;
 					//newMode = true;
-
+					
 					if (strcmp(argv[i + 1], "+") == 0)
 					{
 						frametype = FRAME_PLUS;
-
+						
 					}
 					else
 					{
 						frametype = FRAME_X;
 					}
-
+					
 				}
 				else
 				{
 					errx(1, "only + or x for frametype supported !");
 				}
-
+				
 			}
 			else
 			{
@@ -1486,27 +1431,27 @@ mkblctrl_main(int argc, char *argv[])
 				return 1;
 			}
 		}
-
+		
 		/* look for the optional test parameter */
 		if (strcmp(argv[i], "-t") == 0)
 		{
 			motortest = true;
 			//newMode = true;
 		}
-
+		
 		/* look for the optional -h --help parameter */
 		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
 		{
 			showHelp = true;
 		}
-
+		
 		/* look for the optional --override-security-checks  parameter */
 		if (strcmp(argv[i], "--override-security-checks") == 0)
 		{
 			overrideSecurityChecks = true;
 			//newMode = true;
 		}
-
+		
 		/* look for the optional device parameter */
 		if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0)
 		{
@@ -1514,7 +1459,7 @@ mkblctrl_main(int argc, char *argv[])
 			{
 				devicepath = argv[i + 1];
 				//newMode = true;
-
+				
 			}
 			else
 			{
@@ -1522,20 +1467,20 @@ mkblctrl_main(int argc, char *argv[])
 				return 1;
 			}
 		}
-
+		
 		/* look for the optional -rc_min parameter */
 		if (strcmp(argv[i], "-rc_min") == 0)
 		{
 			if (argc > i + 1)
 			{
 				rc_min_value = strtoul(argv[i + 1], &ep, 0);
-
+				
 				if (*ep != '\0')
 				{
 					errx(1, "bad pwm val (-rc_min)");
 					return 1;
 				}
-
+				
 			}
 			else
 			{
@@ -1543,20 +1488,20 @@ mkblctrl_main(int argc, char *argv[])
 				return 1;
 			}
 		}
-
+		
 		/* look for the optional -rc_max parameter */
 		if (strcmp(argv[i], "-rc_max") == 0)
 		{
 			if (argc > i + 1)
 			{
 				rc_max_value = strtoul(argv[i + 1], &ep, 0);
-
+				
 				if (*ep != '\0')
 				{
 					errx(1, "bad pwm val (-rc_max)");
 					return 1;
 				}
-
+				
 			}
 			else
 			{
@@ -1564,18 +1509,16 @@ mkblctrl_main(int argc, char *argv[])
 				return 1;
 			}
 		}
-
-
+		
 	}
-
+	
 	if (showHelp)
 	{
 		fprintf(stderr, "mkblctrl: help:\n");
 		fprintf(stderr, "  [-mkmode {+/x}] [-b i2c_bus_number] [-d devicename] [--override-security-checks] [-h / --help]\n\n");
 		fprintf(stderr, "\t -mkmode {+/x} \t\t Type of frame, if Mikrokopter motor order is used.\n");
 		fprintf(stderr, "\t -d {devicepath & name}\t\t Create alternate pwm device.\n");
-		fprintf(stderr,
-			"\t --override-security-checks \t\t Disable all security checks (arming and number of ESCs). Used to test single Motors etc. (DANGER !!!)\n");
+		fprintf(stderr, "\t --override-security-checks \t\t Disable all security checks (arming and number of ESCs). Used to test single Motors etc. (DANGER !!!)\n");
 		fprintf(stderr, "\t -rcmin {pwn-value}\t\t Set RC_MIN Value.\n");
 		fprintf(stderr, "\t -rcmax {pwn-value}\t\t Set RC_MAX Value.\n");
 		fprintf(stderr, "\n");
@@ -1585,8 +1528,7 @@ mkblctrl_main(int argc, char *argv[])
 		fprintf(stderr, "This will spin up once every motor in order of motoraddress. (DANGER !!!)\n");
 		exit(1);
 	}
-
-
+	
 	if (!motortest)
 	{
 		if (g_mk == nullptr)
@@ -1595,35 +1537,35 @@ mkblctrl_main(int argc, char *argv[])
 			{
 				errx(1, "failed to start the MK-BLCtrl driver");
 			}
-
+			
 			/* parameter set ? */
 			if (newMode)
 			{
 				/* switch parameter */
 				return mk_new_mode(motorcount, motortest, px4mode, frametype, overrideSecurityChecks, rc_min_value, rc_max_value);
 			}
-
+			
 			exit(0);
-
+			
 		}
 		else
 		{
 			errx(1, "MK-BLCtrl driver already running");
 		}
-
+		
 	}
 	else
 	{
 		if (g_mk == nullptr)
 		{
 			errx(1, "MK-BLCtrl driver not running. You have to start it first.");
-
+			
 		}
 		else
 		{
 			g_mk->set_motor_test(motortest);
 			exit(0);
-
+			
 		}
 	}
 }

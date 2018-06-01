@@ -68,11 +68,11 @@
 /*  Define the Chip Selects for SPI1
  *  CS           Devices                                 DRDY
  *  ---- ----------------------------------------------- -----
-    PC2  MPU9250                    BMI160               PD15
-    PC15 ICM, ICM_20602, ICM_20608  BMI055_ACCEL         PC14
-    PE15 HMC5983                    BMI055_GYRO          PE12
+ PC2  MPU9250                    BMI160               PD15
+ PC15 ICM, ICM_20602, ICM_20608  BMI055_ACCEL         PC14
+ PE15 HMC5983                    BMI055_GYRO          PE12
  *  ---- ----------------------------------------------- -----
-*/
+ */
 /* The BMI160 sensor replaces the MPU9250 on some boards. Only one is actually present and connected
  * to the second GPIO pin on port C. The wrong driver will fail during start because of an incorrect WHO_AM_I register.*/
 #define GPIO_SPI1_CS_PORTC_PIN2      (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN2)
@@ -90,8 +90,6 @@
 #define GPIO_DRDY_PORTD_PIN15        (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTD|GPIO_PIN15)
 #define GPIO_DRDY_PORTC_PIN14        (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTC|GPIO_PIN14)
 #define GPIO_DRDY_PORTE_PIN12        (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTE|GPIO_PIN12)
-
-
 
 /*  Define the Chip Selects for SPI2 */
 
@@ -128,7 +126,6 @@
 /* N.B we do not have control over the SPI 2 buss powered devices
  * so the the ms5611 is not resetable.
  */
-
 
 #define PX4_SPI_BUS_SENSORS          1
 #define PX4_SPI_BUS_RAMTRON          2
@@ -186,7 +183,6 @@
 
 #define BOARD_BATTERY1_V_DIV         (13.653333333f)
 #define BOARD_BATTERY1_A_PER_V       (36.367515152f)
-
 
 /* User GPIOs
  *

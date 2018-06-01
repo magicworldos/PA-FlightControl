@@ -50,29 +50,10 @@
 
 #include "board_config.h"
 
-__EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] =
-{
-	{
-		.base = 0,
-		.clock_register = 0,
-		.clock_bit = 0,
-		.clock_freq = 0,
-		.first_channel_index = 0,
-		.last_channel_index = 3,
-		.handler = io_timer_handler0,
-		.vectorno =  0,
+__EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] = { { .base = 0, .clock_register = 0, .clock_bit = 0, .clock_freq = 0, .first_channel_index = 0, .last_channel_index = 3, .handler = io_timer_handler0, .vectorno = 0,
 
-	},
-};
+}, };
 
-__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] =
-{
-	{
-		.gpio_out = 0,//GPIO_TIM1_CH4OUT,
-		.gpio_in  = 0,//GPIO_TIM1_CH4IN,
-		.timer_index = 0,
-		.timer_channel = 4,
-		.ccr_offset = 0,
-		.masks  = 0
-	},
-};
+__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = { { .gpio_out = 0, //GPIO_TIM1_CH4OUT,
+.gpio_in = 0, //GPIO_TIM1_CH4IN,
+.timer_index = 0, .timer_channel = 4, .ccr_offset = 0, .masks = 0 }, };

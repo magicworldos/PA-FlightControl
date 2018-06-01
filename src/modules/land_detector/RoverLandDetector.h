@@ -48,11 +48,11 @@
 namespace land_detector
 {
 
-class RoverLandDetector : public LandDetector
+class RoverLandDetector: public LandDetector
 {
 public:
 	RoverLandDetector() = default;
-
+	
 protected:
 	virtual void _initialize_topics() override;
 
@@ -62,7 +62,7 @@ protected:
 
 	virtual bool _get_landed_state() override;
 
-	virtual bool  _get_ground_contact_state() override;
+	virtual bool _get_ground_contact_state() override;
 
 	virtual bool _get_maybe_landed_state() override;
 
@@ -72,6 +72,5 @@ protected:
 
 private:
 };
-
 
 } // namespace land_detector

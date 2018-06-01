@@ -56,10 +56,10 @@ __BEGIN_DECLS
 /*
  * PPM decoder state
  */
-__EXPORT extern uint16_t	ppm_buffer[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
-__EXPORT extern uint16_t	ppm_frame_length;				/**< length of the decoded PPM frame (includes gap) */
-__EXPORT extern unsigned	ppm_decoded_channels;	/**< count of decoded channels */
-__EXPORT extern hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last valid decode */
+__EXPORT extern uint16_t ppm_buffer[PPM_MAX_CHANNELS]; /**< decoded PPM channel values */
+__EXPORT extern uint16_t ppm_frame_length; /**< length of the decoded PPM frame (includes gap) */
+__EXPORT extern unsigned ppm_decoded_channels; /**< count of decoded channels */
+__EXPORT extern hrt_abstime ppm_last_valid_decode; /**< timestamp of the last valid decode */
 
 /**
  * Initialise the PPM input decoder.
@@ -68,7 +68,7 @@ __EXPORT extern hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last va
  *				ppm_input_decode, used to determine how to
  *				handle counter wrap.
  */
-__EXPORT void		ppm_input_init(unsigned count_max);
+__EXPORT void ppm_input_init(unsigned count_max);
 
 /**
  * Inform the decoder of an edge on the PPM input.
@@ -81,6 +81,6 @@ __EXPORT void		ppm_input_init(unsigned count_max);
  *				edge, in the range 0-count_max.  This value
  *				is expected to wrap.
  */
-__EXPORT void		ppm_input_decode(bool reset, unsigned count);
+__EXPORT void ppm_input_decode(bool reset, unsigned count);
 
 __END_DECLS

@@ -45,10 +45,10 @@
 #include <px4_spi.h>
 
 namespace device __EXPORT
-{
+{	
 
 // TODO: implement posix spi
-
+	
 } // namespace device
 
 #endif /* _DEVICE_SPI_H */

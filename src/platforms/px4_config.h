@@ -1,4 +1,3 @@
-
 /****************************************************************************
  *
  *   Copyright (C) 2015 Mark Charlebois. All rights reserved.
@@ -34,7 +33,7 @@
 
 /**
  * @file px4_config.h
-   Configuration flags used in code.
+ Configuration flags used in code.
  */
 
 #pragma once

@@ -43,7 +43,7 @@
 
 extern "C" __EXPORT int send_event_main(int argc, char *argv[]);
 
-class SendEvent : public ModuleBase<SendEvent>
+class SendEvent: public ModuleBase<SendEvent>
 {
 public:
 	SendEvent();
@@ -60,12 +60,11 @@ public:
 	static int print_usage(const char *reason = nullptr);
 
 private:
-
+	
 	/** Start background listening for commands
 	 *
 	 * @return 0 if successful, <0 on error. */
 	int start();
-
 
 	/** Trampoline for initialisation. */
 	static void initialize_trampoline(void *arg);

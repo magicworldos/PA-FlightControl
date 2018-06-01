@@ -242,13 +242,14 @@
  * Advisory file segment locking data type -
  * information passed to system by user
  */
-struct flock {
-	off_t	l_start;	/* starting offset */
-	off_t	l_len;		/* len = 0 means until end of file */
-	pid_t	l_pid;		/* lock owner */
-	short	l_type;		/* lock type: read/write, etc. */
-	short	l_whence;	/* type of l_start */
-	int	l_sysid;	/* remote system id or zero for local */
+struct flock
+{
+	off_t l_start; /* starting offset */
+	off_t l_len; /* len = 0 means until end of file */
+	pid_t l_pid; /* lock owner */
+	short l_type; /* lock type: read/write, etc. */
+	short l_whence; /* type of l_start */
+	int l_sysid; /* remote system id or zero for local */
 };
 
 #if __BSD_VISIBLE
@@ -256,12 +257,13 @@ struct flock {
  * Old advisory file segment locking data type,
  * before adding l_sysid.
  */
-struct __oflock {
-	off_t	l_start;	/* starting offset */
-	off_t	l_len;		/* len = 0 means until end of file */
-	pid_t	l_pid;		/* lock owner */
-	short	l_type;		/* lock type: read/write, etc. */
-	short	l_whence;	/* type of l_start */
+struct __oflock
+{	
+	off_t l_start; /* starting offset */
+	off_t l_len; /* len = 0 means until end of file */
+	pid_t l_pid; /* lock owner */
+	short l_type; /* lock type: read/write, etc. */
+	short l_whence; /* type of l_start */
 };
 #endif
 
@@ -329,18 +331,18 @@ __BEGIN_DECLS
  * - -1 on error.
  * TODO: List error codes for all bus/port types.
  */
-int	open(const char *name, int mode, ...);
-int	creat(const char *, mode_t);
-int	fcntl(int, int, ...);
+int open(const char *name, int mode, ...);
+int creat(const char *, mode_t);
+int fcntl(int, int, ...);
 #if __BSD_VISIBLE
-int	flock(int, int);
+int flock(int, int);
 #endif
 #if __POSIX_VISIBLE >= 200809
-int	openat(int, const char *, int, ...);
+int openat(int, const char *, int, ...);
 #endif
 #if __POSIX_VISIBLE >= 200112
-int	posix_fadvise(int, off_t, off_t, int);
-int	posix_fallocate(int, off_t, off_t);
+int posix_fadvise(int, off_t, off_t, int);
+int posix_fallocate(int, off_t, off_t);
 #endif
 __END_DECLS
 #endif

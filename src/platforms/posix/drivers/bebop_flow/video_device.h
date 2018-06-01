@@ -58,10 +58,15 @@ class VideoDevice
 {
 public:
 	VideoDevice(char const *dev_name, uint32_t n_buffers) :
-		_fd(-1), _dev_name(dev_name), _n_buffers(n_buffers), _buffers(nullptr) {}
-
+			    _fd(-1),
+			    _dev_name(dev_name),
+			    _n_buffers(n_buffers),
+			    _buffers(nullptr)
+	{
+	}
+	
 	~VideoDevice() = default;
-
+	
 	/// Start the device
 	int start();
 

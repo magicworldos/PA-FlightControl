@@ -39,12 +39,12 @@
 using namespace DriverFramework;
 
 PWM::PWM(uint16_t device_id) :
-	m_dev_id(device_id)
+		    m_dev_id(device_id)
 {
 	// Prepare the device path
 	snprintf(m_dev_path, sizeof(m_dev_path), "/sys/class/pwm/pwm_%d", m_dev_id);
 	DF_LOG_INFO("Initialize device: %s", m_dev_path);
-
+	
 	disable();
 }
 
@@ -75,26 +75,29 @@ int PWM::set_period(uint32_t period_ns)
 
 int PWM::write(const char *path, int value)
 {
-	char filename[sizeof(m_dev_path) + 20] = {0};
+	char filename[sizeof(m_dev_path) + 20] = { 0 };
 	snprintf(filename, sizeof(filename), "%s/%s", m_dev_path, path);
-
+	
 	FILE *pFile = fopen(filename, "w");
-
-	if (pFile == nullptr) {
+	
+	if (pFile == nullptr)
+	{
 		DF_LOG_ERR("Unable to open file: %s", filename);
 		return -1;
 	}
-
+	
 	int result = fprintf(pFile, "%d", value);
-
-	if (result < 0) {
+	
+	if (result < 0)
+	{
 		DF_LOG_ERR("Write error");
 	}
-
-	if (fclose(pFile) != 0) {
+	
+	if (fclose(pFile) != 0)
+	{
 		DF_LOG_ERR("Unable to close file: %s", filename);
 		return -1;
 	}
-
+	
 	return 0;
 }

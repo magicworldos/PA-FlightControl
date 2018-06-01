@@ -37,7 +37,7 @@
  * Demo for sending offboard position setpoints to mavros to show offboard position control in SITL
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -49,8 +49,10 @@ class DemoOffboardPositionSetpoints
 public:
 	DemoOffboardPositionSetpoints();
 
-	~DemoOffboardPositionSetpoints() {}
-
+	~DemoOffboardPositionSetpoints()
+	{
+	}
+	
 	int main();
 
 protected:

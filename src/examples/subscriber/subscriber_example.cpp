@@ -49,32 +49,32 @@ void rc_channels_callback_function(const px4_rc_channels &msg)
 }
 
 SubscriberExample::SubscriberExample() :
-	_n(_appState),
-	_p_sub_interv("SUB_INTERV", PARAM_SUB_INTERV_DEFAULT),
-	_p_test_float("SUB_TESTF", PARAM_SUB_TESTF_DEFAULT)
+		    _n(_appState),
+		    _p_sub_interv("SUB_INTERV", PARAM_SUB_INTERV_DEFAULT),
+		    _p_test_float("SUB_TESTF", PARAM_SUB_TESTF_DEFAULT)
 {
 	/* Read the parameter back as example */
 	_p_sub_interv.update();
 	_p_test_float.update();
 	PX4_INFO("Param SUB_INTERV = %d", _p_sub_interv.get());
-	PX4_INFO("Param SUB_TESTF = %.3f", (double)_p_test_float.get());
-
+	PX4_INFO("Param SUB_TESTF = %.3f", (double )_p_test_float.get());
+	
 	/* Do some subscriptions */
 	/* Function */
-	_n.subscribe<px4_rc_channels>(rc_channels_callback_function, _p_sub_interv.get());
-
+	_n.subscribe < px4_rc_channels > (rc_channels_callback_function, _p_sub_interv.get());
+	
 	/* No callback */
-	_sub_rc_chan = _n.subscribe<px4_rc_channels>(500);
-
+	_sub_rc_chan = _n.subscribe < px4_rc_channels > (500);
+	
 	/* Class method */
-	_n.subscribe<px4_rc_channels>(&SubscriberExample::rc_channels_callback, this, 1000);
-
+	_n.subscribe < px4_rc_channels > (&SubscriberExample::rc_channels_callback, this, 1000);
+	
 	/* Another class method */
-	_n.subscribe<px4_vehicle_attitude>(&SubscriberExample::vehicle_attitude_callback, this, 1000);
-
+	_n.subscribe < px4_vehicle_attitude > (&SubscriberExample::vehicle_attitude_callback, this, 1000);
+	
 	/* Yet antoher class method */
-	_n.subscribe<px4_parameter_update>(&SubscriberExample::parameter_update_callback, this, 1000);
-
+	_n.subscribe < px4_parameter_update > (&SubscriberExample::parameter_update_callback, this, 1000);
+	
 	PX4_INFO("subscribed");
 }
 
@@ -84,24 +84,20 @@ SubscriberExample::SubscriberExample() :
  */
 void SubscriberExample::rc_channels_callback(const px4_rc_channels &msg)
 {
-	PX4_INFO("rc_channels_callback (method): [%" PRIu64 "]",
-		 msg.data().timestamp_last_valid);
-	PX4_INFO("rc_channels_callback (method): value of _sub_rc_chan: [%" PRIu64 "]",
-		 _sub_rc_chan->data().timestamp_last_valid);
+	PX4_INFO("rc_channels_callback (method): [%" PRIu64 "]", msg.data().timestamp_last_valid);
+	PX4_INFO("rc_channels_callback (method): value of _sub_rc_chan: [%" PRIu64 "]", _sub_rc_chan->data().timestamp_last_valid);
 }
 
 void SubscriberExample::vehicle_attitude_callback(const px4_vehicle_attitude &msg)
 {
-	PX4_INFO("vehicle_attitude_callback (method): [%" PRIu64 "]",
-		 msg.data().timestamp);
+	PX4_INFO("vehicle_attitude_callback (method): [%" PRIu64 "]", msg.data().timestamp);
 }
 
 void SubscriberExample::parameter_update_callback(const px4_parameter_update &msg)
 {
-	PX4_INFO("parameter_update_callback (method): [%" PRIu64 "]",
-		 msg.data().timestamp);
+	PX4_INFO("parameter_update_callback (method): [%" PRIu64 "]", msg.data().timestamp);
 	_p_sub_interv.update();
 	PX4_INFO("Param SUB_INTERV = %d", _p_sub_interv.get());
 	_p_test_float.update();
-	PX4_INFO("Param SUB_TESTF = %.3f", (double)_p_test_float.get());
+	PX4_INFO("Param SUB_TESTF = %.3f", (double )_p_test_float.get());
 }

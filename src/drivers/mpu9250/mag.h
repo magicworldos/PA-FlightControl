@@ -67,8 +67,6 @@
 #define AK8963_14BIT_ADC        0x00
 #define AK8963_RESET            0x01
 
-
-
 class MPU9250;
 
 #pragma pack(push, 1)
@@ -86,11 +84,10 @@ extern device::Device *AK8963_I2C_interface(int bus, bool external_bus);
 
 typedef device::Device *(*MPU9250_mag_constructor)(int, bool);
 
-
 /**
  * Helper class implementing the magnetometer driver node.
  */
-class MPU9250_mag : public device::CDev
+class MPU9250_mag: public device::CDev
 {
 public:
 	MPU9250_mag(MPU9250 *parent, device::Device *interface, const char *path);
@@ -112,7 +109,7 @@ public:
 	bool ak8963_read_adjustments(void);
 
 protected:
-	Device			*_interface;
+	Device *_interface;
 
 	friend class MPU9250;
 
@@ -122,13 +119,14 @@ protected:
 	/* Update the state with prefetched data (internally called by the regular measure() )*/
 	void _measure(struct ak8963_regs data);
 
-
 	uint8_t read_reg(unsigned reg);
 	void write_reg(unsigned reg, uint8_t value);
 
-
-	bool is_passthrough() { return _interface == nullptr; }
-
+	bool is_passthrough()
+	{
+		return _interface == nullptr;
+	}
+	
 	int self_test(void);
 
 private:
@@ -152,7 +150,7 @@ private:
 	bool check_duplicate(uint8_t *mag_data);
 
 	// keep last mag reading for duplicate detection
-	uint8_t			_last_mag_data[6];
+	uint8_t _last_mag_data[6];
 
 	/* do not allow to copy this class due to pointer data members */
 	MPU9250_mag(const MPU9250_mag &);

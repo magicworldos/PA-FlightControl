@@ -42,7 +42,6 @@
 #include <nuttx/config.h>
 #include <systemlib/param/param.h>
 
-
 /**
  * Operating channel of the NRF51
  *

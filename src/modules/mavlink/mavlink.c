@@ -46,8 +46,4 @@
 #include "mavlink_bridge_header.h"
 #include <systemlib/param/param.h>
 
-mavlink_system_t mavlink_system =
-{
-	1,
-	1
-}; // System ID, 1-255, Component/Subsystem ID, 1-255
+mavlink_system_t mavlink_system = { 1, 1 }; // System ID, 1-255, Component/Subsystem ID, 1-255

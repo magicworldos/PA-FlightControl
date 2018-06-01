@@ -100,7 +100,7 @@
  ****************************************************************************/
 
 void sam_sdram_config(void)
-{
+{	
 	volatile uint8_t *psdram = (uint8_t *)SAM_SDRAMCS_BASE;
 	uint32_t regval;
 	int i;
@@ -148,33 +148,33 @@ void sam_sdram_config(void)
 	 *   PD29 SDWE       nWE
 	 */
 
-	sam_configgpio(GPIO_SMC_A2);        /* PC20 A2        -> A0 */
-	sam_configgpio(GPIO_SMC_A3);        /* PC21 A3        -> A1 */
-	sam_configgpio(GPIO_SMC_A4);        /* PC22 A4        -> A2 */
-	sam_configgpio(GPIO_SMC_A5);        /* PC23 A5        -> A3 */
-	sam_configgpio(GPIO_SMC_A6);        /* PC24 A6        -> A4 */
-	sam_configgpio(GPIO_SMC_A7);        /* PC25 A7        -> A5 */
-	sam_configgpio(GPIO_SMC_A8);        /* PC26 A8        -> A6 */
-	sam_configgpio(GPIO_SMC_A9);        /* PC27 A9        -> A7 */
-	sam_configgpio(GPIO_SMC_A10);       /* PC28 A10       -> A8 */
-	sam_configgpio(GPIO_SMC_A11);       /* PC29 A11       -> A9 */
-	sam_configgpio(GPIO_SDRAMC_A10_2);  /* PD13 SDA10     -> A10 */
-	sam_configgpio(GPIO_SDRAMC_BA0);    /* PA20 BA0       -> A11 */
+	sam_configgpio(GPIO_SMC_A2); /* PC20 A2        -> A0 */
+	sam_configgpio(GPIO_SMC_A3); /* PC21 A3        -> A1 */
+	sam_configgpio(GPIO_SMC_A4); /* PC22 A4        -> A2 */
+	sam_configgpio(GPIO_SMC_A5); /* PC23 A5        -> A3 */
+	sam_configgpio(GPIO_SMC_A6); /* PC24 A6        -> A4 */
+	sam_configgpio(GPIO_SMC_A7); /* PC25 A7        -> A5 */
+	sam_configgpio(GPIO_SMC_A8); /* PC26 A8        -> A6 */
+	sam_configgpio(GPIO_SMC_A9); /* PC27 A9        -> A7 */
+	sam_configgpio(GPIO_SMC_A10); /* PC28 A10       -> A8 */
+	sam_configgpio(GPIO_SMC_A11); /* PC29 A11       -> A9 */
+	sam_configgpio(GPIO_SDRAMC_A10_2); /* PD13 SDA10     -> A10 */
+	sam_configgpio(GPIO_SDRAMC_BA0); /* PA20 BA0       -> A11 */
 
-	sam_configgpio(GPIO_SDRAMC_CKE);    /* PD14 SDCKE     -> CKE */
-	sam_configgpio(GPIO_SDRAMC_CK);     /* PD23 SDCK      -> CLK */
-	sam_configgpio(GPIO_SDRAMC_CS_1);   /* PC15 SDCS      -> nCS */
-	sam_configgpio(GPIO_SDRAMC_RAS);    /* PD16 RAS       -> nRAS */
-	sam_configgpio(GPIO_SDRAMC_CAS);    /* PD17 CAS       -> nCAS */
-	sam_configgpio(GPIO_SDRAMC_WE);     /* PD29 SDWE      -> nWE */
-	sam_configgpio(GPIO_SMC_NBS0);      /* PC18 A0/NBS0   -> LDQM */
-	sam_configgpio(GPIO_SMC_NBS1);      /* PD15 NWR1/NBS1 -> UDQM */
+	sam_configgpio(GPIO_SDRAMC_CKE); /* PD14 SDCKE     -> CKE */
+	sam_configgpio(GPIO_SDRAMC_CK); /* PD23 SDCK      -> CLK */
+	sam_configgpio(GPIO_SDRAMC_CS_1); /* PC15 SDCS      -> nCS */
+	sam_configgpio(GPIO_SDRAMC_RAS); /* PD16 RAS       -> nRAS */
+	sam_configgpio(GPIO_SDRAMC_CAS); /* PD17 CAS       -> nCAS */
+	sam_configgpio(GPIO_SDRAMC_WE); /* PD29 SDWE      -> nWE */
+	sam_configgpio(GPIO_SMC_NBS0); /* PC18 A0/NBS0   -> LDQM */
+	sam_configgpio(GPIO_SMC_NBS1); /* PD15 NWR1/NBS1 -> UDQM */
 
 	/* Enable the SDRAMC peripheral */
 
 	sam_sdramc_enableclk();
 
-	regval  = getreg32(SAM_MATRIX_CCFG_SMCNFCS);
+	regval = getreg32(SAM_MATRIX_CCFG_SMCNFCS);
 	regval |= MATRIX_CCFG_SMCNFCS_SDRAMEN;
 	putreg32(regval, SAM_MATRIX_CCFG_SMCNFCS);
 
@@ -195,17 +195,17 @@ void sam_sdram_config(void)
 	 *    SDRAMC_CR_TXSR(13)        70 ns min Exit self-refresh to active time
 	 */
 
-	regval = SDRAMC_CR_NC_COL8       |  /* 8 column bits */
-		 SDRAMC_CR_NR_ROW11      |  /* 11 row bits */
-		 SDRAMC_CR_NB_BANK2      |  /* 2 banks */
-		 SDRAMC_CR_CAS_LATENCY3  |  /* 3 cycle CAS latency */
-		 SDRAMC_CR_DBW           |  /* 16 bit */
-		 SDRAMC_CR_TWR(4)        |  /* 4 cycle write recovery delay */
-		 SDRAMC_CR_TRCTRFC(11)   |  /* 63 ns min */
-		 SDRAMC_CR_TRP(5)        |  /* 21 ns min Command period (PRE to ACT) */
-		 SDRAMC_CR_TRCD(5)       |  /* 21 ns min Active Command to read/Write Command delay time */
-		 SDRAMC_CR_TRAS(8)       |  /* 42 ns min Command period (ACT to PRE) */
-		 SDRAMC_CR_TXSR(13);        /* 70 ns min Exit self-refresh to active time */
+	regval = SDRAMC_CR_NC_COL8 | /* 8 column bits */
+	SDRAMC_CR_NR_ROW11 | /* 11 row bits */
+	SDRAMC_CR_NB_BANK2 | /* 2 banks */
+	SDRAMC_CR_CAS_LATENCY3 | /* 3 cycle CAS latency */
+	SDRAMC_CR_DBW | /* 16 bit */
+	SDRAMC_CR_TWR(4) | /* 4 cycle write recovery delay */
+	SDRAMC_CR_TRCTRFC(11) | /* 63 ns min */
+	SDRAMC_CR_TRP(5) | /* 21 ns min Command period (PRE to ACT) */
+	SDRAMC_CR_TRCD(5) | /* 21 ns min Active Command to read/Write Command delay time */
+	SDRAMC_CR_TRAS(8) | /* 42 ns min Command period (ACT to PRE) */
+	SDRAMC_CR_TXSR(13); /* 70 ns min Exit self-refresh to active time */
 
 	putreg32(regval, SAM_SDRAMC_CR);
 
@@ -247,8 +247,8 @@ void sam_sdram_config(void)
 	 *    any SDRAM location eight times.
 	 */
 
-	for (i = 0 ; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++)
+	{	
 		putreg32(SDRAMC_MR_MODE_AUTOREFRESH, SAM_SDRAMC_MR);
 		*psdram = 0;
 	}
@@ -262,7 +262,7 @@ void sam_sdram_config(void)
 	 *    that BA[1:0] are set to 0. For example, with a 16-bit 128 MB SDRAM
 	 *    (12 rows, 9 columns, 4 banks) bank address, the SDRAM write access
 	 *    should be done at the address 0x70000000.
-	  */
+	 */
 
 	putreg32(SDRAMC_MR_MODE_LOADMODE, SAM_SDRAMC_MR);
 	*psdram = 0;
@@ -281,7 +281,6 @@ void sam_sdram_config(void)
 
 	//putreg32(SDRAMC_MR_MODE_EXTLOADMODE, SDRAMC_MR_MODE_EXT_LOAD_MODEREG);
 	// *((uint8_t *)(psdram + SDRAM_BA0)) = 0;
-
 	/* 10. The application must go into Normal Mode, setting Mode to 0 in the
 	 *     Mode Register and performing a write access at any location in the
 	 *     SDRAM.
@@ -301,10 +300,10 @@ void sam_sdram_config(void)
 	 * For IS42S16100E, 2048 refresh cycle every 32ms, every 15.625 usec
 	 */
 
-	regval = (32 * (BOARD_MCK_FREQUENCY / 1000)) / 2048 ;
+	regval = (32 * (BOARD_MCK_FREQUENCY / 1000)) / 2048;
 	putreg32(regval, SAM_SDRAMC_TR);
 
-	regval  = getreg32(SAM_SDRAMC_CFR1);
+	regval = getreg32(SAM_SDRAMC_CFR1);
 	regval |= SDRAMC_CFR1_UNAL;
 	putreg32(regval, SAM_SDRAMC_CFR1);
 

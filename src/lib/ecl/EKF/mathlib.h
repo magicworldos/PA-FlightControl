@@ -50,14 +50,14 @@
 #endif
 
 namespace math
-{
+{	
 // using namespace Eigen;
-
-float min(float val1, float val2);
-float max(float val1, float val2);
-float constrain(float val, float min, float max);
-float radians(float degrees);
-float degrees(float radians);
+	
+	float min(float val1, float val2);
+	float max(float val1, float val2);
+	float constrain(float val, float min, float max);
+	float radians(float degrees);
+	float degrees(float radians);
 
 }
 #else

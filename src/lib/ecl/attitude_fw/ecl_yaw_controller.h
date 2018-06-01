@@ -54,8 +54,8 @@
 #include "ecl_controller.h"
 
 class __EXPORT ECL_YawController :
-	public ECL_Controller
-{
+public ECL_Controller
+{	
 public:
 	ECL_YawController();
 	~ECL_YawController() = default;
@@ -66,16 +66,17 @@ public:
 
 	/* Additional setters */
 	void set_coordinated_min_speed(float coordinated_min_speed)
-	{
+	{	
 		_coordinated_min_speed = coordinated_min_speed;
 	}
 
 	void set_coordinated_method(int32_t coordinated_method)
-	{
+	{	
 		_coordinated_method = coordinated_method;
 	}
 
-	enum {
+	enum
+	{	
 		COORD_METHOD_OPEN = 0,
 		COORD_METHOD_CLOSEACC = 1
 	};

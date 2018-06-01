@@ -39,7 +39,6 @@
 
 #pragma once
 
-
 #include <uORB/topics/led_control.h>
 
 #include <board_config.h>
@@ -52,7 +51,6 @@
 #if BOARD_MAX_LEDS > 8 // because led_mask is uint8_t
 #error "BOARD_MAX_LEDS too large. You need to change the led_mask type in the led_control uorb topic (and where it's used)"
 #endif
-
 
 // set the queue size to the number of LED's, so that each led can be controlled individually
 static const int LED_UORB_QUEUE_LENGTH = BOARD_MAX_LEDS;

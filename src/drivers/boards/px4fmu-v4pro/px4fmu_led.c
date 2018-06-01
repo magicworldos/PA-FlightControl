@@ -60,14 +60,11 @@ extern void led_off(int led);
 extern void led_toggle(int led);
 __END_DECLS
 
-
-
-static uint32_t g_ledmap[] =
-{
-	GPIO_LED_BLUE,    // Indexed by LED_BLUE
-	GPIO_LED_RED,     // Indexed by LED_RED, LED_AMBER
-	0,                // Indexed by LED_SAFETY
-	GPIO_LED_GREEN,   // Indexed by LED_GREEN
+static uint32_t g_ledmap[] = {
+GPIO_LED_BLUE,    // Indexed by LED_BLUE
+GPIO_LED_RED,     // Indexed by LED_RED, LED_AMBER
+0,                // Indexed by LED_SAFETY
+GPIO_LED_GREEN,   // Indexed by LED_GREEN
 };
 
 __EXPORT void led_init(void)
@@ -93,12 +90,12 @@ static void phy_set_led(int led, bool state)
 
 static bool phy_get_led(int led)
 {
-
+	
 	if (g_ledmap[led] != 0)
 	{
 		return !stm32_gpioread(g_ledmap[led]);
 	}
-
+	
 	return 0;
 }
 
@@ -114,6 +111,6 @@ __EXPORT void led_off(int led)
 
 __EXPORT void led_toggle(int led)
 {
-
+	
 	phy_set_led(led, !phy_get_led(led));
 }

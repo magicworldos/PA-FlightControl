@@ -242,7 +242,7 @@ struct log_FLOW_s
 	uint32_t time_since_last_sonar_update;
 	uint16_t frame_count_since_last_readout;
 	int16_t gyro_temperature;
-	uint8_t	quality;
+	uint8_t quality;
 };
 
 /* --- GPOS - GLOBAL POSITION ESTIMATE --- */
@@ -279,16 +279,16 @@ struct log_GPSP_s
 struct log_ESC_s
 {
 	uint16_t counter;
-	uint8_t  esc_count;
-	uint8_t  esc_connectiontype;
-	uint8_t  esc_num;
+	uint8_t esc_count;
+	uint8_t esc_connectiontype;
+	uint8_t esc_num;
 	uint16_t esc_address;
 	uint16_t esc_version;
-	float    esc_voltage;
-	float    esc_current;
-	int32_t  esc_rpm;
-	float    esc_temperature;
-	float    esc_setpoint;
+	float esc_voltage;
+	float esc_current;
+	int32_t esc_rpm;
+	float esc_temperature;
+	float esc_setpoint;
 	uint16_t esc_setpoint_raw;
 };
 
@@ -328,7 +328,6 @@ struct log_DIST_s
 
 /* LOG IMU1 and IMU2 MSGs consume IDs 22 and 23 */
 
-
 /* --- PWR - ONBOARD POWER SYSTEM --- */
 #define LOG_PWR_MSG 24
 struct log_PWR_s
@@ -360,28 +359,28 @@ struct log_MOCP_s
 #define LOG_GS0A_MSG 26
 struct log_GS0A_s
 {
-	uint8_t satellite_snr[16];			/**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
+	uint8_t satellite_snr[16]; /**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
 };
 
 /* --- GS0B - GPS SNR #0, SAT GROUP B --- */
 #define LOG_GS0B_MSG 27
 struct log_GS0B_s
 {
-	uint8_t satellite_snr[16];			/**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
+	uint8_t satellite_snr[16]; /**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
 };
 
 /* --- GS1A - GPS SNR #1, SAT GROUP A --- */
 #define LOG_GS1A_MSG 28
 struct log_GS1A_s
 {
-	uint8_t satellite_snr[16];			/**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
+	uint8_t satellite_snr[16]; /**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
 };
 
 /* --- GS1B - GPS SNR #1, SAT GROUP B --- */
 #define LOG_GS1B_MSG 29
 struct log_GS1B_s
 {
-	uint8_t satellite_snr[16];			/**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
+	uint8_t satellite_snr[16]; /**< dBHz, Signal to noise ratio of satellite C/N0, range 0..99 */
 };
 
 /* --- TECS - TECS STATUS --- */
@@ -635,58 +634,58 @@ struct log_PARM_s
 
 /* construct list of all message formats */
 static const struct log_format_s log_formats[] =
-{
+{	
 	/* business-level messages, ID < 0x80 */
-	LOG_FORMAT(ATT, "ffffffffff",	"qw,qx,qy,qz,Roll,Pitch,Yaw,RollRate,PitchRate,YawRate"),
-	LOG_FORMAT(ATSP, "ffffffff",		"RollSP,PitchSP,YawSP,ThrustSP,qw,qx,qy,qz"),
-	LOG_FORMAT_S(IMU, IMU, "ffffffffffff",		"AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
-	LOG_FORMAT_S(IMU1, IMU, "ffffffffffff",		"AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
-	LOG_FORMAT_S(IMU2, IMU, "ffffffffffff",		"AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
-	LOG_FORMAT_S(SENS, SENS, "fff",		"BaroPres,BaroAlt,BaroTemp"),
-	LOG_FORMAT_S(AIR1, SENS, "fffff",	"BaroPa,BaroAlt,BaroTmp,DiffPres,DiffPresF"),
-	LOG_FORMAT(LPOS, "ffffffffLLfBBff",	"X,Y,Z,Dist,DistR,VX,VY,VZ,RLat,RLon,RAlt,PFlg,GFlg,EPH,EPV"),
-	LOG_FORMAT(LPSP, "ffffffffff",		"X,Y,Z,Yaw,VX,VY,VZ,AX,AY,AZ"),
-	LOG_FORMAT(GPS, "QBffLLfffffBHHH",	"GPSTime,Fix,EPH,EPV,Lat,Lon,Alt,VelN,VelE,VelD,Cog,nSat,SNR,N,J"),
-	LOG_FORMAT_S(DGPS, GPS,	 "QBffLLfffffBHHH",	"GPSTime,Fix,EPH,EPV,Lat,Lon,Alt,VelN,VelE,VelD,Cog,nSat,SNR,N,J"),
-	LOG_FORMAT_S(ATTC, ATTC, "ffff",		"Roll,Pitch,Yaw,Thrust"),
-	LOG_FORMAT_S(ATC1, ATTC, "ffff",		"Roll,Pitch,Yaw,Thrust"),
-	LOG_FORMAT(STAT, "BBBBB",		"MainState,NavState,ArmS,Failsafe,IsRotWing"),
-	LOG_FORMAT(VTOL, "fBBB",		"Arsp,RwMode,TransMode,Failsafe"),
+	LOG_FORMAT(ATT, "ffffffffff", "qw,qx,qy,qz,Roll,Pitch,Yaw,RollRate,PitchRate,YawRate"),
+	LOG_FORMAT(ATSP, "ffffffff", "RollSP,PitchSP,YawSP,ThrustSP,qw,qx,qy,qz"),
+	LOG_FORMAT_S(IMU, IMU, "ffffffffffff", "AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
+	LOG_FORMAT_S(IMU1, IMU, "ffffffffffff", "AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
+	LOG_FORMAT_S(IMU2, IMU, "ffffffffffff", "AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ,tA,tG,tM"),
+	LOG_FORMAT_S(SENS, SENS, "fff", "BaroPres,BaroAlt,BaroTemp"),
+	LOG_FORMAT_S(AIR1, SENS, "fffff", "BaroPa,BaroAlt,BaroTmp,DiffPres,DiffPresF"),
+	LOG_FORMAT(LPOS, "ffffffffLLfBBff", "X,Y,Z,Dist,DistR,VX,VY,VZ,RLat,RLon,RAlt,PFlg,GFlg,EPH,EPV"),
+	LOG_FORMAT(LPSP, "ffffffffff", "X,Y,Z,Yaw,VX,VY,VZ,AX,AY,AZ"),
+	LOG_FORMAT(GPS, "QBffLLfffffBHHH", "GPSTime,Fix,EPH,EPV,Lat,Lon,Alt,VelN,VelE,VelD,Cog,nSat,SNR,N,J"),
+	LOG_FORMAT_S(DGPS, GPS, "QBffLLfffffBHHH", "GPSTime,Fix,EPH,EPV,Lat,Lon,Alt,VelN,VelE,VelD,Cog,nSat,SNR,N,J"),
+	LOG_FORMAT_S(ATTC, ATTC, "ffff", "Roll,Pitch,Yaw,Thrust"),
+	LOG_FORMAT_S(ATC1, ATTC, "ffff", "Roll,Pitch,Yaw,Thrust"),
+	LOG_FORMAT(STAT, "BBBBB", "MainState,NavState,ArmS,Failsafe,IsRotWing"),
+	LOG_FORMAT(VTOL, "fBBB", "Arsp,RwMode,TransMode,Failsafe"),
 	LOG_FORMAT(CTS, "fffffff", "Vx_b,Vy_b,Vz_b,Vinf,P,Q,R"),
-	LOG_FORMAT(RC, "ffffffffffffBBBL",		"C0,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,RSSI,CNT,Lost,Drop"),
-	LOG_FORMAT_S(OUT0, OUT, "ffffffff",		"Out0,Out1,Out2,Out3,Out4,Out5,Out6,Out7"),
-	LOG_FORMAT_S(OUT1, OUT, "ffffffff",		"Out0,Out1,Out2,Out3,Out4,Out5,Out6,Out7"),
-	LOG_FORMAT(AIRS, "fffff",			"IAS,TAS,TASraw,Temp,Confidence"),
-	LOG_FORMAT(ARSP, "fff",			"RollRateSP,PitchRateSP,YawRateSP"),
-	LOG_FORMAT(FLOW, "BffffffLLHhB",	"ID,RawX,RawY,RX,RY,RZ,Dist,TSpan,DtSonar,FrmCnt,GT,Qlty"),
-	LOG_FORMAT(GPOS, "LLfffffff",		"Lat,Lon,Alt,VelN,VelE,VelD,EPH,EPV,TALT"),
-	LOG_FORMAT(GPSP, "LLffBfbf",		"Lat,Lon,Alt,Yaw,Type,LoitR,LoitDir,PitMin"),
-	LOG_FORMAT(ESC, "HBBBHHffiffH",		"count,nESC,Conn,N,Ver,Adr,Volt,Amp,RPM,Temp,SetP,SetPRAW"),
-	LOG_FORMAT(GVSP, "fff",			"VX,VY,VZ"),
-	LOG_FORMAT(BATT, "fffffffB",		"V,VFilt,C,CFilt,Discharged,Remaining,Scale,Warning"),
-	LOG_FORMAT(DIST, "BBBff",			"Id,Type,Orientation,Distance,Covariance"),
-	LOG_FORMAT_S(TEL0, TEL, "BBBBHHBQ",		"RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
-	LOG_FORMAT_S(TEL1, TEL, "BBBBHHBQ",		"RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
-	LOG_FORMAT_S(TEL2, TEL, "BBBBHHBQ",		"RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
-	LOG_FORMAT_S(TEL3, TEL, "BBBBHHBQ",		"RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
-	LOG_FORMAT(EST0, "ffffffffffffBBHB",	"s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,nStat,fNaN,fFault,fTOut"),
-	LOG_FORMAT(EST1, "ffffffffffffffff",	"s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27"),
-	LOG_FORMAT(EST2, "ffffffffffffHHBH",     "P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,GCHK,CTRL,fHealth,IC"),
-	LOG_FORMAT(EST3, "ffffffffffffffff",    "P12,P13,P14,P15,P16,P17,P18,P19,P20,P21,P22,P23,P24,P25,P26,P27"),
-	LOG_FORMAT(EST4, "fffffffffffffff",     "VxI,VyI,VzI,PxI,PyI,PzI,VxIV,VyIV,VzIV,PxIV,PyIV,PzIV,e1,e2,e3"),
+	LOG_FORMAT(RC, "ffffffffffffBBBL", "C0,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,RSSI,CNT,Lost,Drop"),
+	LOG_FORMAT_S(OUT0, OUT, "ffffffff", "Out0,Out1,Out2,Out3,Out4,Out5,Out6,Out7"),
+	LOG_FORMAT_S(OUT1, OUT, "ffffffff", "Out0,Out1,Out2,Out3,Out4,Out5,Out6,Out7"),
+	LOG_FORMAT(AIRS, "fffff", "IAS,TAS,TASraw,Temp,Confidence"),
+	LOG_FORMAT(ARSP, "fff", "RollRateSP,PitchRateSP,YawRateSP"),
+	LOG_FORMAT(FLOW, "BffffffLLHhB", "ID,RawX,RawY,RX,RY,RZ,Dist,TSpan,DtSonar,FrmCnt,GT,Qlty"),
+	LOG_FORMAT(GPOS, "LLfffffff", "Lat,Lon,Alt,VelN,VelE,VelD,EPH,EPV,TALT"),
+	LOG_FORMAT(GPSP, "LLffBfbf", "Lat,Lon,Alt,Yaw,Type,LoitR,LoitDir,PitMin"),
+	LOG_FORMAT(ESC, "HBBBHHffiffH", "count,nESC,Conn,N,Ver,Adr,Volt,Amp,RPM,Temp,SetP,SetPRAW"),
+	LOG_FORMAT(GVSP, "fff", "VX,VY,VZ"),
+	LOG_FORMAT(BATT, "fffffffB", "V,VFilt,C,CFilt,Discharged,Remaining,Scale,Warning"),
+	LOG_FORMAT(DIST, "BBBff", "Id,Type,Orientation,Distance,Covariance"),
+	LOG_FORMAT_S(TEL0, TEL, "BBBBHHBQ", "RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
+	LOG_FORMAT_S(TEL1, TEL, "BBBBHHBQ", "RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
+	LOG_FORMAT_S(TEL2, TEL, "BBBBHHBQ", "RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
+	LOG_FORMAT_S(TEL3, TEL, "BBBBHHBQ", "RSSI,RemRSSI,Noise,RemNoise,RXErr,Fixed,TXBuf,HbTime"),
+	LOG_FORMAT(EST0, "ffffffffffffBBHB", "s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,nStat,fNaN,fFault,fTOut"),
+	LOG_FORMAT(EST1, "ffffffffffffffff", "s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27"),
+	LOG_FORMAT(EST2, "ffffffffffffHHBH", "P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,GCHK,CTRL,fHealth,IC"),
+	LOG_FORMAT(EST3, "ffffffffffffffff", "P12,P13,P14,P15,P16,P17,P18,P19,P20,P21,P22,P23,P24,P25,P26,P27"),
+	LOG_FORMAT(EST4, "fffffffffffffff", "VxI,VyI,VzI,PxI,PyI,PzI,VxIV,VyIV,VzIV,PxIV,PyIV,PzIV,e1,e2,e3"),
 	LOG_FORMAT(EST5, "ffffffffffff", "MaxI,MayI,MazI,MaxIV,MayIV,MazIV,HeI,HeIV,AiI,AiIV,BeI,BeIV"),
 	LOG_FORMAT(EST6, "ffffff", "FxI,FyI,FxIV,FyIV,HAGLI,HAGLIV"),
-	LOG_FORMAT(PWR, "fffBBBBB",		"Periph5V,Servo5V,RSSI,UsbOk,BrickOk,ServoOk,PeriphOC,HipwrOC"),
-	LOG_FORMAT(MOCP, "fffffff",		"QuatW,QuatX,QuatY,QuatZ,X,Y,Z"),
-	LOG_FORMAT(VISN, "ffffffffff",		"X,Y,Z,VX,VY,VZ,QuatW,QuatX,QuatY,QuatZ"),
-	LOG_FORMAT(GS0A, "BBBBBBBBBBBBBBBB",	"s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
-	LOG_FORMAT(GS0B, "BBBBBBBBBBBBBBBB",	"s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
-	LOG_FORMAT(GS1A, "BBBBBBBBBBBBBBBB",	"s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
-	LOG_FORMAT(GS1B, "BBBBBBBBBBBBBBBB",	"s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
-	LOG_FORMAT(TECS, "ffffffffffffffB",	"ASP,AF,FSP,F,AsSP,AsF,AsDSP,AsD,EE,ERE,EDE,EDRE,PtchI,ThrI,M"),
-	LOG_FORMAT(WIND, "ffff",	"X,Y,CovX,CovY"),
-	LOG_FORMAT(ENCD, "qfqf",	"cnt0,vel0,cnt1,vel1"),
-	LOG_FORMAT(TSYN, "Q", 		"TimeOffset"),
+	LOG_FORMAT(PWR, "fffBBBBB", "Periph5V,Servo5V,RSSI,UsbOk,BrickOk,ServoOk,PeriphOC,HipwrOC"),
+	LOG_FORMAT(MOCP, "fffffff", "QuatW,QuatX,QuatY,QuatZ,X,Y,Z"),
+	LOG_FORMAT(VISN, "ffffffffff", "X,Y,Z,VX,VY,VZ,QuatW,QuatX,QuatY,QuatZ"),
+	LOG_FORMAT(GS0A, "BBBBBBBBBBBBBBBB", "s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
+	LOG_FORMAT(GS0B, "BBBBBBBBBBBBBBBB", "s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
+	LOG_FORMAT(GS1A, "BBBBBBBBBBBBBBBB", "s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
+	LOG_FORMAT(GS1B, "BBBBBBBBBBBBBBBB", "s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15"),
+	LOG_FORMAT(TECS, "ffffffffffffffB", "ASP,AF,FSP,F,AsSP,AsF,AsDSP,AsD,EE,ERE,EDE,EDRE,PtchI,ThrI,M"),
+	LOG_FORMAT(WIND, "ffff", "X,Y,CovX,CovY"),
+	LOG_FORMAT(ENCD, "qfqf", "cnt0,vel0,cnt1,vel1"),
+	LOG_FORMAT(TSYN, "Q", "TimeOffset"),
 	LOG_FORMAT(MACS, "fff", "RRint,PRint,YRint"),
 	LOG_FORMAT(CAMT, "QI", "timestamp,seq"),
 	LOG_FORMAT(LAND, "B", "Landed"),

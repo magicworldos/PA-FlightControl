@@ -73,7 +73,6 @@ struct pwm_output_values
  * Maximum number of PWM output channels supported by the device.
  */
 //#define PWM_OUTPUT_MAX_CHANNELS	16
-
 /* Use defaults unless the board override the defaults by providing
  * PX4_PWM_ALTERNATE_RANGES and a replacement set of
  * constants
@@ -131,7 +130,7 @@ struct pwm_output_values
  * Servo output signal type, value is actual servo output pulse
  * width in microseconds.
  */
-typedef uint16_t	servo_position_t;
+typedef uint16_t servo_position_t;
 
 /**
  * RC config values for a channel
@@ -147,7 +146,7 @@ struct pwm_output_rc_config
 	uint16_t rc_max;
 	uint16_t rc_dz;
 	uint16_t rc_assignment;
-	bool     rc_reverse;
+	bool rc_reverse;
 };
 
 /*
@@ -305,12 +304,12 @@ struct pwm_output_rc_config
  *			as GPIOs or as another function.
  * @return		OK on success.
  */
-__EXPORT extern int	up_pwm_servo_init(uint32_t channel_mask);
+__EXPORT extern int up_pwm_servo_init(uint32_t channel_mask);
 
 /**
  * De-initialise the PWM servo outputs.
  */
-__EXPORT extern void	up_pwm_servo_deinit(void);
+__EXPORT extern void up_pwm_servo_deinit(void);
 
 /**
  * Arm or disarm servo outputs.
@@ -323,7 +322,7 @@ __EXPORT extern void	up_pwm_servo_deinit(void);
  * @param armed		If true, outputs are armed; if false they
  *			are disarmed.
  */
-__EXPORT extern void	up_pwm_servo_arm(bool armed);
+__EXPORT extern void up_pwm_servo_arm(bool armed);
 
 /**
  * Set the servo update rate for all rate groups.
@@ -331,7 +330,7 @@ __EXPORT extern void	up_pwm_servo_arm(bool armed);
  * @param rate		The update rate in Hz to set.
  * @return		OK on success, -ERANGE if an unsupported update rate is set.
  */
-__EXPORT extern int	up_pwm_servo_set_rate(unsigned rate);
+__EXPORT extern int up_pwm_servo_set_rate(unsigned rate);
 
 /**
  * Get a bitmap of output channels assigned to a given rate group.
@@ -350,7 +349,7 @@ __EXPORT extern uint32_t up_pwm_servo_get_rate_group(unsigned group);
  * @param rate		The update rate in Hz.
  * @return		OK if the group was adjusted, -ERANGE if an unsupported update rate is set.
  */
-__EXPORT extern int	up_pwm_servo_set_rate_group_update(unsigned group, unsigned rate);
+__EXPORT extern int up_pwm_servo_set_rate_group_update(unsigned group, unsigned rate);
 
 /**
  * Trigger all timer's channels in Oneshot mode to fire
@@ -366,7 +365,7 @@ __EXPORT extern void up_pwm_update(void);
  * @param channel	The channel to set.
  * @param value		The output pulse width in microseconds.
  */
-__EXPORT extern int	up_pwm_servo_set(unsigned channel, servo_position_t value);
+__EXPORT extern int up_pwm_servo_set(unsigned channel, servo_position_t value);
 
 /**
  * Get the current output value for a channel.

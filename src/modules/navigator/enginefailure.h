@@ -50,7 +50,7 @@
 
 class Navigator;
 
-class EngineFailure : public MissionBlock
+class EngineFailure: public MissionBlock
 {
 public:
 	EngineFailure(Navigator *navigator, const char *name);
@@ -73,12 +73,12 @@ private:
 	/**
 	 * Set the DLL item
 	 */
-	void		set_ef_item();
+	void set_ef_item();
 
 	/**
 	 * Move to next EF item
 	 */
-	void		advance_ef();
-
+	void advance_ef();
+	
 };
 #endif

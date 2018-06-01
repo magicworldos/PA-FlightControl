@@ -33,7 +33,8 @@
 #define __CLOCK_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup CLOCK_11XX CHIP: LPC11xx Clock Control block driver
@@ -68,15 +69,16 @@ STATIC INLINE bool Chip_Clock_IsSystemPLLLocked(void)
 /**
  * Clock sources for system and USB PLLs
  */
-typedef enum CHIP_SYSCTL_PLLCLKSRC {
-	SYSCTL_PLLCLKSRC_IRC = 0,		/*!< Internal oscillator in */
-	SYSCTL_PLLCLKSRC_MAINOSC,		/*!< Crystal (main) oscillator in */
+typedef enum CHIP_SYSCTL_PLLCLKSRC
+{
+	SYSCTL_PLLCLKSRC_IRC = 0, /*!< Internal oscillator in */
+	SYSCTL_PLLCLKSRC_MAINOSC, /*!< Crystal (main) oscillator in */
 #if defined(CHIP_LPC11AXX)
-	SYSCTL_PLLCLKSRC_EXT_CLKIN,	/*!< External clock in (11Axx only) */
+	SYSCTL_PLLCLKSRC_EXT_CLKIN, /*!< External clock in (11Axx only) */
 #else
-	SYSCTL_PLLCLKSRC_RESERVED1,	/*!< Reserved */
+	SYSCTL_PLLCLKSRC_RESERVED1, /*!< Reserved */
 #endif
-	SYSCTL_PLLCLKSRC_RESERVED2,	/*!< Reserved */
+	SYSCTL_PLLCLKSRC_RESERVED2, /*!< Reserved */
 } CHIP_SYSCTL_PLLCLKSRC_T;
 
 /**
@@ -97,7 +99,7 @@ void Chip_Clock_SetSystemPLLSource(CHIP_SYSCTL_PLLCLKSRC_T src);
  * @note	See the user manual for how to setup the PLL.
  */
 STATIC INLINE void Chip_Clock_SetupUSBPLL(uint8_t msel, uint8_t psel)
-{
+{	
 	LPC_SYSCTL->USBPLLCTRL = (msel & 0x1F) | ((psel & 0x3) << 5);
 }
 
@@ -106,7 +108,7 @@ STATIC INLINE void Chip_Clock_SetupUSBPLL(uint8_t msel, uint8_t psel)
  * @return	true of the PLL is locked. false if not locked
  */
 STATIC INLINE bool Chip_Clock_IsUSBPLLLocked(void)
-{
+{	
 	return (bool) ((LPC_SYSCTL->USBPLLSTAT & 1) != 0);
 }
 
@@ -135,23 +137,24 @@ void Chip_Clock_SetPLLBypass(bool bypass, bool highfr);
 /**
  * Watchdog and low frequency oscillator frequencies plus or minus 40%
  */
-typedef enum CHIP_WDTLFO_OSC {
+typedef enum CHIP_WDTLFO_OSC
+{
 	WDTLFO_OSC_ILLEGAL,
-	WDTLFO_OSC_0_60,	/*!< 0.6 MHz watchdog/LFO rate */
-	WDTLFO_OSC_1_05,	/*!< 1.05 MHz watchdog/LFO rate */
-	WDTLFO_OSC_1_40,	/*!< 1.4 MHz watchdog/LFO rate */
-	WDTLFO_OSC_1_75,	/*!< 1.75 MHz watchdog/LFO rate */
-	WDTLFO_OSC_2_10,	/*!< 2.1 MHz watchdog/LFO rate */
-	WDTLFO_OSC_2_40,	/*!< 2.4 MHz watchdog/LFO rate */
-	WDTLFO_OSC_2_70,	/*!< 2.7 MHz watchdog/LFO rate */
-	WDTLFO_OSC_3_00,	/*!< 3.0 MHz watchdog/LFO rate */
-	WDTLFO_OSC_3_25,	/*!< 3.25 MHz watchdog/LFO rate */
-	WDTLFO_OSC_3_50,	/*!< 3.5 MHz watchdog/LFO rate */
-	WDTLFO_OSC_3_75,	/*!< 3.75 MHz watchdog/LFO rate */
-	WDTLFO_OSC_4_00,	/*!< 4.0 MHz watchdog/LFO rate */
-	WDTLFO_OSC_4_20,	/*!< 4.2 MHz watchdog/LFO rate */
-	WDTLFO_OSC_4_40,	/*!< 4.4 MHz watchdog/LFO rate */
-	WDTLFO_OSC_4_60		/*!< 4.6 MHz watchdog/LFO rate */
+	WDTLFO_OSC_0_60, /*!< 0.6 MHz watchdog/LFO rate */
+	WDTLFO_OSC_1_05, /*!< 1.05 MHz watchdog/LFO rate */
+	WDTLFO_OSC_1_40, /*!< 1.4 MHz watchdog/LFO rate */
+	WDTLFO_OSC_1_75, /*!< 1.75 MHz watchdog/LFO rate */
+	WDTLFO_OSC_2_10, /*!< 2.1 MHz watchdog/LFO rate */
+	WDTLFO_OSC_2_40, /*!< 2.4 MHz watchdog/LFO rate */
+	WDTLFO_OSC_2_70, /*!< 2.7 MHz watchdog/LFO rate */
+	WDTLFO_OSC_3_00, /*!< 3.0 MHz watchdog/LFO rate */
+	WDTLFO_OSC_3_25, /*!< 3.25 MHz watchdog/LFO rate */
+	WDTLFO_OSC_3_50, /*!< 3.5 MHz watchdog/LFO rate */
+	WDTLFO_OSC_3_75, /*!< 3.75 MHz watchdog/LFO rate */
+	WDTLFO_OSC_4_00, /*!< 4.0 MHz watchdog/LFO rate */
+	WDTLFO_OSC_4_20, /*!< 4.2 MHz watchdog/LFO rate */
+	WDTLFO_OSC_4_40, /*!< 4.4 MHz watchdog/LFO rate */
+	WDTLFO_OSC_4_60 /*!< 4.6 MHz watchdog/LFO rate */
 } CHIP_WDTLFO_OSC_T;
 
 /**
@@ -163,7 +166,7 @@ typedef enum CHIP_WDTLFO_OSC {
  */
 STATIC INLINE void Chip_Clock_SetWDTOSC(CHIP_WDTLFO_OSC_T wdtclk, uint8_t div)
 {
-	LPC_SYSCTL->WDTOSCCTRL  = (((uint32_t) wdtclk) << 5) | ((div >> 1) - 1);
+	LPC_SYSCTL->WDTOSCCTRL = (((uint32_t) wdtclk) << 5) | ((div >> 1) - 1);
 }
 
 #if defined(CHIP_LPC11AXX)
@@ -175,8 +178,8 @@ STATIC INLINE void Chip_Clock_SetWDTOSC(CHIP_WDTLFO_OSC_T wdtclk, uint8_t div)
  * @note	Low frequency oscillator rate = selected rate divided by divider rate
  */
 STATIC INLINE void Chip_Clock_SetLFOSC(CHIP_WDTLFO_OSC_T lfoclk, uint8_t div)
-{
-	LPC_SYSCTL->LFOSCCTRL  = (((uint32_t) lfoclk) << 5) | ((div >> 1) - 1);
+{	
+	LPC_SYSCTL->LFOSCCTRL = (((uint32_t) lfoclk) << 5) | ((div >> 1) - 1);
 }
 
 #endif /*CHIP_LPC11AXX*/
@@ -184,12 +187,13 @@ STATIC INLINE void Chip_Clock_SetLFOSC(CHIP_WDTLFO_OSC_T lfoclk, uint8_t div)
 /**
  * Clock sources for main system clock
  */
-typedef enum CHIP_SYSCTL_MAINCLKSRC {
-	SYSCTL_MAINCLKSRC_IRC = 0,		/*!< Internal oscillator */
-	SYSCTL_MAINCLKSRC_PLLIN,		/*!< System PLL input */
-	SYSCTL_MAINCLKSRC_LFOSC,		/*!< LF oscillator rate (11Axx only) */
-	SYSCTL_MAINCLKSRC_WDTOSC = SYSCTL_MAINCLKSRC_LFOSC,	/*!< Watchdog oscillator rate */
-	SYSCTL_MAINCLKSRC_PLLOUT,		/*!< System PLL output */
+typedef enum CHIP_SYSCTL_MAINCLKSRC
+{
+	SYSCTL_MAINCLKSRC_IRC = 0, /*!< Internal oscillator */
+	SYSCTL_MAINCLKSRC_PLLIN, /*!< System PLL input */
+	SYSCTL_MAINCLKSRC_LFOSC, /*!< LF oscillator rate (11Axx only) */
+	SYSCTL_MAINCLKSRC_WDTOSC = SYSCTL_MAINCLKSRC_LFOSC, /*!< Watchdog oscillator rate */
+	SYSCTL_MAINCLKSRC_PLLOUT, /*!< System PLL output */
 } CHIP_SYSCTL_MAINCLKSRC_T;
 
 /**
@@ -219,69 +223,70 @@ STATIC INLINE CHIP_SYSCTL_MAINCLKSRC_T Chip_Clock_GetMainClockSource(void)
  */
 STATIC INLINE void Chip_Clock_SetSysClockDiv(uint32_t div)
 {
-	LPC_SYSCTL->SYSAHBCLKDIV  = div;
+	LPC_SYSCTL->SYSAHBCLKDIV = div;
 }
 
 /**
  * System and peripheral clocks
  */
-typedef enum CHIP_SYSCTL_CLOCK {
-	SYSCTL_CLOCK_SYS = 0,				/*!< 0: System clock */
-	SYSCTL_CLOCK_ROM,					/*!<1:  ROM clock */
-	SYSCTL_CLOCK_RAM,					/*!< 2: RAM clock */
-	SYSCTL_CLOCK_FLASHREG,				/*!< 3: FLASH register interface clock */
-	SYSCTL_CLOCK_FLASHARRAY,			/*!< 4: FLASH array access clock */
+typedef enum CHIP_SYSCTL_CLOCK
+{
+	SYSCTL_CLOCK_SYS = 0, /*!< 0: System clock */
+	SYSCTL_CLOCK_ROM, /*!<1:  ROM clock */
+	SYSCTL_CLOCK_RAM, /*!< 2: RAM clock */
+	SYSCTL_CLOCK_FLASHREG, /*!< 3: FLASH register interface clock */
+	SYSCTL_CLOCK_FLASHARRAY, /*!< 4: FLASH array access clock */
 #if defined(CHIP_LPC110X)
-	SYSCTL_CLOCK_RESERVED5,				/*!< 5: Reserved */
+	SYSCTL_CLOCK_RESERVED5, /*!< 5: Reserved */
 #else
-	SYSCTL_CLOCK_I2C,					/*!< 5: I2C clock, not on LPC110x */
+	SYSCTL_CLOCK_I2C, /*!< 5: I2C clock, not on LPC110x */
 #endif
-	SYSCTL_CLOCK_GPIO,					/*!< 6: GPIO clock */
-	SYSCTL_CLOCK_CT16B0,				/*!< 7: 16-bit Counter/timer 0 clock */
-	SYSCTL_CLOCK_CT16B1,				/*!< 8: 16-bit Counter/timer 1 clock */
-	SYSCTL_CLOCK_CT32B0,				/*!< 9: 32-bit Counter/timer 0 clock */
-	SYSCTL_CLOCK_CT32B1,				/*!< 10: 32-bit Counter/timer 1 clock */
-	SYSCTL_CLOCK_SSP0,					/*!< 11: SSP0 clock */
-	SYSCTL_CLOCK_UART0,					/*!< 12: UART0 clock */
-	SYSCTL_CLOCK_ADC,					/*!< 13: ADC clock */
+	SYSCTL_CLOCK_GPIO, /*!< 6: GPIO clock */
+	SYSCTL_CLOCK_CT16B0, /*!< 7: 16-bit Counter/timer 0 clock */
+	SYSCTL_CLOCK_CT16B1, /*!< 8: 16-bit Counter/timer 1 clock */
+	SYSCTL_CLOCK_CT32B0, /*!< 9: 32-bit Counter/timer 0 clock */
+	SYSCTL_CLOCK_CT32B1, /*!< 10: 32-bit Counter/timer 1 clock */
+	SYSCTL_CLOCK_SSP0, /*!< 11: SSP0 clock */
+	SYSCTL_CLOCK_UART0, /*!< 12: UART0 clock */
+	SYSCTL_CLOCK_ADC, /*!< 13: ADC clock */
 #if defined(CHIP_LPC11UXX)
-	SYSCTL_CLOCK_USB,					/*!< 14: USB clock, LPC11Uxx only */
+	SYSCTL_CLOCK_USB, /*!< 14: USB clock, LPC11Uxx only */
 #else
-	SYSCTL_CLOCK_RESERVED14,			/*!< 14: Reserved */
+	SYSCTL_CLOCK_RESERVED14, /*!< 14: Reserved */
 #endif
-	SYSCTL_CLOCK_WDT,					/*!< 15: Watchdog timer clock */
-	SYSCTL_CLOCK_IOCON,					/*!< 16: IOCON block clock */
+	SYSCTL_CLOCK_WDT, /*!< 15: Watchdog timer clock */
+	SYSCTL_CLOCK_IOCON, /*!< 16: IOCON block clock */
 #if defined(CHIP_LPC11CXX)
-	SYSCTL_CLOCK_CAN,					/*!< 17: CAN clock, LPC11Cxx only */
+	SYSCTL_CLOCK_CAN, /*!< 17: CAN clock, LPC11Cxx only */
 #else
-	SYSCTL_CLOCK_RESERVED17,			/*!< 17: Reserved */
+	SYSCTL_CLOCK_RESERVED17, /*!< 17: Reserved */
 #endif
 #if !(defined(CHIP_LPC110X) || defined(CHIP_LPC11XXLV))  
-	SYSCTL_CLOCK_SSP1,					/*!< 18: SSP1 clock, LPC11A/C/E/Uxx//1125 only */
+	SYSCTL_CLOCK_SSP1, /*!< 18: SSP1 clock, LPC11A/C/E/Uxx//1125 only */
 #if !defined(CHIP_LPC11CXX)
-	SYSCTL_CLOCK_PINT,					/*!< 19: GPIO Pin int register interface clock, LPC11A/E/Uxx only */
+	SYSCTL_CLOCK_PINT, /*!< 19: GPIO Pin int register interface clock, LPC11A/E/Uxx only */
 #if defined(CHIP_LPC11AXX)
-	SYSCTL_CLOCK_ACOMP,					/*!< 20: Analog comparator clock, LPC11Axx only */
-	SYSCTL_CLOCK_DAC,					/*!< 21: DAC clock, LPC11Axx only */
+	SYSCTL_CLOCK_ACOMP, /*!< 20: Analog comparator clock, LPC11Axx only */
+	SYSCTL_CLOCK_DAC, /*!< 21: DAC clock, LPC11Axx only */
 #else
-	SYSCTL_CLOCK_RESERVED20,			/*!< 20: Reserved */
-	SYSCTL_CLOCK_RESERVED21,			/*!< 21: Reserved */
+	SYSCTL_CLOCK_RESERVED20, /*!< 20: Reserved */
+	SYSCTL_CLOCK_RESERVED21, /*!< 21: Reserved */
 #endif
-	SYSCTL_CLOCK_RESERVED22,			/*!< 22: Reserved */
-	SYSCTL_CLOCK_P0INT,					/*!< 23: GPIO GROUP1 interrupt register clock, LPC11Axx only */
+	SYSCTL_CLOCK_RESERVED22, /*!< 22: Reserved */
+	SYSCTL_CLOCK_P0INT, /*!< 23: GPIO GROUP1 interrupt register clock, LPC11Axx only */
 	SYSCTL_CLOCK_GROUP0INT = SYSCTL_CLOCK_P0INT,/*!< 23: GPIO GROUP0 interrupt register interface clock, LPC11E/Uxx only */
-	SYSCTL_CLOCK_P1INT,					/*!< 24: GPIO GROUP1 interrupt register clock, LPC11Axx only */
+	SYSCTL_CLOCK_P1INT, /*!< 24: GPIO GROUP1 interrupt register clock, LPC11Axx only */
 	SYSCTL_CLOCK_GROUP1INT = SYSCTL_CLOCK_P1INT,/*!< 24: GPIO GROUP1 interrupt register interface clock, LPC11E/Uxx only */
-	SYSCTL_CLOCK_RESERVED25,			/*!< 25: Reserved */
+	SYSCTL_CLOCK_RESERVED25, /*!< 25: Reserved */
 #if defined(CHIP_LPC11EXX)  || defined(CHIP_LPC11UXX)
-	SYSCTL_CLOCK_RAM1,					/*!< 26: SRAM block (0x20000000) clock, LPC11E/Uxx only */
+	SYSCTL_CLOCK_RAM1, /*!< 26: SRAM block (0x20000000) clock, LPC11E/Uxx only */
 #else
-	SYSCTL_CLOCK_RESERVED26,			/*!< 26: Reserved */
+	SYSCTL_CLOCK_RESERVED26, /*!< 26: Reserved */
 #endif
 #if defined(CHIP_LPC11UXX)
-	SYSCTL_CLOCK_USBRAM,				/*!< 27: USB SRAM block clock, LPC11Uxx only */
+	SYSCTL_CLOCK_USBRAM, /*!< 27: USB SRAM block clock, LPC11Uxx only */
 #else
-	SYSCTL_CLOCK_RESERVED27,			/*!< 27: Reserved */
+	SYSCTL_CLOCK_RESERVED27, /*!< 27: Reserved */
 #endif
 #endif /* !defined(CHIP_LPC11CXX) */
 #endif /* !(defined(CHIP_LPC110X) || defined(CHIP_LPC11XXLV)) */
@@ -316,7 +321,7 @@ STATIC INLINE void Chip_Clock_DisablePeriphClock(CHIP_SYSCTL_CLOCK_T clk)
  */
 STATIC INLINE void Chip_Clock_SetSSP0ClockDiv(uint32_t div)
 {
-	LPC_SYSCTL->SSP0CLKDIV  = div;
+	LPC_SYSCTL->SSP0CLKDIV = div;
 }
 
 /**
@@ -338,7 +343,7 @@ STATIC INLINE uint32_t Chip_Clock_GetSSP0ClockDiv(void)
  */
 STATIC INLINE void Chip_Clock_SetUARTClockDiv(uint32_t div)
 {
-	LPC_SYSCTL->USARTCLKDIV  = div;
+	LPC_SYSCTL->USARTCLKDIV = div;
 }
 
 /**
@@ -360,8 +365,8 @@ STATIC INLINE uint32_t Chip_Clock_GetUARTClockDiv(void)
  * rate is the main system clock divided by this value.
  */
 STATIC INLINE void Chip_Clock_SetSSP1ClockDiv(uint32_t div)
-{
-	LPC_SYSCTL->SSP1CLKDIV  = div;
+{	
+	LPC_SYSCTL->SSP1CLKDIV = div;
 }
 
 /**
@@ -370,7 +375,7 @@ STATIC INLINE void Chip_Clock_SetSSP1ClockDiv(uint32_t div)
  * @note	A value of 0 means the clock is disabled.
  */
 STATIC INLINE uint32_t Chip_Clock_GetSSP1ClockDiv(void)
-{
+{	
 	return LPC_SYSCTL->SSP1CLKDIV;
 }
 
@@ -380,10 +385,11 @@ STATIC INLINE uint32_t Chip_Clock_GetSSP1ClockDiv(void)
 /**
  * Clock sources for USB
  */
-typedef enum CHIP_SYSCTL_USBCLKSRC {
-	SYSCTL_USBCLKSRC_PLLOUT = 0,	/*!< USB PLL out */
-	SYSCTL_USBCLKSRC_MAINSYSCLK,	/*!< Main system clock */
-} CHIP_SYSCTL_USBCLKSRC_T;
+typedef enum CHIP_SYSCTL_USBCLKSRC
+{	
+	SYSCTL_USBCLKSRC_PLLOUT = 0, /*!< USB PLL out */
+	SYSCTL_USBCLKSRC_MAINSYSCLK, /*!< Main system clock */
+}CHIP_SYSCTL_USBCLKSRC_T;
 
 /**
  * @brief	Set USB clock source and divider
@@ -403,11 +409,12 @@ void Chip_Clock_SetUSBClockSource(CHIP_SYSCTL_USBCLKSRC_T src, uint32_t div);
 /**
  * Clock sources for WDT
  */
-typedef enum CHIP_SYSCTL_WDTCLKSRC {
-	SYSCTL_WDTCLKSRC_IRC = 0,		/*!< Internal oscillator for watchdog clock */
-	SYSCTL_WDTCLKSRC_MAINSYSCLK,	/*!< Main system clock for watchdog clock */
-	SYSCTL_WDTCLKSRC_WDTOSC,		/*!< Watchdog oscillator for watchdog clock */
-} CHIP_SYSCTL_WDTCLKSRC_T;
+typedef enum CHIP_SYSCTL_WDTCLKSRC
+{	
+	SYSCTL_WDTCLKSRC_IRC = 0, /*!< Internal oscillator for watchdog clock */
+	SYSCTL_WDTCLKSRC_MAINSYSCLK, /*!< Main system clock for watchdog clock */
+	SYSCTL_WDTCLKSRC_WDTOSC, /*!< Watchdog oscillator for watchdog clock */
+}CHIP_SYSCTL_WDTCLKSRC_T;
 
 /**
  * @brief	Set WDT clock source and divider
@@ -427,12 +434,13 @@ void Chip_Clock_SetWDTClockSource(CHIP_SYSCTL_WDTCLKSRC_T src, uint32_t div);
 /**
  * Clock sources for CLKOUT
  */
-typedef enum CHIP_SYSCTL_CLKOUTSRC {
-	SYSCTL_CLKOUTSRC_IRC = 0,		/*!< Internal oscillator for CLKOUT */
-	SYSCTL_CLKOUTSRC_MAINOSC,		/*!< Main oscillator for CLKOUT */
-	SYSCTL_CLKOUTSRC_WDTOSC,		/*!< Watchdog oscillator for CLKOUT */
-	SYSCTL_CLKOUTSRC_LFOSC = SYSCTL_CLKOUTSRC_WDTOSC,	/*!< LF oscillator rate (LPC11A/Exx only) for CLKOUT */
-	SYSCTL_CLKOUTSRC_MAINSYSCLK,	/*!< Main system clock for CLKOUT */
+typedef enum CHIP_SYSCTL_CLKOUTSRC
+{
+	SYSCTL_CLKOUTSRC_IRC = 0, /*!< Internal oscillator for CLKOUT */
+	SYSCTL_CLKOUTSRC_MAINOSC, /*!< Main oscillator for CLKOUT */
+	SYSCTL_CLKOUTSRC_WDTOSC, /*!< Watchdog oscillator for CLKOUT */
+	SYSCTL_CLKOUTSRC_LFOSC = SYSCTL_CLKOUTSRC_WDTOSC, /*!< LF oscillator rate (LPC11A/Exx only) for CLKOUT */
+	SYSCTL_CLKOUTSRC_MAINSYSCLK, /*!< Main system clock for CLKOUT */
 } CHIP_SYSCTL_CLKOUTSRC_T;
 
 /**
@@ -474,7 +482,7 @@ STATIC INLINE uint32_t Chip_Clock_GetIntOscRate(void)
  * @note	LPC11Axx devices only
  */
 STATIC INLINE uint32_t Chip_Clock_GetExtClockInRate(void)
-{
+{	
 	return ExtRateIn;
 }
 

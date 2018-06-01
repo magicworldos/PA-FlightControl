@@ -64,7 +64,7 @@ enum RunwayTakeoffState
 };
 
 class __EXPORT RunwayTakeoff : public control::SuperBlock
-{
+{	
 public:
 	RunwayTakeoff();
 	~RunwayTakeoff();
@@ -72,15 +72,21 @@ public:
 	void init(float yaw, double current_lat, double current_lon);
 	void update(float airspeed, float alt_agl, double current_lat, double current_lon, orb_advert_t *mavlink_log_pub);
 
-	RunwayTakeoffState getState() { return _state; }
-	bool isInitialized() { return _initialized; }
+	RunwayTakeoffState getState()
+	{	return _state;}
+	bool isInitialized()
+	{	return _initialized;}
 
-	bool runwayTakeoffEnabled() { return (bool)_runway_takeoff_enabled.get(); }
-	float getMinAirspeedScaling() { return _min_airspeed_scaling.get(); }
-	float getInitYaw() { return _init_yaw; }
+	bool runwayTakeoffEnabled()
+	{	return (bool)_runway_takeoff_enabled.get();}
+	float getMinAirspeedScaling()
+	{	return _min_airspeed_scaling.get();}
+	float getInitYaw()
+	{	return _init_yaw;}
 
 	bool controlYaw();
-	bool climbout() { return _climbout; }
+	bool climbout()
+	{	return _climbout;}
 	float getPitch(float tecsPitch);
 	float getRoll(float navigatorRoll);
 	float getYaw(float navigatorYaw);

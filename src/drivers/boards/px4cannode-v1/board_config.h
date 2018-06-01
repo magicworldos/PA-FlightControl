@@ -287,4 +287,4 @@ extern int composite_archinitialize(void);
 
 #endif /* __ASSEMBLY__ */
 
-__END_DECLS
+__END_DECLS 

@@ -68,7 +68,7 @@ namespace control
  * Waypoint Guidance block
  */
 class __EXPORT BlockWaypointGuidance : public SuperBlock
-{
+{	
 private:
 	BlockLimitSym _xtYawLimit;
 	BlockP _xt2Yaw;
@@ -77,17 +77,18 @@ public:
 	BlockWaypointGuidance(SuperBlock *parent, const char *name);
 	virtual ~BlockWaypointGuidance();
 	void update(const vehicle_global_position_s &pos,
-		    const vehicle_attitude_s &att,
-		    const position_setpoint_s &missionCmd,
-		    const position_setpoint_s &lastMissionCmd);
-	float getPsiCmd() { return _psiCmd; }
+			const vehicle_attitude_s &att,
+			const position_setpoint_s &missionCmd,
+			const position_setpoint_s &lastMissionCmd);
+	float getPsiCmd()
+	{	return _psiCmd;}
 };
 
 /**
  * UorbEnabledAutopilot
  */
 class __EXPORT BlockUorbEnabledAutopilot : public SuperBlock
-{
+{	
 protected:
 	// subscriptions
 	uORB::Subscription<manual_control_setpoint_s> _manual;
@@ -106,5 +107,6 @@ public:
 	virtual ~BlockUorbEnabledAutopilot() = default;
 };
 
-} // namespace control
+}
+ // namespace control
 

@@ -62,49 +62,49 @@
 #include <bmp280/BMP280.hpp>
 #include <DevMgr.hpp>
 
-
-extern "C" { __EXPORT int df_bmp280_wrapper_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int df_bmp280_wrapper_main(int argc, char *argv[]);
+}
 
 using namespace DriverFramework;
 
-
-class DfBmp280Wrapper : public BMP280
+class DfBmp280Wrapper: public BMP280
 {
 public:
 	DfBmp280Wrapper();
 	~DfBmp280Wrapper();
-
 
 	/**
 	 * Start automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		start();
+	int start();
 
 	/**
 	 * Stop automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		stop();
+	int stop();
 
 private:
 	int _publish(struct baro_sensor_data &data);
 
-	orb_advert_t		_baro_topic;
+	orb_advert_t _baro_topic;
 
-	int			_baro_orb_class_instance;
+	int _baro_orb_class_instance;
 
-	perf_counter_t		_baro_sample_perf;
-
+	perf_counter_t _baro_sample_perf;
+	
 };
 
 DfBmp280Wrapper::DfBmp280Wrapper() :
-	BMP280(BARO_DEVICE_PATH),
-	_baro_topic(nullptr),
-	_baro_orb_class_instance(-1),
-	_baro_sample_perf(perf_alloc(PC_ELAPSED, "df_baro_read"))
+		    BMP280(BARO_DEVICE_PATH),
+		    _baro_topic(nullptr),
+		    _baro_orb_class_instance(-1),
+		    _baro_sample_perf(perf_alloc(PC_ELAPSED, "df_baro_read"))
 {
 }
 
@@ -117,21 +117,21 @@ int DfBmp280Wrapper::start()
 {
 	/* Init device and start sensor. */
 	int ret = init();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("BMP280 init fail: %d", ret);
 		return ret;
 	}
-
+	
 	ret = BMP280::start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("BMP280 start fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
@@ -139,43 +139,43 @@ int DfBmp280Wrapper::stop()
 {
 	/* Stop sensor. */
 	int ret = BMP280::stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("BMP280 stop fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
 int DfBmp280Wrapper::_publish(struct baro_sensor_data &data)
 {
 	perf_begin(_baro_sample_perf);
-
-	baro_report baro_report = {};
+	
+	baro_report baro_report = { };
 	baro_report.timestamp = hrt_absolute_time();
-
+	
 	baro_report.pressure = data.pressure_pa / 100.0f; // to mbar
 	baro_report.temperature = data.temperature_c;
-
+	
 	// TODO: verify this, it's just copied from the MS5611 driver.
-
+	
 	// Constant for now
 	const double MSL_PRESSURE_KPA = 101325.0 / 1000.0;
-
+	
 	/* tropospheric properties (0-11km) for standard atmosphere */
-	const double T1 = 15.0 + 273.15;	/* temperature at base height in Kelvin */
-	const double a  = -6.5 / 1000;	/* temperature gradient in degrees per metre */
-	const double g  = 9.80665;	/* gravity constant in m/s/s */
-	const double R  = 287.05;	/* ideal gas constant in J/kg/K */
-
+	const double T1 = 15.0 + 273.15; /* temperature at base height in Kelvin */
+	const double a = -6.5 / 1000; /* temperature gradient in degrees per metre */
+	const double g = 9.80665; /* gravity constant in m/s/s */
+	const double R = 287.05; /* ideal gas constant in J/kg/K */
+	
 	/* current pressure at MSL in kPa */
 	double p1 = MSL_PRESSURE_KPA;
-
+	
 	/* measured pressure in kPa */
 	double p = static_cast<double>(data.pressure_pa) / 1000.0;
-
+	
 	/*
 	 * Solve:
 	 *
@@ -186,28 +186,27 @@ int DfBmp280Wrapper::_publish(struct baro_sensor_data &data)
 	 *                   a
 	 */
 	baro_report.altitude = (((pow((p / p1), (-(a * R) / g))) * T1) - T1) / a;
-
+	
 	// TODO: when is this ever blocked?
 	if (!(m_pub_blocked))
 	{
-
+		
 		if (_baro_topic == nullptr)
 		{
-			_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &baro_report,
-							  &_baro_orb_class_instance, ORB_PRIO_DEFAULT);
-
+			_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &baro_report, &_baro_orb_class_instance, ORB_PRIO_DEFAULT);
+			
 		}
 		else
 		{
 			orb_publish(ORB_ID(sensor_baro), _baro_topic, &baro_report);
 		}
 	}
-
+	
 	perf_end(_baro_sample_perf);
-
+	
 	return 0;
-};
-
+}
+;
 
 namespace df_bmp280_wrapper
 {
@@ -222,34 +221,33 @@ void usage();
 int start(/*enum Rotation rotation*/)
 {
 	g_dev = new DfBmp280Wrapper(/*rotation*/);
-
+	
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("failed instantiating DfBmp280Wrapper object");
 		return -1;
 	}
-
+	
 	int ret = g_dev->start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("DfBmp280Wrapper start failed");
 		return ret;
 	}
-
+	
 	// Open the IMU sensor
 	DevHandle h;
 	DevMgr::getHandle(BARO_DEVICE_PATH, h);
-
+	
 	if (!h.isValid())
 	{
-		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)",
-			    BARO_DEVICE_PATH, h.getError());
+		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)", BARO_DEVICE_PATH, h.getError());
 		return -1;
 	}
-
+	
 	DevMgr::releaseHandle(h);
-
+	
 	return 0;
 }
 
@@ -260,15 +258,15 @@ int stop()
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	int ret = g_dev->stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("driver could not be stopped");
 		return ret;
 	}
-
+	
 	delete g_dev;
 	g_dev = nullptr;
 	return 0;
@@ -277,64 +275,59 @@ int stop()
 /**
  * Print a little info about the driver.
  */
-int
-info()
+int info()
 {
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
-void
-usage()
+void usage()
 {
 	PX4_WARN("Usage: df_bmp280_wrapper 'start', 'info', 'stop'");
 }
 
 } // namespace df_bmp280_wrapper
 
-
-int
-df_bmp280_wrapper_main(int argc, char *argv[])
+int df_bmp280_wrapper_main(int argc, char *argv[])
 {
 	int ret = 0;
 	int myoptind = 1;
-
+	
 	if (argc <= 1)
 	{
 		df_bmp280_wrapper::usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[myoptind];
-
-
+	
 	if (!strcmp(verb, "start"))
 	{
 		ret = df_bmp280_wrapper::start();
 	}
-
+	
 	else if (!strcmp(verb, "stop"))
 	{
 		ret = df_bmp280_wrapper::stop();
 	}
-
+	
 	else if (!strcmp(verb, "info"))
 	{
 		ret = df_bmp280_wrapper::info();
 	}
-
+	
 	else
 	{
 		df_bmp280_wrapper::usage();
 		return 1;
 	}
-
+	
 	return ret;
 }

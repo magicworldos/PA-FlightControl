@@ -45,14 +45,14 @@
  * Defaults on "first" open.
  */
 /*#define	TTYDEF_IFLAG	(BRKINT	| ICRNL	| IMAXBEL | IXON | IXANY)
-#define	TTYDEF_OFLAG	(OPOST | ONLCR)
-#define	TTYDEF_LFLAG_NOECHO (ICANON | ISIG | IEXTEN)
-#define	TTYDEF_LFLAG_ECHO (TTYDEF_LFLAG_NOECHO \
+ #define	TTYDEF_OFLAG	(OPOST | ONLCR)
+ #define	TTYDEF_LFLAG_NOECHO (ICANON | ISIG | IEXTEN)
+ #define	TTYDEF_LFLAG_ECHO (TTYDEF_LFLAG_NOECHO \
 	| ECHO | ECHOE | ECHOKE | ECHOCTL)
-#define	TTYDEF_LFLAG TTYDEF_LFLAG_ECHO
-#define	TTYDEF_CFLAG	(CREAD | CS8 | HUPCL)
-#define	TTYDEF_SPEED	(B9600)
-*/
+ #define	TTYDEF_LFLAG TTYDEF_LFLAG_ECHO
+ #define	TTYDEF_CFLAG	(CREAD | CS8 | HUPCL)
+ #define	TTYDEF_SPEED	(B9600)
+ */
 
 #define	TTYDEF_IFLAG	(0)
 #define	TTYDEF_OFLAG	(OPOST | ONLCR)
@@ -107,13 +107,14 @@
 #include <sys/cdefs.h>
 #include <sys/_termios.h>
 
-static const cc_t ttydefchars[] = {
+static const cc_t ttydefchars[] =
+{	
 	CEOF, CEOL, CEOL, CERASE, CWERASE, CKILL, CREPRINT, CERASE2, CINTR,
 	CQUIT, CSUSP, CDSUSP, CSTART, CSTOP, CLNEXT, CDISCARD, CMIN, CTIME,
 	CSTATUS, _POSIX_VDISABLE
 };
 _Static_assert(sizeof(ttydefchars) / sizeof(cc_t) == NCCS,
-    "Size of ttydefchars does not match NCCS");
+		"Size of ttydefchars does not match NCCS");
 
 #undef TTYDEFCHARS
 #endif /* TTYDEFCHARS */

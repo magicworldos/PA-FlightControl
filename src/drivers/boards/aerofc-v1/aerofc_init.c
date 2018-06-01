@@ -125,7 +125,7 @@ static int _bootloader_force_pin_callback(int irq, void *context, void *args)
 	{
 		board_reset(0);
 	}
-
+	
 	return 0;
 }
 
@@ -151,16 +151,16 @@ __EXPORT void stm32_boardinitialize(void)
 {
 	stm32_configgpio(GPIO_FORCE_BOOTLOADER);
 	_bootloader_force_pin_callback(0, NULL, NULL);
-
+	
 	/* configure LEDs */
 	board_autoled_initialize();
-
+	
 	/* turn sensors on */
 	stm32_configgpio(GPIO_VDD_5V_SENSORS_EN);
-
+	
 	/* configure SPI interfaces */
 	stm32_spiinitialize();
-
+	
 }
 
 /****************************************************************************
@@ -174,12 +174,12 @@ __EXPORT void stm32_boardinitialize(void)
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	int result;
-
+	
 	/* the interruption subsystem is not initialized when stm32_boardinitialize() is called */
 	stm32_gpiosetevent(GPIO_FORCE_BOOTLOADER, true, false, false, _bootloader_force_pin_callback, NULL);
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -187,40 +187,37 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
+	
 #if defined(CONFIG_STM32_BBSRAM)
-
+	
 	/* NB. the use of the console requires the hrt running
 	 * to poll the DMA
 	 */
@@ -232,7 +229,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	stm32_bbsraminitialize(BBSRAM_PATH, filesizes);
 
 #if defined(CONFIG_STM32_SAVE_CRASHDUMP)
-
+	
 	/* Panic Logging in Battery Backed Up Files */
 
 	/*
@@ -255,10 +252,10 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int hadCrash = hardfault_check_status("boot");
 
 	if (hadCrash == OK)
-	{
+	{	
 
-		message("[boot] There is a hard fault logged. Hold down the SPACE BAR," \
-			" while booting to halt the system!\n");
+		message("[boot] There is a hard fault logged. Hold down the SPACE BAR,"
+				" while booting to halt the system!\n");
 
 		/* Yes. So add one to the boot count - this will be reset after a successful
 		 * commit to SD
@@ -272,7 +269,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		ioctl(fileno(stdin), FIONREAD, (unsigned long)((uintptr_t) &bytesWaiting));
 
 		if (reboots > 2 || bytesWaiting != 0)
-		{
+		{	
 
 			/* Since we can not commit the fault dump to disk. Display it
 			 * to the console.
@@ -281,9 +278,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 
 			message("[boot] There were %d reboots with Hard fault that were not committed to disk - System halted %s\n",
-				reboots,
-				(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
-
+					reboots,
+					(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
 
 			/* For those of you with a debugger set a break point on up_assert and
 			 * then set dbgContinue = 1 and go.
@@ -295,73 +291,72 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			int c = '>';
 
 			while (!dbgContinue)
-			{
+			{	
 
 				switch (c)
-				{
+				{	
 
 					case EOF:
-
 
 					case '\n':
 					case '\r':
 					case ' ':
-						continue;
+					continue;
 
 					default:
 
-						putchar(c);
-						putchar('\n');
+					putchar(c);
+					putchar('\n');
 
-						switch (c)
-						{
+					switch (c)
+					{	
 
-							case 'D':
-							case 'd':
-								hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
-								break;
-
-							case 'C':
-							case 'c':
-								hardfault_rearm("boot");
-								hardfault_increment_reboot("boot", true);
-								break;
-
-							case 'B':
-							case 'b':
-								dbgContinue = true;
-								break;
-
-							default:
-								break;
-						} // Inner Switch
-
-						message("\nEnter B - Continue booting\n" \
-							"Enter C - Clear the fault log\n" \
-							"Enter D - Dump fault log\n\n?>");
-						fflush(stdout);
-
-						if (!dbgContinue)
-						{
-							c = getchar();
-						}
-
+						case 'D':
+						case 'd':
+						hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 						break;
+
+						case 'C':
+						case 'c':
+						hardfault_rearm("boot");
+						hardfault_increment_reboot("boot", true);
+						break;
+
+						case 'B':
+						case 'b':
+						dbgContinue = true;
+						break;
+
+						default:
+						break;
+					} // Inner Switch
+					
+					message("\nEnter B - Continue booting\n"
+							"Enter C - Clear the fault log\n"
+							"Enter D - Dump fault log\n\n?>");
+					fflush(stdout);
+
+					if (!dbgContinue)
+					{	
+						c = getchar();
+					}
+
+					break;
 
 				} // outer switch
 			} // for
-
+			
 		} // inner if
 	} // outer if
-
+	
 #endif // CONFIG_STM32_SAVE_CRASHDUMP
 #endif // CONFIG_STM32_BBSRAM
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_AMBER);
 	led_off(LED_BLUE);
-
+	
 	/*
 	 * Bootloader(sector 0):
 	 * start: 0x08000000, len: 16K, end: 0x08003E80
@@ -380,29 +375,24 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	 */
 
 #if defined(FLASH_BASED_PARAMS)
-	static sector_descriptor_t params_sector_map[] =
-	{
-		{1, 16 * 1024, 0x08004000},
-		{2, 16 * 1024, 0x08008000},
-		{0, 0, 0},
-	};
-
+	static sector_descriptor_t params_sector_map[] = { { 1, 16 * 1024, 0x08004000 }, { 2, 16 * 1024, 0x08008000 }, { 0, 0, 0 }, };
+	
 	/* Initialize the flashfs layer to use heap allocated memory */
 	result = parameter_flashfs_init(params_sector_map, NULL, 0);
-
+	
 	if (result != OK)
 	{
 		message("[boot] FAILED to init params in FLASH %d\n", result);
 		led_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 #endif
-
+	
 #if defined(FLASH_BASED_DATAMAN)
-	static dm_sector_descriptor_t dm_sector_map = {23, 128 * 1024, 0x081E0000};
+	static dm_sector_descriptor_t dm_sector_map = { 23, 128 * 1024, 0x081E0000 };
 	dm_flash_sector_description_set(&dm_sector_map);
 #endif
-
+	
 	return OK;
 }

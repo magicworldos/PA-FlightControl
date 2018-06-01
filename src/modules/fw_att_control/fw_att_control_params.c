@@ -295,7 +295,6 @@ PARAM_DEFINE_FLOAT(FW_RLL_TO_YAW_FF, 0.0f);
  */
 PARAM_DEFINE_INT32(FW_W_EN, 0);
 
-
 /**
  * Wheel steering rate proportional gain
  *

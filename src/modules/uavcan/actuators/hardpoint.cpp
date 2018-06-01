@@ -41,17 +41,16 @@
 #include <systemlib/err.h>
 
 UavcanHardpointController::UavcanHardpointController(uavcan::INode &node) :
-	_node(node),
-	_uavcan_pub_raw_cmd(node),
-	_timer(node)
+		    _node(node),
+		    _uavcan_pub_raw_cmd(node),
+		    _timer(node)
 {
 	_uavcan_pub_raw_cmd.setPriority(uavcan::TransferPriority::MiddleLower);
 }
 
-
 UavcanHardpointController::~UavcanHardpointController()
 {
-
+	
 }
 
 int UavcanHardpointController::init()
@@ -67,12 +66,12 @@ void UavcanHardpointController::set_command(uint8_t hardpoint_id, uint16_t comma
 {
 	_cmd.command = command;
 	_cmd.hardpoint_id = hardpoint_id;
-
+	
 	/*
 	 * Publish the command message to the bus
 	 */
-	(void)_uavcan_pub_raw_cmd.broadcast(_cmd);
-
+	(void) _uavcan_pub_raw_cmd.broadcast(_cmd);
+	
 	/*
 	 * Start the periodic update timer after a command is set
 	 */
@@ -80,12 +79,12 @@ void UavcanHardpointController::set_command(uint8_t hardpoint_id, uint16_t comma
 	{
 		_timer.startPeriodic(uavcan::MonotonicDuration::fromMSec(1000 / MAX_RATE_HZ));
 	}
-
+	
 }
 void UavcanHardpointController::periodic_update(const uavcan::TimerEvent &)
 {
 	/*
 	 * Broadcast command at MAX_RATE_HZ
 	 */
-	(void)_uavcan_pub_raw_cmd.broadcast(_cmd);
+	(void) _uavcan_pub_raw_cmd.broadcast(_cmd);
 }

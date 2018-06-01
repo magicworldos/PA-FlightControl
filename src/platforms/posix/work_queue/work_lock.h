@@ -34,7 +34,6 @@
 #ifndef _work_lock_h_
 #define _work_lock_h_
 
-
 //#pragma once
 
 void work_lock(int id);

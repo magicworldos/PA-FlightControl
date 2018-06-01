@@ -79,103 +79,101 @@
 #endif
 
 class __EXPORT AirspeedSim : public device::CDev
-{
+{	
 public:
 	AirspeedSim(int bus, int address, unsigned conversion_interval, const char *path);
 	virtual ~AirspeedSim();
 
-	virtual int	init();
+	virtual int init();
 
-	virtual ssize_t	read(device::file_t *filp, char *buffer, size_t buflen);
-	virtual int	ioctl(device::file_t *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(device::file_t *filp, char *buffer, size_t buflen);
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg);
 
 	/**
 	 * Diagnostics - print some basic information about the driver.
 	 */
-	virtual void	print_info();
+	virtual void print_info();
 
 private:
-	ringbuffer::RingBuffer		*_reports;
+	ringbuffer::RingBuffer *_reports;
 
 	unsigned _retries;	// XXX this should come from the SIM class
-
+	
 	/* this class has pointer data members and should not be copied */
 	AirspeedSim(const AirspeedSim &);
 	AirspeedSim &operator=(const AirspeedSim &);
 
 protected:
-	virtual int	probe();
+	virtual int probe();
 
 	/**
-	* Perform a poll cycle; collect from the previous measurement
-	* and start a new one.
-	*/
-	virtual void	cycle() = 0;
-	virtual int	measure() = 0;
-	virtual int	collect() = 0;
+	 * Perform a poll cycle; collect from the previous measurement
+	 * and start a new one.
+	 */
+	virtual void cycle() = 0;
+	virtual int measure() = 0;
+	virtual int collect() = 0;
 
-	virtual int	transfer(const uint8_t *send, unsigned send_len,
-				 uint8_t *recv, unsigned recv_len);
+	virtual int transfer(const uint8_t *send, unsigned send_len,
+			uint8_t *recv, unsigned recv_len);
 
 	/**
 	 * Update the subsystem status
 	 */
 	void update_status();
 
-	struct work_s			_work;
-	bool			_sensor_ok;
-	bool			_last_published_sensor_ok;
-	unsigned			_measure_ticks;
-	bool			_collect_phase;
-	float			_diff_pres_offset;
+	struct work_s _work;
+	bool _sensor_ok;
+	bool _last_published_sensor_ok;
+	unsigned _measure_ticks;
+	bool _collect_phase;
+	float _diff_pres_offset;
 
-	orb_advert_t		_airspeed_pub;
-	orb_advert_t		_subsys_pub;
+	orb_advert_t _airspeed_pub;
+	orb_advert_t _subsys_pub;
 
-	int			_class_instance;
+	int _class_instance;
 
-	unsigned		_conversion_interval;
+	unsigned _conversion_interval;
 
-	perf_counter_t		_sample_perf;
-	perf_counter_t		_comms_errors;
-
-
-	/**
-	* Test whether the device supported by the driver is present at a
-	* specific address.
-	*
-	* @param address	The I2C bus address to probe.
-	* @return		True if the device is present.
-	*/
-	int	probe_address(uint8_t address);
+	perf_counter_t _sample_perf;
+	perf_counter_t _comms_errors;
 
 	/**
-	* Initialise the automatic measurement state machine and start it.
-	*
-	* @note This function is called at open and error time.  It might make sense
-	*       to make it more aggressive about resetting the bus in case of errors.
-	*/
-	void	start();
+	 * Test whether the device supported by the driver is present at a
+	 * specific address.
+	 *
+	 * @param address	The I2C bus address to probe.
+	 * @return		True if the device is present.
+	 */
+	int probe_address(uint8_t address);
 
 	/**
-	* Stop the automatic measurement state machine.
-	*/
-	void	stop();
+	 * Initialise the automatic measurement state machine and start it.
+	 *
+	 * @note This function is called at open and error time.  It might make sense
+	 *       to make it more aggressive about resetting the bus in case of errors.
+	 */
+	void start();
 
 	/**
-	* Static trampoline from the workq context; because we don't have a
-	* generic workq wrapper yet.
-	*
-	* @param arg		Instance pointer for the driver that is polling.
-	*/
-	static void	cycle_trampoline(void *arg);
+	 * Stop the automatic measurement state machine.
+	 */
+	void stop();
 
 	/**
-	* add a new report to the reports queue
-	*
-	* @param report		differential_pressure_s report
-	*/
-	void	new_report(const differential_pressure_s &report);
+	 * Static trampoline from the workq context; because we don't have a
+	 * generic workq wrapper yet.
+	 *
+	 * @param arg		Instance pointer for the driver that is polling.
+	 */
+	static void cycle_trampoline(void *arg);
+
+	/**
+	 * add a new report to the reports queue
+	 *
+	 * @param report		differential_pressure_s report
+	 */
+	void new_report(const differential_pressure_s &report);
 };
-
 

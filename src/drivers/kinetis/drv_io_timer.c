@@ -85,7 +85,6 @@
 #define _REG32(_base, _reg)	(*(volatile uint32_t *)(_base + _reg))
 #define REG(_tmr, _reg)		_REG32(io_timers[_tmr].base, _reg)
 
-
 /* Timer register accessors */
 
 #define rSC(_tmr)         REG(_tmr,KINETIS_FTM_SC_OFFSET)
@@ -143,7 +142,7 @@
 #define CnSC_PWMIN_INIT 0 // TBD
 
 //												 				  NotUsed   PWMOut  PWMIn Capture OneShot Trigger
-io_timer_channel_allocation_t channel_allocations[IOTimerChanModeSize] = { UINT16_MAX,   0,  0,  0, 0, 0 };
+io_timer_channel_allocation_t channel_allocations[IOTimerChanModeSize] = { UINT16_MAX, 0, 0, 0, 0, 0 };
 
 typedef uint8_t io_timer_allocation_t; /* big enough to hold MAX_IO_TIMERS */
 
@@ -151,8 +150,8 @@ static io_timer_allocation_t once = 0;
 
 typedef struct channel_stat_t
 {
-	uint32_t 			isr_cout;
-	uint32_t 			overflows;
+	uint32_t isr_cout;
+	uint32_t overflows;
 } channel_stat_t;
 
 static channel_stat_t io_timer_channel_stats[MAX_TIMER_IO_CHANNELS];
@@ -160,88 +159,85 @@ static channel_stat_t io_timer_channel_stats[MAX_TIMER_IO_CHANNELS];
 static struct channel_handler_entry
 {
 	channel_handler_t callback;
-	void			  *context;
+	void *context;
 } channel_handlers[MAX_TIMER_IO_CHANNELS];
-
 
 static int io_timer_handler(uint16_t timer_index)
 {
 	/* Read the count at the time of the interrupt */
 
 	uint16_t count = rCNT(timer_index);
-
+	
 	/* Read the HRT at the time of the interrupt */
 
 	hrt_abstime now = hrt_absolute_time();
-
+	
 	const io_timers_t *tmr = &io_timers[timer_index];
-
+	
 	/* What is pending */
 
 	uint32_t statusr = rSTATUS(timer_index);
-
+	
 	/* Acknowledge all that are pending */
 
 	rSTATUS(timer_index) = 0;
-
+	
 	/* Iterate over the timer_io_channels table */
 
 	for (unsigned chan_index = tmr->first_channel_index; chan_index <= tmr->last_channel_index; chan_index++)
 	{
-
+		
 		uint16_t chan = 1 << chan_index;
-
+		
 		if (statusr & chan)
 		{
-
+			
 			io_timer_channel_stats[chan_index].isr_cout++;
-
+			
 			/* Call the client to read the rCnV etc and clear the CHnF */
 
 			if (channel_handlers[chan_index].callback)
 			{
-				channel_handlers[chan_index].callback(channel_handlers[chan_index].context, tmr,
-								      chan_index, &timer_io_channels[chan_index],
-								      now, count, _REG32(tmr->base, KINETIS_FTM_CV_OFFSET(chan_index)));
+				channel_handlers[chan_index].callback(channel_handlers[chan_index].context, tmr, chan_index, &timer_io_channels[chan_index], now, count, _REG32(tmr->base, KINETIS_FTM_CV_OFFSET(chan_index)));
 			}
 		}
-
+		
 		/* Did it set again during call out ?*/
 
 		if (rSTATUS(timer_index) & chan)
 		{
-
+			
 			/* Error we has a second edge before we serviced the fist */
 
 			io_timer_channel_stats[chan_index].overflows++;
 		}
 	}
-
+	
 	return 0;
 }
 
 int io_timer_handler0(int irq, void *context, void *arg)
 {
-
+	
 	return io_timer_handler(0);
 }
 
 int io_timer_handler1(int irq, void *context, void *arg)
 {
 	return io_timer_handler(1);
-
+	
 }
 
 int io_timer_handler2(int irq, void *context, void *arg)
 {
 	return io_timer_handler(2);
-
+	
 }
 
 int io_timer_handler3(int irq, void *context, void *arg)
 {
 	return io_timer_handler(3);
-
+	
 }
 
 static inline int validate_timer_index(unsigned timer)
@@ -252,12 +248,12 @@ static inline int validate_timer_index(unsigned timer)
 static inline int is_timer_uninitalized(unsigned timer)
 {
 	int rv = 0;
-
+	
 	if (once & 1 << timer)
 	{
 		rv = -EBUSY;
 	}
-
+	
 	return rv;
 }
 
@@ -279,44 +275,44 @@ static inline int channels_timer(unsigned channel)
 static inline int get_timers_firstchannels(unsigned timer)
 {
 	int channel = -1;
-
+	
 	if (validate_timer_index(timer) == 0)
 	{
 		channel = timer_io_channels[io_timers[timer].first_channel_index].timer_channel;
 	}
-
+	
 	return channel;
 }
 
 static uint32_t get_timer_channels(unsigned timer)
 {
 	uint32_t channels = 0;
-	static uint32_t channels_cache[MAX_IO_TIMERS] = {0};
-
+	static uint32_t channels_cache[MAX_IO_TIMERS] = { 0 };
+	
 	if (validate_timer_index(timer) < 0)
 	{
 		return channels;
-
+		
 	}
 	else
 	{
 		if (channels_cache[timer] == 0)
 		{
 			const io_timers_t *tmr = &io_timers[timer];
-
+			
 			/* Gather the channel bits that belong to the timer */
 
 			for (unsigned chan_index = tmr->first_channel_index; chan_index <= tmr->last_channel_index; chan_index++)
 			{
 				channels |= 1 << chan_index;
 			}
-
+			
 			/* cache them */
 
 			channels_cache[timer] = channels;
 		}
 	}
-
+	
 	return channels_cache[timer];
 }
 
@@ -328,7 +324,7 @@ static inline int is_channels_timer_uninitalized(unsigned channel)
 int io_timer_is_channel_free(unsigned channel)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
 		if (0 == (channel_allocations[IOTimerChanMode_NotUsed] & (1 << channel)))
@@ -336,29 +332,27 @@ int io_timer_is_channel_free(unsigned channel)
 			rv = -EBUSY;
 		}
 	}
-
+	
 	return rv;
 }
 
 int io_timer_validate_channel_index(unsigned channel)
 {
 	int rv = -EINVAL;
-
+	
 	if (channel < MAX_TIMER_IO_CHANNELS && timer_io_channels[channel].timer_channel != 0)
 	{
-
+		
 		unsigned timer = timer_io_channels[channel].timer_index;
-
+		
 		/* test timer for validity */
 
-		if ((io_timers[timer].base != 0) &&
-				(timer_io_channels[channel].gpio_out != 0) &&
-				(timer_io_channels[channel].gpio_in != 0))
+		if ((io_timers[timer].base != 0) && (timer_io_channels[channel].gpio_out != 0) && (timer_io_channels[channel].gpio_in != 0))
 		{
 			rv = 0;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -368,14 +362,14 @@ int io_timer_get_mode_channels(io_timer_channel_mode_t mode)
 	{
 		return channel_allocations[mode];
 	}
-
+	
 	return 0;
 }
 
 int io_timer_get_channel_mode(unsigned channel)
 {
 	io_timer_channel_allocation_t bit = 1 << channel;
-
+	
 	for (int mode = IOTimerChanMode_NotUsed; mode < IOTimerChanModeSize; mode++)
 	{
 		if (bit & channel_allocations[mode])
@@ -383,12 +377,11 @@ int io_timer_get_channel_mode(unsigned channel)
 			return mode;
 		}
 	}
-
+	
 	return -1;
 }
 
-static int reallocate_channel_resources(uint32_t channels, io_timer_channel_mode_t mode,
-					io_timer_channel_mode_t new_mode)
+static int reallocate_channel_resources(uint32_t channels, io_timer_channel_mode_t mode, io_timer_channel_mode_t new_mode)
 {
 	/* If caller mode is not based on current setting adjust it */
 
@@ -396,19 +389,19 @@ static int reallocate_channel_resources(uint32_t channels, io_timer_channel_mode
 	{
 		mode = IOTimerChanMode_NotUsed;
 	}
-
+	
 	/* Remove old set of channels from original */
 
 	channel_allocations[mode] &= ~channels;
-
+	
 	/* Will this change ?*/
 
 	uint32_t before = channel_allocations[new_mode] & channels;
-
+	
 	/* add in the new set */
 
 	channel_allocations[new_mode] |= channels;
-
+	
 	/* Indicate a mode change */
 
 	return before ^ channels;
@@ -417,29 +410,28 @@ static int reallocate_channel_resources(uint32_t channels, io_timer_channel_mode
 static inline int allocate_channel_resource(unsigned channel, io_timer_channel_mode_t mode)
 {
 	int rv = io_timer_is_channel_free(channel);
-
+	
 	if (rv == 0)
 	{
 		io_timer_channel_allocation_t bit = 1 << channel;
 		channel_allocations[IOTimerChanMode_NotUsed] &= ~bit;
 		channel_allocations[mode] |= bit;
 	}
-
+	
 	return rv;
 }
-
 
 static inline int free_channel_resource(unsigned channel)
 {
 	int mode = io_timer_get_channel_mode(channel);
-
+	
 	if (mode > IOTimerChanMode_NotUsed)
 	{
 		io_timer_channel_allocation_t bit = 1 << channel;
 		channel_allocations[mode] &= ~bit;
 		channel_allocations[IOTimerChanMode_NotUsed] |= bit;
 	}
-
+	
 	return mode;
 }
 
@@ -449,54 +441,53 @@ int io_timer_free_channel(unsigned channel)
 	{
 		return -EINVAL;
 	}
-
+	
 	int mode = io_timer_get_channel_mode(channel);
-
+	
 	if (mode > IOTimerChanMode_NotUsed)
 	{
 		io_timer_set_enable(false, mode, 1 << channel);
 		free_channel_resource(channel);
-
+		
 	}
-
+	
 	return 0;
 }
-
 
 static int allocate_channel(unsigned channel, io_timer_channel_mode_t mode)
 {
 	int rv = -EINVAL;
-
+	
 	if (mode != IOTimerChanMode_NotUsed)
 	{
 		rv = io_timer_validate_channel_index(channel);
-
+		
 		if (rv == 0)
 		{
 			rv = allocate_channel_resource(channel, mode);
 		}
 	}
-
+	
 	return rv;
 }
 
 static int timer_set_rate(unsigned timer, unsigned rate)
 {
-
+	
 	irqstate_t flags = px4_enter_critical_section();
-
+	
 	uint32_t save = rSC(timer);
 	rSC(timer) = save & ~(FTM_SC_CLKS_MASK);
-
+	
 	/* configure the timer to update at the desired rate */
 	rMOD(timer) = (BOARD_PWM_FREQ / rate) - 1;
 	rSC(timer) = save;
-
+	
 	/* generate an update event; reloads the counter and all registers */
 	rSYNC(timer) = FTM_SYNC;
-
+	
 	px4_leave_critical_section(flags);
-
+	
 	return 0;
 }
 
@@ -533,9 +524,9 @@ static inline void io_timer_set_PWM_mode(unsigned timer)
 void io_timer_trigger(void)
 {
 	int oneshots = io_timer_get_mode_channels(IOTimerChanMode_OneShot);
-	uint32_t action_cache[MAX_IO_TIMERS] = {0};
+	uint32_t action_cache[MAX_IO_TIMERS] = { 0 };
 	int actions = 0;
-
+	
 	/* Pre-calculate the list of timers to Trigger */
 
 	for (int timer = 0; timer < MAX_IO_TIMERS; timer++)
@@ -543,23 +534,23 @@ void io_timer_trigger(void)
 		if (validate_timer_index(timer) == 0)
 		{
 			int channels = get_timer_channels(timer);
-
+			
 			if (oneshots & channels)
 			{
 				action_cache[actions++] = io_timers[timer].base;
 			}
 		}
 	}
-
+	
 	/* Now do them all wit the shortest delay in between */
 
 	irqstate_t flags = px4_enter_critical_section();
-
-	for (actions = 0; action_cache[actions] != 0 &&  actions < MAX_IO_TIMERS; actions++)
+	
+	for (actions = 0; action_cache[actions] != 0 && actions < MAX_IO_TIMERS; actions++)
 	{
 		_REG32(action_cache[actions], KINETIS_FTM_SYNC_OFFSET) |= FTM_SYNC;
 	}
-
+	
 	px4_leave_critical_section(flags);
 }
 
@@ -568,82 +559,78 @@ int io_timer_init_timer(unsigned timer)
 	/* Do this only once per timer */
 
 	int rv = is_timer_uninitalized(timer);
-
+	
 	if (rv == 0)
 	{
-
+		
 		irqstate_t flags = px4_enter_critical_section();
-
+		
 		set_timer_initalized(timer);
-
+		
 		/* enable the timer clock before we try to talk to it */
 
 		uint32_t regval = _REG(io_timers[timer].clock_register);
 		regval |= io_timers[timer].clock_bit;
 		_REG(io_timers[timer].clock_register) = regval;
-
+		
 		/* disable and configure the timer */
 
-		rSC(timer)    = FTM_SC_CLKS_NONE;
-		rCNT(timer)   = 0;
-
+		rSC(timer) = FTM_SC_CLKS_NONE;
+		rCNT(timer) = 0;
+		
 		rMODE(timer) = 0;
-		rSYNCONF(timer)   = (FTM_SYNCONF_SYNCMODE | FTM_SYNCONF_SWWRBUF | FTM_SYNCONF_SWRSTCNT);
-
+		rSYNCONF(timer) = (FTM_SYNCONF_SYNCMODE | FTM_SYNCONF_SWWRBUF | FTM_SYNCONF_SWRSTCNT);
+		
 		/* Set to run in debug mode */
 
-		rCONF(timer)   |= FTM_CONF_BDMMODE_MASK;
-
+		rCONF(timer) |= FTM_CONF_BDMMODE_MASK;
+		
 		/* enable the timer */
 
 		io_timer_set_PWM_mode(timer);
-
+		
 		/*
 		 * Note we do the Standard PWM Out init here
 		 * default to updating at 50Hz
 		 */
 
 		timer_set_rate(timer, 50);
-
+		
 		/*
 		 * Note that the timer is left disabled with IRQ subs installed
 		 * and active but DEIR bits are not set.
 		 */
 
 		irq_attach(io_timers[timer].vectorno, io_timers[timer].handler, NULL);
-
+		
 		up_enable_irq(io_timers[timer].vectorno);
-
+		
 		px4_leave_critical_section(flags);
 	}
-
+	
 	return rv;
 }
-
 
 int io_timer_set_rate(unsigned timer, unsigned rate)
 {
 	int rv = EBUSY;
-
+	
 	/* Get the channel bits that belong to the timer */
 
 	uint32_t channels = get_timer_channels(timer);
-
+	
 	/* Check that all channels are either in PWM or Oneshot */
 
-	if ((channels & (channel_allocations[IOTimerChanMode_PWMOut] |
-			 channel_allocations[IOTimerChanMode_OneShot] |
-			 channel_allocations[IOTimerChanMode_NotUsed])) ==
-			channels)
+	if ((channels & (channel_allocations[IOTimerChanMode_PWMOut] | channel_allocations[IOTimerChanMode_OneShot] | channel_allocations[IOTimerChanMode_NotUsed])) == channels)
 	{
-
+		
 		/* Change only a timer that is owned by pwm or one shot */
 
 		/* Request to use OneShot ?*/
 
 		if (rate == 0)
 		{
-
+			
 			/* Request to use OneShot
 			 *
 			 * We are here because ALL these channels were either PWM or Oneshot
@@ -655,11 +642,11 @@ int io_timer_set_rate(unsigned timer, unsigned rate)
 			{
 				io_timer_set_oneshot_mode(timer);
 			}
-
+			
 		}
 		else
 		{
-
+			
 			/* Request to use PWM
 			 *
 			 * We are here because  ALL these channels were either PWM or Oneshot
@@ -670,86 +657,84 @@ int io_timer_set_rate(unsigned timer, unsigned rate)
 			{
 				io_timer_set_PWM_mode(timer);
 			}
-
+			
 			timer_set_rate(timer, rate);
 		}
-
+		
 		rv = OK;
 	}
-
+	
 	return rv;
 }
 
-int io_timer_channel_init(unsigned channel, io_timer_channel_mode_t mode,
-			  channel_handler_t channel_handler, void *context)
+int io_timer_channel_init(unsigned channel, io_timer_channel_mode_t mode, channel_handler_t channel_handler, void *context)
 {
 	uint32_t gpio = timer_io_channels[channel].gpio_in;
 	uint32_t clearbits = CnSC_RESET;
 	uint32_t setbits = CnSC_CAPTURE_INIT;
-
+	
 	/* figure out the GPIO config first */
 
 	switch (mode)
 	{
-
+		
 		case IOTimerChanMode_OneShot:
 		case IOTimerChanMode_PWMOut:
 		case IOTimerChanMode_Trigger:
 			setbits = CnSC_PWMOUT_INIT;
 			gpio = 0;
 			break;
-
+			
 		case IOTimerChanMode_PWMIn:
 		case IOTimerChanMode_Capture:
 			break;
-
+			
 		case IOTimerChanMode_NotUsed:
 			setbits = 0;
 			break;
-
+			
 		default:
 			return -EINVAL;
 	}
-
+	
 	int rv = allocate_channel(channel, mode);
-
+	
 	/* Valid channel should now be reserved in new mode */
 
 	if (rv >= 0)
 	{
-
+		
 		/* Blindly try to initialize the timer - it will only do it once */
 
 		io_timer_init_timer(channels_timer(channel));
-
+		
 		irqstate_t flags = px4_enter_critical_section();
-
+		
 		/* Set up IO */
 		if (gpio)
 		{
 			px4_arch_configgpio(gpio);
 		}
-
-
+		
 		unsigned timer = channels_timer(channel);
-
+		
 		/* configure the channel */
 
 		uint32_t chan = timer_io_channels[channel].timer_channel - 1;
-
+		
 		uint16_t rvalue = REG(timer, KINETIS_FTM_CSC_OFFSET(chan));
 		rvalue &= ~clearbits;
-		rvalue |=  setbits;
+		rvalue |= setbits;
 		REG(timer, KINETIS_FTM_CSC_OFFSET(chan)) = rvalue;
-
+		
 		//if (gpio){ TODO: NEEDED?
 		REG(timer, KINETIS_FTM_CV_OFFSET(0)) = 0;
-
+		
 		channel_handlers[channel].callback = channel_handler;
 		channel_handlers[channel].context = context;
 		px4_leave_critical_section(flags);
 	}
-
+	
 	return rv;
 }
 
@@ -767,11 +752,11 @@ int io_timer_set_enable(bool state, io_timer_channel_mode_t mode, io_timer_chann
 		uint32_t index;
 		action_cache_rp_t cnsc[MAX_CHANNELS_PER_TIMER];
 	} action_cache[MAX_IO_TIMERS];
-
+	
 	memset(action_cache, 0, sizeof(action_cache));
-
-	uint32_t bits =  state ? CnSC_PWMOUT_INIT : 0;
-
+	
+	uint32_t bits = state ? CnSC_PWMOUT_INIT : 0;
+	
 	switch (mode)
 	{
 		case IOTimerChanMode_NotUsed:
@@ -779,41 +764,41 @@ int io_timer_set_enable(bool state, io_timer_channel_mode_t mode, io_timer_chann
 		case IOTimerChanMode_OneShot:
 		case IOTimerChanMode_Trigger:
 			break;
-
+			
 		case IOTimerChanMode_PWMIn:
 		case IOTimerChanMode_Capture:
 			if (state)
 			{
 				bits |= FTM_CSC_CHIE;
 			}
-
+			
 			break;
-
+			
 		default:
 			return -EINVAL;
 	}
-
+	
 	/* Was the request for all channels in this mode ?*/
 
 	if (masks == IO_TIMER_ALL_MODES_CHANNELS)
 	{
-
+		
 		/* Yes - we provide them */
 
 		masks = channel_allocations[mode];
-
+		
 	}
 	else
 	{
-
+		
 		/* No - caller provided mask */
 
 		/* Only allow the channels in that mode to be affected */
 
 		masks &= channel_allocations[mode];
-
+		
 	}
-
+	
 	/* Pre calculate all the changes */
 
 	for (int chan_index = 0; masks != 0 && chan_index < MAX_TIMER_IO_CHANNELS; chan_index++)
@@ -821,71 +806,67 @@ int io_timer_set_enable(bool state, io_timer_channel_mode_t mode, io_timer_chann
 		if (masks & (1 << chan_index))
 		{
 			masks &= ~(1 << chan_index);
-
+			
 			if (io_timer_validate_channel_index(chan_index) == 0)
 			{
 				uint32_t chan = timer_io_channels[chan_index].timer_channel - 1;
 				uint32_t timer = channels_timer(chan_index);
-				action_cache[timer].base  = io_timers[timer].base;
+				action_cache[timer].base = io_timers[timer].base;
 				action_cache[timer].cnsc[action_cache[timer].index].cnsc_offset = io_timers[timer].base + KINETIS_FTM_CSC_OFFSET(chan);
 				action_cache[timer].cnsc[action_cache[timer].index].cnsc_value = bits;
-
-				if ((state &&
-						(mode == IOTimerChanMode_PWMOut ||
-						 mode == IOTimerChanMode_OneShot ||
-						 mode == IOTimerChanMode_Trigger)))
+				
+				if ((state && (mode == IOTimerChanMode_PWMOut || mode == IOTimerChanMode_OneShot || mode == IOTimerChanMode_Trigger)))
 				{
 					action_cache[timer].cnsc[action_cache[timer].index].gpio = timer_io_channels[chan_index].gpio_out;
 				}
-
+				
 				action_cache[timer].index++;
 			}
 		}
 	}
-
+	
 	irqstate_t flags = px4_enter_critical_section();
-
-
+	
 	for (unsigned actions = 0; actions < arraySize(action_cache); actions++)
 	{
 		uint32_t any_on = 0;
-
+		
 		if (action_cache[actions].base != 0)
 		{
 			for (unsigned int index = 0; index < action_cache[actions].index; index++)
 			{
-
+				
 				if (action_cache[actions].cnsc[index].gpio)
 				{
 					px4_arch_configgpio(action_cache[actions].cnsc[index].gpio);
 				}
-
+				
 				_REG(action_cache[actions].cnsc[index].cnsc_offset) = action_cache[actions].cnsc[index].cnsc_value;
 				any_on |= action_cache[actions].cnsc[index].cnsc_value;
 			}
-
+			
 			/* Any On ?*/
 
 			/* Assume not */
 			uint32_t regval = _REG32(action_cache[actions].base, KINETIS_FTM_SC_OFFSET);
 			regval &= ~(FTM_SC_CLKS_MASK);
-
+			
 			if (any_on != 0)
 			{
-
+				
 				/* force an update to preload all registers */
 				_REG32(action_cache[actions].base, KINETIS_FTM_SYNC_OFFSET) |= FTM_SYNC;
-
+				
 				/* arm requires the timer be enabled */
 				regval |= (FTM_SC_CLKS_EXTCLK);
 			}
-
+			
 			_REG32(action_cache[actions].base, KINETIS_FTM_SC_OFFSET) = regval;
 		}
 	}
-
+	
 	px4_leave_critical_section(flags);
-
+	
 	return 0;
 }
 
@@ -893,20 +874,18 @@ int io_timer_set_ccr(unsigned channel, uint16_t value)
 {
 	int rv = io_timer_validate_channel_index(channel);
 	int mode = io_timer_get_channel_mode(channel);
-
+	
 	if (rv == 0)
 	{
-		if ((mode != IOTimerChanMode_PWMOut) &&
-				(mode != IOTimerChanMode_OneShot) &&
-				(mode != IOTimerChanMode_Trigger))
+		if ((mode != IOTimerChanMode_PWMOut) && (mode != IOTimerChanMode_OneShot) && (mode != IOTimerChanMode_Trigger))
 		{
-
+			
 			rv = -EIO;
-
+			
 		}
 		else
 		{
-
+			
 			/* configure the channel */
 
 			/* todo:This is a HACK!
@@ -924,31 +903,29 @@ int io_timer_set_ccr(unsigned channel, uint16_t value)
 			px4_leave_critical_section(flags);
 		}
 	}
-
+	
 	return rv;
 }
 
 uint16_t io_channel_get_ccr(unsigned channel)
 {
 	uint16_t value = 0;
-
+	
 	if (io_timer_validate_channel_index(channel) == 0)
 	{
 		int mode = io_timer_get_channel_mode(channel);
-
-		if ((mode == IOTimerChanMode_PWMOut) ||
-				(mode == IOTimerChanMode_OneShot) ||
-				(mode == IOTimerChanMode_Trigger))
+		
+		if ((mode == IOTimerChanMode_PWMOut) || (mode == IOTimerChanMode_OneShot) || (mode == IOTimerChanMode_Trigger))
 		{
 			value = REG(channels_timer(channel), KINETIS_FTM_CV_OFFSET(timer_io_channels[channel].timer_channel - 1));
 		}
 	}
-
+	
 	return value;
 }
 
 uint32_t io_timer_get_group(unsigned timer)
 {
 	return get_timer_channels(timer);
-
+	
 }

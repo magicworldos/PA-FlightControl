@@ -82,100 +82,148 @@
 #include "tailsitter.h"
 #include "standard.h"
 
-
 extern "C" __EXPORT int vtol_att_control_main(int argc, char *argv[]);
-
 
 class VtolAttitudeControl
 {
 public:
-
+	
 	VtolAttitudeControl();
 	~VtolAttitudeControl();
 
-	int start();	/* start the task and return OK on success */
+	int start(); /* start the task and return OK on success */
 	bool is_fixed_wing_requested();
 	void abort_front_transition(const char *reason);
 
-	struct actuator_controls_s 			*get_actuators_fw_in() {return &_actuators_fw_in;}
-	struct actuator_controls_s 			*get_actuators_mc_in() {return &_actuators_mc_in;}
-	struct actuator_controls_s 			*get_actuators_out0() {return &_actuators_out_0;}
-	struct actuator_controls_s 			*get_actuators_out1() {return &_actuators_out_1;}
-	struct airspeed_s 				*get_airspeed() {return &_airspeed;}
-	struct position_setpoint_triplet_s		*get_pos_sp_triplet() {return &_pos_sp_triplet;}
-	struct tecs_status_s 				*get_tecs_status() {return &_tecs_status;}
-	struct vehicle_attitude_s 			*get_att() {return &_v_att;}
-	struct vehicle_attitude_setpoint_s		*get_att_sp() {return &_v_att_sp;}
-	struct vehicle_attitude_setpoint_s 		*get_fw_virtual_att_sp() {return &_fw_virtual_att_sp;}
-	struct vehicle_attitude_setpoint_s 		*get_mc_virtual_att_sp() {return &_mc_virtual_att_sp;}
-	struct vehicle_control_mode_s 			*get_control_mode() {return &_v_control_mode;}
-	struct vehicle_land_detected_s			*get_land_detected() {return &_land_detected;}
-	struct vehicle_local_position_s 		*get_local_pos() {return &_local_pos;}
-	struct vehicle_local_position_setpoint_s	*get_local_pos_sp() {return &_local_pos_sp;}
-	struct vtol_vehicle_status_s			*get_vtol_vehicle_status() {return &_vtol_vehicle_status;}
-
-	struct Params 					*get_params() {return &_params;}
-
-
+	struct actuator_controls_s *get_actuators_fw_in()
+	{
+		return &_actuators_fw_in;
+	}
+	struct actuator_controls_s *get_actuators_mc_in()
+	{
+		return &_actuators_mc_in;
+	}
+	struct actuator_controls_s *get_actuators_out0()
+	{
+		return &_actuators_out_0;
+	}
+	struct actuator_controls_s *get_actuators_out1()
+	{
+		return &_actuators_out_1;
+	}
+	struct airspeed_s *get_airspeed()
+	{
+		return &_airspeed;
+	}
+	struct position_setpoint_triplet_s *get_pos_sp_triplet()
+	{
+		return &_pos_sp_triplet;
+	}
+	struct tecs_status_s *get_tecs_status()
+	{
+		return &_tecs_status;
+	}
+	struct vehicle_attitude_s *get_att()
+	{
+		return &_v_att;
+	}
+	struct vehicle_attitude_setpoint_s *get_att_sp()
+	{
+		return &_v_att_sp;
+	}
+	struct vehicle_attitude_setpoint_s *get_fw_virtual_att_sp()
+	{
+		return &_fw_virtual_att_sp;
+	}
+	struct vehicle_attitude_setpoint_s *get_mc_virtual_att_sp()
+	{
+		return &_mc_virtual_att_sp;
+	}
+	struct vehicle_control_mode_s *get_control_mode()
+	{
+		return &_v_control_mode;
+	}
+	struct vehicle_land_detected_s *get_land_detected()
+	{
+		return &_land_detected;
+	}
+	struct vehicle_local_position_s *get_local_pos()
+	{
+		return &_local_pos;
+	}
+	struct vehicle_local_position_setpoint_s *get_local_pos_sp()
+	{
+		return &_local_pos_sp;
+	}
+	struct vtol_vehicle_status_s *get_vtol_vehicle_status()
+	{
+		return &_vtol_vehicle_status;
+	}
+	
+	struct Params *get_params()
+	{
+		return &_params;
+	}
+	
 private:
 	//******************flags & handlers******************************************************
-	bool	_task_should_exit{false};
-	int	_control_task{-1};		//task handle for VTOL attitude controller
-
+	bool _task_should_exit { false };
+	int _control_task { -1 };		//task handle for VTOL attitude controller
+	
 	/* handlers for subscriptions */
-	int	_actuator_inputs_fw{-1};	//topic on which the fw_att_controller publishes actuator inputs
-	int	_actuator_inputs_mc{-1};	//topic on which the mc_att_controller publishes actuator inputs
-	int	_airspeed_sub{-1};			// airspeed subscription
-	int	_fw_virtual_att_sp_sub{-1};
-	int	_fw_virtual_v_rates_sp_sub{-1};		//vehicle rates setpoint subscription
-	int	_land_detected_sub{-1};
-	int	_local_pos_sp_sub{-1};			// setpoint subscription
-	int	_local_pos_sub{-1};			// sensor subscription
-	int	_manual_control_sp_sub{-1};	//manual control setpoint subscription
-	int	_mc_virtual_att_sp_sub{-1};
-	int	_mc_virtual_v_rates_sp_sub{-1};		//vehicle rates setpoint subscription
-	int	_params_sub{-1};			//parameter updates subscription
-	int	_pos_sp_triplet_sub{-1};			// local position setpoint subscription
-	int	_tecs_status_sub{-1};
-	int	_v_att_sp_sub{-1};			//vehicle attitude setpoint subscription
-	int	_v_att_sub{-1};				//vehicle attitude subscription
-	int	_v_control_mode_sub{-1};	//vehicle control mode subscription
-	int	_vehicle_cmd_sub{-1};
+	int _actuator_inputs_fw { -1 };	//topic on which the fw_att_controller publishes actuator inputs
+	int _actuator_inputs_mc { -1 };	//topic on which the mc_att_controller publishes actuator inputs
+	int _airspeed_sub { -1 };			// airspeed subscription
+	int _fw_virtual_att_sp_sub { -1 };
+	int _fw_virtual_v_rates_sp_sub { -1 };		//vehicle rates setpoint subscription
+	int _land_detected_sub { -1 };
+	int _local_pos_sp_sub { -1 };			// setpoint subscription
+	int _local_pos_sub { -1 };			// sensor subscription
+	int _manual_control_sp_sub { -1 };	//manual control setpoint subscription
+	int _mc_virtual_att_sp_sub { -1 };
+	int _mc_virtual_v_rates_sp_sub { -1 };		//vehicle rates setpoint subscription
+	int _params_sub { -1 };			//parameter updates subscription
+	int _pos_sp_triplet_sub { -1 };			// local position setpoint subscription
+	int _tecs_status_sub { -1 };
+	int _v_att_sp_sub { -1 };			//vehicle attitude setpoint subscription
+	int _v_att_sub { -1 };				//vehicle attitude subscription
+	int _v_control_mode_sub { -1 };	//vehicle control mode subscription
+	int _vehicle_cmd_sub { -1 };
 
 	//handlers for publishers
-	orb_advert_t	_actuators_0_pub{nullptr};		//input for the mixer (roll,pitch,yaw,thrust)
-	orb_advert_t	_mavlink_log_pub{nullptr};	// mavlink log uORB handle
-	orb_advert_t	_v_att_sp_pub{nullptr};
-	orb_advert_t	_v_cmd_ack_pub{nullptr};
-	orb_advert_t	_v_rates_sp_pub{nullptr};
-	orb_advert_t	_vtol_vehicle_status_pub{nullptr};
-	orb_advert_t 	_actuators_1_pub{nullptr};
+	orb_advert_t _actuators_0_pub { nullptr };		//input for the mixer (roll,pitch,yaw,thrust)
+	orb_advert_t _mavlink_log_pub { nullptr };	// mavlink log uORB handle
+	orb_advert_t _v_att_sp_pub { nullptr };
+	orb_advert_t _v_cmd_ack_pub { nullptr };
+	orb_advert_t _v_rates_sp_pub { nullptr };
+	orb_advert_t _vtol_vehicle_status_pub { nullptr };
+	orb_advert_t _actuators_1_pub { nullptr };
 
 	//*******************data containers***********************************************************
+	
+	vehicle_attitude_setpoint_s _v_att_sp { };			//vehicle attitude setpoint
+	vehicle_attitude_setpoint_s _fw_virtual_att_sp { };	// virtual fw attitude setpoint
+	vehicle_attitude_setpoint_s _mc_virtual_att_sp { };	// virtual mc attitude setpoint
+	
+	actuator_controls_s _actuators_fw_in { };	//actuator controls from fw_att_control
+	actuator_controls_s _actuators_mc_in { };	//actuator controls from mc_att_control
+	actuator_controls_s _actuators_out_0 { };	//actuator controls going to the mc mixer
+	actuator_controls_s _actuators_out_1 { };	//actuator controls going to the fw mixer (used for elevons)
+	
+	airspeed_s _airspeed { };			// airspeed
+	manual_control_setpoint_s _manual_control_sp { }; //manual control setpoint
+	position_setpoint_triplet_s _pos_sp_triplet { };
+	tecs_status_s _tecs_status { };
+	vehicle_attitude_s _v_att { };				//vehicle attitude
+	vehicle_command_s _vehicle_cmd { };
+	vehicle_control_mode_s _v_control_mode { };	//vehicle control mode
+	vehicle_land_detected_s _land_detected { };
+	vehicle_local_position_s _local_pos { };
+	vehicle_local_position_setpoint_s _local_pos_sp { };
+	vtol_vehicle_status_s _vtol_vehicle_status { };
 
-	vehicle_attitude_setpoint_s		_v_att_sp{};			//vehicle attitude setpoint
-	vehicle_attitude_setpoint_s 		_fw_virtual_att_sp{};	// virtual fw attitude setpoint
-	vehicle_attitude_setpoint_s 		_mc_virtual_att_sp{};	// virtual mc attitude setpoint
-
-	actuator_controls_s			_actuators_fw_in{};	//actuator controls from fw_att_control
-	actuator_controls_s			_actuators_mc_in{};	//actuator controls from mc_att_control
-	actuator_controls_s			_actuators_out_0{};	//actuator controls going to the mc mixer
-	actuator_controls_s			_actuators_out_1{};	//actuator controls going to the fw mixer (used for elevons)
-
-	airspeed_s 				_airspeed{};			// airspeed
-	manual_control_setpoint_s		_manual_control_sp{}; //manual control setpoint
-	position_setpoint_triplet_s		_pos_sp_triplet{};
-	tecs_status_s				_tecs_status{};
-	vehicle_attitude_s			_v_att{};				//vehicle attitude
-	vehicle_command_s			_vehicle_cmd{};
-	vehicle_control_mode_s			_v_control_mode{};	//vehicle control mode
-	vehicle_land_detected_s			_land_detected{};
-	vehicle_local_position_s			_local_pos{};
-	vehicle_local_position_setpoint_s	_local_pos_sp{};
-	vtol_vehicle_status_s 			_vtol_vehicle_status{};
-
-	Params _params{};	// struct holding the parameters
-
+	Params _params { };	// struct holding the parameters
+	
 	struct
 	{
 		param_t idle_pwm_mc;
@@ -193,42 +241,42 @@ private:
 		param_t wv_takeoff;
 		param_t wv_loiter;
 		param_t wv_land;
-	} _params_handles{};
+	} _params_handles { };
 
 	/* for multicopters it is usual to have a non-zero idle speed of the engines
 	 * for fixed wings we want to have an idle speed of zero since we do not want
 	 * to waste energy when gliding. */
-	int _transition_command{vtol_vehicle_status_s::VEHICLE_VTOL_STATE_MC};
-	bool _abort_front_transition{false};
+	int _transition_command { vtol_vehicle_status_s::VEHICLE_VTOL_STATE_MC };
+	bool _abort_front_transition { false };
 
-	VtolType *_vtol_type{nullptr};	// base class for different vtol types
-
+	VtolType *_vtol_type { nullptr };	// base class for different vtol types
+	
 	//*****************Member functions***********************************************************************
+	
+	void task_main();	//main task
+	static void task_main_trampoline(int argc, char *argv[]);	//Shim for calling task_main from task_create.
+	
+	void land_detected_poll();
+	void tecs_status_poll();
+	void vehicle_attitude_poll();  //Check for attitude updates.
+	void vehicle_cmd_poll();
+	void vehicle_control_mode_poll();	//Check for changes in vehicle control mode.
+	void vehicle_manual_poll();			//Check for changes in manual inputs.
+	void actuator_controls_fw_poll();	//Check for changes in fw_attitude_control output
+	void actuator_controls_mc_poll();	//Check for changes in mc_attitude_control output
+	void fw_virtual_att_sp_poll();
+	void mc_virtual_att_sp_poll();
+	void pos_sp_triplet_poll();		// Check for changes in position setpoint values
+	void vehicle_airspeed_poll();		// Check for changes in airspeed
+	void vehicle_local_pos_poll();		// Check for changes in sensor values
+	void vehicle_local_pos_sp_poll();		// Check for changes in setpoint values
+	
+	int parameters_update();			//Update local paraemter cache
+	
+	void fill_mc_att_rates_sp();
+	void fill_fw_att_rates_sp();
 
-	void 		task_main();	//main task
-	static void	task_main_trampoline(int argc, char *argv[]);	//Shim for calling task_main from task_create.
-
-	void		land_detected_poll();
-	void		tecs_status_poll();
-	void		vehicle_attitude_poll();  //Check for attitude updates.
-	void		vehicle_cmd_poll();
-	void		vehicle_control_mode_poll();	//Check for changes in vehicle control mode.
-	void		vehicle_manual_poll();			//Check for changes in manual inputs.
-	void 		actuator_controls_fw_poll();	//Check for changes in fw_attitude_control output
-	void 		actuator_controls_mc_poll();	//Check for changes in mc_attitude_control output
-	void 		fw_virtual_att_sp_poll();
-	void 		mc_virtual_att_sp_poll();
-	void 		pos_sp_triplet_poll();		// Check for changes in position setpoint values
-	void 		vehicle_airspeed_poll();		// Check for changes in airspeed
-	void 		vehicle_local_pos_poll();		// Check for changes in sensor values
-	void 		vehicle_local_pos_sp_poll();		// Check for changes in setpoint values
-
-	int 		parameters_update();			//Update local paraemter cache
-
-	void 		fill_mc_att_rates_sp();
-	void 		fill_fw_att_rates_sp();
-
-	void		handle_command();
+	void handle_command();
 };
 
 #endif

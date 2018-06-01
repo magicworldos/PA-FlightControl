@@ -57,24 +57,28 @@ namespace control
 
 template<class Type, size_t M>
 class __EXPORT BlockLowPassVector: public Block
-{
+{	
 public:
 // methods
 	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
-		_state(),
-		_fCut(this, "") // only one parameter, no need to name
-	{
-		for (int i = 0; i < M; i++) {
+			const char *name) :
+	Block(parent, name),
+	_state(),
+	_fCut(this, "")// only one parameter, no need to name
+	{	
+		for (int i = 0; i < M; i++)
+		{	
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() {}
+	virtual ~BlockLowPassVector()
+	{}
 	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
-	{
-		for (int i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
+	{	
+		for (int i = 0; i < M; i++)
+		{	
+			if (!PX4_ISFINITE(getState()(i)))
+			{	
 				setState(input);
 			}
 		}
@@ -85,13 +89,17 @@ public:
 		return getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
+	matrix::Vector<Type, M> getState()
+	{	return _state;}
+	float getFCut()
+	{	return _fCut.get();}
+	void setState(const matrix::Vector<Type, M> &state)
+	{	_state = state;}
 private:
 // attributes
 	matrix::Vector<Type, M> _state;
 	control::BlockParamFloat _fCut;
 };
 
-} // namespace control
+}
+ // namespace control

@@ -38,7 +38,8 @@
 namespace DriverFramework
 {
 
-struct bmp280_sensor_calibration {
+struct bmp280_sensor_calibration
+{
 	uint16_t dig_T1;
 	uint16_t dig_P1;
 	int16_t dig_T2;
@@ -52,7 +53,6 @@ struct bmp280_sensor_calibration {
 	int16_t dig_P8;
 	int16_t dig_P9;
 };
-
 
 #define BARO_DEVICE_PATH "/dev/iic-3"
 
@@ -70,17 +70,16 @@ struct bmp280_sensor_calibration {
 
 #define BMP280_SLAVE_ADDRESS 0b1110110       /* 7-bit slave address */
 
-
-class BMP280 : public BaroSensor
+class BMP280: public BaroSensor
 {
 public:
 	BMP280(const char *device_path) :
-		BaroSensor(device_path, BMP280_MEASURE_INTERVAL_US)
+			    BaroSensor(device_path, BMP280_MEASURE_INTERVAL_US)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_BMP280;
 		m_id.dev_id_s.address = BMP280_SLAVE_ADDRESS;
 	}
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start() override;
 
@@ -107,7 +106,9 @@ private:
 	// returns 0 on success, -errno on failure
 	int bmp280_init();
 
-	struct bmp280_sensor_calibration 	m_sensor_calibration;
+	struct bmp280_sensor_calibration m_sensor_calibration;
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

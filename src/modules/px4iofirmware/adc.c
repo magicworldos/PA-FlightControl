@@ -76,28 +76,27 @@
 #define rJDR4		REG(STM32_ADC_JDR4_OFFSET)
 #define rDR		REG(STM32_ADC_DR_OFFSET)
 
-perf_counter_t		adc_perf;
+perf_counter_t adc_perf;
 
-int
-adc_init(void)
+int adc_init(void)
 {
 	adc_perf = perf_alloc(PC_ELAPSED, "adc");
-
+	
 	/* put the ADC into power-down mode */
 	rCR2 &= ~ADC_CR2_ADON;
 	up_udelay(10);
-
+	
 	/* bring the ADC out of power-down mode */
 	rCR2 |= ADC_CR2_ADON;
 	up_udelay(10);
-
+	
 	/* do calibration if supported */
 #ifdef ADC_CR2_CAL
 	rCR2 |= ADC_CR2_RSTCAL;
 	up_udelay(1);
 
 	if (rCR2 & ADC_CR2_RSTCAL)
-	{
+	{	
 		return -1;
 	}
 
@@ -105,12 +104,12 @@ adc_init(void)
 	up_udelay(100);
 
 	if (rCR2 & ADC_CR2_CAL)
-	{
+	{	
 		return -1;
 	}
 
 #endif
-
+	
 	/*
 	 * Configure sampling time.
 	 *
@@ -121,40 +120,39 @@ adc_init(void)
 	 */
 	rSMPR1 = 0b00000000011011011011011011011011;
 	rSMPR2 = 0b00011011011011011011011011011011;
-
-	rCR2 |=	ADC_CR2_TSVREFE;		/* enable the temperature sensor / Vrefint channel */
-
+	
+	rCR2 |= ADC_CR2_TSVREFE; /* enable the temperature sensor / Vrefint channel */
+	
 	/* configure for a single-channel sequence */
 	rSQR1 = 0;
 	rSQR2 = 0;
-	rSQR3 = 0;	/* will be updated with the channel at conversion time */
-
+	rSQR3 = 0; /* will be updated with the channel at conversion time */
+	
 	return 0;
 }
 
 /*
-  return one measurement, or 0xffff on error
+ return one measurement, or 0xffff on error
  */
-uint16_t
-adc_measure(unsigned channel)
+uint16_t adc_measure(unsigned channel)
 {
-
+	
 	perf_begin(adc_perf);
-
+	
 	/* clear any previous EOC */
 	rSR = 0;
-	(void)rDR;
-
+	(void) rDR;
+	
 	/* run a single conversion right now - should take about 60 cycles (a few microseconds) max */
 	rSQR3 = channel;
 	rCR2 |= ADC_CR2_ADON;
-
+	
 	/* wait for the conversion to complete */
 	hrt_abstime now = hrt_absolute_time();
-
+	
 	while (!(rSR & ADC_SR_EOC))
 	{
-
+		
 		/* never spin forever - this will give a bogus result though */
 		if (hrt_elapsed_time(&now) > 100)
 		{
@@ -162,11 +160,11 @@ adc_measure(unsigned channel)
 			return 0xffff;
 		}
 	}
-
+	
 	/* read the result and clear EOC */
 	uint16_t result = rDR;
 	rSR = 0;
-
+	
 	perf_end(adc_perf);
 	return result;
 }

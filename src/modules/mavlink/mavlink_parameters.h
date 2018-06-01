@@ -68,11 +68,11 @@ public:
 	void handle_message(const mavlink_message_t *msg);
 
 private:
-	int		_send_all_index;
+	int _send_all_index;
 
 	/* do not allow top copying this class */
 	MavlinkParametersManager(MavlinkParametersManager &);
-	MavlinkParametersManager &operator = (const MavlinkParametersManager &);
+	MavlinkParametersManager &operator =(const MavlinkParametersManager &);
 
 protected:
 	/// send a single param if a PARAM_REQUEST_LIST is in progress
@@ -98,7 +98,7 @@ protected:
 	_uavcan_open_request_list_item *_uavcan_open_request_list; // Pointer to the first item in the linked list
 	bool _uavcan_waiting_for_request_response; // We have reqested a parameter and wait for the response
 	uint16_t _uavcan_queued_request_items;	// Number of stored parameter requests currently in the list
-
+	
 	orb_advert_t _rc_param_map_pub;
 	struct rc_parameter_map_s _rc_param_map;
 

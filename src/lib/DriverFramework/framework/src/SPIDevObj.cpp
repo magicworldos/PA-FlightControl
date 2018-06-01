@@ -62,39 +62,42 @@ SPIDevObj::~SPIDevObj() = default;
 int SPIDevObj::start()
 {
 	m_fd = ::open(m_dev_path, 0);
-
-	if (m_fd < 0) {
+	
+	if (m_fd < 0)
+	{
 		DF_LOG_ERR("SPIDevObj start failed");
 		return m_fd;
 	}
-
+	
 	return 0;
 }
 
 int SPIDevObj::stop()
 {
-	if (m_fd >= 0) {
+	if (m_fd >= 0)
+	{
 		int ret = ::close(m_fd);
 		m_fd = -1;
-
-		if (ret < 0) {
+		
+		if (ret < 0)
+		{
 			DF_LOG_ERR("Error: SPIDevObj::stop failed on ::close()");
 			return ret;
 		}
 	}
-
+	
 	return 0;
 }
-
 
 int SPIDevObj::readReg(DevHandle &h, uint8_t address, uint8_t &val)
 {
 	SPIDevObj *obj = DevMgr::getDevObjByHandle<SPIDevObj>(h);
-
-	if (obj) {
+	
+	if (obj)
+	{
 		return obj->_readReg(address, val);
 	}
-
+	
 	return -1;
 }
 
@@ -103,13 +106,15 @@ int SPIDevObj::_readReg(uint8_t address, uint8_t &val)
 #if defined(__DF_RPI) || defined(__DF_EDISON) || defined(__DF_BEBOP) || defined(__DF_OCPOC)
 	/* implement sensor interface via rpi2 spi */
 	// constexpr int transfer_bytes = 1 + 1; // first byte is address
-	uint8_t write_buffer[2] = {0}; // automatic write buffer
-	uint8_t read_buffer[2] = {0}; // automatic read buffer
-
-	write_buffer[0] = address | DIR_READ; // read mode
-	write_buffer[1] = 0; // write data
-
-	struct spi_ioc_transfer spi_transfer; // datastructures for linux spi interface
+	uint8_t write_buffer[2] =
+	{	0}; // automatic write buffer
+	uint8_t read_buffer[2] =
+	{	0}; // automatic read buffer
+	
+	write_buffer[0] = address | DIR_READ;// read mode
+	write_buffer[1] = 0;// write data
+	
+	struct spi_ioc_transfer spi_transfer;// datastructures for linux spi interface
 	memset(&spi_transfer, 0, sizeof(spi_ioc_transfer));
 
 	spi_transfer.tx_buf = (unsigned long)write_buffer;
@@ -122,7 +127,8 @@ int SPIDevObj::_readReg(uint8_t address, uint8_t &val)
 	int result = 0;
 	result = ::ioctl(m_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
 
-	if (result != 2) {
+	if (result != 2)
+	{	
 		DF_LOG_ERR("error: SPI combined read write failed: %d", result);
 		return -1;
 	}
@@ -145,7 +151,8 @@ int SPIDevObj::_readReg(uint8_t address, uint8_t &val)
 
 	int result = ::ioctl(m_fd, SPI_IOCTL_RDWR, &ioctl_write_read);
 
-	if (result < 0) {
+	if (result < 0)
+	{	
 		DF_LOG_ERR("error: SPI combined read write failed: %d", result);
 		return -1;
 	}
@@ -155,53 +162,61 @@ int SPIDevObj::_readReg(uint8_t address, uint8_t &val)
 #else
 	return -1;
 #endif
-
+	
 }
 
 int SPIDevObj::writeReg(DevHandle &h, uint8_t address, uint8_t val)
 {
 	SPIDevObj *obj = DevMgr::getDevObjByHandle<SPIDevObj>(h);
-
-	if (obj) {
+	
+	if (obj)
+	{
 		return obj->_writeReg(address, val);
 	}
-
+	
 	return -1;
 }
 
 int SPIDevObj::writeRegVerified(DevHandle &h, uint8_t address, uint8_t val)
 {
 	SPIDevObj *obj = DevMgr::getDevObjByHandle<SPIDevObj>(h);
-
-	if (obj) {
+	
+	if (obj)
+	{
 		int result;
 		uint8_t read_val = ~val;
 		int retries = 5;
-
-		while (retries) {
-			result =  obj->_writeReg(address, val);
-
-			if (result < 0) {
+		
+		while (retries)
+		{
+			result = obj->_writeReg(address, val);
+			
+			if (result < 0)
+			{
 				--retries;
 				continue;
 			}
-
+			
 			result = obj->_readReg(address, read_val);
-
-			if (result < 0 || read_val != val) {
+			
+			if (result < 0 || read_val != val)
+			{
 				--retries;
 				continue;
 			}
 		}
-
-		if (val == read_val) {
+		
+		if (val == read_val)
+		{
 			return 0;
-
-		} else {
+			
+		}
+		else
+		{
 			DF_LOG_ERR("error: SPI write verify failed: %d", errno);
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -214,16 +229,18 @@ int SPIDevObj::_writeReg(uint8_t address, uint8_t *in_buffer, uint16_t length)
 {
 #if defined(__DF_RPI) || defined(__DF_EDISON) || defined(__DF_BEBOP) || defined(__DF_OCPOC)
 	/* implement sensor interface via rpi2 spi */
-	uint8_t write_buffer[length + 1];// automatic write buffer: first byte is address
+	uint8_t write_buffer[length + 1]; // automatic write buffer: first byte is address
 	memset(&write_buffer, 0, length + 1);
-	uint8_t read_buffer[2] = {0}; // automatic read buffer
-
-	struct spi_ioc_transfer spi_transfer; // datastructures for linux spi interface
+	uint8_t read_buffer[2] =
+	{	0}; // automatic read buffer
+	
+	struct spi_ioc_transfer spi_transfer;// datastructures for linux spi interface
 	memset(&spi_transfer, 0, sizeof(spi_ioc_transfer));
 
-	write_buffer[0] = address | DIR_WRITE; // write mode
-
-	if (in_buffer) {
+	write_buffer[0] = address | DIR_WRITE;// write mode
+	
+	if (in_buffer)
+	{	
 		memcpy(&write_buffer[1], in_buffer, length);
 	}
 
@@ -237,7 +254,8 @@ int SPIDevObj::_writeReg(uint8_t address, uint8_t *in_buffer, uint16_t length)
 	int result = 0;
 	result = ::ioctl(m_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
 
-	if (result != length + 1) {
+	if (result != length + 1)
+	{	
 		DF_LOG_ERR("Error: SPI write failed. Reported %d bytes written (%s)", result, strerror(errno));
 		return -1;
 	}
@@ -245,21 +263,23 @@ int SPIDevObj::_writeReg(uint8_t address, uint8_t *in_buffer, uint16_t length)
 	return 0;
 #else
 	uint8_t write_buffer[length + 1];
-
+	
 	write_buffer[0] = address | DIR_WRITE;
-
-	if (in_buffer) {
+	
+	if (in_buffer)
+	{
 		memcpy(&write_buffer[1], in_buffer, length);
 	}
-
+	
 	/* Save the address of the register to read from in the write buffer for the combined write. */
 	int bytes_written = ::write(m_fd, (char *) write_buffer, 2);
-
-	if (bytes_written != 2) {
+	
+	if (bytes_written != 2)
+	{
 		DF_LOG_ERR("Error: SPI write failed. Reported %d bytes written (%d)", bytes_written, errno);
 		return -1;
 	}
-
+	
 	return 0;
 #endif
 }
@@ -267,17 +287,18 @@ int SPIDevObj::_writeReg(uint8_t address, uint8_t *in_buffer, uint16_t length)
 int SPIDevObj::_modifyReg(uint8_t address, uint8_t clearbits, uint8_t setbits)
 {
 	int ret;
-	uint8_t	val;
-
+	uint8_t val;
+	
 	ret = _readReg(address, val);
-
-	if (ret != 0) {
+	
+	if (ret != 0)
+	{
 		return ret;
 	}
-
+	
 	val &= ~clearbits;
 	val |= setbits;
-
+	
 	return _writeReg(address, val);
 }
 
@@ -287,8 +308,8 @@ int SPIDevObj::_transfer(uint8_t *write_buffer, uint8_t *read_buffer, uint8_t le
 	struct spi_ioc_transfer spi_transfer; // datastructures for linux spi interface
 	memset(&spi_transfer, 0, sizeof(spi_ioc_transfer));
 
-	write_buffer[0] |= DIR_WRITE; // write mode
-
+	write_buffer[0] |= DIR_WRITE;// write mode
+	
 	spi_transfer.rx_buf = (unsigned long)read_buffer;
 	spi_transfer.len = len;
 	spi_transfer.tx_buf = (unsigned long)write_buffer;
@@ -299,7 +320,8 @@ int SPIDevObj::_transfer(uint8_t *write_buffer, uint8_t *read_buffer, uint8_t le
 	int result = 0;
 	result = ::ioctl(m_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
 
-	if (result != len) {
+	if (result != len)
+	{	
 		DF_LOG_ERR("Error: SPI write failed. Reported %d bytes written (%d)", result, errno);
 		return -1;
 	}
@@ -307,16 +329,17 @@ int SPIDevObj::_transfer(uint8_t *write_buffer, uint8_t *read_buffer, uint8_t le
 	return 0;
 
 #else
-	write_buffer[0] |=  DIR_WRITE;
-
+	write_buffer[0] |= DIR_WRITE;
+	
 	/* Save the address of the register to read from in the write buffer for the combined write. */
 	int bytes_written = ::write(m_fd, (char *) write_buffer, len);
-
-	if (bytes_written != len) {
+	
+	if (bytes_written != len)
+	{
 		DF_LOG_ERR("Error: SPI write failed. Reported %d bytes written (%d)", bytes_written, errno);
 		return -1;
 	}
-
+	
 	return 0;
 #endif
 }
@@ -327,7 +350,8 @@ int SPIDevObj::bulkRead(DevHandle &h, uint8_t address, uint8_t *out_buffer, int 
 	/* implement sensor interface via rpi2 spi */
 	SPIDevObj *obj = DevMgr::getDevObjByHandle<SPIDevObj>(h);
 
-	if (obj) {
+	if (obj)
+	{	
 		return obj->_bulkRead(address, out_buffer, length);
 	}
 
@@ -348,7 +372,8 @@ int SPIDevObj::bulkRead(DevHandle &h, uint8_t address, uint8_t *out_buffer, int 
 	ioctl_write_read.write_buffer_length = transfer_bytes;
 	result = h.ioctl(SPI_IOCTL_RDWR, (unsigned long)&ioctl_write_read);
 
-	if (result != transfer_bytes) {
+	if (result != transfer_bytes)
+	{	
 		DF_LOG_ERR("bulkRead error %d (%d)", result, h.getError());
 		return result;
 	}
@@ -367,7 +392,7 @@ int SPIDevObj::_bulkRead(uint8_t address, uint8_t *out_buffer, int length)
 	DF_LOG_DEBUG("_bulkRead: length = %d", length);
 	/* implement sensor interface via rpi spi */
 	int transfer_bytes = 1 + length; // first byte is address
-
+	
 	// automatic write buffer
 	uint8_t *write_buffer = (uint8_t *)alloca(transfer_bytes);
 	memset(write_buffer, 0, transfer_bytes);
@@ -375,9 +400,9 @@ int SPIDevObj::_bulkRead(uint8_t address, uint8_t *out_buffer, int length)
 	uint8_t *read_buffer = (uint8_t *)alloca(transfer_bytes);
 	memset(read_buffer, 0, transfer_bytes);
 
-	write_buffer[0] = address | DIR_READ; // read mode
-
-	struct spi_ioc_transfer spi_transfer; // datastructure for linux spi interface
+	write_buffer[0] = address | DIR_READ;// read mode
+	
+	struct spi_ioc_transfer spi_transfer;// datastructure for linux spi interface
 	memset(&spi_transfer, 0, sizeof(spi_ioc_transfer));
 
 	spi_transfer.rx_buf = (unsigned long)read_buffer;
@@ -390,15 +415,16 @@ int SPIDevObj::_bulkRead(uint8_t address, uint8_t *out_buffer, int length)
 	int result = 0;
 	result = ::ioctl(m_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
 
-	if (result != transfer_bytes) {
+	if (result != transfer_bytes)
+	{	
 		DF_LOG_ERR("bulkRead error %d", result);
 		return result;
 	}
 
 	DF_LOG_DEBUG("_bulkRead: read_buffer = %u, %u, %u, %u, %u, %u, %u, %u, %u",
-		     read_buffer[1], read_buffer[2], read_buffer[3],
-		     read_buffer[4], read_buffer[5], read_buffer[6],
-		     read_buffer[7], read_buffer[8], read_buffer[9]);
+			read_buffer[1], read_buffer[2], read_buffer[3],
+			read_buffer[4], read_buffer[5], read_buffer[6],
+			read_buffer[7], read_buffer[8], read_buffer[9]);
 
 	memcpy(out_buffer, &read_buffer[1], transfer_bytes - 1);
 
@@ -407,7 +433,7 @@ int SPIDevObj::_bulkRead(uint8_t address, uint8_t *out_buffer, int length)
 #elif defined(__DF_QURT)
 	int result = 0;
 	int transfer_bytes = 1 + length; // first byte is address
-
+	
 	// XXX NOTE: The write and read buffer need to be of the same length.
 	//           If the write buffer is chosen with only 1 byte length,
 	//           we see the ioctl randomly getting stuck.
@@ -424,7 +450,8 @@ int SPIDevObj::_bulkRead(uint8_t address, uint8_t *out_buffer, int length)
 	ioctl_write_read.write_buffer_length = transfer_bytes;
 	result = ::ioctl(m_fd, SPI_IOCTL_RDWR, &ioctl_write_read);
 
-	if (result != transfer_bytes) {
+	if (result != transfer_bytes)
+	{	
 		DF_LOG_ERR("bulkRead error %d", result);
 		return result;
 	}

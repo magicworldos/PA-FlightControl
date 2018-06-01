@@ -48,11 +48,11 @@ extern "C" __EXPORT int qshell_entry(int argc, char **argv);
 int qshell_entry(int argc, char **argv)
 {
 	px4::init(argc, argv, "qshell");
-
+	
 	PX4_DEBUG("qshell");
 	QShell qshell;
 	qshell.main();
-
+	
 	PX4_DEBUG("goodbye");
 	return 0;
 }

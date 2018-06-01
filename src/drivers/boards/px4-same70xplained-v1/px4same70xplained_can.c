@@ -107,7 +107,7 @@
  ************************************************************************************/
 
 int board_can_initialize(void)
-{
+{	
 	static bool initialized = false;
 	struct can_dev_s *can;
 	int ret;
@@ -115,13 +115,13 @@ int board_can_initialize(void)
 	/* Check if we have already initialized */
 
 	if (!initialized)
-	{
+	{	
 		/* Call sam_mcan_initialize() to get an instance of the CAN interface */
 
 		can = sam_mcan_initialize(CAN_PORT);
 
 		if (can == NULL)
-		{
+		{	
 			candbg("ERROR:  Failed to get CAN interface\n");
 			return -ENODEV;
 		}
@@ -131,7 +131,7 @@ int board_can_initialize(void)
 		ret = can_register("/dev/can0", can);
 
 		if (ret < 0)
-		{
+		{	
 			candbg("ERROR: can_register failed: %d\n", ret);
 			return ret;
 		}

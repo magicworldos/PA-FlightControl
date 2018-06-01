@@ -31,7 +31,6 @@
  *
  ****************************************************************************/
 
-
 /**
  * @file syslink_bridge.cpp
  *
@@ -40,113 +39,103 @@
 
 #include "syslink_main.h"
 
-
-
 SyslinkBridge::SyslinkBridge(Syslink *link) :
-	CDev("SyslinkBridge", "/dev/bridge0"),
-	_link(link),
-	_readbuffer(16, sizeof(crtp_message_t))
+		    CDev("SyslinkBridge", "/dev/bridge0"),
+		    _link(link),
+		    _readbuffer(16, sizeof(crtp_message_t))
 {
-
-
+	
 }
 
 SyslinkBridge::~SyslinkBridge()
 {
-
+	
 }
 
-
-int
-SyslinkBridge::init()
+int SyslinkBridge::init()
 {
 	int ret = CDev::init();
-
+	
 	/* if init failed, bail now */
 	if (ret != OK)
 	{
 		DEVICE_DEBUG("CDev init failed");
 		return ret;
 	}
-
-
+	
 	return ret;
 }
 
-pollevent_t
-SyslinkBridge::poll_state(struct file *filp)
+pollevent_t SyslinkBridge::poll_state(struct file *filp)
 {
 	pollevent_t state = 0;
-
+	
 	if (!_readbuffer.empty())
 	{
 		state |= POLLIN;
 	}
-
+	
 	if (_link->_writebuffer.space() > 0)
 	{
 		state |= POLLOUT;
 	}
-
+	
 	return state;
 }
 
-ssize_t
-SyslinkBridge::read(struct file *filp, char *buffer, size_t buflen)
+ssize_t SyslinkBridge::read(struct file *filp, char *buffer, size_t buflen)
 {
 	int nread = 0;
 	crtp_message_t msg;
-
+	
 	while (!_readbuffer.empty() && buflen >= sizeof(CRTP_MAX_DATA_SIZE))
 	{
 		_readbuffer.get(&msg, sizeof(msg));
 		int size = msg.size - sizeof(msg.header);
 		memcpy(buffer, &msg.data, size);
-
+		
 		nread += size;
 		buffer += size;
 		buflen -= size;
 	}
-
+	
 	return nread;
 }
 
-ssize_t
-SyslinkBridge::write(struct file *filp, const char *buffer, size_t buflen)
+ssize_t SyslinkBridge::write(struct file *filp, const char *buffer, size_t buflen)
 {
 	crtp_message_t msg;
-
+	
 	// Queue and send next time we get a RAW radio packet
 	int remaining = buflen;
-
+	
 	while (remaining > 0)
 	{
 		int datasize = MIN(remaining, CRTP_MAX_DATA_SIZE);
 		msg.size = datasize + sizeof(msg.header);
 		msg.port = CRTP_PORT_MAVLINK;
 		memcpy(&msg.data, buffer, datasize);
-
+		
 		_link->_writebuffer.force(&msg, sizeof(crtp_message_t));
-
+		
 		buffer += datasize;
 		remaining -= datasize;
 	}
-
+	
 	return buflen;
 }
 
-int
-SyslinkBridge::ioctl(struct file *filp, int cmd, unsigned long arg)
+int SyslinkBridge::ioctl(struct file *filp, int cmd, unsigned long arg)
 {
 	// All termios commands should be silently ignored as they are handled
-
+	
 	switch (cmd)
 	{
-
+		
 		case FIONSPACE:
 			*((int *) arg) = _link->_writebuffer.space() * CRTP_MAX_DATA_SIZE;
 			return 0;
-
+			
 		default:
 			/* give it to the superclass */
 			CDev::ioctl(filp, cmd, arg);
@@ -154,9 +143,7 @@ SyslinkBridge::ioctl(struct file *filp, int cmd, unsigned long arg)
 	}
 }
 
-
-void
-SyslinkBridge::pipe_message(crtp_message_t *msg)
+void SyslinkBridge::pipe_message(crtp_message_t *msg)
 {
 	_readbuffer.force(msg, sizeof(msg->size) + msg->size);
 	poll_notify(POLLIN);

@@ -50,7 +50,7 @@ typedef struct hx_stream *hx_stream_t;
 
 #define HX_STREAM_MAX_FRAME	64
 
-typedef void (* hx_stream_rx_callback)(void *arg, const void *data, size_t length);
+typedef void (*hx_stream_rx_callback)(void *arg, const void *data, size_t length);
 
 __BEGIN_DECLS
 
@@ -65,16 +65,14 @@ __BEGIN_DECLS
  * @return		A handle to the stream, or NULL if memory could
  *			not be allocated.
  */
-__EXPORT extern hx_stream_t	hx_stream_init(int fd,
-		hx_stream_rx_callback callback,
-		void *arg);
+__EXPORT extern hx_stream_t hx_stream_init(int fd, hx_stream_rx_callback callback, void *arg);
 
 /**
  * Free a hx_stream object.
  *
  * @param stream	A handle returned from hx_stream_init.
  */
-__EXPORT extern void		hx_stream_free(hx_stream_t stream);
+__EXPORT extern void hx_stream_free(hx_stream_t stream);
 
 /**
  * Set performance counters for the stream.
@@ -86,10 +84,7 @@ __EXPORT extern void		hx_stream_free(hx_stream_t stream);
  * @param rx_frames	Counter for received frames.
  * @param rx_errors	Counter for short and corrupt received frames.
  */
-__EXPORT extern void		hx_stream_set_counters(hx_stream_t stream,
-		perf_counter_t tx_frames,
-		perf_counter_t rx_frames,
-		perf_counter_t rx_errors);
+__EXPORT extern void hx_stream_set_counters(hx_stream_t stream, perf_counter_t tx_frames, perf_counter_t rx_frames, perf_counter_t rx_errors);
 
 /**
  * Reset a stream.
@@ -98,7 +93,7 @@ __EXPORT extern void		hx_stream_set_counters(hx_stream_t stream,
  *
  * @param stream	A handle returned from hx_stream_init.
  */
-__EXPORT extern void		hx_stream_reset(hx_stream_t stream);
+__EXPORT extern void hx_stream_reset(hx_stream_t stream);
 
 /**
  * Prepare to send a frame.
@@ -113,9 +108,7 @@ __EXPORT extern void		hx_stream_reset(hx_stream_t stream);
  * @param count		The number of bytes to send.
  * @return		Zero on success, -errno on error.
  */
-__EXPORT extern int		hx_stream_start(hx_stream_t stream,
-		const void *data,
-		size_t count);
+__EXPORT extern int hx_stream_start(hx_stream_t stream, const void *data, size_t count);
 
 /**
  * Get the next byte to send for a stream.
@@ -127,7 +120,7 @@ __EXPORT extern int		hx_stream_start(hx_stream_t stream,
  * @return		The byte to send, or -1 if there is
  *			nothing left to send.
  */
-__EXPORT extern int		hx_stream_send_next(hx_stream_t stream);
+__EXPORT extern int hx_stream_send_next(hx_stream_t stream);
 
 /**
  * Send a frame.
@@ -144,9 +137,7 @@ __EXPORT extern int		hx_stream_send_next(hx_stream_t stream);
  * @param count		The number of bytes to send.
  * @return		Zero on success, -errno on error.
  */
-__EXPORT extern int		hx_stream_send(hx_stream_t stream,
-		const void *data,
-		size_t count);
+__EXPORT extern int hx_stream_send(hx_stream_t stream, const void *data, size_t count);
 
 /**
  * Handle a byte from the stream.
@@ -154,8 +145,7 @@ __EXPORT extern int		hx_stream_send(hx_stream_t stream,
  * @param stream	A handle returned from hx_stream_init.
  * @param c		The character to process.
  */
-__EXPORT extern void		hx_stream_rx(hx_stream_t stream,
-		uint8_t c);
+__EXPORT extern void hx_stream_rx(hx_stream_t stream, uint8_t c);
 
 __END_DECLS
 

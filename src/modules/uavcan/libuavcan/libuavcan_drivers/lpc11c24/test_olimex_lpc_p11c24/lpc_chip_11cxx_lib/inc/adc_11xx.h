@@ -35,7 +35,8 @@
 #if !defined(CHIP_LPC1125)
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup ADC_11XX CHIP:  LPC11xx A/D conversion driver
@@ -49,20 +50,26 @@ extern "C" {
 /**
  * @brief 10 or 12-bit ADC register block structure
  */
-typedef struct {					/*!< ADCn Structure */
-	__IO uint32_t CR;				/*!< A/D Control Register. The AD0CR register must be written to select the operating mode before A/D conversion can occur. */
-	__I  uint32_t GDR;				/*!< A/D Global Data Register. Contains the result of the most recent A/D conversion. */
-	__I  uint32_t RESERVED0;
-	__IO uint32_t INTEN;			/*!< A/D Interrupt Enable Register. This register contains enable bits that allow the DONE flag of each A/D channel to be included or excluded from contributing to the generation of an A/D interrupt. */
-	__I  uint32_t DR[8];			/*!< A/D Channel Data Register. This register contains the result of the most recent conversion completed on channel n. */
-	__I  uint32_t STAT;				/*!< A/D Status Register. This register contains DONE and OVERRUN flags for all of the A/D channels, as well as the A/D interrupt flag. */
+typedef struct
+{ /*!< ADCn Structure */
+	__IO
+	uint32_t CR; /*!< A/D Control Register. The AD0CR register must be written to select the operating mode before A/D conversion can occur. */
+	__I
+	uint32_t GDR; /*!< A/D Global Data Register. Contains the result of the most recent A/D conversion. */
+	__I
+	uint32_t RESERVED0;__IO
+	uint32_t INTEN; /*!< A/D Interrupt Enable Register. This register contains enable bits that allow the DONE flag of each A/D channel to be included or excluded from contributing to the generation of an A/D interrupt. */
+	__I
+	uint32_t DR[8]; /*!< A/D Channel Data Register. This register contains the result of the most recent conversion completed on channel n. */
+	__I
+	uint32_t STAT; /*!< A/D Status Register. This register contains DONE and OVERRUN flags for all of the A/D channels, as well as the A/D interrupt flag. */
 } LPC_ADC_T;
 
 /**
  * @brief ADC register support bitfields and mask
  */
- #define ADC_DR_RESULT(n)        ((((n) >> 6) & 0x3FF))	/*!< Mask for getting the 10 bits ADC data read value */
- #define ADC_CR_BITACC(n)        ((((n) & 0x7) << 17))	/*!< Number of ADC accuracy bits */
+#define ADC_DR_RESULT(n)        ((((n) >> 6) & 0x3FF))	/*!< Mask for getting the 10 bits ADC data read value */
+#define ADC_CR_BITACC(n)        ((((n) & 0x7) << 17))	/*!< Number of ADC accuracy bits */
 
 #define ADC_DR_DONE(n)          (((n) >> 31))			/*!< Mask for reading the ADC done status */
 #define ADC_DR_OVERRUN(n)       ((((n) >> 30) & (1UL)))	/*!< Mask for reading the ADC overrun status */
@@ -84,58 +91,64 @@ typedef struct {					/*!< ADCn Structure */
 /**
  * @brief	ADC status register used for IP drivers
  */
-typedef enum IP_ADC_STATUS {
-	ADC_DR_DONE_STAT,	/*!< ADC data register staus */
+typedef enum IP_ADC_STATUS
+{
+	ADC_DR_DONE_STAT, /*!< ADC data register staus */
 	ADC_DR_OVERRUN_STAT,/*!< ADC data overrun staus */
-	ADC_DR_ADINT_STAT	/*!< ADC interrupt status */
+	ADC_DR_ADINT_STAT /*!< ADC interrupt status */
 } ADC_STATUS_T;
 
 /** The channels on one ADC peripheral*/
-typedef enum CHIP_ADC_CHANNEL {
-	ADC_CH0 = 0,	/**< ADC channel 0 */
-	ADC_CH1,		/**< ADC channel 1 */
-	ADC_CH2,		/**< ADC channel 2 */
-	ADC_CH3,		/**< ADC channel 3 */
-	ADC_CH4,		/**< ADC channel 4 */
-	ADC_CH5,		/**< ADC channel 5 */
-	ADC_CH6,		/**< ADC channel 6 */
-	ADC_CH7,		/**< ADC channel 7 */
+typedef enum CHIP_ADC_CHANNEL
+{
+	ADC_CH0 = 0, /**< ADC channel 0 */
+	ADC_CH1, /**< ADC channel 1 */
+	ADC_CH2, /**< ADC channel 2 */
+	ADC_CH3, /**< ADC channel 3 */
+	ADC_CH4, /**< ADC channel 4 */
+	ADC_CH5, /**< ADC channel 5 */
+	ADC_CH6, /**< ADC channel 6 */
+	ADC_CH7, /**< ADC channel 7 */
 } ADC_CHANNEL_T;
 
 /** The number of bits of accuracy of the result in the LS bits of ADDR*/
-typedef enum CHIP_ADC_RESOLUTION {
-	ADC_10BITS = 0,		/**< ADC 10 bits */
-	ADC_9BITS,			/**< ADC 9 bits  */
-	ADC_8BITS,			/**< ADC 8 bits  */
-	ADC_7BITS,			/**< ADC 7 bits  */
-	ADC_6BITS,			/**< ADC 6 bits  */
-	ADC_5BITS,			/**< ADC 5 bits  */
-	ADC_4BITS,			/**< ADC 4 bits  */
-	ADC_3BITS,			/**< ADC 3 bits  */
+typedef enum CHIP_ADC_RESOLUTION
+{
+	ADC_10BITS = 0, /**< ADC 10 bits */
+	ADC_9BITS, /**< ADC 9 bits  */
+	ADC_8BITS, /**< ADC 8 bits  */
+	ADC_7BITS, /**< ADC 7 bits  */
+	ADC_6BITS, /**< ADC 6 bits  */
+	ADC_5BITS, /**< ADC 5 bits  */
+	ADC_4BITS, /**< ADC 4 bits  */
+	ADC_3BITS, /**< ADC 3 bits  */
 } ADC_RESOLUTION_T;
 
 /** Edge configuration, which controls rising or falling edge on the selected signal for the start of a conversion */
-typedef enum CHIP_ADC_EDGE_CFG {
-	ADC_TRIGGERMODE_RISING = 0,		/**< Trigger event: rising edge */
-	ADC_TRIGGERMODE_FALLING,		/**< Trigger event: falling edge */
+typedef enum CHIP_ADC_EDGE_CFG
+{
+	ADC_TRIGGERMODE_RISING = 0, /**< Trigger event: rising edge */
+	ADC_TRIGGERMODE_FALLING, /**< Trigger event: falling edge */
 } ADC_EDGE_CFG_T;
 
 /** Start mode, which controls the start of an A/D conversion when the BURST bit is 0. */
-typedef enum CHIP_ADC_START_MODE {
+typedef enum CHIP_ADC_START_MODE
+{
 	ADC_NO_START = 0,
-	ADC_START_NOW,			/*!< Start conversion now */
-	ADC_START_ON_CTOUT15,	/*!< Start conversion when the edge selected by bit 27 occurs on CTOUT_15 */
-	ADC_START_ON_CTOUT8,	/*!< Start conversion when the edge selected by bit 27 occurs on CTOUT_8 */
-	ADC_START_ON_ADCTRIG0,	/*!< Start conversion when the edge selected by bit 27 occurs on ADCTRIG0 */
-	ADC_START_ON_ADCTRIG1,	/*!< Start conversion when the edge selected by bit 27 occurs on ADCTRIG1 */
-	ADC_START_ON_MCOA2		/*!< Start conversion when the edge selected by bit 27 occurs on Motocon PWM output MCOA2 */
+	ADC_START_NOW, /*!< Start conversion now */
+	ADC_START_ON_CTOUT15, /*!< Start conversion when the edge selected by bit 27 occurs on CTOUT_15 */
+	ADC_START_ON_CTOUT8, /*!< Start conversion when the edge selected by bit 27 occurs on CTOUT_8 */
+	ADC_START_ON_ADCTRIG0, /*!< Start conversion when the edge selected by bit 27 occurs on ADCTRIG0 */
+	ADC_START_ON_ADCTRIG1, /*!< Start conversion when the edge selected by bit 27 occurs on ADCTRIG1 */
+	ADC_START_ON_MCOA2 /*!< Start conversion when the edge selected by bit 27 occurs on Motocon PWM output MCOA2 */
 } ADC_START_MODE_T;
 
 /** Clock setup structure for ADC controller passed to the initialize function */
-typedef struct {
-	uint32_t adcRate;		/*!< ADC rate */
-	uint8_t  bitsAccuracy;	/*!< ADC bit accuracy */
-	bool     burstMode;		/*!< ADC Burt Mode */
+typedef struct
+{
+	uint32_t adcRate; /*!< ADC rate */
+	uint8_t bitsAccuracy; /*!< ADC bit accuracy */
+	bool burstMode; /*!< ADC Burt Mode */
 } ADC_CLOCK_SETUP_T;
 
 /**

@@ -68,48 +68,48 @@
 #include <isl29501/isl29501.hpp>
 #include <DevMgr.hpp>
 
-
-extern "C" { __EXPORT int df_isl29501_wrapper_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int df_isl29501_wrapper_main(int argc, char *argv[]);
+}
 
 using namespace DriverFramework;
 
-
-class DfISL29501Wrapper : public ISL29501
+class DfISL29501Wrapper: public ISL29501
 {
 public:
 	DfISL29501Wrapper();
 	~DfISL29501Wrapper();
-
 
 	/**
 	 * Start automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		start();
+	int start();
 
 	/**
 	 * Stop automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		stop();
+	int stop();
 
 private:
 	int _publish(struct range_sensor_data &data);
 
-	orb_advert_t		_range_topic;
+	orb_advert_t _range_topic;
 
-	int			_orb_class_instance;
-
+	int _orb_class_instance;
+	
 	// perf_counter_t		_range_sample_perf;
-
+	
 };
 
 DfISL29501Wrapper::DfISL29501Wrapper(/*enum Rotation rotation*/) :
-	ISL29501(ISL_DEVICE_PATH),
-	_range_topic(nullptr),
-	_orb_class_instance(-1)
+		    ISL29501(ISL_DEVICE_PATH),
+		    _range_topic(nullptr),
+		    _orb_class_instance(-1)
 {
 }
 
@@ -121,21 +121,21 @@ int DfISL29501Wrapper::start()
 {
 	int ret;
 	ret = ISL29501::init();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("ISL init fail: %d", ret);
 		return ret;
 	}
-
+	
 	ret = ISL29501::start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("ISL start fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
@@ -143,50 +143,49 @@ int DfISL29501Wrapper::stop()
 {
 	/* Stop sensor. */
 	int ret = ISL29501::stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("ISL stop fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
 int DfISL29501Wrapper::_publish(struct range_sensor_data &data)
 {
 	struct distance_sensor_s d;
-
+	
 	memset(&d, 0, sizeof(d));
-
+	
 	d.timestamp = hrt_absolute_time();
-
+	
 	d.min_distance = float(ISL_MIN_DISTANCE); /* m */
-
+	
 	d.max_distance = float(ISL_MAX_DISTANCE); /* m */
-
+	
 	d.current_distance = float(data.dist);
-
+	
 	d.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
-
+	
 	d.id = 0; // TODO set proper ID
-
+	
 	d.covariance = 0.0f;
-
+	
 	if (_range_topic == nullptr)
 	{
-		_range_topic = orb_advertise_multi(ORB_ID(distance_sensor), &d,
-						   &_orb_class_instance, ORB_PRIO_DEFAULT);
-
+		_range_topic = orb_advertise_multi(ORB_ID(distance_sensor), &d, &_orb_class_instance, ORB_PRIO_DEFAULT);
+		
 	}
 	else
 	{
 		orb_publish(ORB_ID(distance_sensor), _range_topic, &d);
 	}
-
+	
 	return 0;
-};
-
+}
+;
 
 namespace df_isl29501_wrapper
 {
@@ -204,34 +203,33 @@ int start()
 {
 	PX4_ERR("start");
 	g_dev = new DfISL29501Wrapper();
-
+	
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("failed instantiating DfISL29501Wrapper object");
 		return -1;
 	}
-
+	
 	int ret = g_dev->start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("DfISL29501Wrapper start failed");
 		return ret;
 	}
-
+	
 	// Open the range sensor
 	DevHandle h;
 	DevMgr::getHandle(ISL_DEVICE_PATH, h);
-
+	
 	if (!h.isValid())
 	{
-		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)",
-			    ISL_DEVICE_PATH, h.getError());
+		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)", ISL_DEVICE_PATH, h.getError());
 		return -1;
 	}
-
+	
 	DevMgr::releaseHandle(h);
-
+	
 	return 0;
 }
 
@@ -242,15 +240,15 @@ int stop()
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	int ret = g_dev->stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("driver could not be stopped");
 		return ret;
 	}
-
+	
 	delete g_dev;
 	g_dev = nullptr;
 	return 0;
@@ -259,49 +257,47 @@ int stop()
 /**
  * Print a little info about the driver.
  */
-int
-info()
+int info()
 {
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
 /**
  * Who am i
  */
-int
-probe()
+int probe()
 {
 	int ret;
-
+	
 	if (g_dev == nullptr)
 	{
 		ret = start();
-
+		
 		if (ret)
 		{
 			PX4_ERR("Failed to start");
 			return ret;
 		}
 	}
-
+	
 	ret = g_dev->probe();
-
+	
 	if (ret)
 	{
 		PX4_ERR("Failed to probe");
 		return ret;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
@@ -312,91 +308,85 @@ probe()
  * Note: Currently only serves debugging purpose, user is required to manually
  * set offset inside code.
  */
-int
-calibration()
+int calibration()
 {
 	int ret;
-
+	
 	if (g_dev == nullptr)
 	{
 		ret = start();
-
+		
 		if (ret)
 		{
 			PX4_ERR("Failed to start");
 			return ret;
 		}
 	}
-
+	
 	ret = g_dev->calibration();
-
+	
 	if (ret)
 	{
 		PX4_ERR("Failed to calibrate");
 		return ret;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
-
-void
-usage()
+void usage()
 {
 	PX4_WARN("Usage: df_isl_wrapper 'start', 'info', 'stop', 'calib', 'probe'");
 }
 
 } // namespace df_isl_wrapper
 
-
-int
-df_isl29501_wrapper_main(int argc, char *argv[])
+int df_isl29501_wrapper_main(int argc, char *argv[])
 {
 	int ret = 0;
 	int myoptind = 1;
-
+	
 	if (argc <= 1)
 	{
 		df_isl29501_wrapper::usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[myoptind];
-
-
+	
 	if (!strcmp(verb, "start"))
 	{
 		ret = df_isl29501_wrapper::start(/*rotation*/);
 	}
-
+	
 	else if (!strcmp(verb, "stop"))
 	{
 		ret = df_isl29501_wrapper::stop();
 	}
-
+	
 	else if (!strcmp(verb, "info"))
 	{
 		ret = df_isl29501_wrapper::info();
 	}
-
+	
 	else if (!strcmp(verb, "probe"))
 	{
 		ret = df_isl29501_wrapper::probe();
 	}
-
+	
 	else if (!strcmp(verb, "calib"))
 	{
 		df_isl29501_wrapper::calibration();
 		return 1;
 	}
-
+	
 	else
 	{
 		df_isl29501_wrapper::usage();
 		return 1;
 	}
-
+	
 	return ret;
 }

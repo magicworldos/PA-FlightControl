@@ -80,19 +80,19 @@ __END_DECLS
 // NOTE - This is a copy of the NuttX i2c_msg_s structure
 
 typedef struct
-{
-	uint32_t frequency;         /* I2C frequency */
-	uint16_t addr;              /* Slave address (7- or 10-bit) */
-	uint16_t flags;             /* See I2C_M_* definitions */
-	uint8_t *buffer;        /* Buffer to be transferred */
-	ssize_t length;             /* Length of the buffer in bytes */
-} px4_i2c_msg_t;
+{	
+	uint32_t frequency; /* I2C frequency */
+	uint16_t addr; /* Slave address (7- or 10-bit) */
+	uint16_t flags; /* See I2C_M_* definitions */
+	uint8_t *buffer; /* Buffer to be transferred */
+	ssize_t length; /* Length of the buffer in bytes */
+}px4_i2c_msg_t;
 
 // NOTE - This is a copy of the NuttX i2c_ops_s structure
 typedef struct
-{
+{	
 	const struct px4_i2c_ops_t *ops; /* I2C vtable */
-} px4_i2c_dev_t;
+}px4_i2c_dev_t;
 
 //#define SPI_SELECT(d,id,s) ((d)->ops->select(d,id,s))
 #define SPI_SELECT(d,id,s)
@@ -101,24 +101,25 @@ typedef struct
 // Original version commented out
 //#define I2C_TRANSFER(d,m,c) ((d)->ops->transfer(d,m,c))
 inline int I2C_TRANSFER(px4_i2c_dev_t *dev, px4_i2c_msg_t *msg, int count);
-inline int I2C_TRANSFER(px4_i2c_dev_t *dev, px4_i2c_msg_t *msg, int count) { return 0; }
+inline int I2C_TRANSFER(px4_i2c_dev_t *dev, px4_i2c_msg_t *msg, int count)
+{	return 0;}
 
 #ifdef __PX4_QURT
 
 struct i2c_msg
-{
-	uint16_t  addr;                  /* Slave address */
-	uint16_t  flags;                 /* See I2C_M_* definitions */
-	uint8_t  *buf;
-	int       len;
+{	
+	uint16_t addr; /* Slave address */
+	uint16_t flags; /* See I2C_M_* definitions */
+	uint8_t *buf;
+	int len;
 };
 
 #define I2C_RDWR 0x0FFF
 
 struct i2c_rdwr_ioctl_data
-{
-	struct i2c_msg *msgs;   /* pointers to i2c_msgs */
-	uint32_t nmsgs;         /* number of i2c_msgs */
+{	
+	struct i2c_msg *msgs; /* pointers to i2c_msgs */
+	uint32_t nmsgs; /* number of i2c_msgs */
 };
 
 // FIXME - The functions are not implemented on QuRT/DSPAL

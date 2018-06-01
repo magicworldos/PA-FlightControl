@@ -16,7 +16,6 @@
 # endif
 #endif
 
-
 namespace uavcan_lpc11c24
 {
 
@@ -26,14 +25,14 @@ namespace uavcan_lpc11c24
  */
 struct CriticalSectionLocker
 {
-    CriticalSectionLocker()
-    {
-        __disable_irq();
-    }
-    ~CriticalSectionLocker()
-    {
-        __enable_irq();
-    }
+	CriticalSectionLocker()
+	{
+		__disable_irq();
+	}
+	~CriticalSectionLocker()
+	{
+		__enable_irq();
+	}
 };
 
 /**

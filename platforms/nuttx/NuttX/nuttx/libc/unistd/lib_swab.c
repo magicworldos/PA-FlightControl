@@ -65,35 +65,35 @@
 
 void swab(FAR const void *src, FAR void *dest, ssize_t nbytes)
 {
-  FAR const uint8_t *src8 = (FAR const uint8_t *)src;
-  FAR uint8_t *dest8 = (FAR uint8_t *)dest;
-  FAR uint8_t *end8;
+	FAR const uint8_t *src8 = (FAR const uint8_t *) src;
+	FAR uint8_t *dest8 = (FAR uint8_t *) dest;
+	FAR uint8_t *end8;
+	
+	DEBUGASSERT(src != NULL && dest != NULL);
+	
+	/* Do nother if nbytes is negative or it there are few then 2 bytes to be
+	 * transferred.
+	 */
 
-  DEBUGASSERT(src != NULL && dest != NULL);
+	if (nbytes > 1)
+	{
+		/* The end of dest buffer + 1 byte (skipping any odd numbered byte at
+		 * the end of the buffer.
+		 */
 
-  /* Do nother if nbytes is negative or it there are few then 2 bytes to be
-   * transferred.
-   */
+		end8 = dest8 + (nbytes & ~1);
+		
+		/* Loop until the destination is equal to the end + 1 address */
 
-  if (nbytes > 1)
-  {
-    /* The end of dest buffer + 1 byte (skipping any odd numbered byte at
-     * the end of the buffer.
-     */
+		while (dest8 != end8)
+		{
+			register uint8_t tmp;
+			
+			/* Transfer the bytes, swapping the order */
 
-    end8 = dest8 + (nbytes & ~1);
-
-    /* Loop until the destination is equal to the end + 1 address */
-
-    while (dest8 != end8)
-      {
-        register uint8_t tmp;
-
-        /* Transfer the bytes, swapping the order */
-
-        tmp      = *src8++;
-        *dest8++ = *src8++;
-        *dest8++ = tmp;
-      }
-  }
+			tmp = *src8++;
+			*dest8++ = *src8++;
+			*dest8++ = tmp;
+		}
+	}
 }

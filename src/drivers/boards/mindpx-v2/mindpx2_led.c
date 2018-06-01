@@ -92,7 +92,7 @@ __EXPORT void led_toggle(int led)
 		if (stm32_gpioread(GPIO_LED1))
 		{
 			stm32_gpiowrite(GPIO_LED1, false);
-
+			
 		}
 		else
 		{

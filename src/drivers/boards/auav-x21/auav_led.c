@@ -92,7 +92,7 @@ __EXPORT void led_toggle(int led)
 		if (px4_arch_gpioread(GPIO_LED1))
 		{
 			px4_arch_gpiowrite(GPIO_LED1, false);
-
+			
 		}
 		else
 		{

@@ -45,11 +45,11 @@ namespace launchdetection
 {
 
 CatapultLaunchMethod::CatapultLaunchMethod(SuperBlock *parent) :
-	SuperBlock(parent, "CAT"),
-	thresholdAccel(this, "A"),
-	thresholdTime(this, "T"),
-	motorDelay(this, "MDEL"),
-	pitchMaxPreThrottle(this, "PMAX")
+		    SuperBlock(parent, "CAT"),
+		    thresholdAccel(this, "A"),
+		    thresholdTime(this, "T"),
+		    motorDelay(this, "MDEL"),
+		    pitchMaxPreThrottle(this, "PMAX")
 {
 	last_timestamp = hrt_absolute_time();
 }
@@ -58,7 +58,7 @@ void CatapultLaunchMethod::update(float accel_x)
 {
 	float dt = hrt_elapsed_time(&last_timestamp) * 1e-6f;
 	last_timestamp = hrt_absolute_time();
-
+	
 	switch (state)
 	{
 		case LAUNCHDETECTION_RES_NONE:
@@ -67,15 +67,14 @@ void CatapultLaunchMethod::update(float accel_x)
 			if (accel_x > thresholdAccel.get())
 			{
 				integrator += dt;
-
+				
 				if (integrator > thresholdTime.get())
 				{
 					if (motorDelay.get() > 0.0f)
 					{
 						state = LAUNCHDETECTION_RES_DETECTED_ENABLECONTROL;
-						PX4_WARN("Launch detected: enablecontrol, waiting %8.4fs until full throttle",
-							 double(motorDelay.get()));
-
+						PX4_WARN("Launch detected: enablecontrol, waiting %8.4fs until full throttle", double(motorDelay.get()));
+						
 					}
 					else
 					{
@@ -84,31 +83,31 @@ void CatapultLaunchMethod::update(float accel_x)
 						PX4_WARN("Launch detected: enablemotors (delay not activated)");
 					}
 				}
-
+				
 			}
 			else
 			{
 				reset();
 			}
-
+			
 			break;
-
+			
 		case LAUNCHDETECTION_RES_DETECTED_ENABLECONTROL:
 			/* Vehicle is currently controlling attitude but not with full throttle. Waiting until delay is
 			 * over to allow full throttle */
 			motorDelayCounter += dt;
-
+			
 			if (motorDelayCounter > motorDelay.get())
 			{
 				PX4_WARN("Launch detected: state enablemotors");
 				state = LAUNCHDETECTION_RES_DETECTED_ENABLEMOTORS;
 			}
-
+			
 			break;
-
+			
 		default:
 			break;
-
+			
 	}
 }
 
@@ -130,7 +129,7 @@ float CatapultLaunchMethod::getPitchMax(float pitchMaxDefault)
 	if (state == LAUNCHDETECTION_RES_DETECTED_ENABLEMOTORS)
 	{
 		return pitchMaxDefault;
-
+		
 	}
 	else
 	{

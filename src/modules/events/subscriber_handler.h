@@ -22,24 +22,54 @@ public:
 	void unsubscribe();
 	void check_for_updates();
 
-	int get_battery_status_sub() const { return _battery_status_sub; }
-	int get_cpuload_sub() const { return _cpuload_sub; }
-	int get_vehicle_command_sub() const { return _vehicle_command_sub; }
-	int get_vehicle_status_sub() const { return _vehicle_status_sub; }
-	int get_vehicle_status_flags_sub() const { return _vehicle_status_flags_sub; }
-
-	/* update checking methods */
-	bool battery_status_updated() const { return _update_bitfield & (uint32_t)StatusMask::BatteryStatus; }
-	bool cpuload_updated() const { return _update_bitfield & (uint32_t)StatusMask::CpuLoad; }
-	bool vehicle_command_updated() const { return _update_bitfield & (uint32_t)StatusMask::VehicleCommand; }
-	bool vehicle_status_updated() const { return _update_bitfield & (uint32_t)StatusMask::VehicleStatus; }
-	bool vehicle_status_flags_updated() const { return _update_bitfield & (uint32_t)StatusMask::VehicleStatusFlags; }
-
-
-private:
-	enum class StatusMask : uint32_t
+	int get_battery_status_sub() const
 	{
-		VehicleCommand = (0x01 << 0),
+		return _battery_status_sub;
+	}
+	int get_cpuload_sub() const
+	{
+		return _cpuload_sub;
+	}
+	int get_vehicle_command_sub() const
+	{
+		return _vehicle_command_sub;
+	}
+	int get_vehicle_status_sub() const
+	{
+		return _vehicle_status_sub;
+	}
+	int get_vehicle_status_flags_sub() const
+	{
+		return _vehicle_status_flags_sub;
+	}
+	
+	/* update checking methods */
+	bool battery_status_updated() const
+	{
+		return _update_bitfield & (uint32_t) StatusMask::BatteryStatus;
+	}
+	bool cpuload_updated() const
+	{
+		return _update_bitfield & (uint32_t) StatusMask::CpuLoad;
+	}
+	bool vehicle_command_updated() const
+	{
+		return _update_bitfield & (uint32_t) StatusMask::VehicleCommand;
+	}
+	bool vehicle_status_updated() const
+	{
+		return _update_bitfield & (uint32_t) StatusMask::VehicleStatus;
+	}
+	bool vehicle_status_flags_updated() const
+	{
+		return _update_bitfield & (uint32_t) StatusMask::VehicleStatusFlags;
+	}
+	
+private:
+	enum class StatusMask
+		: uint32_t
+		{	
+			VehicleCommand = (0x01 << 0),
 		VehicleStatus = (0x01 << 1),
 		VehicleStatusFlags = (0x01 << 2),
 		BatteryStatus = (0x01 << 3),

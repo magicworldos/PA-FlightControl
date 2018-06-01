@@ -33,7 +33,8 @@
 #define __CCAND_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup CCANROM_11XX CHIP: LPC11xx CCAN ROM Driver
@@ -63,17 +64,18 @@ extern "C" {
 #define CAN_MSGOBJ_DAT  0x00000000UL	/* data frame */
 #define CAN_MSGOBJ_RTR  0x40000000UL	/* rtr frame	*/
 
-typedef struct CCAN_MSG_OBJ {
-	uint32_t  mode_id;
-	uint32_t  mask;
-	uint8_t   data[8];
-	uint8_t   dlc;
-	uint8_t   msgobj;
+typedef struct CCAN_MSG_OBJ
+{
+	uint32_t mode_id;
+	uint32_t mask;
+	uint8_t data[8];
+	uint8_t dlc;
+	uint8_t msgobj;
 } CCAN_MSG_OBJ_T;
 
 /**************************************************************************
-   SDO Abort Codes
-**************************************************************************/
+ SDO Abort Codes
+ **************************************************************************/
 #define SDO_ABORT_TOGGLE          0x05030000UL	// Toggle bit not alternated
 #define SDO_ABORT_SDOTIMEOUT      0x05040000UL	// SDO protocol timed out
 #define SDO_ABORT_UNKNOWN_COMMAND 0x05040001UL	// Client/server command specifier not valid or unknown
@@ -90,10 +92,11 @@ typedef struct CCAN_MSG_OBJ {
 #define SDO_ABORT_LOCAL           0x08000021UL	// Data cannot be transferred or stored to the application because of local control
 #define SDO_ABORT_DEVSTAT         0x08000022UL	// Data cannot be transferred or stored to the application because of the present device state
 
-typedef struct CCAN_ODCONSTENTRY {
+typedef struct CCAN_ODCONSTENTRY
+{
 	uint16_t index;
-	uint8_t  subindex;
-	uint8_t  len;
+	uint8_t subindex;
+	uint8_t len;
 	uint32_t val;
 } CCAN_ODCONSTENTRY_T;
 
@@ -106,21 +109,23 @@ typedef struct CCAN_ODCONSTENTRY {
 #define OD_SEG_WO  0x50		// Object Dictionary entry segmented, write-only
 #define OD_SEG_RW  0x60		// Object Dictionary entry segmented, read-write
 
-typedef struct CCAN_ODENTRY {
+typedef struct CCAN_ODENTRY
+{
 	uint16_t index;
-	uint8_t  subindex;
-	uint8_t  entrytype_len;
-	uint8_t  *val;
+	uint8_t subindex;
+	uint8_t entrytype_len;
+	uint8_t *val;
 } CCAN_ODENTRY_T;
 
-typedef struct CCAN_CANOPENCFG {
-	uint8_t   node_id;
-	uint8_t   msgobj_rx;
-	uint8_t   msgobj_tx;
-	uint8_t   isr_handled;
-	uint32_t  od_const_num;
+typedef struct CCAN_CANOPENCFG
+{
+	uint8_t node_id;
+	uint8_t msgobj_rx;
+	uint8_t msgobj_tx;
+	uint8_t isr_handled;
+	uint32_t od_const_num;
 	CCAN_ODCONSTENTRY_T *od_const_table;
-	uint32_t  od_num;
+	uint32_t od_num;
 	CCAN_ODENTRY_T *od_table;
 } CCAN_CANOPENCFG_T;
 
@@ -134,20 +139,20 @@ typedef struct CCAN_CANOPENCFG {
 #define CAN_SDOSEG_OPEN           1	// channel is opened
 #define CAN_SDOSEG_CLOSE          2	// channel is closed
 
-typedef struct CCAN_CALLBACKS {
+typedef struct CCAN_CALLBACKS
+{
 	void (*CAN_rx)(uint8_t msg_obj_num);
 	void (*CAN_tx)(uint8_t msg_obj_num);
 	void (*CAN_error)(uint32_t error_info);
 	uint32_t (*CANOPEN_sdo_read)(uint16_t index, uint8_t subindex);
 	uint32_t (*CANOPEN_sdo_write)(uint16_t index, uint8_t subindex, uint8_t *dat_ptr);
-	uint32_t (*CANOPEN_sdo_seg_read)(uint16_t index, uint8_t subindex, uint8_t openclose, uint8_t *length,
-									 uint8_t *data, uint8_t *last);
-	uint32_t (*CANOPEN_sdo_seg_write)(uint16_t index, uint8_t subindex, uint8_t openclose, uint8_t length,
-									  uint8_t *data, uint8_t *fast_resp);
+	uint32_t (*CANOPEN_sdo_seg_read)(uint16_t index, uint8_t subindex, uint8_t openclose, uint8_t *length, uint8_t *data, uint8_t *last);
+	uint32_t (*CANOPEN_sdo_seg_write)(uint16_t index, uint8_t subindex, uint8_t openclose, uint8_t length, uint8_t *data, uint8_t *fast_resp);
 	uint8_t (*CANOPEN_sdo_req)(uint8_t length_req, uint8_t *req_ptr, uint8_t *length_resp, uint8_t *resp_ptr);
 } CCAN_CALLBACKS_T;
 
-typedef struct CCAN_API {
+typedef struct CCAN_API
+{
 	void (*init_can)(uint32_t *can_cfg, uint8_t isr_ena);
 	void (*isr)(void);
 	void (*config_rxmsgobj)(CCAN_MSG_OBJ_T *msg_obj);

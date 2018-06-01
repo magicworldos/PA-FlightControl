@@ -84,17 +84,17 @@ __EXPORT
 int kinetis_usbpullup(FAR struct usbdev_s *dev, bool enable)
 {
 	usbtrace(TRACE_DEVPULLUP, (uint16_t)enable);
-
+	
 	if (enable)
 	{
 		putreg8(USB_CONTROL_DPPULLUPNONOTG, KINETIS_USB0_CONTROL);
-
+		
 	}
 	else
 	{
 		putreg8(0, KINETIS_USB0_CONTROL);
 	}
-
+	
 	return OK;
 }
 

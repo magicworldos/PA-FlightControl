@@ -55,15 +55,17 @@
 class RoboClaw
 {
 public:
-
+	
 	/** control channels */
-	enum e_channel {
+	enum e_channel
+	{
 		CH_VOLTAGE_LEFT = 0,
 		CH_VOLTAGE_RIGHT
 	};
 
 	/**  motors */
-	enum e_motor {
+	enum e_motor
+	{
 		MOTOR_1 = 0,
 		MOTOR_2
 	};
@@ -77,8 +79,7 @@ public:
 	 * @param pulsesPerRev # of encoder
 	 *  pulses per revolution of wheel
 	 */
-	RoboClaw(const char *deviceName, uint16_t address,
-		 uint16_t pulsesPerRev);
+	RoboClaw(const char *deviceName, uint16_t address, uint16_t pulsesPerRev);
 
 	/**
 	 * deconstructor
@@ -128,9 +129,10 @@ public:
 	void printStatus(char *string, size_t n);
 
 private:
-
+	
 	// Quadrature status flags
-	enum e_quadrature_status_flags {
+	enum e_quadrature_status_flags
+	{
 		STATUS_UNDERFLOW = 1 << 0, /**< encoder went below 0 **/
 		STATUS_REVERSE = 1 << 1, /**< motor doing in reverse dir **/
 		STATUS_OVERFLOW = 1 << 2, /**< encoder went above 2^32 **/
@@ -138,19 +140,20 @@ private:
 
 	// commands
 	// We just list the commands we want from the manual here.
-	enum e_command {
-
+	enum e_command
+	{
+		
 		// simple
 		CMD_DRIVE_FWD_1 = 0,
 		CMD_DRIVE_REV_1 = 1,
 		CMD_DRIVE_FWD_2 = 4,
 		CMD_DRIVE_REV_2 = 5,
-
+		
 		// encoder commands
 		CMD_READ_ENCODER_1 = 16,
 		CMD_READ_ENCODER_2 = 17,
 		CMD_RESET_ENCODERS = 20,
-
+		
 		// advanced motor control
 		CMD_READ_SPEED_HIRES_1 = 30,
 		CMD_READ_SPEED_HIRES_2 = 31,
@@ -186,7 +189,6 @@ private:
 };
 
 // unit testing
-int roboclawTest(const char *deviceName, uint8_t address,
-		 uint16_t pulsesPerRev);
+int roboclawTest(const char *deviceName, uint8_t address, uint16_t pulsesPerRev);
 
 // vi:noet:smarttab:autoindent:ts=4:sw=4:tw=78

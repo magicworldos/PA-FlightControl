@@ -60,77 +60,77 @@ int test_servo(int argc, char *argv[])
 	int result = 0;
 	servo_position_t data[PWM_OUTPUT_MAX_CHANNELS];
 	servo_position_t pos;
-
+	
 	fd = open(PWM_OUTPUT0_DEVICE_PATH, O_RDWR);
-
+	
 	if (fd < 0)
 	{
 		printf("failed opening /dev/pwm_servo\n");
 		goto out;
 	}
-
+	
 	result = read(fd, &data, sizeof(data));
-
+	
 	if (result != sizeof(data))
 	{
 		printf("failed bulk-reading channel values\n");
 		goto out;
 	}
-
+	
 	printf("Servo readback, pairs of values should match defaults\n");
-
+	
 	unsigned servo_count;
-	result = ioctl(fd, PWM_SERVO_GET_COUNT, (unsigned long)&servo_count);
-
+	result = ioctl(fd, PWM_SERVO_GET_COUNT, (unsigned long) &servo_count);
+	
 	if (result != OK)
 	{
 		warnx("PWM_SERVO_GET_COUNT");
 		goto out;
 	}
-
+	
 	for (unsigned i = 0; i < servo_count; i++)
 	{
-		result = ioctl(fd, PWM_SERVO_GET(i), (unsigned long)&pos);
-
+		result = ioctl(fd, PWM_SERVO_GET(i), (unsigned long) &pos);
+		
 		if (result < 0)
 		{
 			printf("failed reading channel %u\n", i);
 			goto out;
 		}
-
+		
 		printf("%u: %u %u\n", i, pos, data[i]);
-
+		
 	}
-
+	
 	/* tell safety that its ok to disable it with the switch */
 	result = ioctl(fd, PWM_SERVO_SET_ARM_OK, 0);
-
+	
 	if (result != OK)
 	{
 		warnx("FAIL: PWM_SERVO_SET_ARM_OK");
 		goto out;
 	}
-
+	
 	/* tell output device that the system is armed (it will output values if safety is off) */
 	result = ioctl(fd, PWM_SERVO_ARM, 0);
-
+	
 	if (result != OK)
 	{
 		warnx("FAIL: PWM_SERVO_ARM");
 		goto out;
 	}
-
+	
 	usleep(5000000);
 	printf("Advancing channel 0 to 1500\n");
 	result = ioctl(fd, PWM_SERVO_SET(0), 1500);
 	printf("Advancing channel 1 to 1800\n");
 	result = ioctl(fd, PWM_SERVO_SET(1), 1800);
-out:
+	out:
 
 	if (fd >= 0)
 	{
 		close(fd);
 	}
-
+	
 	return result;
 }

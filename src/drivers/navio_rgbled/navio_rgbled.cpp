@@ -40,18 +40,16 @@
 
 using namespace DriverFramework;
 
-
-RGBLED::RGBLED(const char *name)
-	: DevObj(name,
-		 RGBLED0_DEVICE_PATH,
-		 RGBLED_BASE_DEVICE_PATH,
-		 DeviceBusType_UNKNOWN,
-		 0)
-	, _gpioR(4)
-	, _gpioG(27)
-	, _gpioB(6)
+RGBLED::RGBLED(const char *name) :
+		    DevObj(name,
+		    RGBLED0_DEVICE_PATH,
+		    RGBLED_BASE_DEVICE_PATH, DeviceBusType_UNKNOWN, 0),
+		    _gpioR(4),
+		    _gpioG(27),
+		    _gpioB(6)
 {
-};
+}
+;
 
 RGBLED::~RGBLED()
 {
@@ -59,104 +57,104 @@ RGBLED::~RGBLED()
 	{
 		orb_unsubscribe(_led_controller.led_control_subscription());
 	}
-};
+}
+;
 
 int RGBLED::start()
 {
 	int res = DevObj::init();
-
+	
 	if (res != 0)
 	{
 		DF_LOG_ERR("could not init DevObj (%i)", res);
 		return res;
 	}
-
+	
 	res = _gpioR.exportPin();
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("red led: failed to export");
 		goto cleanup;
 	}
-
+	
 	res = _gpioR.setDirection(LinuxGPIO::Direction::OUT);
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("red led: failed to set direction");
 		goto cleanup;
 	}
-
+	
 	res = _gpioG.exportPin();
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("green led: failed to export");
 		goto cleanup;
 	}
-
+	
 	res = _gpioG.setDirection(LinuxGPIO::Direction::OUT);
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("green led: failed to set direction");
 		goto cleanup;
 	}
-
+	
 	res = _gpioB.exportPin();
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("blue led: failed to export");
 		goto cleanup;
 	}
-
+	
 	res = _gpioB.setDirection(LinuxGPIO::Direction::OUT);
-
+	
 	if (res != 0)
 	{
 		PX4_ERR("blue led: failed to set direction");
 		goto cleanup;
 	}
-
+	
 	// update at fixed interval
 	DevObj::setSampleInterval(_led_controller.maximum_update_interval());
-
+	
 	res = DevObj::start();
-
+	
 	if (res != 0)
 	{
 		DF_LOG_ERR("could not start DevObj (%i)", res);
 		return res;
 	}
-
+	
 	return res;
-
-cleanup:
-	_gpioR.unexportPin();
+	
+	cleanup: _gpioR.unexportPin();
 	_gpioG.unexportPin();
 	_gpioB.unexportPin();
-
+	
 	return res;
 }
 
 int RGBLED::stop()
 {
 	int res;
-
+	
 	_gpioR.unexportPin();
 	_gpioG.unexportPin();
 	_gpioB.unexportPin();
-
+	
 	res = DevObj::stop();
-
+	
 	if (res < 0)
 	{
 		DF_LOG_ERR("could not stop DevObj");
 		//this may not be an error for this device
 		return res;
 	}
-
+	
 	return 0;
 }
 
@@ -167,9 +165,9 @@ void RGBLED::_measure()
 		int led_control_sub = orb_subscribe(ORB_ID(led_control));
 		_led_controller.init(led_control_sub);
 	}
-
+	
 	LedControlData led_control_data;
-
+	
 	if (_led_controller.update(led_control_data) == 1)
 	{
 		switch (led_control_data.leds[0].color)
@@ -179,44 +177,44 @@ void RGBLED::_measure()
 				_gpioG.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioB.writeValue(LinuxGPIO::Value::HIGH);
 				break;
-
+				
 			case led_control_s::COLOR_GREEN:
 				_gpioR.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioG.writeValue(LinuxGPIO::Value::LOW);
 				_gpioB.writeValue(LinuxGPIO::Value::HIGH);
 				break;
-
+				
 			case led_control_s::COLOR_BLUE:
 				_gpioR.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioG.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioB.writeValue(LinuxGPIO::Value::LOW);
 				break;
-
+				
 			case led_control_s::COLOR_AMBER: //make it the same as yellow
 			case led_control_s::COLOR_YELLOW:
 				_gpioR.writeValue(LinuxGPIO::Value::LOW);
 				_gpioG.writeValue(LinuxGPIO::Value::LOW);
 				_gpioB.writeValue(LinuxGPIO::Value::HIGH);
 				break;
-
+				
 			case led_control_s::COLOR_PURPLE:
 				_gpioR.writeValue(LinuxGPIO::Value::LOW);
 				_gpioG.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioB.writeValue(LinuxGPIO::Value::LOW);
 				break;
-
+				
 			case led_control_s::COLOR_CYAN:
 				_gpioR.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioG.writeValue(LinuxGPIO::Value::LOW);
 				_gpioB.writeValue(LinuxGPIO::Value::LOW);
 				break;
-
+				
 			case led_control_s::COLOR_WHITE:
 				_gpioR.writeValue(LinuxGPIO::Value::LOW);
 				_gpioG.writeValue(LinuxGPIO::Value::LOW);
 				_gpioB.writeValue(LinuxGPIO::Value::LOW);
 				break;
-
+				
 			default: // led_control_s::COLOR_OFF
 				_gpioR.writeValue(LinuxGPIO::Value::HIGH);
 				_gpioG.writeValue(LinuxGPIO::Value::HIGH);
@@ -226,7 +224,10 @@ void RGBLED::_measure()
 	}
 }
 
-extern "C" { __EXPORT int navio_rgbled_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int navio_rgbled_main(int argc, char *argv[]);
+}
 
 namespace navio_rgbled
 {
@@ -239,13 +240,13 @@ RGBLED *g_dev = nullptr;
 int start()
 {
 	g_dev = new RGBLED("navio_rgbled");
-
+	
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("failed instantiating RGBLED");
 		return -1;
 	}
-
+	
 	return g_dev->start();
 }
 
@@ -256,12 +257,12 @@ int stop()
 		PX4_ERR("not running");
 		return -1;
 	}
-
+	
 	g_dev->stop();
-
+	
 	delete g_dev;
 	g_dev = nullptr;
-
+	
 	return 0;
 }
 
@@ -276,32 +277,31 @@ int navio_rgbled_main(int argc, char *argv[])
 {
 	int ret = 0;
 	int myoptind = 1;
-
+	
 	if (argc <= 1)
 	{
 		navio_rgbled::usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[myoptind];
-
-
+	
 	if (!strcmp(verb, "start"))
 	{
 		ret = navio_rgbled::start();
 	}
-
+	
 	else if (!strcmp(verb, "stop"))
 	{
 		ret = navio_rgbled::stop();
 	}
-
+	
 	else
 	{
 		navio_rgbled::usage();
 		return 1;
 	}
-
+	
 	return ret;
 }
 

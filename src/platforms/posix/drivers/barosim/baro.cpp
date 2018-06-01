@@ -79,7 +79,7 @@
 
 using namespace DriverFramework;
 
-class BAROSIM : public VirtDevObj
+class BAROSIM: public VirtDevObj
 {
 public:
 	BAROSIM(const char *path);
@@ -95,34 +95,37 @@ public:
 	void print_info();
 
 protected:
-
-	ringbuffer::RingBuffer	*_reports;
+	
+	ringbuffer::RingBuffer *_reports;
 
 	/* last report */
-	struct baro_report	report;
+	struct baro_report report;
 
 	/* altitude conversion calibration */
-	unsigned		_msl_pressure;	/* in Pa */
+	unsigned _msl_pressure; /* in Pa */
+	
+	orb_advert_t _baro_topic;
+	int _orb_class_instance;
 
-	orb_advert_t		_baro_topic;
-	int			_orb_class_instance;
-
-	perf_counter_t		_sample_perf;
-	perf_counter_t		_measure_perf;
-	perf_counter_t		_comms_errors;
+	perf_counter_t _sample_perf;
+	perf_counter_t _measure_perf;
+	perf_counter_t _comms_errors;
 	/**
 	 * Get the internal / external state
 	 *
 	 * @return true if the sensor is not on the main MCU board
 	 */
-	bool			is_external() { return (_orb_class_instance == 0); /* XXX put this into the interface class */ }
-
+	bool is_external()
+	{
+		return (_orb_class_instance == 0); /* XXX put this into the interface class */
+	}
+	
 	virtual void _measure() override;
 
 	/**
 	 * Collect the result of the most recent measurement.
 	 */
-	virtual int		collect();
+	virtual int collect();
 };
 
 static BAROSIM *g_barosim = nullptr;
@@ -133,17 +136,17 @@ static BAROSIM *g_barosim = nullptr;
 extern "C" __EXPORT int barosim_main(int argc, char *argv[]);
 
 BAROSIM::BAROSIM(const char *path) :
-	VirtDevObj("BAROSIM", path, BARO_BASE_DEVICE_PATH, BAROSIM_MEASURE_INTERVAL_US),
-	_reports(nullptr),
-	report{},
-	_msl_pressure(101325),
-	_baro_topic(nullptr),
-	_orb_class_instance(-1),
-	_sample_perf(perf_alloc(PC_ELAPSED, "barosim_read")),
-	_measure_perf(perf_alloc(PC_ELAPSED, "barosim_measure")),
-	_comms_errors(perf_alloc(PC_COUNT, "barosim_comms_errors"))
+		    VirtDevObj("BAROSIM", path, BARO_BASE_DEVICE_PATH, BAROSIM_MEASURE_INTERVAL_US),
+		    _reports(nullptr),
+		    report { },
+		    _msl_pressure(101325),
+		    _baro_topic(nullptr),
+		    _orb_class_instance(-1),
+		    _sample_perf(perf_alloc(PC_ELAPSED, "barosim_read")),
+		    _measure_perf(perf_alloc(PC_ELAPSED, "barosim_measure")),
+		    _comms_errors(perf_alloc(PC_COUNT, "barosim_comms_errors"))
 {
-
+	
 }
 
 BAROSIM::~BAROSIM()
@@ -151,66 +154,62 @@ BAROSIM::~BAROSIM()
 	/* make sure we are truly inactive */
 	stop();
 	setSampleInterval(0);
-
+	
 	/* free any existing reports */
 	if (_reports != nullptr)
 	{
 		delete _reports;
 	}
-
+	
 	// free perf counters
 	perf_free(_sample_perf);
 	perf_free(_measure_perf);
 	perf_free(_comms_errors);
 }
 
-int
-BAROSIM::init()
+int BAROSIM::init()
 {
 	int ret;
-	struct baro_report brp = {};
-
+	struct baro_report brp = { };
+	
 	ret = VirtDevObj::init();
-
+	
 	if (ret != OK)
 	{
 		PX4_ERR("VirtDevObj init failed");
 		goto out;
 	}
-
+	
 	/* allocate basic report buffers */
 	_reports = new ringbuffer::RingBuffer(2, sizeof(baro_report));
-
+	
 	if (_reports == nullptr)
 	{
 		PX4_ERR("can't get memory for reports");
 		ret = -ENOMEM;
 		goto out;
 	}
-
+	
 	_reports->flush();
-
-	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp,
-					  &_orb_class_instance, (is_external()) ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
-
+	
+	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp, &_orb_class_instance, (is_external()) ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
+	
 	if (_baro_topic == nullptr)
 	{
 		PX4_ERR("failed to create sensor_baro publication");
 		return -ENODEV;
 	}
-
-out:
-	return ret;
+	
+	out: return ret;
 }
 
-int
-BAROSIM::devIOCTL(unsigned long cmd, unsigned long arg)
+int BAROSIM::devIOCTL(unsigned long cmd, unsigned long arg)
 {
 	//PX4_WARN("baro IOCTL %" PRIu64 , hrt_absolute_time());
-
+	
 	switch (cmd)
 	{
-
+		
 		case BAROIOCSMSLPRESSURE:
 
 			/* range-check for sanity */
@@ -218,66 +217,64 @@ BAROSIM::devIOCTL(unsigned long cmd, unsigned long arg)
 			{
 				return -EINVAL;
 			}
-
+			
 			_msl_pressure = arg;
 			return OK;
-
+			
 		case BAROIOCGMSLPRESSURE:
 			return _msl_pressure;
-
+			
 		default:
 			break;
 	}
-
+	
 	/* give it to the bus-specific superclass */
 	// return bus_ioctl(filp, cmd, arg);
 	return VirtDevObj::devIOCTL(cmd, arg);
 }
 
-void
-BAROSIM::_measure()
+void BAROSIM::_measure()
 {
 	collect();
 }
 
-int
-BAROSIM::collect()
+int BAROSIM::collect()
 {
 	bool status;
-
+	
 	simulator::RawBaroData raw_baro;
-
+	
 	perf_begin(_sample_perf);
-
+	
 	report.timestamp = hrt_absolute_time();
 	report.error_count = perf_event_count(_comms_errors);
-
+	
 	/* read requested */
 	Simulator *sim = Simulator::getInstance();
-
+	
 	if (sim == nullptr)
 	{
 		PX4_ERR("Error BAROSIM_DEV::transfer no simulator");
 		return -ENODEV;
 	}
-
+	
 	PX4_DEBUG("BAROSIM_DEV::transfer getting sample");
-	status = sim->getBaroSample((uint8_t *)(&raw_baro), sizeof(raw_baro));
-
+	status = sim->getBaroSample((uint8_t *) (&raw_baro), sizeof(raw_baro));
+	
 	if (!status)
 	{
 		perf_count(_comms_errors);
 		perf_end(_sample_perf);
 		return -1;
 	}
-
+	
 	report.pressure = raw_baro.pressure;
 	report.altitude = raw_baro.altitude;
 	report.temperature = raw_baro.temperature;
-
+	
 	/* fake device ID */
 	report.device_id = 478459;
-
+	
 	/* publish it */
 	if (!(m_pub_blocked))
 	{
@@ -285,30 +282,29 @@ BAROSIM::collect()
 		{
 			/* publish it */
 			orb_publish(ORB_ID(sensor_baro), _baro_topic, &report);
-
+			
 		}
 		else
 		{
 			PX4_WARN("BAROSIM::collect _baro_topic not initialized");
 		}
 	}
-
+	
 	_reports->force(&report);
-
+	
 	perf_end(_sample_perf);
-
+	
 	return OK;
 }
 
-void
-BAROSIM::print_info()
+void BAROSIM::print_info()
 {
 	perf_print_counter(_sample_perf);
 	perf_print_counter(_comms_errors);
 	PX4_INFO("poll interval:  %u usec", m_sample_interval_usecs);
 	_reports->print_info("report queue");
-	PX4_INFO("TEMP:           %f", (double)report.temperature);
-	PX4_INFO("P:              %.3f", (double)report.pressure);
+	PX4_INFO("TEMP:           %f", (double )report.temperature);
+	PX4_INFO("P:              %.3f", (double )report.pressure);
 }
 
 namespace barosim
@@ -320,11 +316,10 @@ namespace barosim
  * This function call only returns once the driver
  * is either successfully up and running or failed to start.
  */
-static int
-start()
+static int start()
 {
 	g_barosim = new BAROSIM(BAROSIM_DEV_PATH);
-
+	
 	if (g_barosim != nullptr && OK != g_barosim->init())
 	{
 		delete g_barosim;
@@ -332,46 +327,45 @@ start()
 		PX4_ERR("bus init failed");
 		return false;
 	}
-
+	
 	return 0;
 }
 
 /**
  * Print a little info about the driver.
  */
-static int
-info()
+static int info()
 {
 	if (g_barosim != nullptr)
 	{
 		PX4_INFO("%s", BAROSIM_DEV_PATH);
 		g_barosim->print_info();
 	}
-
+	
 	return 0;
 }
 
-static void
-usage()
+static void usage()
 {
 	PX4_WARN("missing command: try 'start', 'info'");
 }
 
-}; // namespace barosim
+}
+;
+// namespace barosim
 
-int
-barosim_main(int argc, char *argv[])
+int barosim_main(int argc, char *argv[])
 {
 	int ret;
-
+	
 	if (argc < 2)
 	{
 		barosim::usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[1];
-
+	
 	/*
 	 * Start/load the driver.
 	 */
@@ -379,20 +373,20 @@ barosim_main(int argc, char *argv[])
 	{
 		ret = barosim::start();
 	}
-
+	
 	/*
 	 * Print driver information.
 	 */
 	else if (!strcmp(verb, "info"))
 	{
 		ret = barosim::info();
-
+		
 	}
 	else
 	{
 		barosim::usage();
 		return 1;
 	}
-
+	
 	return ret;
 }

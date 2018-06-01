@@ -94,7 +94,7 @@ int can_devinit(void);
  ************************************************************************************/
 
 __EXPORT int can_devinit(void)
-{
+{	
 	static bool initialized = false;
 	struct can_dev_s *can;
 	int ret;
@@ -102,13 +102,13 @@ __EXPORT int can_devinit(void)
 	/* Check if we have already initialized */
 
 	if (!initialized)
-	{
+	{	
 		/* Call stm32_caninitialize() to get an instance of the CAN interface */
 
 		can = stm32_caninitialize(CAN_PORT);
 
 		if (can == NULL)
-		{
+		{	
 			canerr("ERROR:  Failed to get CAN interface\n");
 			return -ENODEV;
 		}
@@ -118,7 +118,7 @@ __EXPORT int can_devinit(void)
 		ret = can_register("/dev/can0", can);
 
 		if (ret < 0)
-		{
+		{	
 			canerr("ERROR: can_register failed: %d\n", ret);
 			return ret;
 		}

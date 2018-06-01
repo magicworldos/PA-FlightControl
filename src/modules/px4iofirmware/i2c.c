@@ -64,30 +64,30 @@
 #define rCCR		REG(STM32_I2C_CCR_OFFSET)
 #define rTRISE		REG(STM32_I2C_TRISE_OFFSET)
 
-void			i2c_reset(void);
-static int		i2c_interrupt(int irq, void *context, void *args);
-static void		i2c_rx_setup(void);
-static void		i2c_tx_setup(void);
-static void		i2c_rx_complete(void);
-static void		i2c_tx_complete(void);
+void i2c_reset(void);
+static int i2c_interrupt(int irq, void *context, void *args);
+static void i2c_rx_setup(void);
+static void i2c_tx_setup(void);
+static void i2c_rx_complete(void);
+static void i2c_tx_complete(void);
 #ifdef DEBUG
-static void		i2c_dump(void);
+static void i2c_dump(void);
 #endif
 
-static DMA_HANDLE	rx_dma;
-static DMA_HANDLE	tx_dma;
+static DMA_HANDLE rx_dma;
+static DMA_HANDLE tx_dma;
 
-static uint8_t		rx_buf[68];
-static unsigned		rx_len;
+static uint8_t rx_buf[68];
+static unsigned rx_len;
 
-static const uint8_t	junk_buf[] = { 0xff, 0xff, 0xff, 0xff };
+static const uint8_t junk_buf[] = { 0xff, 0xff, 0xff, 0xff };
 
-static const uint8_t	*tx_buf = junk_buf;
-static unsigned		tx_len = sizeof(junk_buf);
-unsigned		tx_count;
+static const uint8_t *tx_buf = junk_buf;
+static unsigned tx_len = sizeof(junk_buf);
+unsigned tx_count;
 
-static uint8_t		selected_page;
-static uint8_t		selected_offset;
+static uint8_t selected_page;
+static uint8_t selected_offset;
 
 enum
 {
@@ -96,151 +96,148 @@ enum
 	DIR_RX = 2
 } direction;
 
-void
-interface_init(void)
+void interface_init(void)
 {
 	debug("i2c init");
-
+	
 	/* allocate DMA handles and initialise DMA */
 	rx_dma = stm32_dmachannel(DMACHAN_I2C1_RX);
 	i2c_rx_setup();
 	tx_dma = stm32_dmachannel(DMACHAN_I2C1_TX);
 	i2c_tx_setup();
-
+	
 	/* enable the i2c block clock and reset it */
 	modifyreg32(STM32_RCC_APB1ENR, 0, RCC_APB1ENR_I2C1EN);
 	modifyreg32(STM32_RCC_APB1RSTR, 0, RCC_APB1RSTR_I2C1RST);
 	modifyreg32(STM32_RCC_APB1RSTR, RCC_APB1RSTR_I2C1RST, 0);
-
+	
 	/* configure the i2c GPIOs */
 	px4_arch_configgpio(GPIO_I2C1_SCL);
 	px4_arch_configgpio(GPIO_I2C1_SDA);
-
+	
 	/* soft-reset the block */
 	rCR1 |= I2C_CR1_SWRST;
 	rCR1 = 0;
-
+	
 	/* set for DMA operation */
 	rCR2 |= I2C_CR2_ITEVFEN | I2C_CR2_ITERREN | I2C_CR2_DMAEN;
-
+	
 	/* set the frequency value in CR2 */
 	rCR2 &= ~I2C_CR2_FREQ_MASK;
 	rCR2 |= STM32_PCLK1_FREQUENCY / 1000000;
-
+	
 	/* set divisor and risetime for fast mode */
 	uint16_t result = STM32_PCLK1_FREQUENCY / (400000 * 25);
-
+	
 	if (result < 1)
 	{
 		result = 1;
 	}
-
+	
 	result = 3;
 	rCCR &= ~I2C_CCR_CCR_MASK;
 	rCCR |= I2C_CCR_DUTY | I2C_CCR_FS | result;
 	rTRISE = (uint16_t)((((STM32_PCLK1_FREQUENCY / 1000000) * 300) / 1000) + 1);
-
+	
 	/* set our device address */
 	rOAR1 = 0x1a << 1;
-
+	
 	/* enable event interrupts */
 	irq_attach(STM32_IRQ_I2C1EV, i2c_interrupt, NULL);
 	irq_attach(STM32_IRQ_I2C1ER, i2c_interrupt, NULL);
 	up_enable_irq(STM32_IRQ_I2C1EV);
 	up_enable_irq(STM32_IRQ_I2C1ER);
-
+	
 	/* and enable the I2C port */
 	rCR1 |= I2C_CR1_ACK | I2C_CR1_PE;
-
+	
 #ifdef DEBUG
 	i2c_dump();
 #endif
 }
 
 /*
-  reset the I2C bus
-  used to recover from lockups
+ reset the I2C bus
+ used to recover from lockups
  */
-void
-i2c_reset(void)
+void i2c_reset(void)
 {
 	rCR1 |= I2C_CR1_SWRST;
 	rCR1 = 0;
-
+	
 	/* set for DMA operation */
 	rCR2 |= I2C_CR2_ITEVFEN | I2C_CR2_ITERREN | I2C_CR2_DMAEN;
-
+	
 	/* set the frequency value in CR2 */
 	rCR2 &= ~I2C_CR2_FREQ_MASK;
 	rCR2 |= STM32_PCLK1_FREQUENCY / 1000000;
-
+	
 	/* set divisor and risetime for fast mode */
 	uint16_t result = STM32_PCLK1_FREQUENCY / (400000 * 25);
-
+	
 	if (result < 1)
 	{
 		result = 1;
 	}
-
+	
 	result = 3;
 	rCCR &= ~I2C_CCR_CCR_MASK;
 	rCCR |= I2C_CCR_DUTY | I2C_CCR_FS | result;
 	rTRISE = (uint16_t)((((STM32_PCLK1_FREQUENCY / 1000000) * 300) / 1000) + 1);
-
+	
 	/* set our device address */
 	rOAR1 = 0x1a << 1;
-
+	
 	/* and enable the I2C port */
 	rCR1 |= I2C_CR1_ACK | I2C_CR1_PE;
 }
 
-static int
-i2c_interrupt(int irq, FAR void *context, FAR void *args)
+static int i2c_interrupt(int irq, FAR void *context, FAR void *args)
 {
 	uint16_t sr1 = rSR1;
-
+	
 	if (sr1 & (I2C_SR1_STOPF | I2C_SR1_AF | I2C_SR1_ADDR))
 	{
-
+		
 		if (sr1 & I2C_SR1_STOPF)
 		{
 			/* write to CR1 to clear STOPF */
-			(void)rSR1;		/* as recommended, re-read SR1 */
+			(void) rSR1; /* as recommended, re-read SR1 */
 			rCR1 |= I2C_CR1_PE;
 		}
-
+		
 		/* DMA never stops, so we should do that now */
 		switch (direction)
 		{
 			case DIR_TX:
 				i2c_tx_complete();
 				break;
-
+				
 			case DIR_RX:
 				i2c_rx_complete();
 				break;
-
+				
 			default:
 				/* not currently transferring - must be a new txn */
 				break;
 		}
-
+		
 		direction = DIR_NONE;
 	}
-
+	
 	if (sr1 & I2C_SR1_ADDR)
 	{
-
+		
 		/* clear ADDR to ack our selection and get direction */
-		(void)rSR1;		/* as recommended, re-read SR1 */
+		(void) rSR1; /* as recommended, re-read SR1 */
 		uint16_t sr2 = rSR2;
-
+		
 		if (sr2 & I2C_SR2_TRA)
 		{
 			/* we are the transmitter */
 
 			direction = DIR_TX;
-
+			
 		}
 		else
 		{
@@ -249,18 +246,17 @@ i2c_interrupt(int irq, FAR void *context, FAR void *args)
 			direction = DIR_RX;
 		}
 	}
-
+	
 	/* clear any errors that might need it (this handles AF as well */
 	if (sr1 & I2C_SR1_ERRORMASK)
 	{
 		rSR1 = 0;
 	}
-
+	
 	return 0;
 }
 
-static void
-i2c_rx_setup(void)
+static void i2c_rx_setup(void)
 {
 	/*
 	 * Note that we configure DMA in circular mode; this means that a too-long
@@ -268,72 +264,65 @@ i2c_rx_setup(void)
 	 * bailing out of a transaction while the master is still babbling at us.
 	 */
 	rx_len = 0;
-	stm32_dmasetup(rx_dma, (uintptr_t)&rDR, (uintptr_t)&rx_buf[0], sizeof(rx_buf),
-		       DMA_CCR_CIRC |
-		       DMA_CCR_MINC |
-		       DMA_CCR_PSIZE_32BITS |
-		       DMA_CCR_MSIZE_8BITS |
-		       DMA_CCR_PRIMED);
-
+	stm32_dmasetup(rx_dma, (uintptr_t) &rDR, (uintptr_t) &rx_buf[0], sizeof(rx_buf), DMA_CCR_CIRC | DMA_CCR_MINC | DMA_CCR_PSIZE_32BITS | DMA_CCR_MSIZE_8BITS | DMA_CCR_PRIMED);
+	
 	stm32_dmastart(rx_dma, NULL, NULL, false);
 }
 
-static void
-i2c_rx_complete(void)
+static void i2c_rx_complete(void)
 {
 	rx_len = sizeof(rx_buf) - stm32_dmaresidual(rx_dma);
 	stm32_dmastop(rx_dma);
-
+	
 	if (rx_len >= 2)
 	{
 		selected_page = rx_buf[0];
 		selected_offset = rx_buf[1];
-
+		
 		/* work out how many registers are being written */
 		unsigned count = (rx_len - 2) / 2;
-
+		
 		if (count > 0)
 		{
-			registers_set(selected_page, selected_offset, (const uint16_t *)&rx_buf[2], count);
-
+			registers_set(selected_page, selected_offset, (const uint16_t *) &rx_buf[2], count);
+			
 		}
 		else
 		{
 			/* no registers written, must be an address cycle */
 			uint16_t *regs;
 			unsigned reg_count;
-
+			
 			/* work out which registers are being addressed */
 			int ret = registers_get(selected_page, selected_offset, &regs, &reg_count);
-
+			
 			if (ret == 0)
 			{
-				tx_buf = (uint8_t *)regs;
+				tx_buf = (uint8_t *) regs;
 				tx_len = reg_count * 2;
-
+				
 			}
 			else
 			{
 				tx_buf = junk_buf;
 				tx_len = sizeof(junk_buf);
 			}
-
+			
 			/* disable interrupts while reconfiguring DMA for the selected registers */
 			irqstate_t flags = px4_enter_critical_section();
-
+			
 			stm32_dmastop(tx_dma);
 			i2c_tx_setup();
-
+			
 			px4_leave_critical_section(flags);
 		}
 	}
-
+	
 	/* prepare for the next transaction */
 	i2c_rx_setup();
 }
 
-static void
-i2c_tx_setup(void)
+static void i2c_tx_setup(void)
 {
 	/*
 	 * Note that we configure DMA in circular mode; this means that a too-long
@@ -341,23 +330,16 @@ i2c_tx_setup(void)
 	 * to deal with bailing out of a transaction while the master is still
 	 * babbling at us.
 	 */
-	stm32_dmasetup(tx_dma, (uintptr_t)&rDR, (uintptr_t)&tx_buf[0], tx_len,
-		       DMA_CCR_DIR |
-		       DMA_CCR_CIRC |
-		       DMA_CCR_MINC |
-		       DMA_CCR_PSIZE_8BITS |
-		       DMA_CCR_MSIZE_8BITS |
-		       DMA_CCR_PRIMED);
-
+	stm32_dmasetup(tx_dma, (uintptr_t) &rDR, (uintptr_t) &tx_buf[0], tx_len, DMA_CCR_DIR | DMA_CCR_CIRC | DMA_CCR_MINC | DMA_CCR_PSIZE_8BITS | DMA_CCR_MSIZE_8BITS | DMA_CCR_PRIMED);
+	
 	stm32_dmastart(tx_dma, NULL, NULL, false);
 }
 
-static void
-i2c_tx_complete(void)
+static void i2c_tx_complete(void)
 {
 	tx_count = tx_len - stm32_dmaresidual(tx_dma);
 	stm32_dmastop(tx_dma);
-
+	
 	/* for debug purposes, save the length of the last transmit as seen by the DMA */
 
 	/* leave tx_buf/tx_len alone, so that a retry will see the same data */
@@ -369,10 +351,10 @@ i2c_tx_complete(void)
 #ifdef DEBUG
 static void
 i2c_dump(void)
-{
-	debug("CR1   0x%08x  CR2   0x%08x", rCR1,  rCR2);
+{	
+	debug("CR1   0x%08x  CR2   0x%08x", rCR1, rCR2);
 	debug("OAR1  0x%08x  OAR2  0x%08x", rOAR1, rOAR2);
-	debug("CCR   0x%08x  TRISE 0x%08x", rCCR,  rTRISE);
-	debug("SR1   0x%08x  SR2   0x%08x", rSR1,  rSR2);
+	debug("CCR   0x%08x  TRISE 0x%08x", rCCR, rTRISE);
+	debug("SR1   0x%08x  SR2   0x%08x", rSR1, rSR2);
 }
 #endif

@@ -52,7 +52,7 @@
 
 class Navigator;
 
-class MissionBlock : public NavigatorMode
+class MissionBlock: public NavigatorMode
 {
 public:
 	/**
@@ -60,10 +60,10 @@ public:
 	 */
 	MissionBlock(Navigator *navigator, const char *name);
 	~MissionBlock() = default;
-
+	
 	MissionBlock(const MissionBlock &) = delete;
 	MissionBlock &operator=(const MissionBlock &) = delete;
-
+	
 	static bool item_contains_position(const mission_item_s &item);
 
 protected:
@@ -114,22 +114,22 @@ protected:
 	/**
 	 * General function used to adjust the mission item based on vehicle specific limitations
 	 */
-	void	mission_apply_limitation(mission_item_s &item);
+	void mission_apply_limitation(mission_item_s &item);
 
 	void issue_command(const mission_item_s &item);
 
 	float get_time_inside(const struct mission_item_s &item);
 
-	mission_item_s _mission_item{};
+	mission_item_s _mission_item { };
 
-	bool _waypoint_position_reached{false};
-	bool _waypoint_yaw_reached{false};
+	bool _waypoint_position_reached { false };
+	bool _waypoint_yaw_reached { false };
 
-	hrt_abstime _time_first_inside_orbit{0};
-	hrt_abstime _action_start{0};
-	hrt_abstime _time_wp_reached{0};
+	hrt_abstime _time_first_inside_orbit { 0 };
+	hrt_abstime _action_start { 0 };
+	hrt_abstime _time_wp_reached { 0 };
 
-	orb_advert_t    _actuator_pub{nullptr};
+	orb_advert_t _actuator_pub { nullptr };
 
 	control::BlockParamFloat _param_yaw_timeout;
 	control::BlockParamFloat _param_yaw_err;

@@ -49,8 +49,6 @@
 #define OTP_LOCK_LOCKED			0x00
 #define OTP_LOCK_UNLOCKED		0xFF
 
-
-
 #include <unistd.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -90,8 +88,6 @@ typedef struct
 #define F_KEY2 ((unsigned long)0xCDEF89AB)
 #define IS_F_ADDRESS(ADDRESS) ((((ADDRESS) >= 0x08000000) && ((ADDRESS) < 0x080FFFFF)) || (((ADDRESS) >= 0x1FFF7800) && ((ADDRESS) < 0x1FFF7A0F)))
 
-
-
 #pragma pack(push, 1)
 
 /*
@@ -105,20 +101,20 @@ typedef struct
 struct otp
 {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
-	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
-	uint32_t	vid;        ///4 bytes
-	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	char id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	uint8_t id_type;	///1 byte < 0 for USB VID, 1 for generic VID
+	uint32_t vid;        ///4 bytes
+	uint32_t pid;        ///4 bytes
+	char unused[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	char signature[128];
 	// insert extras here
-	uint32_t	lock_bytes[4];
+	uint32_t lock_bytes[4];
 };
 
 struct otp_lock
 {
-	uint8_t		lock_bytes[16];
+	uint8_t lock_bytes[16];
 };
 #pragma pack(pop)
 
@@ -127,8 +123,8 @@ struct otp_lock
 #pragma pack(push, 1)
 union udid
 {
-	uint32_t	serial[3];
-	uint8_t  data[12];
+	uint32_t serial[3];
+	uint8_t data[12];
 };
 #pragma pack(pop)
 
@@ -138,14 +134,12 @@ __BEGIN_DECLS
  *   s
  */
 //__EXPORT float calc_indicated_airspeed(float differential_pressure);
-
 __EXPORT void F_unlock(void);
 __EXPORT void F_lock(void);
 __EXPORT int val_read(void *dest, volatile const void *src, int bytes);
 __EXPORT int val_write(volatile void *dest, const void *src, int bytes);
 __EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
 __EXPORT int lock_otp(void);
-
 
 __EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
 __EXPORT int F_write_word(unsigned long Address, uint32_t Data);

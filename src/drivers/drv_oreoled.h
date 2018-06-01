@@ -191,9 +191,9 @@ enum oreoled_macro
 };
 
 /*
-  structure passed to OREOLED_SET_RGB ioctl()
-  Note that the driver scales the brightness to 0 to 255, regardless
-  of the hardware scaling
+ structure passed to OREOLED_SET_RGB ioctl()
+ Note that the driver scales the brightness to 0 to 255, regardless
+ of the hardware scaling
  */
 typedef struct
 {
@@ -205,7 +205,7 @@ typedef struct
 } oreoled_rgbset_t;
 
 /*
-  structure passed to OREOLED_RUN_MACRO ioctl()
+ structure passed to OREOLED_RUN_MACRO ioctl()
  */
 typedef struct
 {
@@ -214,7 +214,7 @@ typedef struct
 } oreoled_macrorun_t;
 
 /*
-  structure passed to send_bytes method (only used for testing)
+ structure passed to send_bytes method (only used for testing)
  */
 typedef struct
 {

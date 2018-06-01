@@ -49,28 +49,28 @@ namespace control
 BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
 {
 	char fullname[blockNameLengthMax];
-
+	
 	if (parent == nullptr)
 	{
 		strncpy(fullname, name, blockNameLengthMax);
-
+		
 	}
 	else
 	{
 		char parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
-
+		
 		if (strcmp(name, "") == 0)
 		{
 			strncpy(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
-
+			
 		}
 		else if (parent_prefix)
 		{
 			snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name);
-
+			
 		}
 		else
 		{
@@ -78,46 +78,47 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
 		}
-
+		
 		parent->getParams().add(this);
 	}
-
+	
 	_handle = param_find(fullname);
-
+	
 	if (_handle == PARAM_INVALID)
 	{
 		PX4_ERR("error finding param: %s", fullname);
 	}
-};
+}
+;
 
-template <>
+template<>
 BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
-	_val()
+		    BlockParamBase(block, name, parent_prefix),
+		    _val()
 {
 	update();
 }
 
-template <>
+template<>
 BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
-	_val()
+		    BlockParamBase(block, name, parent_prefix),
+		    _val()
 {
 	update();
 }
 
-template <>
+template<>
 BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
-	_val(extern_val)
+		    BlockParamBase(block, name, parent_prefix),
+		    _val(extern_val)
 {
 	update();
 }
 
-template <>
+template<>
 BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
-	_val(extern_val)
+		    BlockParamBase(block, name, parent_prefix),
+		    _val(extern_val)
 {
 	update();
 }

@@ -38,11 +38,10 @@
 
 #include "esc_rpm.hpp"
 
-
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-		 "\trpm {yada|yada|yada}");
+	         "\trpm {yada|yada|yada}");
 }
 
 extern "C" __EXPORT int rpm_main(int argc, char *argv[]);
@@ -53,7 +52,7 @@ int rpm_main(int argc, char *argv[])
 		print_usage();
 		::exit(1);
 	}
-
+	
 	print_usage();
 	::exit(1);
 }

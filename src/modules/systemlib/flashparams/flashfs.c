@@ -68,22 +68,21 @@ typedef uint16_t h_size_t;
 typedef uint16_t h_flag_t;
 typedef uint16_t data_size_t;
 
-typedef enum  flash_config_t
+typedef enum flash_config_t
 {
 	LargestBlock = 2 * 1024, // This represents the size need for backing store
-	MagicSig     = 0xaa553cc3,
-	BlankSig     = 0xffffffff
+	MagicSig = 0xaa553cc3,
+	BlankSig = 0xffffffff
 } flash_config_t;
 
-typedef enum  flash_flags_t
+typedef enum flash_flags_t
 {
-	SizeMask      = 0x0003,
-	MaskEntry     = ~SizeMask,
-	BlankEntry    = (h_flag_t)BlankSig,
-	ValidEntry    = (0xa5ac & ~SizeMask),
-	ErasedEntry   = 0x0000,
+	SizeMask = 0x0003,
+	MaskEntry = ~SizeMask,
+	BlankEntry = (h_flag_t) BlankSig,
+	ValidEntry = (0xa5ac & ~SizeMask),
+	ErasedEntry = 0x0000,
 } flash_flags_t;
-
 
 /* File flash_entry_header_t will be sizeof(h_magic_t) aligned
  * The Size will be the actual length of the header plus the data
@@ -95,14 +94,14 @@ typedef enum  flash_flags_t
 #pragma GCC diagnostic ignored "-Wattributes"
 typedef begin_packed_struct struct flash_entry_header_t
 {
-	h_magic_t            magic;           /* Used to ID files*/
-	h_flag_t             flag;            /* Used to erase this entry */
-	uint32_t             crc;             /* Calculated over the size - end of data */
-	h_size_t             size;            /* When added to a byte pointer to flash_entry_header_t
-                                               * Will result the offset of the next active file or
-                                               * free space. */
-	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t;
+	h_magic_t magic; /* Used to ID files*/
+	h_flag_t flag; /* Used to erase this entry */
+	uint32_t crc; /* Calculated over the size - end of data */
+	h_size_t size; /* When added to a byte pointer to flash_entry_header_t
+	 * Will result the offset of the next active file or
+	 * free space. */
+	flash_file_token_t file_token; /* file token type - essentially the name/type */
+}end_packed_struct flash_entry_header_t;
 #pragma GCC diagnostic pop
 
 /****************************************************************************
@@ -122,10 +121,7 @@ static int last_erased;
  * Public Data
  ****************************************************************************/
 
-const flash_file_token_t parameters_token =
-{
-	.n = {'p', 'a', 'r', 'm'},
-};
+const flash_file_token_t parameters_token = { .n = { 'p', 'a', 'r', 'm' }, };
 
 /****************************************************************************
  * Private Functions
@@ -186,13 +182,12 @@ static inline int blank_flash(uint32_t *pf)
  *
  ****************************************************************************/
 
-static bool blank_check(flash_entry_header_t *pf,
-			size_t new_size)
+static bool blank_check(flash_entry_header_t *pf, size_t new_size)
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
 	new_size /= sizeof(uint32_t);
-
+	
 	while (new_size-- && rv)
 	{
 		if (!blank_flash(pm++))
@@ -200,7 +195,7 @@ static bool blank_check(flash_entry_header_t *pf,
 			rv = false;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -282,7 +277,7 @@ static inline int erased_entry(flash_entry_header_t *fi)
 
 static inline int blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig  &&  fi->flag == BlankEntry;
+	return fi->magic == BlankSig && fi->flag == BlankEntry;
 }
 
 /****************************************************************************
@@ -343,7 +338,7 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
 
 static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
-	uint8_t *pb = (uint8_t *)fi;
+	uint8_t *pb = (uint8_t *) fi;
 	return (flash_entry_header_t *) &pb[fi->size];
 }
 
@@ -364,7 +359,7 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 
 static inline uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	return ((uint8_t *) fi) + sizeof(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -405,7 +400,7 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
 
 static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	return (const uint8_t *) &fi->size;
 }
 
 /****************************************************************************
@@ -448,48 +443,51 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 {
 	for (int s = 0; sector_map[s].address; s++)
 	{
-
+		
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
 		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
-
+		
 		/* Hunt for Magic Signature */
-cont:
+		cont:
 
 		while (pmagic != pe && !valid_magic(pmagic))
 		{
 			pmagic++;
 		}
-
+		
 		/* Did we reach the end
 		 * if so try the next sector */
 
-		if (pmagic == pe) { continue; }
-
+		if (pmagic == pe)
+		{
+			continue;
+		}
+		
 		/* Found a magic So assume it is a file header */
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
-
+		
 		/* Test the CRC */
 
 		if (pf->crc == crc32(entry_crc_start(pf), entry_crc_length(pf)))
 		{
-
+			
 			/* Good CRC is it the one we are looking for ?*/
 
 			if (valid_entry(pf) && pf->file_token.t == token.t)
 			{
-
+				
 				return pf;
-
+				
 			}
 			else
 			{
-
+				
 				/* Not the one we wanted but we can trust the size */
 
 				pf = next_entry(pf);
 				pmagic = (h_magic_t *) pf;
-
+				
 				/* If the next one is erased */
 
 				if (blank_entry(pf))
@@ -497,19 +495,19 @@ cont:
 					continue;
 				}
 			}
-
+			
 			goto cont;
-
+			
 		}
 		else
 		{
-
+			
 			/* in valid CRC so keep looking */
 
 			pmagic++;
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -532,52 +530,52 @@ static flash_entry_header_t *find_free(data_size_t required)
 {
 	for (int s = 0; sector_map[s].address; s++)
 	{
-
+		
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
 		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
-
+		
 		/* Hunt for Magic Signature */
 
 		do
 		{
-
+			
 			if (valid_magic(pmagic))
 			{
-
+				
 				flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
-
+				
 				/* Test the CRC */
 
 				if (pf->crc == crc32(entry_crc_start(pf), entry_crc_length(pf)))
 				{
-
+					
 					/* Valid Magic and CRC look for the next record*/
 
 					pmagic = ((uint32_t *) next_entry(pf));
-
+					
 				}
 				else
 				{
-
+					
 					pmagic++;
 				}
 			}
-
+			
 			if (blank_magic(pmagic))
 			{
-
+				
 				flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
-
+				
 				if (blank_entry(pf) && blank_check(pf, required))
 				{
 					return pf;
 				}
-
+				
 			}
 		}
 		while (++pmagic != pe);
 	}
-
+	
 	return NULL;
 }
 
@@ -598,8 +596,7 @@ static flash_entry_header_t *find_free(data_size_t required)
  *
  ****************************************************************************/
 
-static sector_descriptor_t *get_next_sector_descriptor(sector_descriptor_t *
-		current)
+static sector_descriptor_t *get_next_sector_descriptor(sector_descriptor_t * current)
 {
 	for (int s = 0; sector_map[s].address; s++)
 	{
@@ -608,17 +605,17 @@ static sector_descriptor_t *get_next_sector_descriptor(sector_descriptor_t *
 			if (sector_map[s + 1].address)
 			{
 				s++;
-
+				
 			}
 			else
 			{
 				s = 0;
 			}
-
+			
 			return &sector_map[s];
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -646,13 +643,13 @@ static sector_descriptor_t *get_sector_info(flash_entry_header_t *current)
 		uint8_t *pb = (uint8_t *) sector_map[s].address;
 		uint8_t *pe = pb + sector_map[s].size - 1;
 		uint8_t *pc = (uint8_t *) current;
-
+		
 		if (pc >= pb && pc <= pe)
 		{
 			return &sector_map[s];
 		}
 	}
-
+	
 	return 0;
 }
 
@@ -677,19 +674,19 @@ static sector_descriptor_t *get_sector_info(flash_entry_header_t *current)
 static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
 	int rv = 0;
-	ssize_t page = up_progmem_getpage((size_t)pf);
-
+	ssize_t page = up_progmem_getpage((size_t) pf);
+	
 	if (page > 0 && page == sm->page)
 	{
 		last_erased = sm->page;
 		ssize_t size = up_progmem_erasepage(page);
-
+		
 		if (size < 0 || size != sm->size)
 		{
 			rv = size;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -724,28 +721,27 @@ static int erase_entry(flash_entry_header_t *pf)
  *   Given a pointer to a flash entry header and a new size
  *
  * Input Parameters:
-*   pf       - A pointer to the current flash entry header
+ *   pf       - A pointer to the current flash entry header
  *   new_size - The total number of bytes to be written
-  *
+ *
  * Returned value:
  *  0 if there is enough space left to write new size
  *  If not it returns the flash_file_sector_t * that needs to be erased.
  *
  ****************************************************************************/
 
-static sector_descriptor_t *check_free_space_in_sector(flash_entry_header_t
-		*pf, size_t new_size)
+static sector_descriptor_t *check_free_space_in_sector(flash_entry_header_t *pf, size_t new_size)
 {
 	sector_descriptor_t *sm = get_sector_info(pf);
 	uint8_t *psector_first = (uint8_t *) sm->address;
 	uint8_t *psector_last = psector_first + sm->size - 1;
-	uint8_t *pnext_end = (uint8_t *)(valid_magic((h_magic_t *)pf) ? next_entry(pf) : pf) + new_size;
-
+	uint8_t *pnext_end = (uint8_t *) (valid_magic((h_magic_t *) pf) ? next_entry(pf) : pf) + new_size;
+	
 	if (pnext_end >= psector_first && pnext_end <= psector_last)
 	{
 		sm = 0;
 	}
-
+	
 	return sm;
 }
 
@@ -772,17 +768,16 @@ static sector_descriptor_t *check_free_space_in_sector(flash_entry_header_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
-			   *buf_size)
+int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
 	int rv = -ENXIO;
-
+	
 	if (sector_map)
 	{
-
+		
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
-
+		
 		if (pf)
 		{
 			(*buffer) = entry_data(pf);
@@ -790,7 +785,7 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			*buf_size = rv;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -813,54 +808,51 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int
-parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
+int parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
 	int rv = -ENXIO;
-
+	
 	if (sector_map)
 	{
-
+		
 		rv = 0;
-
+		
 		/* Calculate the total space needed */
 
 		size_t total_size = buf_size + sizeof(flash_entry_header_t);
 		size_t alignment = sizeof(h_magic_t) - 1;
-		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
+		size_t size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
-
+		
 		/* Is this and existing entry */
 
 		flash_entry_header_t *pf = find_entry(token);
-
+		
 		if (!pf)
 		{
-
+			
 			/* No Entry exists for this token so find a place for it */
 
 			pf = find_free(total_size);
-
+			
 			/* No Space */
 
 			if (pf == 0)
 			{
 				return -ENOSPC;
 			}
-
+			
 		}
 		else
 		{
-
+			
 			/* Do we have space after the entry in the sector for the update */
 
-			sector_descriptor_t *current_sector = check_free_space_in_sector(pf,
-							      total_size);
-
-
+			sector_descriptor_t *current_sector = check_free_space_in_sector(pf, total_size);
+			
 			if (current_sector == 0)
 			{
-
+				
 				/* Mark the last entry erased */
 
 				/* todo:consider a 2 stage erase or write before erase and do a fs check
@@ -868,33 +860,33 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 				 */
 
 				rv = erase_entry(pf);
-
+				
 				if (rv < 0)
 				{
 					return rv;
 				}
-
+				
 				/* We had space and marked the last entry erased so use the  Next Free */
 
 				pf = next_entry(pf);
-
+				
 			}
 			else
 			{
-
+				
 				/*
 				 * We did not have space in the current sector so select the next sector
 				 */
 
 				current_sector = get_next_sector_descriptor(current_sector);
-
+				
 				/* Will the data fit */
 
 				if (current_sector->size < total_size)
 				{
 					return -ENOSPC;
 				}
-
+				
 				/* Mark the last entry erased */
 
 				/* todo:consider a 2 stage erase or write before erase and do a fs check
@@ -902,42 +894,42 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 				 */
 
 				rv = erase_entry(pf);
-
+				
 				if (rv < 0)
 				{
 					return rv;
 				}
-
+				
 				pf = (flash_entry_header_t *) current_sector->address;
 			}
-
+			
 			if (!blank_check(pf, total_size))
 			{
 				rv = erase_sector(current_sector, pf);
 			}
 		}
-
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		
+		flash_entry_header_t *pn = (flash_entry_header_t *) (buffer - sizeof(flash_entry_header_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
 		pn->flag = ValidEntry + size_adjust;
 		pn->size = total_size;
-
+		
 		for (size_t a = 0; a < size_adjust; a++)
 		{
-			buffer[buf_size + a] = (uint8_t)BlankSig;
+			buffer[buf_size + a] = (uint8_t) BlankSig;
 		}
-
+		
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
 		rv = up_progmem_write((size_t) pf, pn, pn->size);
 		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
-
+		
 		if (rv >= system_bytes)
 		{
 			rv -= system_bytes;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -966,40 +958,40 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
 	int rv = -ENXIO;
-
+	
 	if (sector_map)
 	{
-
+		
 		rv = -ENOMEM;
-
+		
 		if (!working_buffer_static)
 		{
-
+			
 			working_buffer_size = *buf_size + sizeof(flash_entry_header_t);
 			working_buffer = malloc(working_buffer_size);
-
+			
 		}
-
+		
 		/* Allocation failed or not provided */
 
 		if (working_buffer == NULL)
 		{
-
+			
 			working_buffer_size = 0;
-
+			
 		}
 		else
 		{
-
+			
 			/* We have a buffer reserve space and init it */
 			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
 			*buf_size = working_buffer_size - sizeof(flash_entry_header_t);
 			memset(working_buffer, 0xff, working_buffer_size);
 			rv = 0;
-
+			
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -1020,24 +1012,24 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
 int parameter_flashfs_erase(void)
 {
 	int rv = -ENXIO;
-
+	
 	if (sector_map)
 	{
 		rv = 0;
-
+		
 		for (int s = 0; sector_map[s].address; s++)
 		{
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
-
+			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *) sector_map[s].address);
+			
 			if (sz != 0)
 			{
 				return sz;
 			}
-
+			
 			rv += sector_map[s].size;
 		}
 	}
-
+	
 	return rv;
 }
 
@@ -1074,50 +1066,50 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	int rv = 0;
 	sector_map = fconfig;
 	working_buffer_static = buffer != NULL;
-
+	
 	if (!working_buffer_static)
 	{
 		size = 0;
 	}
-
+	
 	working_buffer = buffer;
 	working_buffer_size = size;
 	last_erased = -1;
-
+	
 	/* Sanity check */
 
 	flash_entry_header_t *pf = find_entry(parameters_token);
-
+	
 	/*  No paramaters */
 
 	if (pf == NULL)
 	{
 		size_t total_size = size + sizeof(flash_entry_header_t);
 		size_t alignment = sizeof(h_magic_t) - 1;
-		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
+		size_t size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
-
+		
 		/* Do we have free space ?*/
 
 		if (find_free(total_size) == NULL)
 		{
-
+			
 			/* No paramates and no free space => neeed erase */
 
-			rv  = parameter_flashfs_erase();
+			rv = parameter_flashfs_erase();
 		}
 	}
-
+	
 	return rv;
 }
 
 #if defined(FLASH_UNIT_TEST)
 
-static sector_descriptor_t  test_sector_map[] =
-{
-	{1, 16 * 1024, 0x08004000},
-	{2, 16 * 1024, 0x08008000},
-	{0, 0, 0},
+static sector_descriptor_t test_sector_map[] =
+{	
+	{	1, 16 * 1024, 0x08004000},
+	{	2, 16 * 1024, 0x08008000},
+	{	0, 0, 0},
 };
 
 __EXPORT void test(void);
@@ -1125,14 +1117,14 @@ __EXPORT void test(void);
 uint8_t test_buf[32 * 1024];
 
 __EXPORT void test(void)
-{
+{	
 	uint16_t largest_block = (32 * 1024) + 32;
 	uint8_t *buffer = malloc(largest_block);
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
 	for (int t = 0; t < sizeof(test_buf); t++)
-	{
+	{	
 		test_buf[t] = (uint8_t) t;
 	}
 
@@ -1144,8 +1136,8 @@ __EXPORT void test(void)
 	int rv = 0;
 
 	for (int a = 0; a <= 4; a++)
-	{
-		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
+	{	
+		rv = parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
 		buf_size = a;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
@@ -1153,7 +1145,7 @@ __EXPORT void test(void)
 		parameter_flashfs_free();
 
 		if (read != written)
-		{
+		{	
 			static volatile int j;
 			j++;
 		}
@@ -1162,8 +1154,8 @@ __EXPORT void test(void)
 	int block = 2048;
 
 	for (int a = 0; a <= 8; a++)
-	{
-		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
+	{	
+		rv = parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
 		buf_size = block;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
@@ -1171,7 +1163,7 @@ __EXPORT void test(void)
 		parameter_flashfs_free();
 
 		if (read != written)
-		{
+		{	
 			static volatile int j;
 			j++;
 		}

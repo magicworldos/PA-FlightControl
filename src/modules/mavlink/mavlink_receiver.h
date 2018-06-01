@@ -103,7 +103,7 @@ public:
 	/**
 	 * Display the mavlink status.
 	 */
-	void		print_status();
+	void print_status();
 
 	/**
 	 * Start the receiver thread
@@ -113,7 +113,7 @@ public:
 	static void *start_helper(void *context);
 
 private:
-
+	
 	void acknowledge(uint8_t sysid, uint8_t compid, uint16_t command, uint8_t result);
 	void handle_message(mavlink_message_t *msg);
 	void handle_message_command_long(mavlink_message_t *msg);
@@ -122,8 +122,7 @@ private:
 	 * common method to handle both mavlink command types. T is one of mavlink_command_int_t or mavlink_command_long_t
 	 */
 	template<class T>
-	void handle_message_command_both(mavlink_message_t *msg, const T &cmd_mavlink,
-					 const vehicle_command_s &vehicle_command);
+	void handle_message_command_both(mavlink_message_t *msg, const T &cmd_mavlink, const vehicle_command_s &vehicle_command);
 	void handle_message_command_ack(mavlink_message_t *msg);
 	void handle_message_optical_flow_rad(mavlink_message_t *msg);
 	void handle_message_set_mode(mavlink_message_t *msg);
@@ -191,16 +190,16 @@ private:
 	 */
 	int decode_switch_pos_n(uint16_t buttons, unsigned sw);
 
-	bool	evaluate_target_ok(int command, int target_system, int target_component);
+	bool evaluate_target_ok(int command, int target_system, int target_component);
 
 	void send_flight_information();
 
-	Mavlink	*_mavlink;
+	Mavlink *_mavlink;
 
-	MavlinkMissionManager		_mission_manager;
-	MavlinkParametersManager	_parameters_manager;
-	MavlinkFTP			_mavlink_ftp;
-	MavlinkLogHandler		_mavlink_log_handler;
+	MavlinkMissionManager _mission_manager;
+	MavlinkParametersManager _parameters_manager;
+	MavlinkFTP _mavlink_ftp;
+	MavlinkLogHandler _mavlink_log_handler;
 
 	mavlink_status_t _status; ///< receiver status, used for mavlink_parse_char()
 	struct vehicle_control_mode_s _control_mode;
@@ -249,7 +248,7 @@ private:
 	struct vehicle_rates_setpoint_s _rates_sp;
 	double _time_offset_avg_alpha;
 	int64_t _time_offset;
-	int	_orb_class_instance;
+	int _orb_class_instance;
 
 	static constexpr unsigned MOM_SWITCH_COUNT = 8;
 

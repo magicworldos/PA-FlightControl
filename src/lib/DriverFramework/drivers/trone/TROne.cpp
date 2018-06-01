@@ -43,59 +43,64 @@ using namespace DriverFramework;
 int TROne::start()
 {
 	int result = I2CDevObj::start();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("error: could not start DevObj");
 		goto exit;
 	}
-
+	
 	/* Configure the I2C bus parameters for the sensor. */
 	result = _setSlaveConfig(slave_addr,
-				 TRONE_BUS_FREQUENCY_IN_KHZ,
-				 TRONE_TRANSFER_TIMEOUT_IN_USECS);
-
-	if (result != 0) {
+	TRONE_BUS_FREQUENCY_IN_KHZ,
+	TRONE_TRANSFER_TIMEOUT_IN_USECS);
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("I2C slave configuration failed");
 		goto exit;
 	}
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("error: could not start DevObj");
 		goto exit;
 	}
-
+	
 	/* Probe to check if device is available, otherwise give up. */
 	result = probe();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("probing not successful");
 		goto exit;
 	}
-
+	
 	result = DevObj::start();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("DevObj start not successful");
 		DevObj::stop();
 		goto exit;
-
+		
 	}
-
-exit:
-	return result;
+	
+	exit: return result;
 }
 
 int TROne::stop()
 {
 	int result = DevObj::stop();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("DevObj stop failed");
 		return result;
 	}
-
+	
 	usleep(100000);
-
+	
 	return 0;
 }
 
@@ -103,61 +108,66 @@ int TROne::probe()
 {
 	int result = 0;
 	uint8_t who_am_i = 0;
-
-	result = _writeReg(TRONE_WHO_AM_I_REG, (uint8_t *)&who_am_i, sizeof(who_am_i));
-
-	if (result) {
+	
+	result = _writeReg(TRONE_WHO_AM_I_REG, (uint8_t *) &who_am_i, sizeof(who_am_i));
+	
+	if (result)
+	{
 		DF_LOG_ERR("Nonzero result when writing to TRONE_WHO_AM_I_REG 0x%x", TRONE_WHO_AM_I_REG);
 		return result;
 	}
-
-	result = _simple_read((uint8_t *)&who_am_i, sizeof(who_am_i));
-
+	
+	result = _simple_read((uint8_t *) &who_am_i, sizeof(who_am_i));
+	
 	DF_LOG_DEBUG("WHO_AM_I bytes 0x%02x 0x%02x\n",
-		     (unsigned)who_am_i,
-		     TRONE_WHO_AM_I_REG_VAL);
-
-	if ((unsigned)who_am_i != TRONE_WHO_AM_I_REG_VAL) {
-		DF_LOG_ERR("Wrong WHO_AM_I: 0x%x instead of 0x%x", (unsigned)who_am_i, TRONE_WHO_AM_I_REG_VAL);
+			(unsigned)who_am_i,
+			TRONE_WHO_AM_I_REG_VAL);
+	
+	if ((unsigned) who_am_i != TRONE_WHO_AM_I_REG_VAL)
+	{
+		DF_LOG_ERR("Wrong WHO_AM_I: 0x%x instead of 0x%x", (unsigned )who_am_i, TRONE_WHO_AM_I_REG_VAL);
 		return -1;
 	}
-
-	if (result) {
+	
+	if (result)
+	{
 		DF_LOG_ERR("Nonzero result when probing");
 		// not found on any address
 		return -EIO;
 	}
-
+	
 	return 0;
 }
 
 void TROne::_measure()
 {
 	int result = 0;
-
+	
 	/* read from the sensor */
-	uint8_t val[3] = {0, 0, 0};
-
+	uint8_t val[3] = { 0, 0, 0 };
+	
 	uint8_t dummy = 0; // don't care about what _writeReg writes here
-
-	result = _writeReg(TRONE_MEASURE_REG, (uint8_t *)&dummy, sizeof(dummy));
-
-	if (result) {
+	
+	result = _writeReg(TRONE_MEASURE_REG, (uint8_t *) &dummy, sizeof(dummy));
+	
+	if (result)
+	{
 		//TODO add error counter
 		DF_LOG_ERR("Nonzero result when writing to TRONE_MEASURE_REG 0x%x", TRONE_MEASURE_REG);
 		return;
 	}
-
+	
 	result = _simple_read(val, sizeof(val));
-
-	if (result) {
+	
+	if (result)
+	{
 		//TODO add error counter
 		DF_LOG_ERR("Nonzero result when reading");
 		return;
 	}
-
+	
 	uint16_t distance_mm = (val[0] << 8) | val[1];
-
+	
 	m_sensor_data.dist = float(distance_mm) * 1e-3f;
 	_publish(m_sensor_data);
 }

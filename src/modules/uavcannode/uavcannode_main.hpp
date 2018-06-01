@@ -57,7 +57,7 @@
 /**
  * A UAVCAN node.
  */
-class UavcanNode : public device::CDev
+class UavcanNode: public device::CDev
 {
 	/*
 	 * This memory is reserved for uavcan to use as over flow for message
@@ -68,7 +68,7 @@ class UavcanNode : public device::CDev
 	 * free -and multiply it times getBlockSize to get the number of bytes
 	 *
 	 */
-	static constexpr unsigned MemPoolSize        = 2048;
+	static constexpr unsigned MemPoolSize = 2048;
 
 	/*
 	 * This memory is reserved for uavcan to use for queuing CAN frames.
@@ -87,7 +87,7 @@ class UavcanNode : public device::CDev
 	 * This memory is uses for the tasks stack size
 	 */
 
-	static constexpr unsigned StackSize          = 2500;
+	static constexpr unsigned StackSize = 2500;
 
 public:
 	typedef uavcan::Node<MemPoolSize> Node;
@@ -96,58 +96,57 @@ public:
 
 	UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &system_clock);
 
-	virtual		~UavcanNode();
+	virtual ~UavcanNode();
 
-	virtual int	ioctl(file *filp, int cmd, unsigned long arg);
+	virtual int ioctl(file *filp, int cmd, unsigned long arg);
 
-	static int	start(uavcan::NodeID node_id, uint32_t bitrate);
+	static int start(uavcan::NodeID node_id, uint32_t bitrate);
 
-	Node		&get_node() { return _node; }
+	Node &get_node()
+	{
+		return _node;
+	}
+	
+	int teardown();
 
-	int		teardown();
+	void print_info();
 
-	void		print_info();
-
-	static UavcanNode *instance() { return _instance; }
-
-
+	static UavcanNode *instance()
+	{
+		return _instance;
+	}
+	
 	/* The bit rate that can be passed back to the bootloader */
 
 	int32_t active_bitrate;
 
-
 private:
-	void		fill_node_info();
-	int		init(uavcan::NodeID node_id);
-	void		node_spin_once();
-	int		run();
-	int		add_poll_fd(int fd);			///< add a fd to poll list, returning index into _poll_fds[]
-
-
-	int			_task = -1;			///< handle to the OS task
-	bool			_task_should_exit = false;	///< flag to indicate to tear down the CAN driver
-
-	static UavcanNode	*_instance;			///< singleton pointer
-	Node			_node;				///< library instance
-	pthread_mutex_t		_node_mutex;
+	void fill_node_info();
+	int init(uavcan::NodeID node_id);
+	void node_spin_once();
+	int run();
+	int add_poll_fd(int fd);			///< add a fd to poll list, returning index into _poll_fds[]
+	
+	int _task = -1;			///< handle to the OS task
+	bool _task_should_exit = false;	///< flag to indicate to tear down the CAN driver
+	
+	static UavcanNode *_instance;			///< singleton pointer
+	Node _node;				///< library instance
+	pthread_mutex_t _node_mutex;
 	uavcan::GlobalTimeSyncSlave _time_sync_slave;
 
-	pollfd			_poll_fds[UAVCAN_NUM_POLL_FDS] = {};
-	unsigned		_poll_fds_num = 0;
+	pollfd _poll_fds[UAVCAN_NUM_POLL_FDS] = { };
+	unsigned _poll_fds_num = 0;
 
-	typedef uavcan::MethodBinder<UavcanNode *,
-		void (UavcanNode::*)(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &,
-				     uavcan::ServiceResponseDataStructure<UavcanNode::BeginFirmwareUpdate::Response> &)>
-		BeginFirmwareUpdateCallBack;
+	typedef uavcan::MethodBinder<UavcanNode *, void (UavcanNode::*)(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &, uavcan::ServiceResponseDataStructure<UavcanNode::BeginFirmwareUpdate::Response> &)> BeginFirmwareUpdateCallBack;
 
 	uavcan::ServiceServer<BeginFirmwareUpdate, BeginFirmwareUpdateCallBack> _fw_update_listner;
-	void cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &req,
-				     uavcan::ServiceResponseDataStructure<UavcanNode::BeginFirmwareUpdate::Response> &rsp);
+	void cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<UavcanNode::BeginFirmwareUpdate::Response> &rsp);
 
 public:
-
+	
 	/* A timer used to reboot after the response is sent */
 
 	uavcan::TimerEventForwarder<void (*)(const uavcan::TimerEvent &)> _reset_timer;
-
+	
 };

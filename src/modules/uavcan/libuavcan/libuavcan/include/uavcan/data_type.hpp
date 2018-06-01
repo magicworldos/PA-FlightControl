@@ -18,65 +18,87 @@ class UAVCAN_EXPORT TransferCRC;
 
 enum DataTypeKind
 {
-    DataTypeKindService,
-    DataTypeKindMessage
+	DataTypeKindService,
+	DataTypeKindMessage
 };
 
 static const uint8_t NumDataTypeKinds = 2;
 
-
 static inline DataTypeKind getDataTypeKindForTransferType(const TransferType tt)
 {
-    if (tt == TransferTypeServiceResponse ||
-        tt == TransferTypeServiceRequest)
-    {
-        return DataTypeKindService;
-    }
-    else if (tt == TransferTypeMessageBroadcast)
-    {
-        return DataTypeKindMessage;
-    }
-    else
-    {
-        UAVCAN_ASSERT(0);
-        return DataTypeKind(0);
-    }
+	if (tt == TransferTypeServiceResponse || tt == TransferTypeServiceRequest)
+	{
+		return DataTypeKindService;
+	}
+	else if (tt == TransferTypeMessageBroadcast)
+	{
+		return DataTypeKindMessage;
+	}
+	else
+	{
+		UAVCAN_ASSERT(0);
+		return DataTypeKind(0);
+	}
 }
-
 
 class UAVCAN_EXPORT DataTypeID
 {
-    uint32_t value_;
+	uint32_t value_;
 
 public:
-    static const uint16_t MaxServiceDataTypeIDValue = 255;
-    static const uint16_t MaxMessageDataTypeIDValue = 65535;
-    static const uint16_t MaxPossibleDataTypeIDValue = MaxMessageDataTypeIDValue;
+	static const uint16_t MaxServiceDataTypeIDValue = 255;
+	static const uint16_t MaxMessageDataTypeIDValue = 65535;
+	static const uint16_t MaxPossibleDataTypeIDValue = MaxMessageDataTypeIDValue;
 
-    DataTypeID() : value_(0xFFFFFFFFUL) { }
+	DataTypeID() :
+			    value_(0xFFFFFFFFUL)
+	{
+	}
+	
+	DataTypeID(uint16_t id)  // Implicit
+	:
+			    value_(id)
+	{
+	}
+	
+	static DataTypeID getMaxValueForDataTypeKind(const DataTypeKind dtkind);
 
-    DataTypeID(uint16_t id)  // Implicit
-        : value_(id)
-    { }
-
-    static DataTypeID getMaxValueForDataTypeKind(const DataTypeKind dtkind);
-
-    bool isValidForDataTypeKind(DataTypeKind dtkind) const
-    {
-        return value_ <= getMaxValueForDataTypeKind(dtkind).get();
-    }
-
-    uint16_t get() const { return static_cast<uint16_t>(value_); }
-
-    bool operator==(DataTypeID rhs) const { return value_ == rhs.value_; }
-    bool operator!=(DataTypeID rhs) const { return value_ != rhs.value_; }
-
-    bool operator<(DataTypeID rhs) const { return value_ < rhs.value_; }
-    bool operator>(DataTypeID rhs) const { return value_ > rhs.value_; }
-    bool operator<=(DataTypeID rhs) const { return value_ <= rhs.value_; }
-    bool operator>=(DataTypeID rhs) const { return value_ >= rhs.value_; }
+	bool isValidForDataTypeKind(DataTypeKind dtkind) const
+	{
+		return value_ <= getMaxValueForDataTypeKind(dtkind).get();
+	}
+	
+	uint16_t get() const
+	{
+		return static_cast<uint16_t>(value_);
+	}
+	
+	bool operator==(DataTypeID rhs) const
+	{
+		return value_ == rhs.value_;
+	}
+	bool operator!=(DataTypeID rhs) const
+	{
+		return value_ != rhs.value_;
+	}
+	
+	bool operator<(DataTypeID rhs) const
+	{
+		return value_ < rhs.value_;
+	}
+	bool operator>(DataTypeID rhs) const
+	{
+		return value_ > rhs.value_;
+	}
+	bool operator<=(DataTypeID rhs) const
+	{
+		return value_ <= rhs.value_;
+	}
+	bool operator>=(DataTypeID rhs) const
+	{
+		return value_ >= rhs.value_;
+	}
 };
-
 
 /**
  * CRC-64-WE
@@ -89,39 +111,59 @@ public:
  */
 class UAVCAN_EXPORT DataTypeSignatureCRC
 {
-    uint64_t crc_;
+	uint64_t crc_;
 
 public:
-    static DataTypeSignatureCRC extend(uint64_t crc);
+	static DataTypeSignatureCRC extend(uint64_t crc);
 
-    DataTypeSignatureCRC() : crc_(0xFFFFFFFFFFFFFFFFULL) { }
+	DataTypeSignatureCRC() :
+			    crc_(0xFFFFFFFFFFFFFFFFULL)
+	{
+	}
+	
+	void add(uint8_t byte);
 
-    void add(uint8_t byte);
+	void add(const uint8_t* bytes, unsigned len);
 
-    void add(const uint8_t* bytes, unsigned len);
-
-    uint64_t get() const { return crc_ ^ 0xFFFFFFFFFFFFFFFFULL; }
+	uint64_t get() const
+	{
+		return crc_ ^ 0xFFFFFFFFFFFFFFFFULL;
+	}
 };
-
 
 class UAVCAN_EXPORT DataTypeSignature
 {
-    uint64_t value_;
+	uint64_t value_;
 
-    void mixin64(uint64_t x);
+	void mixin64(uint64_t x);
 
 public:
-    DataTypeSignature() : value_(0) { }
-    explicit DataTypeSignature(uint64_t value) : value_(value) { }
+	DataTypeSignature() :
+			    value_(0)
+	{
+	}
+	explicit DataTypeSignature(uint64_t value) :
+			    value_(value)
+	{
+	}
+	
+	void extend(DataTypeSignature dts);
 
-    void extend(DataTypeSignature dts);
+	TransferCRC toTransferCRC() const;
 
-    TransferCRC toTransferCRC() const;
-
-    uint64_t get() const { return value_; }
-
-    bool operator==(DataTypeSignature rhs) const { return value_ == rhs.value_; }
-    bool operator!=(DataTypeSignature rhs) const { return !operator==(rhs); }
+	uint64_t get() const
+	{
+		return value_;
+	}
+	
+	bool operator==(DataTypeSignature rhs) const
+	{
+		return value_ == rhs.value_;
+	}
+	bool operator!=(DataTypeSignature rhs) const
+	{
+		return !operator==(rhs);
+	}
 };
 
 /**
@@ -129,45 +171,61 @@ public:
  */
 class UAVCAN_EXPORT DataTypeDescriptor
 {
-    DataTypeSignature signature_;
-    const char* full_name_;
-    DataTypeKind kind_;
-    DataTypeID id_;
+	DataTypeSignature signature_;
+	const char* full_name_;
+	DataTypeKind kind_;
+	DataTypeID id_;
 
 public:
-    static const unsigned MaxFullNameLen = 80;
+	static const unsigned MaxFullNameLen = 80;
 
-    DataTypeDescriptor() :
-        full_name_(""),
-        kind_(DataTypeKind(0))
-    { }
+	DataTypeDescriptor() :
+			    full_name_(""),
+			    kind_(DataTypeKind(0))
+	{
+	}
+	
+	DataTypeDescriptor(DataTypeKind kind, DataTypeID id, const DataTypeSignature& signature, const char* name) :
+			    signature_(signature),
+			    full_name_(name),
+			    kind_(kind),
+			    id_(id)
+	{
+		UAVCAN_ASSERT((kind == DataTypeKindMessage) || (kind == DataTypeKindService));
+		UAVCAN_ASSERT(name);
+		UAVCAN_ASSERT(std::strlen(name) <= MaxFullNameLen);
+	}
+	
+	bool isValid() const;
 
-    DataTypeDescriptor(DataTypeKind kind, DataTypeID id, const DataTypeSignature& signature, const char* name) :
-        signature_(signature),
-        full_name_(name),
-        kind_(kind),
-        id_(id)
-    {
-        UAVCAN_ASSERT((kind == DataTypeKindMessage) || (kind == DataTypeKindService));
-        UAVCAN_ASSERT(name);
-        UAVCAN_ASSERT(std::strlen(name) <= MaxFullNameLen);
-    }
+	DataTypeKind getKind() const
+	{
+		return kind_;
+	}
+	DataTypeID getID() const
+	{
+		return id_;
+	}
+	const DataTypeSignature& getSignature() const
+	{
+		return signature_;
+	}
+	const char* getFullName() const
+	{
+		return full_name_;
+	}
+	
+	bool match(DataTypeKind kind, const char* name) const;
+	bool match(DataTypeKind kind, DataTypeID id) const;
 
-    bool isValid() const;
-
-    DataTypeKind getKind() const { return kind_; }
-    DataTypeID getID() const { return id_; }
-    const DataTypeSignature& getSignature() const { return signature_; }
-    const char* getFullName() const { return full_name_; }
-
-    bool match(DataTypeKind kind, const char* name) const;
-    bool match(DataTypeKind kind, DataTypeID id) const;
-
-    bool operator!=(const DataTypeDescriptor& rhs) const { return !operator==(rhs); }
-    bool operator==(const DataTypeDescriptor& rhs) const;
+	bool operator!=(const DataTypeDescriptor& rhs) const
+	{
+		return !operator==(rhs);
+	}
+	bool operator==(const DataTypeDescriptor& rhs) const;
 
 #if UAVCAN_TOSTRING
-    std::string toString() const;
+	std::string toString() const;
 #endif
 };
 

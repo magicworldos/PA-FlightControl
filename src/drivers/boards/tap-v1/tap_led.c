@@ -76,7 +76,7 @@ __EXPORT void led_on(int led)
 		/* Pull down to switch on */
 		stm32_gpiowrite(GPIO_BLUE_LED, false);
 	}
-
+	
 	if (led == 1)
 	{
 		/* Pull down to switch on */
@@ -91,7 +91,7 @@ __EXPORT void led_off(int led)
 		/* Pull up to switch off */
 		stm32_gpiowrite(GPIO_BLUE_LED, true);
 	}
-
+	
 	if (led == 1)
 	{
 		/* Pull up to switch off */
@@ -105,7 +105,7 @@ __EXPORT void led_toggle(int led)
 	{
 		stm32_gpiowrite(GPIO_BLUE_LED, !stm32_gpioread(GPIO_BLUE_LED));
 	}
-
+	
 	if (led == 1)
 	{
 		stm32_gpiowrite(GPIO_RED_LED, !stm32_gpioread(GPIO_RED_LED));

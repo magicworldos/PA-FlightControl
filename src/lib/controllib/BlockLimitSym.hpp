@@ -61,20 +61,23 @@ namespace control
  * upper limit of +max, and lower limit of -max
  */
 class __EXPORT BlockLimitSym : public Block
-{
+{	
 public:
 // methods
 	BlockLimitSym(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_max(this, "MAX")
+	Block(parent, name),
+	_max(this, "MAX")
 	{}
-	virtual ~BlockLimitSym() {}
+	virtual ~BlockLimitSym()
+	{}
 	float update(float input);
 // accessors
-	float getMax() { return _max.get(); }
+	float getMax()
+	{	return _max.get();}
 protected:
 // attributes
 	control::BlockParamFloat _max;
 };
 
-} // namespace control
+}
+ // namespace control

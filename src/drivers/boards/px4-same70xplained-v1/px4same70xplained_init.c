@@ -137,8 +137,7 @@ __END_DECLS
  *
  ************************************************************************************/
 
-__EXPORT void
-sam_boardinitialize(void)
+__EXPORT void sam_boardinitialize(void)
 {
 #ifdef CONFIG_SCHED_TICKLESS
 	uint32_t frequency;
@@ -170,7 +169,7 @@ sam_boardinitialize(void)
 
 	(void)sam_pck_enable(PCK6, true);
 #endif
-
+	
 	/* Lets bring the clock out for a sanity check*/
 #ifdef GPIO_PCK1
 	sam_configgpio(GPIO_PCK1);
@@ -186,16 +185,16 @@ sam_boardinitialize(void)
 
 	sam_sdram_config();
 #endif
-
+	
 #ifdef CONFIG_SAMV7_SPI
-
+	
 	/* configure SPI interfaces */
 
 	board_spi_initialize();
 #endif
-
+	
 #ifdef CONFIG_ARCH_LEDS
-
+	
 	/* configure LEDs */
 
 	board_autoled_initialize();
@@ -235,13 +234,13 @@ static struct sdio_dev_s *sdio;
 
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
-
+	
 	/* configure ADC pins */
 
 	/* configure power supply control/sense pins */
 
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -249,45 +248,43 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* configure the DMA allocator */
 
 	if (board_dma_alloc_init() < 0)
 	{
 		message("DMA alloc FAILED");
 	}
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_on(LED_AMBER);
 	led_off(LED_AMBER);
-
+	
 	/* Configure SPI-based devices */
 
 	spi0 = px4_spibus_initialize(PX4_SPI_BUS_SENSORS);
-
+	
 	if (!spi0)
 	{
-		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS);
-		board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS); board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 	/* Default SPI1 to 1MHz and de-assert the known chip selects. */
 	SPI_SETFREQUENCY(spi0, 10000000);
 	SPI_SETBITS(spi0, 8);
@@ -297,7 +294,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SELECT(spi0, PX4_SPIDEV_BARO, false);
 	SPI_SELECT(spi0, PX4_SPIDEV_MPU, false);
 	up_udelay(20);
-
+	
 #if defined(CONFIG_SAMV7_SPI1_MASTER)
 	spi1 = px4_spibus_initialize(PX4_SPI_BUS_MEMORY);
 
@@ -308,16 +305,16 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SELECT(spi1, PX4_SPIDEV_EXT0, false);
 	SPI_SELECT(spi1, PX4_SPIDEV_EXT1, false);
 #endif
-
+	
 #ifdef CONFIG_MMCSD
 	/* First, get an instance of the SDIO interface */
 
 	sdio = sdio_initialize(CONFIG_NSH_MMCSDSLOTNO);
 
 	if (!sdio)
-	{
+	{	
 		message("[boot] Failed to initialize SDIO slot %d\n",
-			CONFIG_NSH_MMCSDSLOTNO);
+				CONFIG_NSH_MMCSDSLOTNO);
 		return -ENODEV;
 	}
 
@@ -325,7 +322,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int ret = mmcsd_slotinitialize(CONFIG_NSH_MMCSDMINOR, sdio);
 
 	if (ret != OK)
-	{
+	{	
 		message("[boot] Failed to bind SDIO to the MMC/SD driver: %d\n", ret);
 		return ret;
 	}
@@ -334,13 +331,13 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	sdio_mediachange(sdio, true);
 
 #endif
-
+	
 	return OK;
 }
 
 #if defined(CONFIG_BOARDCTL_RESET)
 int board_reset(int status)
-{
+{	
 	up_systemreset();
 	return 0;
 }
@@ -360,9 +357,9 @@ int up_rtc_getdatetime(FAR struct tm *tp)
 	tp->tm_mday = 30;
 	tp->tm_mon = 10;
 	tp->tm_year = 116;
-	tp->tm_wday = 1;    /* Day of the week (0-6) */
-	tp->tm_yday = 0;    /* Day of the year (0-365) */
-	tp->tm_isdst = 0;   /* Non-0 if daylight savings time is in effect */
+	tp->tm_wday = 1; /* Day of the week (0-6) */
+	tp->tm_yday = 0; /* Day of the year (0-365) */
+	tp->tm_isdst = 0; /* Non-0 if daylight savings time is in effect */
 	return 0;
 }
 

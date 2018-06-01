@@ -40,7 +40,6 @@
 #include "uORB.h"
 #include <drivers/drv_hrt.h>
 
-
 namespace uORB
 {
 static const unsigned orb_maxpath = 64;
@@ -51,14 +50,16 @@ static const unsigned orb_maxpath = 64;
 /* ERROR is not defined for c++ */
 const int ERROR = -1;
 
-enum Flavor {
+enum Flavor
+{
 	PUBSUB = 0,
 	PARAM,
-
+	
 	Flavor_count
 };
 
-struct orb_advertdata {
+struct orb_advertdata
+{
 	const struct orb_metadata *meta;
 	int *instance;
 	int priority;

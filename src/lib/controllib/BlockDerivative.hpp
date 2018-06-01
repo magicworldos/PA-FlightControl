@@ -59,16 +59,17 @@ namespace control
  * @see LowPass
  */
 class __EXPORT BlockDerivative : public SuperBlock
-{
+{	
 public:
 // methods
 	BlockDerivative(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_u(0),
-		_initialized(false),
-		_lowPass(this, "LP")
+	SuperBlock(parent, name),
+	_u(0),
+	_initialized(false),
+	_lowPass(this, "LP")
 	{}
-	virtual ~BlockDerivative() {}
+	virtual ~BlockDerivative()
+	{}
 
 	/**
 	 * Update the state and get current derivative
@@ -86,10 +87,14 @@ public:
 	 */
 	float update(float input);
 // accessors
-	void setU(float u) {_u = u;}
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
+	void setU(float u)
+	{	_u = u;}
+	float getU()
+	{	return _u;}
+	float getLP()
+	{	return _lowPass.getFCut();}
+	float getO()
+	{	return _lowPass.getState();}
 protected:
 // attributes
 	float _u; /**< previous input */
@@ -97,4 +102,5 @@ protected:
 	BlockLowPass _lowPass; /**< low pass filter */
 };
 
-} // namespace control
+}
+ // namespace control

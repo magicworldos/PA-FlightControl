@@ -11,8 +11,8 @@
  * will be no duplicated symbol linking errors.
  */
 TEST(DsdlConst1, Timestamp)
-{
-    using uavcan::Timestamp;
+{	
+	using uavcan::Timestamp;
 
-    std::cout << &Timestamp::UNKNOWN << std::endl;
+	std::cout << &Timestamp::UNKNOWN << std::endl;
 }

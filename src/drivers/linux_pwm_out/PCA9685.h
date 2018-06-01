@@ -69,10 +69,10 @@ namespace linux_pwm_out
 #define PCA9685_DEFAULT_I2C_BUS  1     // default i2c bus for pca9685  默认为1
 
 //! Main class that exports features for PCA9685 chip
-class PCA9685 : public PWMOutBase
+class PCA9685: public PWMOutBase
 {
 public:
-
+	
 	PCA9685();
 
 	/**
@@ -82,10 +82,12 @@ public:
 	 */
 	PCA9685(int bus, int address);
 
-	int init() override { return _fd >= 0 ? 0 : -1; }
-
+	int init() override
+	{
+		return _fd >= 0 ? 0 : -1;
+	}
+	
 	int send_output_pwm(const uint16_t *pwm, int num_outputs) override;
-
 
 	int init(int bus, int address);
 	virtual ~PCA9685();
@@ -116,7 +118,7 @@ public:
 
 private:
 	int _fd = -1; ///< I2C device file descriptor
-
+	
 	/**
 	 * Read a single byte from PCA9685
 	 * @param fd file descriptor for I/O

@@ -13,7 +13,7 @@
 #include "camera_interface.h"
 
 class CameraInterfaceSeagull : public CameraInterface
-{
+{	
 public:
 	CameraInterfaceSeagull();
 	virtual ~CameraInterfaceSeagull();
@@ -26,9 +26,11 @@ public:
 
 	void info();
 
-	bool has_power_control() { return true; }
+	bool has_power_control()
+	{	return true;}
 
-	bool is_powered_on() { return _camera_is_on; }
+	bool is_powered_on()
+	{	return _camera_is_on;}
 
 private:
 	void setup();

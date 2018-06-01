@@ -142,7 +142,6 @@
 #define BMIREG_STEP_CONF_1      0x7B
 #define BMIREG_CMD              0x7E
 
-
 // Configuration bits BMI 160
 #define BMI160_WHO_AM_I         0xD1
 
@@ -246,118 +245,118 @@
 
 class BMI160_gyro;
 
-class BMI160 : public device::SPI
+class BMI160: public device::SPI
 {
 public:
 	BMI160(int bus, const char *path_accel, const char *path_gyro, uint32_t device, enum Rotation rotation);
 	virtual ~BMI160();
 
-	virtual int		init();
+	virtual int init();
 
-	virtual ssize_t		read(struct file *filp, char *buffer, size_t buflen);
-	virtual int		ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
 	/**
 	 * Diagnostics - print some basic information about the driver.
 	 */
-	void			print_info();
+	void print_info();
 
-	void			print_registers();
+	void print_registers();
 
 	// deliberately cause a sensor error
-	void 			test_error();
+	void test_error();
 
 protected:
-	virtual int		probe();
+	virtual int probe();
 
 	friend class BMI160_gyro;
 
-	virtual ssize_t		gyro_read(struct file *filp, char *buffer, size_t buflen);
-	virtual int		gyro_ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t gyro_read(struct file *filp, char *buffer, size_t buflen);
+	virtual int gyro_ioctl(struct file *filp, int cmd, unsigned long arg);
 
 private:
-	BMI160_gyro		*_gyro;
-	uint8_t			_whoami;	/** whoami result */
+	BMI160_gyro *_gyro;
+	uint8_t _whoami; /** whoami result */
+	
+	struct hrt_call _call;
+	unsigned _call_interval;
 
-	struct hrt_call		_call;
-	unsigned		_call_interval;
+	ringbuffer::RingBuffer *_accel_reports;
 
-	ringbuffer::RingBuffer	*_accel_reports;
+	struct accel_calibration_s _accel_scale;
+	float _accel_range_scale;
+	float _accel_range_m_s2;
+	orb_advert_t _accel_topic;
+	int _accel_orb_class_instance;
+	int _accel_class_instance;
 
-	struct accel_calibration_s	_accel_scale;
-	float			_accel_range_scale;
-	float			_accel_range_m_s2;
-	orb_advert_t		_accel_topic;
-	int			_accel_orb_class_instance;
-	int			_accel_class_instance;
+	ringbuffer::RingBuffer *_gyro_reports;
 
-	ringbuffer::RingBuffer	*_gyro_reports;
+	struct gyro_calibration_s _gyro_scale;
+	float _gyro_range_scale;
+	float _gyro_range_rad_s;
 
-	struct gyro_calibration_s	_gyro_scale;
-	float			_gyro_range_scale;
-	float			_gyro_range_rad_s;
+	unsigned _dlpf_freq;
 
-	unsigned		_dlpf_freq;
+	float _accel_sample_rate;
+	float _gyro_sample_rate;
+	perf_counter_t _accel_reads;
+	perf_counter_t _gyro_reads;
+	perf_counter_t _sample_perf;
+	perf_counter_t _bad_transfers;
+	perf_counter_t _bad_registers;
+	perf_counter_t _good_transfers;
+	perf_counter_t _reset_retries;
+	perf_counter_t _duplicates;
+	perf_counter_t _controller_latency_perf;
 
-	float		_accel_sample_rate;
-	float		_gyro_sample_rate;
-	perf_counter_t		_accel_reads;
-	perf_counter_t		_gyro_reads;
-	perf_counter_t		_sample_perf;
-	perf_counter_t		_bad_transfers;
-	perf_counter_t		_bad_registers;
-	perf_counter_t		_good_transfers;
-	perf_counter_t		_reset_retries;
-	perf_counter_t		_duplicates;
-	perf_counter_t		_controller_latency_perf;
+	uint8_t _register_wait;
+	uint64_t _reset_wait;
 
-	uint8_t			_register_wait;
-	uint64_t		_reset_wait;
+	math::LowPassFilter2p _accel_filter_x;
+	math::LowPassFilter2p _accel_filter_y;
+	math::LowPassFilter2p _accel_filter_z;
+	math::LowPassFilter2p _gyro_filter_x;
+	math::LowPassFilter2p _gyro_filter_y;
+	math::LowPassFilter2p _gyro_filter_z;
 
-	math::LowPassFilter2p	_accel_filter_x;
-	math::LowPassFilter2p	_accel_filter_y;
-	math::LowPassFilter2p	_accel_filter_z;
-	math::LowPassFilter2p	_gyro_filter_x;
-	math::LowPassFilter2p	_gyro_filter_y;
-	math::LowPassFilter2p	_gyro_filter_z;
+	Integrator _accel_int;
+	Integrator _gyro_int;
 
-	Integrator		_accel_int;
-	Integrator		_gyro_int;
-
-	enum Rotation		_rotation;
+	enum Rotation _rotation;
 
 	// this is used to support runtime checking of key
 	// configuration registers to detect SPI bus errors and sensor
 	// reset
 #define BMI160_NUM_CHECKED_REGISTERS 10
-	static const uint8_t	_checked_registers[BMI160_NUM_CHECKED_REGISTERS];
-	uint8_t			_checked_values[BMI160_NUM_CHECKED_REGISTERS];
-	uint8_t			_checked_bad[BMI160_NUM_CHECKED_REGISTERS];
-	uint8_t			_checked_next;
+	static const uint8_t _checked_registers[BMI160_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_values[BMI160_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_bad[BMI160_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_next;
 
 	// last temperature reading for print_info()
-	float			_last_temperature;
+	float _last_temperature;
 
 	// keep last accel reading for duplicate detection
-	uint16_t		_last_accel[3];
-	bool			_got_duplicate;
+	uint16_t _last_accel[3];
+	bool _got_duplicate;
 
 	/**
 	 * Start automatic measurement.
 	 */
-	void			start();
+	void start();
 
 	/**
 	 * Stop automatic measurement.
 	 */
-	void			stop();
+	void stop();
 
 	/**
 	 * Reset chip.
 	 *
 	 * Resets the chip and measurements ranges, but not scale and offset.
 	 */
-	int			reset();
+	int reset();
 
 	/**
 	 * Static trampoline from the hrt_call context; because we don't have a
@@ -368,12 +367,12 @@ private:
 	 *
 	 * @param arg		Instance pointer for the driver that is polling.
 	 */
-	static void		measure_trampoline(void *arg);
+	static void measure_trampoline(void *arg);
 
 	/**
 	 * Fetch measurements from the sensor and update the report buffers.
 	 */
-	void			measure();
+	void measure();
 
 	/**
 	 * Read a register from the BMI160
@@ -381,8 +380,8 @@ private:
 	 * @param		The register to read.
 	 * @return		The value that was read.
 	 */
-	uint8_t			read_reg(unsigned reg);
-	uint16_t		read_reg16(unsigned reg);
+	uint8_t read_reg(unsigned reg);
+	uint16_t read_reg16(unsigned reg);
 
 	/**
 	 * Write a register in the BMI160
@@ -390,7 +389,7 @@ private:
 	 * @param reg		The register to write.
 	 * @param value		The new value to write.
 	 */
-	void			write_reg(unsigned reg, uint8_t value);
+	void write_reg(unsigned reg, uint8_t value);
 
 	/**
 	 * Modify a register in the BMI160
@@ -401,7 +400,7 @@ private:
 	 * @param clearbits	Bits in the register to clear.
 	 * @param setbits	Bits in the register to set.
 	 */
-	void			modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
+	void modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
 
 	/**
 	 * Write a register in the BMI160, updating _checked_values
@@ -409,7 +408,7 @@ private:
 	 * @param reg		The register to write.
 	 * @param value		The new value to write.
 	 */
-	void			write_checked_reg(unsigned reg, uint8_t value);
+	void write_checked_reg(unsigned reg, uint8_t value);
 
 	/**
 	 * Set the BMI160 measurement range.
@@ -418,47 +417,50 @@ private:
 	 * @param max_dps	The maximum DPS value the range must support.
 	 * @return		OK if the value can be supported, -ERANGE otherwise.
 	 */
-	int			set_accel_range(unsigned max_g);
-	int			set_gyro_range(unsigned max_dps);
+	int set_accel_range(unsigned max_g);
+	int set_gyro_range(unsigned max_dps);
 
 	/**
 	 * Swap a 16-bit value read from the BMI160 to native byte order.
 	 */
-	uint16_t		swap16(uint16_t val) { return (val >> 8) | (val << 8);	}
-
+	uint16_t swap16(uint16_t val)
+	{
+		return (val >> 8) | (val << 8);
+	}
+	
 	/**
 	 * Measurement self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int 			self_test();
+	int self_test();
 
 	/**
 	 * Accel self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int 			accel_self_test();
+	int accel_self_test();
 
 	/**
 	 * Gyro self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int 			gyro_self_test();
+	int gyro_self_test();
 
 	/*
-	  set low pass filter frequency
+	 set low pass filter frequency
 	 */
 	void _set_dlpf_filter(uint16_t frequency_hz);
 
 	/*
-	  set sample rate (approximate) - 10 - 952 Hz
-	*/
+	 set sample rate (approximate) - 10 - 952 Hz
+	 */
 	int accel_set_sample_rate(float desired_sample_rate_hz);
 	int gyro_set_sample_rate(float desired_sample_rate_hz);
 	/*
-	  check that key registers still have the right value
+	 check that key registers still have the right value
 	 */
 	void check_registers(void);
 
@@ -471,18 +473,17 @@ private:
 	 * Report conversation within the BMI160, including command byte and
 	 * interrupt status.
 	 */
-	struct BMIReport {
-		uint8_t		cmd;
-		int16_t		gyro_x;
-		int16_t		gyro_y;
-		int16_t		gyro_z;
-		int16_t		accel_x;
-		int16_t		accel_y;
-		int16_t		accel_z;
+	struct BMIReport
+	{
+		uint8_t cmd;
+		int16_t gyro_x;
+		int16_t gyro_y;
+		int16_t gyro_z;
+		int16_t accel_x;
+		int16_t accel_y;
+		int16_t accel_z;
 	};
 #pragma pack(pop)
 };
-
-
 
 #endif /* BMI160_HPP_ */

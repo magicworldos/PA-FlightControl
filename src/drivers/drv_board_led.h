@@ -55,7 +55,6 @@
 #define LED_SAFETY		2
 #define LED_GREEN		3
 
-
 #define LED_ON			_PX4_IOC(_LED_BASE, 0)
 #define LED_OFF			_PX4_IOC(_LED_BASE, 1)
 #define LED_TOGGLE		_PX4_IOC(_LED_BASE, 2)

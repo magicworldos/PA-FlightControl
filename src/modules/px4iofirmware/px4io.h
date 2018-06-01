@@ -82,22 +82,22 @@
 /*
  * Registers.
  */
-extern volatile uint16_t	r_page_status[];	/* PX4IO_PAGE_STATUS */
-extern uint16_t			r_page_actuators[];	/* PX4IO_PAGE_ACTUATORS */
-extern uint16_t			r_page_servos[];	/* PX4IO_PAGE_SERVOS */
-extern uint16_t			r_page_direct_pwm[];	/* PX4IO_PAGE_DIRECT_PWM */
-extern uint16_t			r_page_raw_rc_input[];	/* PX4IO_PAGE_RAW_RC_INPUT */
-extern uint16_t			r_page_rc_input[];	/* PX4IO_PAGE_RC_INPUT */
-extern uint16_t			r_page_adc[];		/* PX4IO_PAGE_RAW_ADC_INPUT */
+extern volatile uint16_t r_page_status[]; /* PX4IO_PAGE_STATUS */
+extern uint16_t r_page_actuators[]; /* PX4IO_PAGE_ACTUATORS */
+extern uint16_t r_page_servos[]; /* PX4IO_PAGE_SERVOS */
+extern uint16_t r_page_direct_pwm[]; /* PX4IO_PAGE_DIRECT_PWM */
+extern uint16_t r_page_raw_rc_input[]; /* PX4IO_PAGE_RAW_RC_INPUT */
+extern uint16_t r_page_rc_input[]; /* PX4IO_PAGE_RC_INPUT */
+extern uint16_t r_page_adc[]; /* PX4IO_PAGE_RAW_ADC_INPUT */
 
-extern volatile uint16_t	r_page_setup[];		/* PX4IO_PAGE_SETUP */
-extern uint16_t			r_page_controls[];	/* PX4IO_PAGE_CONTROLS */
-extern uint16_t			r_page_rc_input_config[]; /* PX4IO_PAGE_RC_INPUT_CONFIG */
-extern uint16_t			r_page_servo_failsafe[]; /* PX4IO_PAGE_FAILSAFE_PWM */
-extern uint16_t			r_page_servo_control_min[]; /* PX4IO_PAGE_CONTROL_MIN_PWM */
-extern uint16_t			r_page_servo_control_max[]; /* PX4IO_PAGE_CONTROL_MAX_PWM */
-extern int16_t			r_page_servo_control_trim[]; /* PX4IO_PAGE_CONTROL_TRIM_PWM */
-extern uint16_t			r_page_servo_disarmed[];	/* PX4IO_PAGE_DISARMED_PWM */
+extern volatile uint16_t r_page_setup[]; /* PX4IO_PAGE_SETUP */
+extern uint16_t r_page_controls[]; /* PX4IO_PAGE_CONTROLS */
+extern uint16_t r_page_rc_input_config[]; /* PX4IO_PAGE_RC_INPUT_CONFIG */
+extern uint16_t r_page_servo_failsafe[]; /* PX4IO_PAGE_FAILSAFE_PWM */
+extern uint16_t r_page_servo_control_min[]; /* PX4IO_PAGE_CONTROL_MIN_PWM */
+extern uint16_t r_page_servo_control_max[]; /* PX4IO_PAGE_CONTROL_MAX_PWM */
+extern int16_t r_page_servo_control_trim[]; /* PX4IO_PAGE_CONTROL_TRIM_PWM */
+extern uint16_t r_page_servo_disarmed[]; /* PX4IO_PAGE_DISARMED_PWM */
 
 /*
  * Register aliases.
@@ -140,15 +140,15 @@ extern uint16_t			r_page_servo_disarmed[];	/* PX4IO_PAGE_DISARMED_PWM */
  */
 struct sys_state_s
 {
-
-	volatile uint64_t	rc_channels_timestamp_received;
-	volatile uint64_t	rc_channels_timestamp_valid;
+	
+	volatile uint64_t rc_channels_timestamp_received;
+	volatile uint64_t rc_channels_timestamp_valid;
 
 	/**
 	 * Last FMU receive time, in microseconds since system boot
 	 */
-	volatile uint64_t	fmu_data_received_time;
-
+	volatile uint64_t fmu_data_received_time;
+	
 };
 
 extern struct sys_state_s system_state;
@@ -167,7 +167,6 @@ extern pwm_limit_t pwm_limit;
 #define LED_AMBER(_s)			px4_arch_gpiowrite(GPIO_LED2, !(_s))
 #define LED_SAFETY(_s)			px4_arch_gpiowrite(GPIO_LED3, !(_s))
 #define LED_RING(_s)			px4_arch_gpiowrite(GPIO_LED4, (_s))
-
 
 # define PX4IO_RELAY_CHANNELS		0
 # define ENABLE_SBUS_OUT(_s)		px4_arch_gpiowrite(GPIO_SBUS_OENABLE, !(_s))
@@ -193,49 +192,49 @@ extern pwm_limit_t pwm_limit;
 /*
  * Mixer
  */
-extern void	mixer_tick(void);
-extern int	mixer_handle_text_create_mixer(void);
-extern int	mixer_handle_text(const void *buffer, size_t length);
+extern void mixer_tick(void);
+extern int mixer_handle_text_create_mixer(void);
+extern int mixer_handle_text(const void *buffer, size_t length);
 /* Set the failsafe values of all mixed channels (based on zero throttle, controls centered) */
-extern void	mixer_set_failsafe(void);
+extern void mixer_set_failsafe(void);
 
 /**
  * Safety switch/LED.
  */
-extern void	safety_init(void);
-extern void	failsafe_led_init(void);
+extern void safety_init(void);
+extern void failsafe_led_init(void);
 
 /**
  * FMU communications
  */
-extern void	interface_init(void);
-extern void	interface_tick(void);
+extern void interface_init(void);
+extern void interface_tick(void);
 
 /**
  * Register space
  */
-extern int	registers_set(uint8_t page, uint8_t offset, const uint16_t *values, unsigned num_values);
-extern int	registers_get(uint8_t page, uint8_t offset, uint16_t **values, unsigned *num_values);
+extern int registers_set(uint8_t page, uint8_t offset, const uint16_t *values, unsigned num_values);
+extern int registers_get(uint8_t page, uint8_t offset, uint16_t **values, unsigned *num_values);
 
 /**
  * Sensors/misc inputs
  */
-extern int	adc_init(void);
-extern uint16_t	adc_measure(unsigned channel);
+extern int adc_init(void);
+extern uint16_t adc_measure(unsigned channel);
 
 /**
  * R/C receiver handling.
  *
  * Input functions return true when they receive an update from the RC controller.
  */
-extern void	controls_init(void);
-extern void	controls_tick(void);
+extern void controls_init(void);
+extern void controls_tick(void);
 
 /** global debug level for isr_debug() */
 extern volatile uint8_t debug_level;
 
 /** send a debug message to the console */
-extern void	isr_debug(uint8_t level, const char *fmt, ...);
+extern void isr_debug(uint8_t level, const char *fmt, ...);
 
 /** schedule a reboot */
 extern void schedule_reboot(uint32_t time_delta_usec);

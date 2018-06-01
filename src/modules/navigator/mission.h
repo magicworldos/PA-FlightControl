@@ -66,12 +66,12 @@
 
 class Navigator;
 
-class Mission : public MissionBlock
+class Mission: public MissionBlock
 {
 public:
 	Mission(Navigator *navigator, const char *name);
 	~Mission() override = default;
-
+	
 	void on_inactive() override;
 	void on_inactivation() override;
 	void on_activation() override;
@@ -98,8 +98,11 @@ public:
 	bool land_start();
 	bool landing();
 
-	uint16_t get_land_start_index() const { return _land_start_index; }
-
+	uint16_t get_land_start_index() const
+	{
+		return _land_start_index;
+	}
+	
 private:
 	/**
 	 * Update onboard mission topic
@@ -184,8 +187,7 @@ private:
 	 *
 	 * @return true if current mission item available
 	 */
-	bool prepare_mission_items(bool onboard, struct mission_item_s *mission_item,
-				   struct mission_item_s *next_position_mission_item, bool *has_next_position_item);
+	bool prepare_mission_items(bool onboard, struct mission_item_s *mission_item, struct mission_item_s *next_position_mission_item, bool *has_next_position_item);
 
 	/**
 	 * Read current (offset == 0) or a specific (offset > 0) mission item
@@ -225,7 +227,6 @@ private:
 	 */
 	void check_mission_valid(bool force);
 
-
 	/**
 	 * Reset offboard mission
 	 */
@@ -254,46 +255,46 @@ private:
 	control::BlockParamInt _param_yawmode;
 	control::BlockParamFloat _param_fw_climbout_diff;
 
-	struct mission_s _onboard_mission {};
-	struct mission_s _offboard_mission {};
+	struct mission_s _onboard_mission { };
+	struct mission_s _offboard_mission { };
 
-	int32_t _current_onboard_mission_index{-1};
-	int32_t _current_offboard_mission_index{-1};
+	int32_t _current_onboard_mission_index { -1 };
+	int32_t _current_offboard_mission_index { -1 };
 
 	// track location of planned mission landing
-	bool	_land_start_available{false};
-	uint16_t _land_start_index{UINT16_MAX};		/**< index of DO_LAND_START, INVALID_DO_LAND_START if no planned landing */
-
-	bool _need_takeoff{true};					/**< if true, then takeoff must be performed before going to the first waypoint (if needed) */
-
+	bool _land_start_available { false };
+	uint16_t _land_start_index { UINT16_MAX }; /**< index of DO_LAND_START, INVALID_DO_LAND_START if no planned landing */
+	
+	bool _need_takeoff { true }; /**< if true, then takeoff must be performed before going to the first waypoint (if needed) */
+	
 	enum
 	{
 		MISSION_TYPE_NONE,
 		MISSION_TYPE_ONBOARD,
 		MISSION_TYPE_OFFBOARD
-	} _mission_type{MISSION_TYPE_NONE};
+	} _mission_type { MISSION_TYPE_NONE };
 
-	bool _inited{false};
-	bool _home_inited{false};
-	bool _need_mission_reset{false};
+	bool _inited { false };
+	bool _home_inited { false };
+	bool _need_mission_reset { false };
 
 	MissionFeasibilityChecker _missionFeasibilityChecker; /**< class that checks if a mission is feasible */
-
-	float _min_current_sp_distance_xy{FLT_MAX}; /**< minimum distance which was achieved to the current waypoint  */
-
-	float _distance_current_previous{0.0f}; /**< distance from previous to current sp in pos_sp_triplet,
-					    only use if current and previous are valid */
-
+	
+	float _min_current_sp_distance_xy { FLT_MAX }; /**< minimum distance which was achieved to the current waypoint  */
+	
+	float _distance_current_previous { 0.0f }; /**< distance from previous to current sp in pos_sp_triplet,
+	 only use if current and previous are valid */
+	
 	enum work_item_type
 	{
-		WORK_ITEM_TYPE_DEFAULT,		/**< default mission item */
-		WORK_ITEM_TYPE_TAKEOFF,		/**< takeoff before moving to waypoint */
-		WORK_ITEM_TYPE_MOVE_TO_LAND,	/**< move to land waypoint before descent */
-		WORK_ITEM_TYPE_ALIGN,		/**< align for next waypoint */
+		WORK_ITEM_TYPE_DEFAULT, /**< default mission item */
+		WORK_ITEM_TYPE_TAKEOFF, /**< takeoff before moving to waypoint */
+		WORK_ITEM_TYPE_MOVE_TO_LAND, /**< move to land waypoint before descent */
+		WORK_ITEM_TYPE_ALIGN, /**< align for next waypoint */
 		WORK_ITEM_TYPE_CMD_BEFORE_MOVE,
 		WORK_ITEM_TYPE_TRANSITON_AFTER_TAKEOFF,
 		WORK_ITEM_TYPE_MOVE_TO_LAND_AFTER_TRANSITION
-	} _work_item_type{WORK_ITEM_TYPE_DEFAULT};	/**< current type of work to do (sub mission item) */
+	} _work_item_type { WORK_ITEM_TYPE_DEFAULT }; /**< current type of work to do (sub mission item) */
 };
 
 #endif

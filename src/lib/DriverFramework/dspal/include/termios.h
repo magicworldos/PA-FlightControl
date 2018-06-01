@@ -70,16 +70,16 @@
 #define	TCION		4
 
 __BEGIN_DECLS
-speed_t	cfgetispeed(const struct termios *);
-speed_t	cfgetospeed(const struct termios *);
-int	cfsetispeed(struct termios *, speed_t);
-int	cfsetospeed(struct termios *, speed_t);
-int	tcgetattr(int, struct termios *);
-int	tcsetattr(int, int, const struct termios *);
-int	tcdrain(int);
-int	tcflow(int, int);
-int	tcflush(int, int);
-int	tcsendbreak(int, int);
+speed_t cfgetispeed(const struct termios *);
+speed_t cfgetospeed(const struct termios *);
+int cfsetispeed(struct termios *, speed_t);
+int cfsetospeed(struct termios *, speed_t);
+int tcgetattr(int, struct termios *);
+int tcsetattr(int, int, const struct termios *);
+int tcdrain(int);
+int tcflow(int, int);
+int tcflush(int, int);
+int tcsendbreak(int, int);
 
 // #if __POSIX_VISIBLE >= 200112
 // pid_t	tcgetsid(int);
@@ -87,9 +87,9 @@ int	tcsendbreak(int, int);
 #if __BSD_VISIBLE
 // int	tcsetsid(int, pid_t);
 
-void	cfmakeraw(struct termios *);
-void	cfmakesane(struct termios *);
-int	cfsetspeed(struct termios *, speed_t);
+void cfmakeraw(struct termios *);
+void cfmakesane(struct termios *);
+int cfsetspeed(struct termios *, speed_t);
 #endif
 __END_DECLS
 

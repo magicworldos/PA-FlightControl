@@ -81,41 +81,39 @@
 #define SETTING_NOT_POWERSAVE	0x01	/**< power-save mode not off */
 #define SETTING_ENABLE   	0x02	/**< on */
 
-
-class RGBLED : public device::I2C
+class RGBLED: public device::I2C
 {
 public:
 	RGBLED(int bus, int rgbled);
 	virtual ~RGBLED();
 
-
-	virtual int		init();
-	virtual int		probe();
-	int		status();
+	virtual int init();
+	virtual int probe();
+	int status();
 
 private:
-	work_s			_work;
+	work_s _work;
 
-	float			_brightness;
-	float			_max_brightness;
+	float _brightness;
+	float _max_brightness;
 
-	uint8_t			_r;
-	uint8_t			_g;
-	uint8_t			_b;
-	volatile bool		_running;
-	volatile bool		_should_run;
-	bool			_leds_enabled;
-	int			_param_sub;
+	uint8_t _r;
+	uint8_t _g;
+	uint8_t _b;
+	volatile bool _running;
+	volatile bool _should_run;
+	bool _leds_enabled;
+	int _param_sub;
 
-	LedController		_led_controller;
+	LedController _led_controller;
 
-	static void		led_trampoline(void *arg);
-	void			led();
+	static void led_trampoline(void *arg);
+	void led();
 
-	int			send_led_enable(bool enable);
-	int			send_led_rgb();
-	int			get(bool &on, bool &powersave, uint8_t &r, uint8_t &g, uint8_t &b);
-	void		update_params();
+	int send_led_enable(bool enable);
+	int send_led_rgb();
+	int get(bool &on, bool &powersave, uint8_t &r, uint8_t &g, uint8_t &b);
+	void update_params();
 };
 
 /* for now, we only support one RGBLED */
@@ -129,21 +127,21 @@ void rgbled_usage();
 extern "C" __EXPORT int rgbled_main(int argc, char *argv[]);
 
 RGBLED::RGBLED(int bus, int rgbled) :
-	I2C("rgbled", RGBLED0_DEVICE_PATH, bus, rgbled
+		    I2C("rgbled", RGBLED0_DEVICE_PATH, bus, rgbled
 #ifdef __PX4_NUTTX
-	    , 100000 /* maximum speed supported */
+		        , 100000 /* maximum speed supported */
 #endif
-	   ),
-	_work{},
-	_brightness(1.0f),
-	_max_brightness(1.0f),
-	_r(0),
-	_g(0),
-	_b(0),
-	_running(false),
-	_should_run(true),
-	_leds_enabled(true),
-	_param_sub(-1)
+		        ),
+		    _work { },
+		    _brightness(1.0f),
+		    _max_brightness(1.0f),
+		    _r(0),
+		    _g(0),
+		    _b(0),
+		    _running(false),
+		    _should_run(true),
+		    _leds_enabled(true),
+		    _param_sub(-1)
 {
 }
 
@@ -151,105 +149,98 @@ RGBLED::~RGBLED()
 {
 	_should_run = false;
 	int counter = 0;
-
+	
 	while (_running && ++counter < 10)
 	{
 		usleep(100000);
 	}
 }
 
-int
-RGBLED::init()
+int RGBLED::init()
 {
 	int ret;
 	ret = I2C::init();
-
+	
 	if (ret != OK)
 	{
 		return ret;
 	}
-
+	
 	/* switch off LED on start */
 	send_led_enable(false);
 	send_led_rgb();
-
+	
 	update_params();
-
+	
 	_running = true;
 	// kick off work queue
-	work_queue(LPWORK, &_work, (worker_t)&RGBLED::led_trampoline, this, 0);
-
+	work_queue(LPWORK, &_work, (worker_t) & RGBLED::led_trampoline, this, 0);
+	
 	return OK;
 }
 
-int
-RGBLED::probe()
+int RGBLED::probe()
 {
 	int ret;
 	bool on, powersave;
 	uint8_t r, g, b;
-
+	
 	/**
-	   this may look strange, but is needed. There is a serial
-	   EEPROM (Microchip-24aa01) that responds to a bunch of I2C
-	   addresses, including the 0x55 used by this LED device. So
-	   we need to do enough operations to be sure we are talking
-	   to the right device. These 3 operations seem to be enough,
-	   as the 3rd one consistently fails if no RGBLED is on the bus.
+	 this may look strange, but is needed. There is a serial
+	 EEPROM (Microchip-24aa01) that responds to a bunch of I2C
+	 addresses, including the 0x55 used by this LED device. So
+	 we need to do enough operations to be sure we are talking
+	 to the right device. These 3 operations seem to be enough,
+	 as the 3rd one consistently fails if no RGBLED is on the bus.
 	 */
 
 	unsigned prevretries = _retries;
 	_retries = 4;
-
-	if ((ret = get(on, powersave, r, g, b)) != OK ||
-			(ret = send_led_enable(false) != OK) ||
-			(ret = send_led_enable(false) != OK))
+	
+	if ((ret = get(on, powersave, r, g, b)) != OK || (ret = send_led_enable(false) != OK) || (ret = send_led_enable(false) != OK))
 	{
 		return ret;
 	}
-
+	
 	_retries = prevretries;
-
+	
 	return ret;
 }
 
-int
-RGBLED::status()
+int RGBLED::status()
 {
 	int ret;
 	bool on, powersave;
 	uint8_t r, g, b;
-
+	
 	ret = get(on, powersave, r, g, b);
-
+	
 	if (ret == OK)
 	{
 		/* we don't care about power-save mode */
 		DEVICE_LOG("state: %s", on ? "ON" : "OFF");
-		DEVICE_LOG("red: %u, green: %u, blue: %u", (unsigned)r, (unsigned)g, (unsigned)b);
-
+		DEVICE_LOG("red: %u, green: %u, blue: %u", (unsigned )r, (unsigned )g, (unsigned )b);
+		
 	}
 	else
 	{
 		PX4_WARN("failed to read led");
 	}
-
+	
 	return ret;
 }
 
-void
-RGBLED::led_trampoline(void *arg)
+void RGBLED::led_trampoline(void *arg)
 {
 	RGBLED *rgbl = reinterpret_cast<RGBLED *>(arg);
-
+	
 	rgbl->led();
 }
 
 /**
  * Main loop function
  */
-void
-RGBLED::led()
+void RGBLED::led()
 {
 	if (!_should_run)
 	{
@@ -257,34 +248,34 @@ RGBLED::led()
 		{
 			orb_unsubscribe(_param_sub);
 		}
-
+		
 		int led_control_sub = _led_controller.led_control_subscription();
-
+		
 		if (led_control_sub >= 0)
 		{
 			orb_unsubscribe(led_control_sub);
 		}
-
+		
 		_running = false;
 		return;
 	}
-
+	
 	if (_param_sub < 0)
 	{
 		_param_sub = orb_subscribe(ORB_ID(parameter_update));
 	}
-
+	
 	if (!_led_controller.is_init())
 	{
 		int led_control_sub = orb_subscribe(ORB_ID(led_control));
 		_led_controller.init(led_control_sub);
 	}
-
+	
 	if (_param_sub >= 0)
 	{
 		bool updated = false;
 		orb_check(_param_sub, &updated);
-
+		
 		if (updated)
 		{
 			parameter_update_s pupdate;
@@ -294,117 +285,126 @@ RGBLED::led()
 			send_led_rgb();
 		}
 	}
-
+	
 	LedControlData led_control_data;
-
+	
 	if (_led_controller.update(led_control_data) == 1)
 	{
 		switch (led_control_data.leds[0].color)
 		{
 			case led_control_s::COLOR_RED:
-				_r = 255; _g = 0; _b = 0;
+				_r = 255;
+				_g = 0;
+				_b = 0;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_GREEN:
-				_r = 0; _g = 255; _b = 0;
+				_r = 0;
+				_g = 255;
+				_b = 0;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_BLUE:
-				_r = 0; _g = 0; _b = 255;
+				_r = 0;
+				_g = 0;
+				_b = 255;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_AMBER: //make it the same as yellow
 			case led_control_s::COLOR_YELLOW:
-				_r = 255; _g = 255; _b = 0;
+				_r = 255;
+				_g = 255;
+				_b = 0;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_PURPLE:
-				_r = 255; _g = 0; _b = 255;
+				_r = 255;
+				_g = 0;
+				_b = 255;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_CYAN:
-				_r = 0; _g = 255; _b = 255;
+				_r = 0;
+				_g = 255;
+				_b = 255;
 				send_led_enable(true);
 				break;
-
+				
 			case led_control_s::COLOR_WHITE:
-				_r = 255; _g = 255; _b = 255;
+				_r = 255;
+				_g = 255;
+				_b = 255;
 				send_led_enable(true);
 				break;
-
+				
 			default: // led_control_s::COLOR_OFF
-				_r = 0; _g = 0; _b = 0;
+				_r = 0;
+				_g = 0;
+				_b = 0;
 				send_led_enable(false);
 				break;
 		}
-
-		_brightness = (float)led_control_data.leds[0].brightness / 255.f;
-
+		
+		_brightness = (float) led_control_data.leds[0].brightness / 255.f;
+		
 		send_led_rgb();
 	}
-
-
+	
 	/* re-queue ourselves to run again later */
-	work_queue(LPWORK, &_work, (worker_t)&RGBLED::led_trampoline, this,
-		   USEC2TICK(_led_controller.maximum_update_interval()));
+	work_queue(LPWORK, &_work, (worker_t) & RGBLED::led_trampoline, this, USEC2TICK(_led_controller.maximum_update_interval()));
 }
 
 /**
  * Sent ENABLE flag to LED driver
  */
-int
-RGBLED::send_led_enable(bool enable)
+int RGBLED::send_led_enable(bool enable)
 {
 	if (_leds_enabled && enable)
 	{
 		// already enabled
 		return 0;
 	}
-
+	
 	_leds_enabled = enable;
 	uint8_t settings_byte = 0;
-
+	
 	if (enable)
 	{
 		settings_byte |= SETTING_ENABLE;
 	}
-
+	
 	settings_byte |= SETTING_NOT_POWERSAVE;
-
-	const uint8_t msg[2] = { SUB_ADDR_SETTINGS, settings_byte};
-
+	
+	const uint8_t msg[2] = { SUB_ADDR_SETTINGS, settings_byte };
+	
 	return transfer(msg, sizeof(msg), nullptr, 0);
 }
 
 /**
  * Send RGB PWM settings to LED driver according to current color and brightness
  */
-int
-RGBLED::send_led_rgb()
+int RGBLED::send_led_rgb()
 {
 	/* To scale from 0..255 -> 0..15 shift right by 4 bits */
-	const uint8_t msg[6] =
-	{
-		SUB_ADDR_PWM0, static_cast<uint8_t>((_b >> 4) * _brightness * _max_brightness + 0.5f),
-		SUB_ADDR_PWM1, static_cast<uint8_t>((_g >> 4) * _brightness * _max_brightness + 0.5f),
-		SUB_ADDR_PWM2, static_cast<uint8_t>((_r >> 4) * _brightness * _max_brightness + 0.5f)
-	};
+	const uint8_t msg[6] = {
+	SUB_ADDR_PWM0, static_cast<uint8_t>((_b >> 4) * _brightness * _max_brightness + 0.5f),
+	SUB_ADDR_PWM1, static_cast<uint8_t>((_g >> 4) * _brightness * _max_brightness + 0.5f),
+	SUB_ADDR_PWM2, static_cast<uint8_t>((_r >> 4) * _brightness * _max_brightness + 0.5f) };
 	return transfer(msg, sizeof(msg), nullptr, 0);
 }
 
-int
-RGBLED::get(bool &on, bool &powersave, uint8_t &r, uint8_t &g, uint8_t &b)
+int RGBLED::get(bool &on, bool &powersave, uint8_t &r, uint8_t &g, uint8_t &b)
 {
-	uint8_t result[2] = {0, 0};
+	uint8_t result[2] = { 0, 0 };
 	int ret;
-
+	
 	ret = transfer(nullptr, 0, &result[0], 2);
-
+	
 	if (ret == OK)
 	{
 		on = result[0] & SETTING_ENABLE;
@@ -414,29 +414,27 @@ RGBLED::get(bool &on, bool &powersave, uint8_t &r, uint8_t &g, uint8_t &b)
 		g = (result[1] & 0xf0);
 		b = (result[1] & 0x0f) << 4;
 	}
-
+	
 	return ret;
 }
 
-void
-RGBLED::update_params()
+void RGBLED::update_params()
 {
 	int32_t maxbrt = 15;
 	param_get(param_find("LED_RGB_MAXBRT"), &maxbrt);
 	maxbrt = maxbrt > 15 ? 15 : maxbrt;
-	maxbrt = maxbrt <  0 ?  0 : maxbrt;
-
+	maxbrt = maxbrt < 0 ? 0 : maxbrt;
+	
 	// A minimum of 2 "on" steps is required for breathe effect
 	if (maxbrt == 1)
 	{
 		maxbrt = 2;
 	}
-
+	
 	_max_brightness = maxbrt / 15.0f;
 }
 
-void
-rgbled_usage()
+void rgbled_usage()
 {
 	PX4_INFO("missing command: try 'start', 'status', 'stop'");
 	PX4_INFO("options:");
@@ -444,18 +442,17 @@ rgbled_usage()
 	PX4_INFO("    -a addr (0x%x)", ADDR);
 }
 
-int
-rgbled_main(int argc, char *argv[])
+int rgbled_main(int argc, char *argv[])
 {
 	int i2cdevice = -1;
 	int rgbledadr = ADDR; /* 7bit */
-
+	
 	int ch;
-
+	
 	/* jump over start/off/etc and look at options first */
 	int myoptind = 1;
 	const char *myoptarg = nullptr;
-
+	
 	while ((ch = px4_getopt(argc, argv, "a:b:", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (ch)
@@ -463,25 +460,25 @@ rgbled_main(int argc, char *argv[])
 			case 'a':
 				rgbledadr = strtol(myoptarg, nullptr, 0);
 				break;
-
+				
 			case 'b':
 				i2cdevice = strtol(myoptarg, nullptr, 0);
 				break;
-
+				
 			default:
 				rgbled_usage();
 				return 1;
 		}
 	}
-
+	
 	if (myoptind >= argc)
 	{
 		rgbled_usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[myoptind];
-
+	
 	if (!strcmp(verb, "start"))
 	{
 		if (g_rgbled != nullptr)
@@ -489,19 +486,19 @@ rgbled_main(int argc, char *argv[])
 			PX4_WARN("already started");
 			return 1;
 		}
-
+		
 		if (i2cdevice == -1)
 		{
 			// try the external bus first
 			i2cdevice = PX4_I2C_BUS_EXPANSION;
 			g_rgbled = new RGBLED(PX4_I2C_BUS_EXPANSION, rgbledadr);
-
+			
 			if (g_rgbled != nullptr && OK != g_rgbled->init())
 			{
 				delete g_rgbled;
 				g_rgbled = nullptr;
 			}
-
+			
 			if (g_rgbled == nullptr)
 			{
 				// fall back to default bus
@@ -510,21 +507,21 @@ rgbled_main(int argc, char *argv[])
 					PX4_WARN("no RGB led on bus #%d", i2cdevice);
 					return 1;
 				}
-
+				
 				i2cdevice = PX4_I2C_BUS_LED;
 			}
 		}
-
+		
 		if (g_rgbled == nullptr)
 		{
 			g_rgbled = new RGBLED(i2cdevice, rgbledadr);
-
+			
 			if (g_rgbled == nullptr)
 			{
 				PX4_WARN("alloc failed");
 				return 1;
 			}
-
+			
 			if (OK != g_rgbled->init())
 			{
 				delete g_rgbled;
@@ -533,10 +530,10 @@ rgbled_main(int argc, char *argv[])
 				return 1;
 			}
 		}
-
+		
 		return 0;
 	}
-
+	
 	/* need the driver past this point */
 	if (g_rgbled == nullptr)
 	{
@@ -544,20 +541,20 @@ rgbled_main(int argc, char *argv[])
 		rgbled_usage();
 		return 1;
 	}
-
+	
 	if (!strcmp(verb, "status"))
 	{
 		g_rgbled->status();
 		return 0;
 	}
-
+	
 	if (!strcmp(verb, "stop"))
 	{
 		delete g_rgbled;
 		g_rgbled = nullptr;
 		return 0;
 	}
-
+	
 	rgbled_usage();
 	return 1;
 }

@@ -50,7 +50,7 @@
 
 class Navigator;
 
-class DataLinkLoss : public MissionBlock
+class DataLinkLoss: public MissionBlock
 {
 public:
 	DataLinkLoss(Navigator *navigator, const char *name);
@@ -88,12 +88,12 @@ private:
 	/**
 	 * Set the DLL item
 	 */
-	void		set_dll_item();
+	void set_dll_item();
 
 	/**
 	 * Move to next DLL item
 	 */
-	void		advance_dll();
-
+	void advance_dll();
+	
 };
 #endif

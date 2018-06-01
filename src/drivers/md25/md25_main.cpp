@@ -31,8 +31,6 @@
  *
  ****************************************************************************/
 
-
-
 /**
  * @ file md25.cpp
  *
@@ -57,9 +55,9 @@
 #include <arch/board/board.h>
 #include "md25.hpp"
 
-static bool thread_should_exit = false;     /**< Deamon exit flag */
-static bool thread_running = false;     /**< Deamon status flag */
-static int deamon_task;             /**< Handle of deamon task / thread */
+static bool thread_should_exit = false; /**< Deamon exit flag */
+static bool thread_running = false; /**< Deamon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 
 /**
  * Deamon management function.
@@ -76,14 +74,13 @@ int md25_thread_main(int argc, char *argv[]);
  */
 static void usage(const char *reason);
 
-static void
-usage(const char *reason)
+static void usage(const char *reason)
 {
 	if (reason)
 	{
 		fprintf(stderr, "%s\n", reason);
 	}
-
+	
 	fprintf(stderr, "usage: md25 {start|stop|read|status|search|test|change_address}\n\n");
 	exit(1);
 }
@@ -98,76 +95,71 @@ usage(const char *reason)
  */
 int md25_main(int argc, char *argv[])
 {
-
+	
 	if (argc < 2)
 	{
 		usage("missing command");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			printf("md25 already running\n");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd("md25",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 10,
-						 2048,
-						 md25_thread_main,
-						 (const char **)argv);
+		deamon_task = px4_task_spawn_cmd("md25", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 10, 2048, md25_thread_main, (const char **) argv);
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "test"))
 	{
-
+		
 		if (argc < 4)
 		{
 			printf("usage: md25 test bus address\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t address = strtoul(argv[3], nullptr, 0);
-
+		
 		md25Test(deviceName, bus, address);
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "sine"))
 	{
-
+		
 		if (argc < 6)
 		{
 			printf("usage: md25 sine bus address amp freq\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t address = strtoul(argv[3], nullptr, 0);
-
+		
 		float amplitude = atof(argv[4]);
-
+		
 		float frequency = atof(argv[5]);
-
+		
 		md25Sine(deviceName, bus, address, amplitude, frequency);
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "probe"))
 	{
 		if (argc < 4)
@@ -175,30 +167,30 @@ int md25_main(int argc, char *argv[])
 			printf("usage: md25 probe bus address\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t address = strtoul(argv[3], nullptr, 0);
-
+		
 		MD25 md25(deviceName, bus, address);
-
+		
 		int ret = md25.probe();
-
+		
 		if (ret == OK)
 		{
 			printf("MD25 found on bus %d at address 0x%X\n", bus, md25.get_device_address());
-
+			
 		}
 		else
 		{
 			printf("MD25 not found on bus %d\n", bus);
 		}
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "read"))
 	{
 		if (argc < 4)
@@ -206,24 +198,23 @@ int md25_main(int argc, char *argv[])
 			printf("usage: md25 read bus address\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t address = strtoul(argv[3], nullptr, 0);
-
+		
 		MD25 md25(deviceName, bus, address);
-
+		
 		// print status
 		char buf[400];
 		md25.status(buf, sizeof(buf));
 		printf("%s\n", buf);
-
+		
 		exit(0);
 	}
-
-
+	
 	if (!strcmp(argv[1], "search"))
 	{
 		if (argc < 3)
@@ -231,20 +222,20 @@ int md25_main(int argc, char *argv[])
 			printf("usage: md25 search bus\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t address = strtoul(argv[3], nullptr, 0);
-
+		
 		MD25 md25(deviceName, bus, address);
-
+		
 		md25.search();
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "change_address"))
 	{
 		if (argc < 5)
@@ -252,53 +243,53 @@ int md25_main(int argc, char *argv[])
 			printf("usage: md25 change_address bus old_address new_address\n");
 			exit(0);
 		}
-
+		
 		const char *deviceName = "/dev/md25";
-
+		
 		uint8_t bus = strtoul(argv[2], nullptr, 0);
-
+		
 		uint8_t old_address = strtoul(argv[3], nullptr, 0);
-
+		
 		uint8_t new_address = strtoul(argv[4], nullptr, 0);
-
+		
 		MD25 md25(deviceName, bus, old_address);
-
+		
 		int ret = md25.setDeviceAddress(new_address);
-
+		
 		if (ret == OK)
 		{
 			printf("MD25 new address set to 0x%X\n", new_address);
-
+			
 		}
 		else
 		{
 			printf("MD25 failed to set address to 0x%X\n", new_address);
 		}
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		thread_should_exit = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			printf("\tmd25 app is running\n");
-
+			
 		}
 		else
 		{
 			printf("\tmd25 app not started\n");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	usage("unrecognized command");
 	exit(1);
 }
@@ -306,31 +297,31 @@ int md25_main(int argc, char *argv[])
 int md25_thread_main(int argc, char *argv[])
 {
 	printf("[MD25] starting\n");
-
+	
 	if (argc < 5)
 	{
 		// extra md25 in arg list since this is a thread
 		printf("usage: md25 start bus address\n");
 		exit(0);
 	}
-
+	
 	const char *deviceName = "/dev/md25";
-
+	
 	uint8_t bus = strtoul(argv[3], nullptr, 0);
-
+	
 	uint8_t address = strtoul(argv[4], nullptr, 0);
-
+	
 	// start
 	MD25 md25(deviceName, bus, address);
-
+	
 	thread_running = true;
-
+	
 	// loop
 	while (!thread_should_exit)
 	{
 		md25.update();
 	}
-
+	
 	// exit
 	printf("[MD25] exiting.\n");
 	thread_running = false;

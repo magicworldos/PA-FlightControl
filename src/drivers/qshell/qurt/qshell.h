@@ -50,16 +50,18 @@ class QShell
 {
 public:
 	QShell();
-	~QShell() {}
-
+	~QShell()
+	{
+	}
+	
 	int main();
 	int run_cmd(const std::vector<std::string> &appargs);
 
 	static px4::AppState appState; /* track requests to terminate app */
-
+	
 private:
-
+	
 	struct qshell_req_s m_qshell_req;
 	apps_map_type m_apps;
-
+	
 };

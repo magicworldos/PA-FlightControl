@@ -38,11 +38,10 @@
 
 #include "esc_dc.hpp"
 
-
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-		 "\tdc {yada|yada|yada}");
+	         "\tdc {yada|yada|yada}");
 }
 
 extern "C" __EXPORT int dc_main(int argc, char *argv[]);
@@ -53,7 +52,7 @@ int dc_main(int argc, char *argv[])
 		print_usage();
 		::exit(1);
 	}
-
+	
 	print_usage();
 	::exit(1);
 }

@@ -63,10 +63,9 @@ extern void led_off(int led);
 extern void led_toggle(int led);
 __END_DECLS
 
-static uint16_t g_ledmap[] =
-{
-	GPIO_LED_GREEN,     // Indexed by BOARD_LED_GREEN
-	GPIO_LED_YELLOW,    // Indexed by BOARD_LED_YELLOW
+static uint16_t g_ledmap[] = {
+GPIO_LED_GREEN,     // Indexed by BOARD_LED_GREEN
+GPIO_LED_YELLOW,    // Indexed by BOARD_LED_YELLOW
 };
 
 __EXPORT void led_init(void)
@@ -79,7 +78,7 @@ __EXPORT void led_init(void)
 }
 
 __EXPORT void board_autoled_initialize(void)
-{
+{	
 	led_init();
 }
 
@@ -91,7 +90,7 @@ static void phy_set_led(int led, bool state)
 
 static bool phy_get_led(int led)
 {
-
+	
 	return !stm32_gpioread(g_ledmap[led]);
 }
 
@@ -107,7 +106,7 @@ __EXPORT void led_off(int led)
 
 __EXPORT void led_toggle(int led)
 {
-
+	
 	phy_set_led(led, !phy_get_led(led));
 }
 
@@ -116,33 +115,33 @@ static bool g_initialized;
 // Nuttx Usages
 
 __EXPORT void board_autoled_on(int led)
-{
+{	
 	switch (led)
-	{
+	{	
 		default:
 		case LED_STARTED:
 		case LED_HEAPALLOCATE:
 		case LED_IRQSENABLED:
-			phy_set_led(BOARD_LED_GREEN, false);
-			phy_set_led(BOARD_LED_YELLOW, false);
-			break;
+		phy_set_led(BOARD_LED_GREEN, false);
+		phy_set_led(BOARD_LED_YELLOW, false);
+		break;
 
 		case LED_STACKCREATED:
-			phy_set_led(BOARD_LED_GREEN, true);
-			phy_set_led(BOARD_LED_YELLOW, false);
-			g_initialized = true;
-			break;
+		phy_set_led(BOARD_LED_GREEN, true);
+		phy_set_led(BOARD_LED_YELLOW, false);
+		g_initialized = true;
+		break;
 
 		case LED_INIRQ:
 		case LED_SIGNAL:
 		case LED_ASSERTION:
 		case LED_PANIC:
-			phy_set_led(BOARD_LED_YELLOW, true);
-			break;
+		phy_set_led(BOARD_LED_YELLOW, true);
+		break;
 
 		case LED_IDLE : /* IDLE */
-			phy_set_led(BOARD_LED_GREEN, false);
-			break;
+		phy_set_led(BOARD_LED_GREEN, false);
+		break;
 	}
 }
 
@@ -150,17 +149,16 @@ __EXPORT void board_autoled_on(int led)
  * Name: board_autoled_off
  ****************************************************************************/
 
-
 __EXPORT void board_autoled_off(int led)
-{
+{	
 	switch (led)
-	{
+	{	
 		default:
 		case LED_STARTED:
 		case LED_HEAPALLOCATE:
 		case LED_IRQSENABLED:
 		case LED_STACKCREATED:
-			phy_set_led(BOARD_LED_GREEN, false);
+		phy_set_led(BOARD_LED_GREEN, false);
 
 		/* FALLTHROUGH */
 
@@ -168,11 +166,11 @@ __EXPORT void board_autoled_off(int led)
 		case LED_SIGNAL:
 		case LED_ASSERTION:
 		case LED_PANIC:
-			phy_set_led(BOARD_LED_YELLOW, false);
-			break;
+		phy_set_led(BOARD_LED_YELLOW, false);
+		break;
 
 		case LED_IDLE: /* IDLE */
-			phy_set_led(BOARD_LED_GREEN, g_initialized);
-			break;
+		phy_set_led(BOARD_LED_GREEN, g_initialized);
+		break;
 	}
 }

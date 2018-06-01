@@ -118,7 +118,7 @@
 
 /*
  * ADC defines to be used in sensors.cpp to read from a particular channel
-*/
+ */
 #define ADC_BATTERY_VOLTAGE_CHANNEL	10
 #define ADC_BATTERY_CURRENT_CHANNEL	0
 

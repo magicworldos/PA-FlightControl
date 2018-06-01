@@ -48,8 +48,7 @@ namespace control
 float BlockIntegralTrap::update(float input)
 {
 	// trapezoidal integration
-	setY(_limit.update(getY() +
-			   (getU() + input) / 2.0f * getDt()));
+	setY(_limit.update(getY() + (getU() + input) / 2.0f * getDt()));
 	setU(input);
 	return getY();
 }

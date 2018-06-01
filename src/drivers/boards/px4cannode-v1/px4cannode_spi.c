@@ -62,7 +62,6 @@
  * Definitions
  ************************************************************************************/
 
-
 /************************************************************************************
  * Private Functions
  ************************************************************************************/
@@ -80,13 +79,13 @@
  ************************************************************************************/
 
 void weak_function board_spiinitialize(void)
-{
+{	
 	/* Setup CS */
 
 #ifdef CONFIG_STM32_SPI1
 	stm32_configgpio(USER_CSn);
 #endif
-
+	
 #ifdef CONFIG_STM32_SPI2
 	stm32_configgpio(MMCSD_CSn);
 #endif
@@ -120,29 +119,29 @@ void weak_function board_spiinitialize(void)
 
 #ifdef CONFIG_STM32_SPI1
 void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 
 	if (devid == SPIDEV_USER)
-	{
+	{	
 		stm32_gpiowrite(USER_CSn, !selected);
 	}
 }
 
 uint8_t stm32_spi1status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return 0;
 }
 #endif
 
 #ifdef CONFIG_STM32_SPI2
 void stm32_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 #if defined(CONFIG_MMCSD)
-
+	
 	if (devid == SPIDEV_MMCSD)
-	{
+	{	
 		stm32_gpiowrite(MMCSD_CSn, !selected);
 	}
 
@@ -150,7 +149,7 @@ void stm32_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
 }
 
 uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	/* No switch on SD card socket so assume it is here */
 
 	return SPI_STATUS_PRESENT;
@@ -159,12 +158,12 @@ uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
 
 #ifdef CONFIG_STM32_SPI3
 void stm32_spi3select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 }
 
 uint8_t stm32_spi3status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return 0;
 }
 #endif
@@ -195,21 +194,21 @@ uint8_t stm32_spi3status(FAR struct spi_dev_s *dev, uint32_t devid)
 #ifdef CONFIG_SPI_CMDDATA
 #ifdef CONFIG_STM32_SPI1
 int stm32_spi1cmddata(FAR struct spi_dev_s *dev, uint32_t devid, bool cmd)
-{
+{	
 	return OK;
 }
 #endif
 
 #ifdef CONFIG_STM32_SPI2
 int stm32_spi2cmddata(FAR struct spi_dev_s *dev, uint32_t devid, bool cmd)
-{
+{	
 	return OK;
 }
 #endif
 
 #ifdef CONFIG_STM32_SPI3
 int stm32_spi3cmddata(FAR struct spi_dev_s *dev, uint32_t devid, bool cmd)
-{
+{	
 	return -ENODEV;
 }
 #endif

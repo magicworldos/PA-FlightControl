@@ -86,7 +86,7 @@ typedef enum
 	SATCOM_STATE_TEST,
 } satcom_state;
 
-const char *satcom_state_string[4] = {"STANDBY", "SIGNAL CHECK", "SBD SESSION", "TEST"};
+const char *satcom_state_string[4] = { "STANDBY", "SIGNAL CHECK", "SBD SESSION", "TEST" };
 
 extern "C" __EXPORT int iridiumsbd_main(int argc, char *argv[]);
 
@@ -96,7 +96,7 @@ extern "C" __EXPORT int iridiumsbd_main(int argc, char *argv[]);
 #define SATCOM_TX_STACKING_TIME			3000000	// time to wait for additional mavlink messages, TODO make this a param
 #define SATCOM_SIGNAL_REFRESH_DELAY		5000000 // update signal quality every 5s
 
-class IridiumSBD : public device::CDev
+class IridiumSBD: public device::CDev
 {
 public:
 	static IridiumSBD *instance;
@@ -115,14 +115,14 @@ public:
 	char test_command[32];
 	hrt_abstime test_timer = 0;
 
-	uint8_t rx_command_buf[SATCOM_RX_COMMAND_BUF_LEN] = {0};
+	uint8_t rx_command_buf[SATCOM_RX_COMMAND_BUF_LEN] = { 0 };
 	int rx_command_len = 0;
 
-	uint8_t rx_msg_buf[SATCOM_RX_MSG_BUF_LEN] = {0};
+	uint8_t rx_msg_buf[SATCOM_RX_MSG_BUF_LEN] = { 0 };
 	int rx_msg_end_idx = 0;
 	int rx_msg_read_idx = 0;
 
-	uint8_t tx_buf[SATCOM_TX_BUF_LEN] = {0};
+	uint8_t tx_buf[SATCOM_TX_BUF_LEN] = { 0 };
 	int tx_buf_write_idx = 0;
 
 	bool ring_pending = false;

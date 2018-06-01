@@ -45,13 +45,15 @@
 /**
  * A sensor bridge class must implement this interface.
  */
-class IUavcanSensorBridge : uavcan::Noncopyable, public ListNode<IUavcanSensorBridge *>
+class IUavcanSensorBridge: uavcan::Noncopyable, public ListNode<IUavcanSensorBridge *>
 {
 public:
 	static constexpr unsigned MAX_NAME_LEN = 20;
 
-	virtual ~IUavcanSensorBridge() { }
-
+	virtual ~IUavcanSensorBridge()
+	{
+	}
+	
 	/**
 	 * Returns ASCII name of the bridge.
 	 */
@@ -84,37 +86,36 @@ public:
  * This is the base class for redundant sensors with an independent ORB topic per each redundancy channel.
  * For example, sensor_mag0, sensor_mag1, etc.
  */
-class UavcanCDevSensorBridgeBase : public IUavcanSensorBridge, public device::CDev
+class UavcanCDevSensorBridgeBase: public IUavcanSensorBridge, public device::CDev
 {
-	struct Channel {
-		int node_id              = -1;
-		orb_advert_t orb_advert  = nullptr;
-		int class_instance       = -1;
-		int orb_instance	 = -1;
+	struct Channel
+	{
+		int node_id = -1;
+		orb_advert_t orb_advert = nullptr;
+		int class_instance = -1;
+		int orb_instance = -1;
 	};
 
 	const unsigned _max_channels;
-	const char *const _class_devname;
+	const char * const _class_devname;
 	const orb_id_t _orb_topic;
-	Channel *const _channels;
+	Channel * const _channels;
 	bool _out_of_channels = false;
 
 protected:
 	static constexpr unsigned DEFAULT_MAX_CHANNELS = 5; // 640 KB ought to be enough for anybody
-
-	UavcanCDevSensorBridgeBase(const char *name, const char *devname, const char *class_devname,
-				   const orb_id_t orb_topic_sensor,
-				   const unsigned max_channels = DEFAULT_MAX_CHANNELS) :
-		device::CDev(name, devname),
-		_max_channels(max_channels),
-		_class_devname(class_devname),
-		_orb_topic(orb_topic_sensor),
-		_channels(new Channel[max_channels])
+	
+	UavcanCDevSensorBridgeBase(const char *name, const char *devname, const char *class_devname, const orb_id_t orb_topic_sensor, const unsigned max_channels = DEFAULT_MAX_CHANNELS) :
+			    device::CDev(name, devname),
+			    _max_channels(max_channels),
+			    _class_devname(class_devname),
+			    _orb_topic(orb_topic_sensor),
+			    _channels(new Channel[max_channels])
 	{
 		_device_id.devid_s.bus_type = DeviceBusType_UAVCAN;
 		_device_id.devid_s.bus = 0;
 	}
-
+	
 	/**
 	 * Sends one measurement into appropriate ORB topic.
 	 * New redundancy channels will be registered automatically.

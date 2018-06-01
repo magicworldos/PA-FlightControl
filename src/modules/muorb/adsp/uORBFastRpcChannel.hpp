@@ -46,7 +46,7 @@ namespace uORB
 class FastRpcChannel;
 }
 
-class uORB::FastRpcChannel : public uORBCommunicator::IChannel
+class uORB::FastRpcChannel: public uORBCommunicator::IChannel
 {
 public:
 	/**
@@ -56,7 +56,7 @@ public:
 	{
 		return &(_Instance);
 	}
-
+	
 	/**
 	 * @brief Interface to notify the remote entity of a topic being advertised.
 	 *
@@ -100,7 +100,6 @@ public:
 	 */
 	virtual int16_t add_subscription(const char *messageName, int32_t msgRateInHz);
 
-
 	/**
 	 * @brief Interface to notify the remote entity of removal of a subscription
 	 *
@@ -119,11 +118,10 @@ public:
 	 */
 	virtual int16_t register_handler(uORBCommunicator::IChannelRxHandler *handler);
 
-
 	//=========================================================================
 	//     INTERFACES FOR Data messages
 	//=========================================================================
-
+	
 	/**
 	 * @brief Sends the data message over the communication link.
 	 * @param messageName
@@ -141,15 +139,7 @@ public:
 	virtual int16_t send_message(const char *messageName, int32_t length, uint8_t *data);
 
 	//Function to return the data to krait.
-	int16_t get_data
-	(
-		int32_t *msg_type,
-		char *topic_name,
-		int32_t topic_name_len,
-		uint8_t *data,
-		int32_t data_len_in_bytes,
-		int32_t *bytes_returned
-	);
+	int16_t get_data(int32_t *msg_type, char *topic_name, int32_t topic_name_len, uint8_t *data, int32_t data_len_in_bytes, int32_t *bytes_returned);
 
 	int16_t get_bulk_data(uint8_t *buffer, int32_t max_size_in_bytes, int32_t *returned_bytes, int32_t *topic_count);
 
@@ -163,7 +153,7 @@ public:
 	{
 		return _RxHandler;
 	}
-
+	
 	void AddRemoteSubscriber(const std::string &messageName)
 	{
 		_RemoteSubscribers.insert(messageName);
@@ -172,8 +162,9 @@ public:
 	{
 		_RemoteSubscribers.erase(messageName);
 	}
-
-private: // data members
+	
+private:
+	// data members
 	static uORB::FastRpcChannel _Instance;
 	uORBCommunicator::IChannelRxHandler *_RxHandler;
 
@@ -188,32 +179,34 @@ private: // data members
 	static const int32_t _PACKET_FIELD_TOPIC_NAME_LEN_SIZE_IN_BYTES = 2;
 	static const int32_t _PACKET_FIELD_DATA_LEN_IN_BYTES = 2;
 	static const int32_t _PACKET_HEADER_SIZE = 1 + //first byte is the MSG Type
-			_PACKET_FIELD_TOPIC_NAME_LEN_SIZE_IN_BYTES + _PACKET_FIELD_DATA_LEN_IN_BYTES;
+	        _PACKET_FIELD_TOPIC_NAME_LEN_SIZE_IN_BYTES + _PACKET_FIELD_DATA_LEN_IN_BYTES;
 
-	struct FastRpcDataMsg {
-		int32_t     _MaxBufferSize;
-		int32_t     _Length;
-		uint8_t    *_Buffer;
+	struct FastRpcDataMsg
+	{
+		int32_t _MaxBufferSize;
+		int32_t _Length;
+		uint8_t *_Buffer;
 		std::string _MsgName;
 	};
 
-	struct FastRpcControlMsg {
+	struct FastRpcControlMsg
+	{
 		int32_t _Type;
 		std::string _MsgName;
 	};
 
-	struct BulkTransferHeader {
+	struct BulkTransferHeader
+	{
 		uint16_t _MsgType;
 		uint16_t _MsgNameLen;
 		uint16_t _DataLen;
 	};
 
-
-	struct FastRpcDataMsg _DataMsgQueue[ _MAX_MSG_QUEUE_SIZE ];
+	struct FastRpcDataMsg _DataMsgQueue[_MAX_MSG_QUEUE_SIZE];
 	int32_t _DataQInIndex;
 	int32_t _DataQOutIndex;
 
-	struct FastRpcControlMsg _ControlMsgQueue[ _MAX_MSG_QUEUE_SIZE ];
+	struct FastRpcControlMsg _ControlMsgQueue[_MAX_MSG_QUEUE_SIZE];
 	int32_t _ControlQInIndex;
 	int32_t _ControlQOutIndex;
 
@@ -272,13 +265,14 @@ private: // data members
 		sem_t _Sem;
 		Semaphore(const Semaphore &);
 		Semaphore &operator=(const Semaphore &);
-
+		
 	};
 
 	Mutex _QueueMutex;
 	Semaphore _DataAvailableSemaphore;
 
-private://class members.
+private:
+	//class members.
 	/// constructor.
 	FastRpcChannel();
 

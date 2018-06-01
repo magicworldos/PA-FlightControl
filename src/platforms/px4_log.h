@@ -38,7 +38,6 @@
 
 #pragma once
 
-
 #define _PX4_LOG_LEVEL_ALWAYS		0
 #define _PX4_LOG_LEVEL_DEBUG		1
 #define _PX4_LOG_LEVEL_WARN		2
@@ -48,7 +47,7 @@
 // Used to silence unused variable warning
 static inline void do_nothing(int level, ...)
 {
-	(void)level;
+	(void) level;
 }
 
 __BEGIN_DECLS
@@ -159,7 +158,6 @@ __END_DECLS
 #define __px4__log_printcond(cond, ...)	    if (cond) printf(__VA_ARGS__)
 #define __px4__log_printline(level, ...)    printf(__VA_ARGS__)
 
-
 #ifndef MODULE_NAME
 #define MODULE_NAME "Unknown"
 #endif
@@ -191,7 +189,6 @@ __END_DECLS
 #define PX4_LOG_COLORIZED_OUTPUT //if defined and output is a tty, colorize the output according to the log level
 #endif /* __PX4_POSIX */
 
-
 #ifdef PX4_LOG_COLORIZED_OUTPUT
 #include <unistd.h>
 #define PX4_LOG_COLOR_START \
@@ -214,7 +211,6 @@ __END_DECLS
  * Output format macros
  * Use these to implement the code level macros below
  ****************************************************************************/
-
 
 /****************************************************************************
  * __px4_log_named_cond:
@@ -388,7 +384,6 @@ __END_DECLS
 			     , ##__VA_ARGS__\
 			     __px4__log_file_and_line_arg\
 			    )
-
 
 /****************************************************************************
  * Code level macros

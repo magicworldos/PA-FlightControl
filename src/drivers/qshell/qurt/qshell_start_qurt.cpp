@@ -46,7 +46,7 @@
 #include <string.h>
 #include <sched.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+static int daemon_task; /* Handle of deamon task / thread */
 
 //using namespace px4;
 
@@ -55,11 +55,11 @@ extern "C" __EXPORT int qshell_main(int argc, char *argv[]);
 int qshell_entry(int argc, char **argv)
 {
 	//px4::init(argc, argv, "qshell");
-
+	
 	PX4_DEBUG("qshell entry.....");
 	QShell qshell;
 	qshell.main();
-
+	
 	PX4_DEBUG("goodbye");
 	return 0;
 }
@@ -75,50 +75,45 @@ int qshell_main(int argc, char *argv[])
 		usage();
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (QShell::appState.isRunning())
 		{
 			PX4_INFO("already running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		PX4_DEBUG("before starting the qshell_entry task");
-
-		daemon_task = px4_task_spawn_cmd("qshell",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
-						 8192,
-						 qshell_entry,
-						 (char *const *)argv);
-
+		
+		daemon_task = px4_task_spawn_cmd("qshell", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 8192, qshell_entry, (char * const *) argv);
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		QShell::appState.requestExit();
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (QShell::appState.isRunning())
 		{
 			PX4_INFO("is running");
-
+			
 		}
 		else
 		{
 			PX4_INFO("not started");
 		}
-
+		
 		return 0;
 	}
-
+	
 	usage();
 	return 1;
 }

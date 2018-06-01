@@ -33,9 +33,10 @@
 
 #pragma once
 
-enum class ULogMessageType : uint8_t
-{
-	FORMAT = 'F',
+enum class ULogMessageType
+	: uint8_t
+	{	
+		FORMAT = 'F',
 	DATA = 'D',
 	INFO = 'I',
 	INFO_MULTIPLE = 'M',
@@ -47,7 +48,6 @@ enum class ULogMessageType : uint8_t
 	LOGGING = 'L',
 	FLAG_BITS = 'B',
 };
-
 
 /* declare message data structs with byte alignment (no padding) */
 #pragma pack(push, 1)
@@ -153,7 +153,6 @@ struct ulog_message_parameter_header_s
 	uint8_t key_len;
 	char key[255];
 };
-
 
 #define ULOG_INCOMPAT_FLAG0_DATA_APPENDED_MASK (1<<0)
 

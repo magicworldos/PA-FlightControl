@@ -54,13 +54,13 @@ namespace device
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static int cdev_open(file_t *filp);
+static int cdev_close(file_t *filp);
+static ssize_t cdev_read(file_t *filp, char *buffer, size_t buflen);
+static ssize_t cdev_write(file_t *filp, const char *buffer, size_t buflen);
+static off_t cdev_seek(file_t *filp, off_t offset, int whence);
+static int cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
+static int cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -71,70 +71,54 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-const struct file_operations device::CDev::fops =
-{
-open	: cdev_open,
-close	: cdev_close,
-read	: cdev_read,
-write	: cdev_write,
-seek	: cdev_seek,
-ioctl	: cdev_ioctl,
-poll	: cdev_poll
-};
+const struct file_operations device::CDev::fops = { open : cdev_open, close : cdev_close, read : cdev_read, write : cdev_write, seek : cdev_seek, ioctl : cdev_ioctl, poll : cdev_poll };
 
-static int
-cdev_open(file_t *filp)
+static int cdev_open(file_t *filp)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->open(filp);
 }
 
-static int
-cdev_close(file_t *filp)
+static int cdev_close(file_t *filp)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->close(filp);
 }
 
-static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+static ssize_t cdev_read(file_t *filp, char *buffer, size_t buflen)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->read(filp, buffer, buflen);
 }
 
-static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+static ssize_t cdev_write(file_t *filp, const char *buffer, size_t buflen)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->write(filp, buffer, buflen);
 }
 
-static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+static off_t cdev_seek(file_t *filp, off_t offset, int whence)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static int cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->ioctl(filp, cmd, arg);
 }
 
-static int
-cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
+static int cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	device::CDev *cdev = (device::CDev *)(filp->f_inode->i_private);
-
+	device::CDev *cdev = (device::CDev *) (filp->f_inode->i_private);
+	
 	return cdev->poll(filp, fds, setup);
 }
 

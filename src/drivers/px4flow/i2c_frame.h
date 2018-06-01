@@ -43,7 +43,7 @@
 
 #include <inttypes.h>
 
-typedef  struct i2c_frame
+typedef struct i2c_frame
 {
 	uint16_t frame_count;
 	int16_t pixel_flow_x_sum;
@@ -60,7 +60,6 @@ typedef  struct i2c_frame
 } i2c_frame;
 
 #define I2C_FRAME_SIZE (sizeof(i2c_frame))
-
 
 typedef struct i2c_integral_frame
 {

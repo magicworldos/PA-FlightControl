@@ -41,34 +41,33 @@
 #include <errno.h>
 #include <nuttx/board.h>
 
-
 int board_set_bootload_mode(board_reset_e mode)
 {
 	uint32_t regvalue = 0;
-
+	
 	switch (mode)
 	{
 		case board_reset_normal:
 		case board_reset_extended:
 			break;
-
+			
 		case board_reset_enter_bootloader:
 			regvalue = 0xb007b007;
 			break;
-
+			
 		default:
 			return -EINVAL;
 	}
-
+	
 	// todo: Add a way to enter bootloader
 	UNUSED(regvalue);
 	return OK;
 }
 
-
 void board_system_reset(int status)
 {
 	board_reset(status);
-
-	while (1);
+	
+	while (1)
+		;
 }

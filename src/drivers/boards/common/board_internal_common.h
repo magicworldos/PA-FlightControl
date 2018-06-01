@@ -77,7 +77,6 @@ __EXPORT int board_adc_init(void);
 
 __EXPORT uint16_t board_adc_sample(unsigned channel);
 
-
 /************************************************************************************
  * Name: board_gpio_init
  *
@@ -96,7 +95,7 @@ __EXPORT uint16_t board_adc_sample(unsigned channel);
 __EXPORT void board_gpio_init(const uint32_t list[], int count);
 
 /************************************************************************************
-  * Name: board_determine_hw_info
+ * Name: board_determine_hw_info
  *
  * Description:
  *	Uses the HW revision and version detection added in FMUv5.

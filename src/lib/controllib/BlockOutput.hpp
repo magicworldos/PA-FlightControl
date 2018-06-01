@@ -58,28 +58,33 @@ namespace control
  * An output trim/ saturation block
  */
 class __EXPORT BlockOutput: public SuperBlock
-{
+{	
 public:
 // methods
 	BlockOutput(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
-		_val(0)
-	{
+	SuperBlock(parent, name),
+	_trim(this, "TRIM"),
+	_limit(this, ""),
+	_val(0)
+	{	
 		update(0);
 	}
 
-	virtual ~BlockOutput() {}
+	virtual ~BlockOutput()
+	{}
 	void update(float input)
-	{
+	{	
 		_val = _limit.update(input + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
+	float getMin()
+	{	return _limit.getMin();}
+	float getMax()
+	{	return _limit.getMax();}
+	float getTrim()
+	{	return _trim.get();}
+	float get()
+	{	return _val;}
 private:
 // attributes
 	control::BlockParamFloat _trim;
@@ -87,4 +92,5 @@ private:
 	float _val;
 };
 
-} // namespace control
+}
+ // namespace control

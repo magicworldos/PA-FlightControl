@@ -74,26 +74,29 @@
 #define SDP3X_MEAS_DRIVER_FILTER_FREQ 3.0f
 #define CONVERSION_INTERVAL	(1000000 / SPD3X_MEAS_RATE)	/* microseconds */
 
-class SDP3X : public Airspeed
+class SDP3X: public Airspeed
 {
 public:
 	SDP3X(int bus, int address = I2C_ADDRESS_1_SDP3X, const char *path = PATH_SDP3X) :
-		Airspeed(bus, address, CONVERSION_INTERVAL, path)
+			    Airspeed(bus, address, CONVERSION_INTERVAL, path)
 	{
 	}
-
+	
 private:
-
+	
 	/**
 	 * Perform a poll cycle; collect from the previous measurement
 	 * and start a new one.
 	 */
-	void	cycle() override;
-	int	measure() override { return 0; }
-	int	collect() override;
-	int	probe() override;
+	void cycle() override;
+	int measure() override
+	{
+		return 0;
+	}
+	int collect() override;
+	int probe() override;
 
-	math::LowPassFilter2p _filter{SPD3X_MEAS_RATE, SDP3X_MEAS_DRIVER_FILTER_FREQ};
+	math::LowPassFilter2p _filter { SPD3X_MEAS_RATE, SDP3X_MEAS_DRIVER_FILTER_FREQ };
 
 	bool init_sdp3x();
 
@@ -107,7 +110,7 @@ private:
 	 */
 	int write_command(uint16_t command);
 
-	uint16_t _scale{0};
+	uint16_t _scale { 0 };
 };
 
 #endif /* DRIVERS_SDP3X_AIRSPEED_HPP_ */

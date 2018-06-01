@@ -50,7 +50,7 @@
 
 class Navigator;
 
-class RCLoss : public MissionBlock
+class RCLoss: public MissionBlock
 {
 public:
 	RCLoss(Navigator *navigator, const char *name);
@@ -78,12 +78,12 @@ private:
 	/**
 	 * Set the RCL item
 	 */
-	void		set_rcl_item();
+	void set_rcl_item();
 
 	/**
 	 * Move to next RCL item
 	 */
-	void		advance_rcl();
-
+	void advance_rcl();
+	
 };
 #endif

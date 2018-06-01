@@ -59,20 +59,20 @@
 #define IOCTL_MEASURE       2
 
 typedef begin_packed_struct struct MPL3115A2_data_t
-{
+{	
 	union
-	{
+	{	
 		uint32_t q;
 		uint16_t w[sizeof(q) / sizeof(uint16_t)];
-		uint8_t  b[sizeof(q) / sizeof(uint8_t)];
-	} pressure;
+		uint8_t b[sizeof(q) / sizeof(uint8_t)];
+	}pressure;
 
 	union
-	{
+	{	
 		uint16_t w;
-		uint8_t  b[sizeof(w)];
-	} temperature;
-} end_packed_struct MPL3115A2_data_t;
+		uint8_t b[sizeof(w)];
+	}temperature;
+}end_packed_struct MPL3115A2_data_t;
 
 /* interface factories */
 extern device::Device *MPL3115A2_i2c_interface(uint8_t busnum);

@@ -45,7 +45,7 @@ __EXPORT bool px4_i2c_bus_external(int bus)
 	{
 		/* All FMUV3 2.1 i2c buses are external */
 		return true;
-
+		
 	}
 	else
 	{
@@ -54,6 +54,6 @@ __EXPORT bool px4_i2c_bus_external(int bus)
 			return true;
 		}
 	}
-
+	
 	return false;
 }

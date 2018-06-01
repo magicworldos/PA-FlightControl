@@ -77,25 +77,25 @@ static uint32_t _led_param_get(int led)
 	{
 		case 0:
 			return GPIO_LED0;
-
+			
 		case 1:
 			return GPIO_LED1;
-
+			
 		case 2:
 			return GPIO_LED2;
-
+			
 		case 3:
 			return GPIO_LED3;
-
+			
 	}
-
+	
 	return 0;
 }
 
 __EXPORT void led_on(int led)
 {
 	const uint32_t param = _led_param_get(led);
-
+	
 	if (param)
 	{
 		stm32_gpiowrite(param, false);
@@ -105,7 +105,7 @@ __EXPORT void led_on(int led)
 __EXPORT void led_off(int led)
 {
 	const uint32_t param = _led_param_get(led);
-
+	
 	if (param)
 	{
 		stm32_gpiowrite(param, true);
@@ -115,7 +115,7 @@ __EXPORT void led_off(int led)
 __EXPORT void led_toggle(int led)
 {
 	const uint32_t param = _led_param_get(led);
-
+	
 	if (param)
 	{
 		stm32_gpiowrite(param, !stm32_gpioread(param));

@@ -98,7 +98,6 @@ PARAM_DEFINE_FLOAT(VT_B_TRANS_RAMP, 3.0f);
  */
 PARAM_DEFINE_FLOAT(VT_B_REV_OUT, 0.0f);
 
-
 /**
  * Delay in seconds before applying back transition throttle
  * Set this to a value greater than 0 to give the motor time to spin down.

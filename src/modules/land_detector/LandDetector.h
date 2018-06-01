@@ -54,8 +54,7 @@
 namespace land_detector
 {
 
-
-class LandDetector : public ModuleBase<LandDetector>
+class LandDetector: public ModuleBase<LandDetector>
 {
 public:
 	enum class LandDetectionState
@@ -77,7 +76,7 @@ public:
 	{
 		return print_usage("unknown command");
 	}
-
+	
 	/** @see ModuleBase */
 	static int print_usage(const char *reason = nullptr);
 
@@ -91,7 +90,7 @@ public:
 	{
 		return _state;
 	}
-
+	
 	/**
 	 * Get the work queue going.
 	 */
@@ -121,18 +120,27 @@ protected:
 	/**
 	 * @return true if UAV is in almost landed state
 	 */
-	virtual bool _get_maybe_landed_state() { return false; }
-
+	virtual bool _get_maybe_landed_state()
+	{
+		return false;
+	}
+	
 	/**
 	 * @return true if UAV is touching ground but not landed
 	 */
-	virtual bool _get_ground_contact_state() { return false; }
-
+	virtual bool _get_ground_contact_state()
+	{
+		return false;
+	}
+	
 	/**
 	 * @return true if UAV is in free-fall state.
 	 */
-	virtual bool _get_freefall_state() { return false; }
-
+	virtual bool _get_freefall_state()
+	{
+		return false;
+	}
+	
 	/**
 	 *  @return maximum altitude that can be reached
 	 */
@@ -148,20 +156,20 @@ protected:
 	/** Run main land detector loop at this rate in Hz. */
 	static constexpr uint32_t LAND_DETECTOR_UPDATE_RATE_HZ = 50;
 
-	orb_advert_t _landDetectedPub{nullptr};
-	vehicle_land_detected_s _landDetected{};
+	orb_advert_t _landDetectedPub { nullptr };
+	vehicle_land_detected_s _landDetected { };
 
-	int _parameterSub{-1};
-	int _armingSub{-1};
+	int _parameterSub { -1 };
+	int _armingSub { -1 };
 
-	LandDetectionState _state{LandDetectionState::LANDED};
+	LandDetectionState _state { LandDetectionState::LANDED };
 
-	systemlib::Hysteresis _freefall_hysteresis{false};
-	systemlib::Hysteresis _landed_hysteresis{true};
-	systemlib::Hysteresis _maybe_landed_hysteresis{true};
-	systemlib::Hysteresis _ground_contact_hysteresis{true};
+	systemlib::Hysteresis _freefall_hysteresis { false };
+	systemlib::Hysteresis _landed_hysteresis { true };
+	systemlib::Hysteresis _maybe_landed_hysteresis { true };
+	systemlib::Hysteresis _ground_contact_hysteresis { true };
 
-	struct actuator_armed_s	_arming {};
+	struct actuator_armed_s _arming { };
 
 private:
 	static void _cycle_trampoline(void *arg);
@@ -172,17 +180,16 @@ private:
 
 	void _update_state();
 
-	param_t _p_total_flight_time_high{PARAM_INVALID};
-	param_t _p_total_flight_time_low{PARAM_INVALID};
-	uint64_t _total_flight_time{0}; ///< in microseconds
-	hrt_abstime _takeoff_time{0};
+	param_t _p_total_flight_time_high { PARAM_INVALID };
+	param_t _p_total_flight_time_low { PARAM_INVALID };
+	uint64_t _total_flight_time { 0 }; ///< in microseconds
+	hrt_abstime _takeoff_time { 0 };
 
-	struct work_s	_work {};
+	struct work_s _work { };
 
-	perf_counter_t	_cycle_perf;
+	perf_counter_t _cycle_perf;
 
-	bool _previous_arming_state{false}; ///< stores the previous _arming.armed state
+	bool _previous_arming_state { false }; ///< stores the previous _arming.armed state
 };
-
 
 } // namespace land_detector

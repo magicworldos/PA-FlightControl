@@ -200,7 +200,8 @@ namespace DriverFramework
 #define MPU_WHOAMI_9250_REAL		0x73
 
 #pragma pack(push, 1)
-struct fifo_packet {
+struct fifo_packet
+{
 	int16_t accel_x;
 	int16_t accel_y;
 	int16_t accel_z;
@@ -209,7 +210,8 @@ struct fifo_packet {
 	int16_t gyro_y;
 	int16_t gyro_z;
 };
-struct fifo_packet_with_mag {
+struct fifo_packet_with_mag
+{
 	int16_t accel_x;
 	int16_t accel_y;
 	int16_t accel_z;
@@ -225,7 +227,8 @@ struct fifo_packet_with_mag {
 };
 // This data structure is a copy of the segment of the above fifo_packet_with_mag data
 // struture that contains mag data.
-struct mag_data {
+struct mag_data
+{
 	char mag_st1; // mag ST1 (1B)
 	int16_t mag_x; // uT (2B)
 	int16_t mag_y; // uT (2B)
@@ -238,38 +241,38 @@ class MPU9250: public ImuSensor
 {
 public:
 	MPU9250(const char *device_path, bool mag_enabled = false) :
-		ImuSensor(device_path, MPU9250_MEASURE_INTERVAL_US, mag_enabled), // true = mag is enabled
-		_last_temp_c(0.0f),
-		_temp_initialized(false),
-		_mag_enabled(mag_enabled),
+			    ImuSensor(device_path, MPU9250_MEASURE_INTERVAL_US, mag_enabled), // true = mag is enabled
+			    _last_temp_c(0.0f),
+			    _temp_initialized(false),
+			    _mag_enabled(mag_enabled),
 #if defined(__DF_EDISON)
-		_packets_per_cycle_filtered(4.0f), // The FIFO is supposed to run at 1kHz and we sample at 250Hz.
+			    _packets_per_cycle_filtered(4.0f), // The FIFO is supposed to run at 1kHz and we sample at 250Hz.
 #else
-		_packets_per_cycle_filtered(8.0f), // The FIFO is supposed to run at 8kHz and we sample at 1kHz.
+			    _packets_per_cycle_filtered(8.0f), // The FIFO is supposed to run at 8kHz and we sample at 1kHz.
 #endif
-		_mag(nullptr)
+			    _mag(nullptr)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_MPU9250;
 		// TODO: does the WHOAMI make sense as an address?
 		m_id.dev_id_s.address = MPU_WHOAMI_9250;
 	}
-
+	
 	// @return 0 on success, -errno on failure
 	int writeReg(int reg, uint8_t val)
 	{
 		return _writeReg(reg, val);
 	}
-
+	
 	int readReg(uint8_t address, uint8_t &val)
 	{
 		return _readReg(address, val);
 	}
-
+	
 	int modifyReg(uint8_t address, uint8_t clearbits, uint8_t setbits)
 	{
 		return _modifyReg(address, clearbits, setbits);
 	}
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start() override;
 

@@ -104,7 +104,6 @@ extern void led_on(int led);
 extern void led_off(int led);
 __END_DECLS
 
-
 /************************************************************************************
  * Name: board_rc_input
  *
@@ -117,32 +116,32 @@ __END_DECLS
 
 __EXPORT void board_rc_input(bool invert_on)
 {
-
+	
 	irqstate_t irqstate = px4_enter_critical_section();
-
-	uint32_t cr1 =  getreg32(STM32_USART_CR1_OFFSET + RC_UXART_BASE);
-	uint32_t cr2 =  getreg32(STM32_USART_CR2_OFFSET + RC_UXART_BASE);
+	
+	uint32_t cr1 = getreg32(STM32_USART_CR1_OFFSET + RC_UXART_BASE);
+	uint32_t cr2 = getreg32(STM32_USART_CR2_OFFSET + RC_UXART_BASE);
 	uint32_t regval = cr1;
-
+	
 	/* {R|T}XINV bit fields can only be written when the USART is disabled (UE=0). */
 
 	regval &= ~USART_CR1_UE;
-
+	
 	putreg32(regval, STM32_USART_CR1_OFFSET + RC_UXART_BASE);
-
+	
 	if (invert_on)
 	{
 		cr2 |= (USART_CR2_RXINV | USART_CR2_TXINV);
-
+		
 	}
 	else
 	{
 		cr2 &= ~(USART_CR2_RXINV | USART_CR2_TXINV);
 	}
-
+	
 	putreg32(cr2, STM32_USART_CR2_OFFSET + RC_UXART_BASE);
 	putreg32(cr1, STM32_USART_CR1_OFFSET + RC_UXART_BASE);
-
+	
 	leave_critical_section(irqstate);
 }
 
@@ -158,22 +157,22 @@ __EXPORT void board_peripheral_reset(int ms)
 
 	VDD_5V_PERIPH_EN(false);
 	VDD_3V3_SENSORS_EN(false);
-
+	
 	bool last = READ_VDD_3V3_SPEKTRUM_POWER_EN();
 	/* Keep Spektum on to discharge rail*/
 	VDD_3V3_SPEKTRUM_POWER_EN(false);
-
+	
 	/* wait for the peripheral rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 
 	/* switch the peripheral rail back on */
 	VDD_3V3_SPEKTRUM_POWER_EN(last);
 	VDD_3V3_SENSORS_EN(true);
 	VDD_5V_PERIPH_EN(true);
-
+	
 }
 
 /************************************************************************************
@@ -193,13 +192,12 @@ __EXPORT void board_on_reset(int status)
 
 	const uint32_t gpio[] = PX4_GPIO_PWM_INIT_LIST;
 	board_gpio_init(gpio, arraySize(gpio));
-
+	
 	if (status >= 0)
 	{
 		up_mdelay(6);
 	}
 }
-
 
 /************************************************************************************
  * Name: stm32_boardinitialize
@@ -211,28 +209,27 @@ __EXPORT void board_on_reset(int status)
  *
  ************************************************************************************/
 
-__EXPORT void
-stm32_boardinitialize(void)
+__EXPORT void stm32_boardinitialize(void)
 {
 	board_on_reset(-1); /* Reset PWM first thing */
-
+	
 	/* configure LEDs */
 
 	board_autoled_initialize();
-
+	
 	/* configure pins */
 
 	const uint32_t gpio[] = PX4_GPIO_INIT_LIST;
 	board_gpio_init(gpio, arraySize(gpio));
-
+	
 	/* configure SPI interfaces */
 
 	stm32_spiinitialize();
-
+	
 	/* configure USB interfaces */
 
 	stm32_usbinitialize();
-
+	
 }
 
 /****************************************************************************
@@ -260,7 +257,6 @@ stm32_boardinitialize(void)
  *
  ****************************************************************************/
 
-
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	/* Power on Interfaces */
@@ -272,9 +268,9 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	VDD_3V3_SPEKTRUM_POWER_EN(true);
 	VDD_5V_RC_EN(true);
 	VDD_5V_WIFI_EN(true);
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -282,57 +278,54 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	if (OK == board_determine_hw_info())
 	{
 		PX4_INFO("Rev 0x%1x : Ver 0x%1x %s", board_get_hw_revision(), board_get_hw_version(), board_get_hw_type_name());
-
+		
 	}
 	else
 	{
 		PX4_ERR("Failed to read HW revision and version");
 	}
-
+	
 	param_init();
-
+	
 	/* configure the DMA allocator */
 
 	if (board_dma_alloc_init() < 0)
 	{
 		PX4_ERR("DMA alloc FAILED");
 	}
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
+	
 #if defined(CONFIG_STM32F7_BBSRAM)
-
+	
 	/* NB. the use of the console requires the hrt running
 	 * to poll the DMA
 	 */
@@ -344,7 +337,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	stm32_bbsraminitialize(BBSRAM_PATH, filesizes);
 
 #if defined(CONFIG_STM32F7_SAVE_CRASHDUMP)
-
+	
 	/* Panic Logging in Battery Backed Up Files */
 
 	/*
@@ -367,10 +360,10 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int hadCrash = hardfault_check_status("boot");
 
 	if (hadCrash == OK)
-	{
+	{	
 
-		PX4_ERR("[boot] There is a hard fault logged. Hold down the SPACE BAR," \
-			" while booting to halt the system!\n");
+		PX4_ERR("[boot] There is a hard fault logged. Hold down the SPACE BAR,"
+				" while booting to halt the system!\n");
 
 		/* Yes. So add one to the boot count - this will be reset after a successful
 		 * commit to SD
@@ -384,7 +377,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		ioctl(fileno(stdin), FIONREAD, (unsigned long)((uintptr_t) &bytesWaiting));
 
 		if (reboots > 2 || bytesWaiting != 0)
-		{
+		{	
 
 			/* Since we can not commit the fault dump to disk. Display it
 			 * to the console.
@@ -393,9 +386,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 
 			PX4_ERR("[boot] There were %d reboots with Hard fault that were not committed to disk - System halted %s\n",
-				reboots,
-				(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
-
+					reboots,
+					(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
 
 			/* For those of you with a debugger set a break point on up_assert and
 			 * then set dbgContinue = 1 and go.
@@ -407,96 +399,95 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			int c = '>';
 
 			while (!dbgContinue)
-			{
+			{	
 
 				switch (c)
-				{
+				{	
 
 					case EOF:
-
 
 					case '\n':
 					case '\r':
 					case ' ':
-						continue;
+					continue;
 
 					default:
 
-						putchar(c);
-						putchar('\n');
+					putchar(c);
+					putchar('\n');
 
-						switch (c)
-						{
+					switch (c)
+					{	
 
-							case 'D':
-							case 'd':
-								hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
-								break;
-
-							case 'C':
-							case 'c':
-								hardfault_rearm("boot");
-								hardfault_increment_reboot("boot", true);
-								break;
-
-							case 'B':
-							case 'b':
-								dbgContinue = true;
-								break;
-
-							default:
-								break;
-						} // Inner Switch
-
-						PX4_ERR("\nEnter B - Continue booting\n" \
-							"Enter C - Clear the fault log\n" \
-							"Enter D - Dump fault log\n\n?>");
-						fflush(stdout);
-
-						if (!dbgContinue)
-						{
-							c = getchar();
-						}
-
+						case 'D':
+						case 'd':
+						hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 						break;
+
+						case 'C':
+						case 'c':
+						hardfault_rearm("boot");
+						hardfault_increment_reboot("boot", true);
+						break;
+
+						case 'B':
+						case 'b':
+						dbgContinue = true;
+						break;
+
+						default:
+						break;
+					} // Inner Switch
+					
+					PX4_ERR("\nEnter B - Continue booting\n"
+							"Enter C - Clear the fault log\n"
+							"Enter D - Dump fault log\n\n?>");
+					fflush(stdout);
+
+					if (!dbgContinue)
+					{	
+						c = getchar();
+					}
+
+					break;
 
 				} // outer switch
 			} // for
-
+			
 		} // inner if
 	} // outer if
-
+	
 #endif // CONFIG_STM32F7_SAVE_CRASHDUMP
 #endif // CONFIG_STM32F7_BBSRAM
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_RED);
 	led_off(LED_GREEN);
 	led_off(LED_BLUE);
-
+	
 #ifdef CONFIG_SPI
 	int ret = stm32_spi_bus_initialize();
 
 	if (ret != OK)
-	{
+	{	
 		board_autoled_on(LED_RED);
 		return ret;
 	}
 
 #endif
-
+	
 #ifdef CONFIG_MMCSD
-
+	
 	ret = stm32_sdio_initialize();
 
 	if (ret != OK)
-	{
+	{	
 		board_autoled_on(LED_RED);
 		return ret;
 	}
 
 #endif
-
+	
 	return OK;
 }

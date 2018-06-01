@@ -36,7 +36,7 @@
  * Dummy position estimator that forwards position from gazebo to px4 topic
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -49,8 +49,10 @@ class PositionEstimator
 public:
 	PositionEstimator();
 
-	~PositionEstimator() {}
-
+	~PositionEstimator()
+	{
+	}
+	
 protected:
 	void ModelStatesCallback(const gazebo_msgs::ModelStatesConstPtr &msg);
 
@@ -60,5 +62,5 @@ protected:
 
 	uint64_t _startup_time;
 	std::string _model_name;
-
+	
 };

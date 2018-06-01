@@ -47,7 +47,7 @@
 #include "navigator_mode.h"
 #include "mission_block.h"
 
-class Loiter : public MissionBlock
+class Loiter: public MissionBlock
 {
 public:
 	Loiter(Navigator *navigator, const char *name);

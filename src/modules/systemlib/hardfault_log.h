@@ -90,7 +90,6 @@
 /* For Assert keep this much of the file name*/
 #define MAX_FILE_PATH_LENGTH 40
 
-
 /* Fixed size strings
  * To change a format add the number of chars not represented by the format
  * Specifier to the xxxx_NUM definei.e %Y is YYYY so add 2 and %s is -2
@@ -133,7 +132,7 @@ typedef struct
 	uint32_t sp;
 	uint32_t top;
 	uint32_t size;
-
+	
 } _stack_s;
 
 typedef struct
@@ -142,7 +141,7 @@ typedef struct
 #if CONFIG_ARCH_INTERRUPTSTACK > 3
 	_stack_s interrupt;
 #endif
-
+	
 } stack_t;
 
 /* Not Used for reference only */
@@ -226,37 +225,36 @@ typedef struct
 	uint32_t s31;
 } proc_regs_s;
 
-
 /* Flags to identify what is in the dump */
 typedef enum
 {
-	eRegsPresent          = 0x01,
-	eUserStackPresent     = 0x02,
-	eIntStackPresent      = 0x04,
-	eInvalidUserStackPtr  = 0x20,
-	eInvalidIntStackPrt   = 0x40,
+	eRegsPresent = 0x01,
+	eUserStackPresent = 0x02,
+	eIntStackPresent = 0x04,
+	eInvalidUserStackPtr = 0x20,
+	eInvalidIntStackPrt = 0x40,
 } fault_flags_t;
 
 typedef struct
 {
-	fault_flags_t         flags;                  /* What is in the dump */
-	uintptr_t             current_regs;           /* Used to validate the dump */
-	int                   lineno;                 /* __LINE__ to up_assert */
-	int                   pid;                    /* Process ID */
-	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save
-											 * area */
-	stack_t               stacks;                 /* Stack info */
+	fault_flags_t flags; /* What is in the dump */
+	uintptr_t current_regs; /* Used to validate the dump */
+	int lineno; /* __LINE__ to up_assert */
+	int pid; /* Process ID */
+	uint32_t regs[XCPTCONTEXT_REGS]; /* Interrupt register save
+	 * area */
+	stack_t stacks; /* Stack info */
 #if CONFIG_TASK_NAME_SIZE > 0
-	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
-													* terminator) */
+	char name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
+	 * terminator) */
 #endif
-	char                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
-												  * __FILE__ to up_assert */
+	char filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
+	 * __FILE__ to up_assert */
 } info_s;
 
 typedef struct
 {
-	info_s    info;                       /* The info */
+	info_s info; /* The info */
 #if CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
 									 * sized backed on what is left after the
 									 * other BBSRAM files are defined
@@ -291,7 +289,8 @@ __BEGIN_DECLS
  *   -  Any < 0 Broken - Should not happen
  *
  ****************************************************************************/
-int hardfault_check_status(char *caller) weak_function;
+int hardfault_check_status(char *caller)
+weak_function;
 
 /****************************************************************************
  * Name: hardfault_write
@@ -320,7 +319,8 @@ int hardfault_check_status(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
+int hardfault_write(char *caller, int fd, int format, bool rearm)
+weak_function;
 
 /****************************************************************************
  * Name: hardfault_rearm
@@ -338,7 +338,8 @@ int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_rearm(char *caller) weak_function;
+int hardfault_rearm(char *caller)
+weak_function;
 
 /****************************************************************************
  * Name: hardfault_increment_reboot
@@ -358,6 +359,7 @@ int hardfault_rearm(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_increment_reboot(char *caller, bool reset) weak_function;
+int hardfault_increment_reboot(char *caller, bool reset)
+weak_function;
 
 __END_DECLS

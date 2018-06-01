@@ -71,50 +71,55 @@ public:
 	~GroundRoverAttitudeControl();
 
 	int start();
-	bool task_running() { return _task_running; }
-
+	bool task_running()
+	{
+		return _task_running;
+	}
+	
 private:
-
-	bool		_task_should_exit{false};		/**< if true, attitude control task should exit */
-	bool		_task_running{false};			/**< if true, task is running in its mainloop */
-	int		_control_task{-1};			/**< task handle */
-
-	int		_att_sp_sub{-1};			/**< vehicle attitude setpoint */
-	int		_battery_status_sub{-1};		/**< battery status subscription */
-	int		_att_sub{-1};		/**< control state subscription */
-	int		_manual_sub{-1};			/**< notification of manual control updates */
-	int		_params_sub{-1};			/**< notification of parameter updates */
-	int		_vcontrol_mode_sub{-1};		/**< vehicle status subscription */
-
-	orb_advert_t	_actuators_0_pub{nullptr};		/**< actuator control group 0 setpoint */
-
-	actuator_controls_s			_actuators {};		/**< actuator control inputs */
-	battery_status_s				_battery_status {};	/**< battery status */
-	manual_control_setpoint_s		_manual {};		/**< r/c channel data */
-	vehicle_attitude_s				_att {};	/**< control state */
-	vehicle_attitude_setpoint_s		_att_sp {};		/**< vehicle attitude setpoint */
-	vehicle_control_mode_s			_vcontrol_mode {};		/**< vehicle control mode */
-
-	perf_counter_t	_loop_perf;			/**< loop performance counter */
-	perf_counter_t	_nonfinite_input_perf;		/**< performance counter for non finite input */
-	perf_counter_t	_nonfinite_output_perf;		/**< performance counter for non finite output */
-
-	bool		_debug{false};				/**< if set to true, print debug output */
-
-	struct {
-		float w_p;		/**< Proportional gain of the steering controller */
-		float w_i;		/**< Integral gain of the steering controller */
-		float w_d;		/**< Derivative of the steering controller */
-		float w_imax;		/**< maximum integrator level of the steering controller */
-
+	
+	bool _task_should_exit { false }; /**< if true, attitude control task should exit */
+	bool _task_running { false }; /**< if true, task is running in its mainloop */
+	int _control_task { -1 }; /**< task handle */
+	
+	int _att_sp_sub { -1 }; /**< vehicle attitude setpoint */
+	int _battery_status_sub { -1 }; /**< battery status subscription */
+	int _att_sub { -1 }; /**< control state subscription */
+	int _manual_sub { -1 }; /**< notification of manual control updates */
+	int _params_sub { -1 }; /**< notification of parameter updates */
+	int _vcontrol_mode_sub { -1 }; /**< vehicle status subscription */
+	
+	orb_advert_t _actuators_0_pub { nullptr }; /**< actuator control group 0 setpoint */
+	
+	actuator_controls_s _actuators { }; /**< actuator control inputs */
+	battery_status_s _battery_status { }; /**< battery status */
+	manual_control_setpoint_s _manual { }; /**< r/c channel data */
+	vehicle_attitude_s _att { }; /**< control state */
+	vehicle_attitude_setpoint_s _att_sp { }; /**< vehicle attitude setpoint */
+	vehicle_control_mode_s _vcontrol_mode { }; /**< vehicle control mode */
+	
+	perf_counter_t _loop_perf; /**< loop performance counter */
+	perf_counter_t _nonfinite_input_perf; /**< performance counter for non finite input */
+	perf_counter_t _nonfinite_output_perf; /**< performance counter for non finite output */
+	
+	bool _debug { false }; /**< if set to true, print debug output */
+	
+	struct
+	{
+		float w_p; /**< Proportional gain of the steering controller */
+		float w_i; /**< Integral gain of the steering controller */
+		float w_d; /**< Derivative of the steering controller */
+		float w_imax; /**< maximum integrator level of the steering controller */
+		
 		float trim_yaw;
-		float man_yaw_scale; 			/**< scale factor applied to yaw actuator control in pure manual mode */
-
-		int32_t bat_scale_en;			/**< Battery scaling enabled */
-
-	} _parameters{};			/**< local copies of interesting parameters */
-
-	struct {
+		float man_yaw_scale; /**< scale factor applied to yaw actuator control in pure manual mode */
+		
+		int32_t bat_scale_en; /**< Battery scaling enabled */
+		
+	} _parameters { }; /**< local copies of interesting parameters */
+	
+	struct
+	{
 		param_t w_p;
 		param_t w_i;
 		param_t w_d;
@@ -124,19 +129,19 @@ private:
 		param_t man_yaw_scale;
 
 		param_t bat_scale_en;
+		
+	} _parameter_handles { }; /**< handles for interesting parameters */
+	
+	PID_t _steering_ctrl { };
 
-	} _parameter_handles{};		/**< handles for interesting parameters */
+	void parameters_update();
 
-	PID_t			_steering_ctrl{};
+	void vehicle_control_mode_poll();
+	void manual_control_setpoint_poll();
+	void vehicle_attitude_setpoint_poll();
+	void battery_status_poll();
 
-	void		parameters_update();
-
-	void		vehicle_control_mode_poll();
-	void		manual_control_setpoint_poll();
-	void		vehicle_attitude_setpoint_poll();
-	void		battery_status_poll();
-
-	static void	task_main_trampoline(int argc, char *argv[]);
-	void		task_main();
-
+	static void task_main_trampoline(int argc, char *argv[]);
+	void task_main();
+	
 };

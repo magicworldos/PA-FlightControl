@@ -36,7 +36,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 namespace uORB
 {
 class DeviceNode;
@@ -46,29 +45,33 @@ class ORBMap;
 class uORB::ORBMap
 {
 public:
-	struct Node {
+	struct Node
+	{
 		struct Node *next;
 		const char *node_name;
 		uORB::DeviceNode *node;
 	};
 
 	ORBMap() :
-		_top(nullptr),
-		_end(nullptr)
-	{ }
+			    _top(nullptr),
+			    _end(nullptr)
+	{
+	}
 	~ORBMap()
 	{
-		while (_top != nullptr) {
+		while (_top != nullptr)
+		{
 			unlinkNext(_top);
-
-			if (_top->next == nullptr) {
+			
+			if (_top->next == nullptr)
+			{
 				free(_top);
 				_top = nullptr;
 				_end = nullptr;
 			}
 		}
 	}
-
+	
 	/**
 	 * Insert an element with a unique name
 	 * @param node_name name of the node. This will not be copied, so the caller has to ensure
@@ -78,83 +81,95 @@ public:
 	void insert(const char *node_name, uORB::DeviceNode *node)
 	{
 		Node **p;
-
-		if (_top == nullptr) {
+		
+		if (_top == nullptr)
+		{
 			p = &_top;
-
-		} else {
+			
+		}
+		else
+		{
 			p = &_end->next;
 		}
-
-		*p = (Node *)malloc(sizeof(Node));
-
-		if (_end) {
+		
+		*p = (Node *) malloc(sizeof(Node));
+		
+		if (_end)
+		{
 			_end = _end->next;
-
-		} else {
+			
+		}
+		else
+		{
 			_end = _top;
 		}
-
+		
 		_end->next = nullptr;
 		_end->node_name = node_name;
 		_end->node = node;
 	}
-
+	
 	bool find(const char *node_name)
 	{
 		Node *p = _top;
-
-		while (p) {
-			if (strcmp(p->node_name, node_name) == 0) {
+		
+		while (p)
+		{
+			if (strcmp(p->node_name, node_name) == 0)
+			{
 				return true;
 			}
-
+			
 			p = p->next;
 		}
-
+		
 		return false;
 	}
-
+	
 	uORB::DeviceNode *get(const char *node_name)
 	{
 		Node *p = _top;
-
-		while (p) {
-			if (strcmp(p->node_name, node_name) == 0) {
+		
+		while (p)
+		{
+			if (strcmp(p->node_name, node_name) == 0)
+			{
 				return p->node;
 			}
-
+			
 			p = p->next;
 		}
-
+		
 		return nullptr;
 	}
-
+	
 	Node *top() const
 	{
 		return _top;
 	}
-
+	
 	bool empty() const
 	{
 		return !_top;
 	}
-
+	
 private:
 	void unlinkNext(Node *a)
 	{
 		Node *b = a->next;
-
-		if (b != nullptr) {
-			if (_end == b) {
+		
+		if (b != nullptr)
+		{
+			if (_end == b)
+			{
 				_end = a;
 			}
-
+			
 			a->next = b->next;
 			free(b);
 		}
 	}
-
+	
 	Node *_top;
 	Node *_end;
 };

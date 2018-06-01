@@ -18,25 +18,25 @@
 #define PWM_2_CAMERA_ON_OFF			1900
 
 CameraInterfaceSeagull::CameraInterfaceSeagull():
-	CameraInterface(),
-	_camera_is_on(false)
-{
+CameraInterface(),
+_camera_is_on(false)
+{	
 	get_pins();
 	setup();
 }
 
 CameraInterfaceSeagull::~CameraInterfaceSeagull()
-{
+{	
 	// Deinitialise trigger channels
 	up_pwm_trigger_deinit();
 }
 
 void CameraInterfaceSeagull::setup()
-{
+{	
 	for (unsigned i = 0; i < arraySize(_pins); i = i + 2)
-	{
+	{	
 		if (_pins[i] >= 0 && _pins[i + 1] >= 0)
-		{
+		{	
 
 			// Initialize the interface
 			uint8_t pin_bitmask = (1 << _pins[i + 1]) | (1 << _pins[i]);
@@ -55,17 +55,17 @@ void CameraInterfaceSeagull::setup()
 }
 
 void CameraInterfaceSeagull::trigger(bool enable)
-{
+{	
 
 	if (!_camera_is_on)
-	{
+	{	
 		return;
 	}
 
 	for (unsigned i = 0; i < arraySize(_pins); i = i + 2)
-	{
+	{	
 		if (_pins[i] >= 0 && _pins[i + 1] >= 0)
-		{
+		{	
 			// Set channel 1 to shoot or neutral levels
 			up_pwm_trigger_set(_pins[i + 1], enable ? PWM_1_CAMERA_INSTANT_SHOOT : PWM_CAMERA_NEUTRAL);
 		}
@@ -73,18 +73,18 @@ void CameraInterfaceSeagull::trigger(bool enable)
 }
 
 void CameraInterfaceSeagull::send_keep_alive(bool enable)
-{
+{	
 	// This should alternate between enable and !enable to keep the camera alive
-
+	
 	if (!_camera_is_on)
-	{
+	{	
 		return;
 	}
 
 	for (unsigned i = 0; i < arraySize(_pins); i = i + 2)
-	{
+	{	
 		if (_pins[i] >= 0 && _pins[i + 1] >= 0)
-		{
+		{	
 			// Set channel 2 pin to keep_alive or netural signal
 			up_pwm_trigger_set(_pins[i], enable ? PWM_2_CAMERA_KEEP_ALIVE : PWM_CAMERA_NEUTRAL);
 		}
@@ -92,14 +92,14 @@ void CameraInterfaceSeagull::send_keep_alive(bool enable)
 }
 
 void CameraInterfaceSeagull::send_toggle_power(bool enable)
-{
+{	
 
 	// This should alternate between enable and !enable to toggle camera power
-
+	
 	for (unsigned i = 0; i < arraySize(_pins); i = i + 2)
-	{
+	{	
 		if (_pins[i] >= 0 && _pins[i + 1] >= 0)
-		{
+		{	
 			// Set channel 1 to neutral
 			up_pwm_trigger_set(_pins[i + 1], PWM_CAMERA_NEUTRAL);
 			// Set channel 2 to on_off or neutral signal
@@ -107,13 +107,14 @@ void CameraInterfaceSeagull::send_toggle_power(bool enable)
 		}
 	}
 
-	if (!enable) { _camera_is_on = !_camera_is_on; }
+	if (!enable)
+	{	_camera_is_on = !_camera_is_on;}
 }
 
 void CameraInterfaceSeagull::info()
-{
+{	
 	PX4_INFO("PWM trigger mode (Seagull MAP2) , pins enabled : [%d][%d][%d][%d][%d][%d]",
-		 _pins[5], _pins[4], _pins[3], _pins[2], _pins[1], _pins[0]);
+			_pins[5], _pins[4], _pins[3], _pins[2], _pins[1], _pins[0]);
 }
 
 #endif /* ifdef __PX4_NUTTX */

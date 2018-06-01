@@ -50,7 +50,6 @@
 # endif
 #endif
 
-
 namespace math
 {
 

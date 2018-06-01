@@ -45,16 +45,15 @@
  */
 #define ERRATA "This code is not finished yet!"
 
-
 int board_mcu_version(char *rev, const char **revstr, const char **errata)
 {
 	*rev = '?';
 	*revstr = "Kinetis K??";
-
+	
 	if (errata)
 	{
 		*errata = ERRATA;
 	}
-
+	
 	return 0;
 }

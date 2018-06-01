@@ -41,44 +41,45 @@
 #include "test_utils.h"
 
 /**
-* @brief Test to see i2c device can be opened and configured.
-*
-* @par
-* Test:
-* 1) Open the i2c device (path provided is platform specific) 
-* 2) Configure the i2c device to have (using ioctl):
-*     -Slave address: address provided is platform specific 
-*     -Bus Frequency in khz: 400
-*     -Transfer timeout in usec: 9000
-* 2.a) Only on SLPI - there is a built in barometer - try to 
-* read the id 
-* 3) Close the i2c device 
-*
-* @return
-* SUCCESS ------ Test Passes
-* ERROR ------ Test Failed
-*/
+ * @brief Test to see i2c device can be opened and configured.
+ *
+ * @par
+ * Test:
+ * 1) Open the i2c device (path provided is platform specific) 
+ * 2) Configure the i2c device to have (using ioctl):
+ *     -Slave address: address provided is platform specific 
+ *     -Bus Frequency in khz: 400
+ *     -Transfer timeout in usec: 9000
+ * 2.a) Only on SLPI - there is a built in barometer - try to 
+ * read the id 
+ * 3) Close the i2c device 
+ *
+ * @return
+ * SUCCESS ------ Test Passes
+ * ERROR ------ Test Failed
+ */
 
 int read_onboard_bmp_id(int fd)
 {
-    int ret = SUCCESS;
-    struct dspal_i2c_ioctl_combined_write_read ioctl_write_read;
-    uint8_t write_buffer[1];
-    uint8_t buf[2];
-    /* Save the address of the register to read from in the write buffer for the combined write. */
-    write_buffer[0] = 0xD0;
-    ioctl_write_read.write_buf     = write_buffer;
-    ioctl_write_read.write_buf_len = 1;
-    ioctl_write_read.read_buf      = &buf[0];
-    ioctl_write_read.read_buf_len  = 1;
-
-    uint8_t byte_count = ioctl(fd, I2C_IOCTL_RDWR, &ioctl_write_read);
-    if ( byte_count != 1) {
-         ret = ERROR;
-    }
-
-    LOG_INFO("Sensor id register 0x%x write/read 0x%x", write_buffer[0], buf[0]);
-    return ret; 
+	int ret = SUCCESS;
+	struct dspal_i2c_ioctl_combined_write_read ioctl_write_read;
+	uint8_t write_buffer[1];
+	uint8_t buf[2];
+	/* Save the address of the register to read from in the write buffer for the combined write. */
+	write_buffer[0] = 0xD0;
+	ioctl_write_read.write_buf = write_buffer;
+	ioctl_write_read.write_buf_len = 1;
+	ioctl_write_read.read_buf = &buf[0];
+	ioctl_write_read.read_buf_len = 1;
+	
+	uint8_t byte_count = ioctl(fd, I2C_IOCTL_RDWR, &ioctl_write_read);
+	if (byte_count != 1)
+	{
+		ret = ERROR;
+	}
+	
+	LOG_INFO("Sensor id register 0x%x write/read 0x%x", write_buffer[0], buf[0]);
+	return ret;
 }
 
 int dspal_tester_i2c_test(void)
@@ -89,8 +90,9 @@ int dspal_tester_i2c_test(void)
 	 */
 	int fd = -1;
 	fd = open(I2C_DEVICE_PATH, 0);
-
-	if (fd > 0) {
+	
+	if (fd > 0)
+	{
 		/*
 		 * Configure I2C device
 		 */
@@ -98,22 +100,25 @@ int dspal_tester_i2c_test(void)
 		slave_config.slave_address = I2C_SLAVE_ADDRESS;
 		slave_config.bus_frequency_in_khz = 400;
 		slave_config.byte_transer_timeout_in_usecs = 9000;
-
-		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0) {
+		
+		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0)
+		{
 			ret = ERROR;
 		}
-
+		
 #if defined(DSP_TYPE_SLPI)
-        ret = read_onboard_bmp_id(fd); 
+		ret = read_onboard_bmp_id(fd);
 #endif
 		/*
 		 * Close the device ID
 		 */
 		close(fd);
-
-	} else {
+		
+	}
+	else
+	{
 		ret = ERROR;
 	}
-
+	
 	return ret;
 }

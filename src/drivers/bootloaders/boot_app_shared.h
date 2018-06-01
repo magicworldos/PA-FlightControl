@@ -95,7 +95,7 @@ typedef enum eRole
  *      registers by bootloader_app_shared_read and
  *      bootloader_app_shared_write.
  *
-****************************************************************************/
+ ****************************************************************************/
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
@@ -105,12 +105,12 @@ typedef begin_packed_struct struct bootloader_app_shared_t
 	{
 		uint64_t ull;
 		uint32_t ul[2];
-		uint8_t  valid;
+		uint8_t valid;
 	} crc;
 	uint32_t signature;
 	uint32_t bus_speed;
 	uint32_t node_id;
-} end_packed_struct bootloader_app_shared_t;
+}end_packed_struct bootloader_app_shared_t;
 #pragma GCC diagnostic pop
 
 /****************************************************************************
@@ -136,7 +136,7 @@ typedef begin_packed_struct struct bootloader_app_shared_t
  *      4) The calculated CRC 64 is stored in image_crc
  *      5) The new image file is then written to a file a ".img" extension.
  *
-****************************************************************************/
+ ****************************************************************************/
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
@@ -150,7 +150,7 @@ typedef begin_packed_struct struct app_descriptor_t
 	uint8_t major_version;
 	uint8_t minor_version;
 	uint8_t reserved[6];
-} end_packed_struct app_descriptor_t;
+}end_packed_struct app_descriptor_t;
 #pragma GCC diagnostic pop
 
 /****************************************************************************
@@ -188,8 +188,7 @@ typedef begin_packed_struct struct app_descriptor_t
  *
  ****************************************************************************/
 
-int bootloader_app_shared_read(bootloader_app_shared_t *shared,
-			       eRole_t role);
+int bootloader_app_shared_read(bootloader_app_shared_t *shared, eRole_t role);
 
 /****************************************************************************
  * Name: bootloader_app_shared_write
@@ -215,8 +214,7 @@ int bootloader_app_shared_read(bootloader_app_shared_t *shared,
  *
  ****************************************************************************/
 
-void bootloader_app_shared_write(bootloader_app_shared_t *shared,
-				 eRole_t role);
+void bootloader_app_shared_write(bootloader_app_shared_t *shared, eRole_t role);
 
 /****************************************************************************
  * Name: bootloader_app_shared_invalidate

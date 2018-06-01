@@ -38,7 +38,6 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-
 #include <stddef.h>
 #include <stdint.h>
 #include <px4_tasks.h>
@@ -57,8 +56,7 @@ public:
 	 *
 	 * @return		0 on success.
 	 */
-	int		start();
-
+	int start();
 
 	/**
 	 * Write to the shell
@@ -79,10 +77,10 @@ public:
 	size_t available();
 
 private:
-
+	
 	int _to_shell_fd = -1; /** fd to write to the shell */
 	int _from_shell_fd = -1; /** fd to read from the shell */
-	int _shell_fds[2] = { -1, -1}; /** stdin & out used by the shell */
+	int _shell_fds[2] = { -1, -1 }; /** stdin & out used by the shell */
 	px4_task_t _task;
 
 	static int shell_start_thread(int argc, char *argv[]);

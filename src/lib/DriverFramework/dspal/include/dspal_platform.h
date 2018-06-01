@@ -32,7 +32,8 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 /*==========================================================================
  * FILE:         dspal_platform.h

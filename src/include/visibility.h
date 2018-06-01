@@ -59,7 +59,6 @@
 #  define __END_DECLS
 #endif
 
-
 #ifdef __PX4_NUTTX
 /* On NuttX we call clearenv() so we cannot use getenv() and others (see px4_task_spawn_cmd() in px4_nuttx_tasks.c).
  * We need to include the headers declaring getenv() before the pragma, otherwise it will trigger a poison error.

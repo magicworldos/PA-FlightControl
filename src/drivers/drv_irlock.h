@@ -51,11 +51,11 @@
 
 struct irlock_target_s
 {
-	uint16_t signature;	/** target signature **/
-	float pos_x;	/** x-axis distance from center of image to center of target in units of tan(theta) **/
-	float pos_y;	/** y-axis distance from center of image to center of target in units of tan(theta) **/
-	float size_x;	/** size of target along x-axis in units of tan(theta) **/
-	float size_y;	/** size of target along y-axis in units of tan(theta) **/
+	uint16_t signature; /** target signature **/
+	float pos_x; /** x-axis distance from center of image to center of target in units of tan(theta) **/
+	float pos_y; /** y-axis distance from center of image to center of target in units of tan(theta) **/
+	float size_x; /** size of target along x-axis in units of tan(theta) **/
+	float size_y; /** size of target along y-axis in units of tan(theta) **/
 };
 
 /** irlock_s structure returned from read calls **/

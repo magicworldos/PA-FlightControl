@@ -33,7 +33,8 @@
 #define __SSP_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup SSP_11XX CHIP: LPC11xx SSP register block and driver
@@ -44,16 +45,26 @@ extern "C" {
 /**
  * @brief SSP register block structure
  */
-typedef struct {			/*!< SSPn Structure         */
-	__IO uint32_t CR0;		/*!< Control Register 0. Selects the serial clock rate, bus type, and data size. */
-	__IO uint32_t CR1;		/*!< Control Register 1. Selects master/slave and other modes. */
-	__IO uint32_t DR;		/*!< Data Register. Writes fill the transmit FIFO, and reads empty the receive FIFO. */
-	__I  uint32_t SR;		/*!< Status Register        */
-	__IO uint32_t CPSR;		/*!< Clock Prescale Register */
-	__IO uint32_t IMSC;		/*!< Interrupt Mask Set and Clear Register */
-	__I  uint32_t RIS;		/*!< Raw Interrupt Status Register */
-	__I  uint32_t MIS;		/*!< Masked Interrupt Status Register */
-	__O  uint32_t ICR;		/*!< SSPICR Interrupt Clear Register */
+typedef struct
+{ /*!< SSPn Structure         */
+	__IO
+	uint32_t CR0; /*!< Control Register 0. Selects the serial clock rate, bus type, and data size. */
+	__IO
+	uint32_t CR1; /*!< Control Register 1. Selects master/slave and other modes. */
+	__IO
+	uint32_t DR; /*!< Data Register. Writes fill the transmit FIFO, and reads empty the receive FIFO. */
+	__I
+	uint32_t SR; /*!< Status Register        */
+	__IO
+	uint32_t CPSR; /*!< Clock Prescale Register */
+	__IO
+	uint32_t IMSC; /*!< Interrupt Mask Set and Clear Register */
+	__I
+	uint32_t RIS; /*!< Raw Interrupt Status Register */
+	__I
+	uint32_t MIS; /*!< Masked Interrupt Status Register */
+	__O
+	uint32_t ICR; /*!< SSPICR Interrupt Clear Register */
 } LPC_SSP_T;
 
 /**
@@ -69,22 +80,22 @@ typedef struct {			/*!< SSPn Structure         */
 /** SSP control 0 National Micro-wire mode */
 #define SSP_CR0_FRF_MICROWIRE   ((uint32_t) (2 << 4))
 /** SPI clock polarity bit (used in SPI mode only), (1) = maintains the
-   bus clock high between frames, (0) = low */
+ bus clock high between frames, (0) = low */
 #define SSP_CR0_CPOL_LO     ((uint32_t) (0))
 #define SSP_CR0_CPOL_HI     ((uint32_t) (1 << 6))
 /** SPI clock out phase bit (used in SPI mode only), (1) = captures data
-   on the second clock transition of the frame, (0) = first */
+ on the second clock transition of the frame, (0) = first */
 #define SSP_CR0_CPHA_FIRST  ((uint32_t) (0))
 #define SSP_CR0_CPHA_SECOND ((uint32_t) (1 << 7))
 /** SSP serial clock rate value load macro, divider rate is
-   PERIPH_CLK / (cpsr * (SCR + 1)) */
+ PERIPH_CLK / (cpsr * (SCR + 1)) */
 #define SSP_CR0_SCR(n)      ((uint32_t) ((n & 0xFF) << 8))
 /** SSP CR0 bit mask */
 #define SSP_CR0_BITMASK     ((uint32_t) (0xFFFF))
 /** SSP CR0 bit mask */
 #define SSP_CR0_BITMASK     ((uint32_t) (0xFFFF))
 /** SSP serial clock rate value load macro, divider rate is
-   PERIPH_CLK / (cpsr * (SCR + 1)) */
+ PERIPH_CLK / (cpsr * (SCR + 1)) */
 #define SSP_CR0_SCR(n)      ((uint32_t) ((n & 0xFF) << 8))
 
 /**
@@ -99,7 +110,7 @@ typedef struct {			/*!< SSPn Structure         */
 #define SSP_CR1_SLAVE_EN    ((uint32_t) (1 << 2))
 #define SSP_CR1_MASTER_EN   ((uint32_t) (0))
 /** SSP control 1 slave out disable bit, disables transmit line in slave
-   mode */
+ mode */
 #define SSP_CR1_SO_DISABLE  ((uint32_t) (1 << 3))
 /** SSP CR1 bit mask */
 #define SSP_CR1_BITMASK     ((uint32_t) (0x0F))
@@ -126,19 +137,21 @@ typedef struct {			/*!< SSPn Structure         */
 /**
  * @brief SSP Type of Status
  */
-typedef enum _SSP_STATUS {
+typedef enum _SSP_STATUS
+{
 	SSP_STAT_TFE = ((uint32_t)(1 << 0)),/**< TX FIFO Empty */
 	SSP_STAT_TNF = ((uint32_t)(1 << 1)),/**< TX FIFO not full */
 	SSP_STAT_RNE = ((uint32_t)(1 << 2)),/**< RX FIFO not empty */
 	SSP_STAT_RFF = ((uint32_t)(1 << 3)),/**< RX FIFO full */
-	SSP_STAT_BSY = ((uint32_t)(1 << 4)),/**< SSP Busy */
+	SSP_STAT_BSY = ((uint32_t)(1 << 4)), /**< SSP Busy */
 } SSP_STATUS_T;
 
 /**
  * @brief SSP Type of Interrupt Mask
  */
-typedef enum _SSP_INTMASK {
-	SSP_RORIM = ((uint32_t)(1 << 0)),	/**< Overun */
+typedef enum _SSP_INTMASK
+{
+	SSP_RORIM = ((uint32_t)(1 << 0)), /**< Overun */
 	SSP_RTIM = ((uint32_t)(1 << 1)),/**< TimeOut */
 	SSP_RXIM = ((uint32_t)(1 << 2)),/**< Rx FIFO is at least half full */
 	SSP_TXIM = ((uint32_t)(1 << 3)),/**< Tx FIFO is at least half empty */
@@ -148,26 +161,29 @@ typedef enum _SSP_INTMASK {
 /**
  * @brief SSP Type of Mask Interrupt Status
  */
-typedef enum _SSP_MASKINTSTATUS {
-	SSP_RORMIS = ((uint32_t)(1 << 0)),	/**< Overun */
-	SSP_RTMIS = ((uint32_t)(1 << 1)),	/**< TimeOut */
-	SSP_RXMIS = ((uint32_t)(1 << 2)),	/**< Rx FIFO is at least half full */
-	SSP_TXMIS = ((uint32_t)(1 << 3)),	/**< Tx FIFO is at least half empty */
+typedef enum _SSP_MASKINTSTATUS
+{
+	SSP_RORMIS = ((uint32_t)(1 << 0)), /**< Overun */
+	SSP_RTMIS = ((uint32_t)(1 << 1)), /**< TimeOut */
+	SSP_RXMIS = ((uint32_t)(1 << 2)), /**< Rx FIFO is at least half full */
+	SSP_TXMIS = ((uint32_t)(1 << 3)), /**< Tx FIFO is at least half empty */
 	SSP_MASK_INT_STAT_BITMASK = ((uint32_t)(0xF)),
 } SSP_MASKINTSTATUS_T;
 
 /**
  * @brief SSP Type of Raw Interrupt Status
  */
-typedef enum _SSP_RAWINTSTATUS {
-	SSP_RORRIS = ((uint32_t)(1 << 0)),	/**< Overun */
-	SSP_RTRIS = ((uint32_t)(1 << 1)),	/**< TimeOut */
-	SSP_RXRIS = ((uint32_t)(1 << 2)),	/**< Rx FIFO is at least half full */
-	SSP_TXRIS = ((uint32_t)(1 << 3)),	/**< Tx FIFO is at least half empty */
+typedef enum _SSP_RAWINTSTATUS
+{
+	SSP_RORRIS = ((uint32_t)(1 << 0)), /**< Overun */
+	SSP_RTRIS = ((uint32_t)(1 << 1)), /**< TimeOut */
+	SSP_RXRIS = ((uint32_t)(1 << 2)), /**< Rx FIFO is at least half full */
+	SSP_TXRIS = ((uint32_t)(1 << 3)), /**< Tx FIFO is at least half empty */
 	SSP_RAW_INT_STAT_BITMASK = ((uint32_t)(0xF)),
 } SSP_RAWINTSTATUS_T;
 
-typedef enum _SSP_INTCLEAR {
+typedef enum _SSP_INTCLEAR
+{
 	SSP_RORIC = 0x0,
 	SSP_RTIC = 0x1,
 	SSP_INT_CLEAR_BITMASK = 0x3,
@@ -176,52 +192,56 @@ typedef enum _SSP_INTCLEAR {
 /*
  * @brief SSP clock format
  */
-typedef enum CHIP_SSP_CLOCK_FORMAT {
-	SSP_CLOCK_CPHA0_CPOL0 = (0 << 6),		/**< CPHA = 0, CPOL = 0 */
-	SSP_CLOCK_CPHA0_CPOL1 = (1u << 6),		/**< CPHA = 0, CPOL = 1 */
-	SSP_CLOCK_CPHA1_CPOL0 = (2u << 6),		/**< CPHA = 1, CPOL = 0 */
-	SSP_CLOCK_CPHA1_CPOL1 = (3u << 6),		/**< CPHA = 1, CPOL = 1 */
+typedef enum CHIP_SSP_CLOCK_FORMAT
+{
+	SSP_CLOCK_CPHA0_CPOL0 = (0 << 6), /**< CPHA = 0, CPOL = 0 */
+	SSP_CLOCK_CPHA0_CPOL1 = (1u << 6), /**< CPHA = 0, CPOL = 1 */
+	SSP_CLOCK_CPHA1_CPOL0 = (2u << 6), /**< CPHA = 1, CPOL = 0 */
+	SSP_CLOCK_CPHA1_CPOL1 = (3u << 6), /**< CPHA = 1, CPOL = 1 */
 	SSP_CLOCK_MODE0 = SSP_CLOCK_CPHA0_CPOL0,/**< alias */
 	SSP_CLOCK_MODE1 = SSP_CLOCK_CPHA1_CPOL0,/**< alias */
 	SSP_CLOCK_MODE2 = SSP_CLOCK_CPHA0_CPOL1,/**< alias */
-	SSP_CLOCK_MODE3 = SSP_CLOCK_CPHA1_CPOL1,/**< alias */
+	SSP_CLOCK_MODE3 = SSP_CLOCK_CPHA1_CPOL1, /**< alias */
 } CHIP_SSP_CLOCK_MODE_T;
 
 /*
  * @brief SSP frame format
  */
-typedef enum CHIP_SSP_FRAME_FORMAT {
-	SSP_FRAMEFORMAT_SPI = (0 << 4),			/**< Frame format: SPI */
-	CHIP_SSP_FRAME_FORMAT_TI = (1u << 4),			/**< Frame format: TI SSI */
-	SSP_FRAMEFORMAT_MICROWIRE = (2u << 4),	/**< Frame format: Microwire */
+typedef enum CHIP_SSP_FRAME_FORMAT
+{
+	SSP_FRAMEFORMAT_SPI = (0 << 4), /**< Frame format: SPI */
+	CHIP_SSP_FRAME_FORMAT_TI = (1u << 4), /**< Frame format: TI SSI */
+	SSP_FRAMEFORMAT_MICROWIRE = (2u << 4), /**< Frame format: Microwire */
 } CHIP_SSP_FRAME_FORMAT_T;
 
 /*
  * @brief Number of bits per frame
  */
-typedef enum CHIP_SSP_BITS {
-	SSP_BITS_4 = (3u << 0),		/*!< 4 bits/frame */
-	SSP_BITS_5 = (4u << 0),		/*!< 5 bits/frame */
-	SSP_BITS_6 = (5u << 0),		/*!< 6 bits/frame */
-	SSP_BITS_7 = (6u << 0),		/*!< 7 bits/frame */
-	SSP_BITS_8 = (7u << 0),		/*!< 8 bits/frame */
-	SSP_BITS_9 = (8u << 0),		/*!< 9 bits/frame */
-	SSP_BITS_10 = (9u << 0),	/*!< 10 bits/frame */
-	SSP_BITS_11 = (10u << 0),	/*!< 11 bits/frame */
-	SSP_BITS_12 = (11u << 0),	/*!< 12 bits/frame */
-	SSP_BITS_13 = (12u << 0),	/*!< 13 bits/frame */
-	SSP_BITS_14 = (13u << 0),	/*!< 14 bits/frame */
-	SSP_BITS_15 = (14u << 0),	/*!< 15 bits/frame */
-	SSP_BITS_16 = (15u << 0),	/*!< 16 bits/frame */
+typedef enum CHIP_SSP_BITS
+{
+	SSP_BITS_4 = (3u << 0), /*!< 4 bits/frame */
+	SSP_BITS_5 = (4u << 0), /*!< 5 bits/frame */
+	SSP_BITS_6 = (5u << 0), /*!< 6 bits/frame */
+	SSP_BITS_7 = (6u << 0), /*!< 7 bits/frame */
+	SSP_BITS_8 = (7u << 0), /*!< 8 bits/frame */
+	SSP_BITS_9 = (8u << 0), /*!< 9 bits/frame */
+	SSP_BITS_10 = (9u << 0), /*!< 10 bits/frame */
+	SSP_BITS_11 = (10u << 0), /*!< 11 bits/frame */
+	SSP_BITS_12 = (11u << 0), /*!< 12 bits/frame */
+	SSP_BITS_13 = (12u << 0), /*!< 13 bits/frame */
+	SSP_BITS_14 = (13u << 0), /*!< 14 bits/frame */
+	SSP_BITS_15 = (14u << 0), /*!< 15 bits/frame */
+	SSP_BITS_16 = (15u << 0), /*!< 16 bits/frame */
 } CHIP_SSP_BITS_T;
 
 /*
  * @brief SSP config format
  */
-typedef struct SSP_ConfigFormat {
-	CHIP_SSP_BITS_T bits;					/*!< Format config: bits/frame */
-	CHIP_SSP_CLOCK_MODE_T clockMode;	/*!< Format config: clock phase/polarity */
-	CHIP_SSP_FRAME_FORMAT_T frameFormat;	/*!< Format config: SPI/TI/Microwire */
+typedef struct SSP_ConfigFormat
+{
+	CHIP_SSP_BITS_T bits; /*!< Format config: bits/frame */
+	CHIP_SSP_CLOCK_MODE_T clockMode; /*!< Format config: clock phase/polarity */
+	CHIP_SSP_FRAME_FORMAT_T frameFormat; /*!< Format config: SPI/TI/Microwire */
 } SSP_ConfigFormat;
 
 /**
@@ -363,7 +383,7 @@ STATIC INLINE void Chip_SSP_Int_Disable(LPC_SSP_T *pSSP)
  */
 STATIC INLINE uint16_t Chip_SSP_ReceiveFrame(LPC_SSP_T *pSSP)
 {
-	return (uint16_t) (SSP_DR_BITMASK(pSSP->DR));
+	return (uint16_t)(SSP_DR_BITMASK(pSSP->DR));
 }
 
 /**
@@ -424,28 +444,31 @@ STATIC INLINE void Chip_SSP_Set_Mode(LPC_SSP_T *pSSP, uint32_t mode)
 /*
  * @brief SSP mode
  */
-typedef enum CHIP_SSP_MODE {
-	SSP_MODE_MASTER = (0 << 2),	/**< Master mode */
-	SSP_MODE_SLAVE = (1u << 2),	/**< Slave mode */
+typedef enum CHIP_SSP_MODE
+{
+	SSP_MODE_MASTER = (0 << 2), /**< Master mode */
+	SSP_MODE_SLAVE = (1u << 2), /**< Slave mode */
 } CHIP_SSP_MODE_T;
 
 /*
  * @brief SPI address
  */
-typedef struct {
-	uint8_t port;	/*!< Port Number */
-	uint8_t pin;	/*!< Pin number */
+typedef struct
+{
+	uint8_t port; /*!< Port Number */
+	uint8_t pin; /*!< Pin number */
 } SPI_Address_t;
 
 /*
  * @brief SSP data setup structure
  */
-typedef struct {
-	void      *tx_data;	/*!< Pointer to transmit data */
-	uint32_t  tx_cnt;	/*!< Transmit counter */
-	void      *rx_data;	/*!< Pointer to transmit data */
-	uint32_t  rx_cnt;	/*!< Receive counter */
-	uint32_t  length;	/*!< Length of transfer data */
+typedef struct
+{
+	void *tx_data; /*!< Pointer to transmit data */
+	uint32_t tx_cnt; /*!< Transmit counter */
+	void *rx_data; /*!< Pointer to transmit data */
+	uint32_t rx_cnt; /*!< Receive counter */
+	uint32_t length; /*!< Length of transfer data */
 } Chip_SSP_DATA_SETUP_T;
 
 /** SSP configuration parameter defines */

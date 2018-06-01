@@ -70,8 +70,7 @@ struct param_wbuf_s
 /*update value and param's change bit in shared memory*/
 void update_to_shmem(param_t param, union param_value_u value)
 {
-	if (px4muorb_param_update_to_shmem(param, (unsigned char *) &value,
-					   sizeof(value)))
+	if (px4muorb_param_update_to_shmem(param, (unsigned char *) &value, sizeof(value)))
 	{
 		PX4_ERR("krait update param %u failed", param);
 	}
@@ -84,15 +83,14 @@ void update_index_from_shmem(void)
 		PX4_ERR("%s no param buffer", __FUNCTION__);
 		return;
 	}
-
+	
 	px4muorb_param_update_index_from_shmem(adsp_changed_index,
-					       PARAM_BUFFER_SIZE);
+	PARAM_BUFFER_SIZE);
 }
 
 static void update_value_from_shmem(param_t param, union param_value_u *value)
 {
-	if (px4muorb_param_update_value_from_shmem(param, (unsigned char *) value,
-			sizeof(union param_value_u)))
+	if (px4muorb_param_update_value_from_shmem(param, (unsigned char *) value, sizeof(union param_value_u)))
 	{
 		PX4_ERR("%s get param failed", __FUNCTION__);
 	}
@@ -102,37 +100,35 @@ int update_from_shmem(param_t param, union param_value_u *value)
 {
 	unsigned int byte_changed, bit_changed;
 	unsigned int retval = 0;
-
+	
 	if (!adsp_changed_index)
 	{
 		PX4_ERR("%s no param buffer", __FUNCTION__);
 		return 0;
 	}
-
+	
 	update_from_shmem_current_time = hrt_absolute_time();
-
-	if ((update_from_shmem_current_time - update_from_shmem_prev_time)
-			> 1000000)   //update every 1 second
+	
+	if ((update_from_shmem_current_time - update_from_shmem_prev_time) > 1000000)   //update every 1 second
 	{
 		update_from_shmem_prev_time = update_from_shmem_current_time;
 		update_index_from_shmem();
 	}
-
+	
 	byte_changed = param / 8;
 	bit_changed = 1 << param % 8;
-
+	
 	if (adsp_changed_index[byte_changed] & bit_changed)
 	{
 		update_value_from_shmem(param, value);
 		adsp_changed_index[byte_changed] &= ~bit_changed; //clear the bit
 		retval = 1;
 	}
-
+	
 	//else {PX4_INFO("no change to param %s", param_name(param));}
-
-	PX4_DEBUG("%s %d bit on adsp index[%d]",
-		  (retval) ? "cleared" : "unchanged", bit_changed, byte_changed);
-
+	
+	PX4_DEBUG("%s %d bit on adsp index[%d]", (retval) ? "cleared" : "unchanged", bit_changed, byte_changed);
+	
 	return retval;
 }
 

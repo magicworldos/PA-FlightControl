@@ -46,8 +46,10 @@ class PublisherExample
 public:
 	PublisherExample();
 
-	~PublisherExample() {}
-
+	~PublisherExample()
+	{
+	}
+	
 	int main();
 
 	static px4::AppState appState;

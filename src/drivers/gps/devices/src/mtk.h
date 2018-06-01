@@ -56,7 +56,8 @@
 #define MTK_TIMEOUT_5HZ 400
 #define MTK_BAUDRATE 38400
 
-typedef enum {
+typedef enum
+{
 	MTK_DECODE_UNINIT = 0,
 	MTK_DECODE_GOT_CK_A = 1,
 	MTK_DECODE_GOT_CK_B = 2
@@ -65,7 +66,8 @@ typedef enum {
 /** the structures of the binary packets */
 #pragma pack(push, 1)
 
-typedef struct {
+typedef struct
+{
 	uint8_t payload; ///< Number of payload bytes
 	int32_t latitude;  ///< Latitude in degrees * 10^7
 	int32_t longitude; ///< Longitude in degrees * 10^7
@@ -85,12 +87,12 @@ typedef struct {
 
 #define MTK_RECV_BUFFER_SIZE 40
 
-class GPSDriverMTK : public GPSHelper
+class GPSDriverMTK: public GPSHelper
 {
 public:
 	GPSDriverMTK(GPSCallbackPtr callback, void *callback_user, struct vehicle_gps_position_s *gps_position);
 	virtual ~GPSDriverMTK() = default;
-
+	
 	int receive(unsigned timeout);
 	int configure(unsigned &baudrate, OutputMode output_mode);
 
@@ -115,10 +117,10 @@ private:
 	 */
 	void addByteToChecksum(uint8_t);
 
-	struct vehicle_gps_position_s *_gps_position {nullptr};
-	mtk_decode_state_t _decode_state{MTK_DECODE_UNINIT};
-	uint8_t _mtk_revision{0};
-	unsigned _rx_count{};
-	uint8_t _rx_ck_a{};
-	uint8_t _rx_ck_b{};
+	struct vehicle_gps_position_s *_gps_position { nullptr };
+	mtk_decode_state_t _decode_state { MTK_DECODE_UNINIT };
+	uint8_t _mtk_revision { 0 };
+	unsigned _rx_count { };
+	uint8_t _rx_ck_a { };
+	uint8_t _rx_ck_b { };
 };

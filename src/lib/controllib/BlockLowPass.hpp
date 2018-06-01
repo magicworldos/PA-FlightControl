@@ -60,24 +60,29 @@ namespace control
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
 class __EXPORT BlockLowPass : public Block
-{
+{	
 public:
 // methods
 	BlockLowPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_state(0.0f / 0.0f /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, "") // only one parameter, no need to name
+	Block(parent, name),
+	_state(0.0f / 0.0f /* initialize to invalid val, force into is_finite() check on first call */),
+	_fCut(this, "")// only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() {}
+	virtual ~BlockLowPass()
+	{}
 	float update(float input);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
+	float getState()
+	{	return _state;}
+	float getFCut()
+	{	return _fCut.get();}
+	void setState(float state)
+	{	_state = state;}
 protected:
 // attributes
 	float _state;
 	control::BlockParamFloat _fCut;
 };
 
-} // namespace control
+}
+ // namespace control

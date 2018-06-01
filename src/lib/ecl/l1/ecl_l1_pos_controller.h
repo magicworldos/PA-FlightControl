@@ -68,23 +68,23 @@
  * L1 Nonlinear Guidance Logic
  */
 class __EXPORT ECL_L1_Pos_Controller
-{
+{	
 public:
 	ECL_L1_Pos_Controller() :
-		_lateral_accel(0.0),
-		_L1_distance(20.0),
-		_circle_mode(false),
-		_nav_bearing(0.0),
-		_bearing_error(0.0),
-		_crosstrack_error(0.0),
-		_target_bearing(0.0),
-		_L1_period(25.0),
-		_L1_damping(0.75),
-		_L1_ratio(5.0),
-		_K_L1(2.0),
-		_heading_omega(1.0),
-		_roll_lim_rad(math::radians(10.0))
-	{
+	_lateral_accel(0.0),
+	_L1_distance(20.0),
+	_circle_mode(false),
+	_nav_bearing(0.0),
+	_bearing_error(0.0),
+	_crosstrack_error(0.0),
+	_target_bearing(0.0),
+	_L1_period(25.0),
+	_L1_damping(0.75),
+	_L1_ratio(5.0),
+	_K_L1(2.0),
+	_heading_omega(1.0),
+	_roll_lim_rad(math::radians(10.0))
+	{	
 	}
 
 	/**
@@ -94,14 +94,12 @@ public:
 	 */
 	float nav_bearing();
 
-
 	/**
 	 * Get lateral acceleration demand.
 	 *
 	 * @return Lateral acceleration in m/s^2
 	 */
 	float nav_lateral_acceleration_demand();
-
 
 	/**
 	 * Heading error.
@@ -111,14 +109,12 @@ public:
 	 */
 	float bearing_error();
 
-
 	/**
 	 * Bearing from aircraft to current target.
 	 *
 	 * @return bearing angle (-pi..pi, in NED frame)
 	 */
 	float target_bearing();
-
 
 	/**
 	 * Get roll angle setpoint for fixed wing.
@@ -127,7 +123,6 @@ public:
 	 */
 	float nav_roll();
 
-
 	/**
 	 * Get the current crosstrack error.
 	 *
@@ -135,20 +130,18 @@ public:
 	 */
 	float crosstrack_error();
 
-
 	/**
 	 * Returns true if the loiter waypoint has been reached
 	 */
 	bool reached_loiter_target();
 
-
 	/**
 	 * Returns true if following a circle (loiter)
 	 */
-	bool circle_mode() {
+	bool circle_mode()
+	{	
 		return _circle_mode;
 	}
-
 
 	/**
 	 * Get the switch distance
@@ -161,7 +154,6 @@ public:
 	 */
 	float switch_distance(float waypoint_switch_radius);
 
-
 	/**
 	 * Navigate between two waypoints
 	 *
@@ -173,8 +165,7 @@ public:
 	 * @return sets _lateral_accel setpoint
 	 */
 	void navigate_waypoints(const math::Vector<2> &vector_A, const math::Vector<2> &vector_B, const math::Vector<2> &vector_curr_position,
-			   const math::Vector<2> &ground_speed);
-
+			const math::Vector<2> &ground_speed);
 
 	/**
 	 * Navigate on an orbit around a loiter waypoint.
@@ -185,8 +176,7 @@ public:
 	 * @return sets _lateral_accel setpoint
 	 */
 	void navigate_loiter(const math::Vector<2> &vector_A, const math::Vector<2> &vector_curr_position, float radius, int8_t loiter_direction,
-			   const math::Vector<2> &ground_speed_vector);
-
+			const math::Vector<2> &ground_speed_vector);
 
 	/**
 	 * Navigate on a fixed bearing.
@@ -199,7 +189,6 @@ public:
 	 */
 	void navigate_heading(float navigation_heading, float current_heading, const math::Vector<2> &ground_speed);
 
-
 	/**
 	 * Keep the wings level.
 	 *
@@ -208,11 +197,11 @@ public:
 	 */
 	void navigate_level_flight(float current_heading);
 
-
 	/**
 	 * Set the L1 period.
 	 */
-	void set_l1_period(float period) {
+	void set_l1_period(float period)
+	{	
 		_L1_period = period;
 		/* calculate the ratio introduced in [2] */
 		_L1_ratio = 1.0f / M_PI_F * _L1_damping * _L1_period;
@@ -220,13 +209,13 @@ public:
 		_heading_omega = sqrtf(2.0f) * M_PI_F / _L1_period;
 	}
 
-
 	/**
 	 * Set the L1 damping factor.
 	 *
 	 * The original publication recommends a default of sqrt(2) / 2 = 0.707
 	 */
-	void set_l1_damping(float damping) {
+	void set_l1_damping(float damping)
+	{	
 		_L1_damping = damping;
 		/* calculate the ratio introduced in [2] */
 		_L1_ratio = 1.0f / M_PI_F * _L1_damping * _L1_period;
@@ -234,33 +223,33 @@ public:
 		_K_L1 = 4.0f * _L1_damping * _L1_damping;
 	}
 
-
 	/**
 	 * Set the maximum roll angle output in radians
 	 *
 	 */
-	void set_l1_roll_limit(float roll_lim_rad) {
+	void set_l1_roll_limit(float roll_lim_rad)
+	{	
 		_roll_lim_rad = roll_lim_rad;
 	}
 
 private:
 
 	float _lateral_accel;		///< Lateral acceleration setpoint in m/s^2
-	float _L1_distance;		///< L1 lead distance, defined by period and damping
-	bool _circle_mode;		///< flag for loiter mode
-	float _nav_bearing;		///< bearing to L1 reference point
-	float _bearing_error;		///< bearing error
-	float _crosstrack_error;	///< crosstrack error in meters
-	float _target_bearing;		///< the heading setpoint
-
-	float _L1_period;		///< L1 tracking period in seconds
-	float _L1_damping;		///< L1 damping ratio
-	float _L1_ratio;		///< L1 ratio for navigation
-	float _K_L1;			///< L1 control gain for _L1_damping
-	float _heading_omega;		///< Normalized frequency
-
-	float _roll_lim_rad;  ///<maximum roll angle
-
+	float _L1_distance;///< L1 lead distance, defined by period and damping
+	bool _circle_mode;///< flag for loiter mode
+	float _nav_bearing;///< bearing to L1 reference point
+	float _bearing_error;///< bearing error
+	float _crosstrack_error;///< crosstrack error in meters
+	float _target_bearing;///< the heading setpoint
+	
+	float _L1_period;///< L1 tracking period in seconds
+	float _L1_damping;///< L1 damping ratio
+	float _L1_ratio;///< L1 ratio for navigation
+	float _K_L1;///< L1 control gain for _L1_damping
+	float _heading_omega;///< Normalized frequency
+	
+	float _roll_lim_rad;///<maximum roll angle
+	
 	/**
 	 * Convert a 2D vector from WGS84 to planar coordinates.
 	 *
@@ -275,6 +264,5 @@ private:
 	math::Vector<2> get_local_planar_vector(const math::Vector<2> &origin, const math::Vector<2> &target) const;
 
 };
-
 
 #endif /* ECL_L1_POS_CONTROLLER_H */

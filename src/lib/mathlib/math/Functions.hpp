@@ -63,7 +63,7 @@ int sign(T val)
 template<typename _Tp>
 inline const _Tp expo(const _Tp &value, const _Tp &e)
 {
-	_Tp x = constrain(value, (_Tp) - 1, (_Tp)1);
+	_Tp x = constrain(value, (_Tp) -1, (_Tp) 1);
 	return (1 - e) * x + e * x * x * x;
 }
 
@@ -82,15 +82,15 @@ inline const _Tp expo(const _Tp &value, const _Tp &e)
 template<typename _Tp>
 inline const _Tp superexpo(const _Tp &value, const _Tp &e, const _Tp &g)
 {
-	_Tp x = constrain(value, (_Tp) - 1, (_Tp)1);
+	_Tp x = constrain(value, (_Tp) -1, (_Tp) 1);
 	return expo(x, e) * (1 - g) / (1 - fabsf(x) * g);
 }
 
 template<typename _Tp>
 inline const _Tp deadzone(const _Tp &value, const _Tp &dz)
 {
-	_Tp x = constrain(value, (_Tp) - 1, (_Tp)1);
-	_Tp dzc = constrain(dz, (_Tp) - 1, (_Tp)1);
+	_Tp x = constrain(value, (_Tp) -1, (_Tp) 1);
+	_Tp dzc = constrain(dz, (_Tp) -1, (_Tp) 1);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	_Tp out = (x - sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
@@ -102,7 +102,6 @@ inline const _Tp expo_deadzone(const _Tp &value, const _Tp &e, const _Tp &dz)
 {
 	return expo(deadzone(value, dz), e);
 }
-
 
 /*
  * Constant, linear, constant function with the two corner points as parameters
@@ -116,17 +115,22 @@ inline const _Tp expo_deadzone(const _Tp &value, const _Tp &e, const _Tp &dz)
 template<typename _Tp>
 inline const _Tp gradual(const _Tp &value, const _Tp &x_low, const _Tp &x_high, const _Tp &y_low, const _Tp &y_high)
 {
-	if (value < x_low) {
+	if (value < x_low)
+	{
 		return y_low;
-
-	} else if (value > x_high) {
+		
+	}
+	else if (value > x_high)
+	{
 		return y_high;
-
-	} else {
+		
+	}
+	else
+	{
 		/* linear function between the two points */
 		float a = (y_high - y_low) / (x_high - x_low);
 		float b = y_low - a * x_low;
-		return  a * value + b;
+		return a * value + b;
 	}
 }
 

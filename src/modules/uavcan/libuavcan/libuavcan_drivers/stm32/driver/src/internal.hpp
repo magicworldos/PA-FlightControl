@@ -97,57 +97,59 @@ namespace uavcan_stm32
 #if UAVCAN_STM32_CHIBIOS
 
 struct CriticalSectionLocker
-{
-    CriticalSectionLocker() { chSysSuspend(); }
-    ~CriticalSectionLocker() { chSysEnable(); }
+{	
+	CriticalSectionLocker()
+	{	chSysSuspend();}
+	~CriticalSectionLocker()
+	{	chSysEnable();}
 };
 
 #elif UAVCAN_STM32_NUTTX
 
 struct CriticalSectionLocker
-{
-    const irqstate_t flags_;
+{	
+	const irqstate_t flags_;
 
-    CriticalSectionLocker()
-        : flags_(enter_critical_section())
-    { }
+	CriticalSectionLocker()
+	: flags_(enter_critical_section())
+	{}
 
-    ~CriticalSectionLocker()
-    {
-        leave_critical_section(flags_);
-    }
+	~CriticalSectionLocker()
+	{	
+		leave_critical_section(flags_);
+	}
 };
 
 #elif UAVCAN_STM32_BAREMETAL
 
 struct CriticalSectionLocker
-{
+{	
 
-    CriticalSectionLocker()
-    {
-      __disable_irq();
-    }
+	CriticalSectionLocker()
+	{	
+		__disable_irq();
+	}
 
-    ~CriticalSectionLocker()
-    {
-      __enable_irq();
-    }
+	~CriticalSectionLocker()
+	{	
+		__enable_irq();
+	}
 };
 
 #elif UAVCAN_STM32_FREERTOS
 
 struct CriticalSectionLocker
-{
+{	
 
-    CriticalSectionLocker()
-    {
-        taskENTER_CRITICAL();
-    }
+	CriticalSectionLocker()
+	{	
+		taskENTER_CRITICAL();
+	}
 
-    ~CriticalSectionLocker()
-    {
-        taskEXIT_CRITICAL();
-    }
+	~CriticalSectionLocker()
+	{	
+		taskEXIT_CRITICAL();
+	}
 };
 
 #endif

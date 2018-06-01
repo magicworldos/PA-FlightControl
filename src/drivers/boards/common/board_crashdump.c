@@ -12,21 +12,20 @@
 #include <systemlib/hardfault_log.h>
 
 static void copy_reverse(stack_word_t *dest, stack_word_t *src, int size)
-{
+{	
 	while (size--)
-	{
+	{	
 		*dest++ = *src--;
 	}
 }
 
 static uint32_t *__attribute__((noinline)) __sdata_addr(void)
-{
+{	
 	return &_sdata;
 }
 
-
 __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint8_t *filename, int lineno)
-{
+{	
 #ifndef CRASHDUMP_RESET_ONLY
 	/* We need a chunk of ram to save the complete context in.
 	 * Since we are going to reboot we will use &_sdata
@@ -50,14 +49,14 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	pdump->info.lineno = lineno;
 
 	if (filename)
-	{
+	{	
 
 		int offset = 0;
 		unsigned int len = strlen((char *)filename) + 1;
 
 		if (len > sizeof(pdump->info.filename))
-		{
-			offset = len - sizeof(pdump->info.filename) ;
+		{	
+			offset = len - sizeof(pdump->info.filename);
 		}
 
 		strncpy(pdump->info.filename, (char *)&filename[offset], sizeof(pdump->info.filename));
@@ -73,13 +72,11 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 
 	/* Save Context */
 
-
 #if CONFIG_TASK_NAME_SIZE > 0
 	strncpy(pdump->info.name, rtcb->name, CONFIG_TASK_NAME_SIZE);
 #endif
-
+	
 	pdump->info.pid = rtcb->pid;
-
 
 	/* If  current_regs is not NULL then we are in an interrupt context
 	 * and the user context is in current_regs else we are running in
@@ -87,7 +84,7 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	 */
 
 	if (CURRENT_REGS)
-	{
+	{	
 		pdump->info.stacks.interrupt.sp = currentsp;
 
 		pdump->info.flags |= (eRegsPresent | eUserStackPresent | eIntStackPresent);
@@ -96,7 +93,7 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 
 	}
 	else
-	{
+	{	
 
 		/* users context */
 		pdump->info.flags |= eUserStackPresent;
@@ -105,31 +102,31 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	}
 
 	if (pdump->info.pid == 0)
-	{
+	{	
 
 		pdump->info.stacks.user.top = g_idle_topstack - 4;
 		pdump->info.stacks.user.size = CONFIG_IDLETHREAD_STACKSIZE;
 
 	}
 	else
-	{
+	{	
 		pdump->info.stacks.user.top = (uint32_t) rtcb->adj_stack_ptr;
 		pdump->info.stacks.user.size = (uint32_t) rtcb->adj_stack_size;
 	}
 
 #if CONFIG_ARCH_INTERRUPTSTACK > 3
-
+	
 	/* Get the limits on the interrupt stack memory */
 
 	pdump->info.stacks.interrupt.top = (uint32_t)&g_intstackbase;
-	pdump->info.stacks.interrupt.size  = (CONFIG_ARCH_INTERRUPTSTACK & ~3);
+	pdump->info.stacks.interrupt.size = (CONFIG_ARCH_INTERRUPTSTACK & ~3);
 
 	/* If In interrupt Context save the interrupt stack data centered
 	 * about the interrupt stack pointer
 	 */
 
 	if ((pdump->info.flags & eIntStackPresent) != 0)
-	{
+	{	
 		stack_word_t *ps = (stack_word_t *) pdump->info.stacks.interrupt.sp;
 		copy_reverse(pdump->istack, &ps[arraySize(pdump->istack) / 2], arraySize(pdump->istack));
 	}
@@ -137,18 +134,18 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	/* Is it Invalid? */
 
 	if (!(pdump->info.stacks.interrupt.sp <= pdump->info.stacks.interrupt.top &&
-			pdump->info.stacks.interrupt.sp > pdump->info.stacks.interrupt.top - pdump->info.stacks.interrupt.size))
-	{
+					pdump->info.stacks.interrupt.sp > pdump->info.stacks.interrupt.top - pdump->info.stacks.interrupt.size))
+	{	
 		pdump->info.flags |= eInvalidIntStackPrt;
 	}
 
 #endif
-
+	
 	/* If In interrupt context or User save the user stack data centered
 	 * about the user stack pointer
 	 */
 	if ((pdump->info.flags & eUserStackPresent) != 0)
-	{
+	{	
 		stack_word_t *ps = (stack_word_t *) pdump->info.stacks.user.sp;
 		copy_reverse(pdump->ustack, &ps[arraySize(pdump->ustack) / 2], arraySize(pdump->ustack));
 	}
@@ -156,8 +153,8 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	/* Is it Invalid? */
 
 	if (!(pdump->info.stacks.user.sp <= pdump->info.stacks.user.top &&
-			pdump->info.stacks.user.sp > pdump->info.stacks.user.top - pdump->info.stacks.user.size))
-	{
+					pdump->info.stacks.user.sp > pdump->info.stacks.user.top - pdump->info.stacks.user.size))
+	{	
 		pdump->info.flags |= eInvalidUserStackPtr;
 	}
 
@@ -166,17 +163,17 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	/* Test if memory got wiped because of using _sdata */
 
 	if (rv == -ENXIO)
-	{
+	{	
 		char *dead = "Memory wiped - dump not saved!";
 
 		while (*dead)
-		{
+		{	
 			up_lowputc(*dead++);
 		}
 
 	}
 	else if (rv == -ENOSPC)
-	{
+	{	
 
 		/* hard fault again */
 
@@ -184,7 +181,7 @@ __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint
 	}
 
 #endif /* CRASHDUMP_RESET_ONLY */
-
+	
 #if defined(CONFIG_BOARD_RESET_ON_CRASH)
 	board_reset(0);
 #endif

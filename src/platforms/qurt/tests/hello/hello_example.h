@@ -44,10 +44,14 @@
 class HelloExample
 {
 public:
-	HelloExample() {}
-
-	~HelloExample() {}
-
+	HelloExample()
+	{
+	}
+	
+	~HelloExample()
+	{
+	}
+	
 	int main();
 
 	static px4::AppState appState; /* track requests to terminate app */

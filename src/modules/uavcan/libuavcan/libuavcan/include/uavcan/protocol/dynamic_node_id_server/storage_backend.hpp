@@ -22,38 +22,46 @@ namespace dynamic_node_id_server
 class UAVCAN_EXPORT IStorageBackend
 {
 public:
-    /**
-     * Maximum length of keys and values. One pair takes twice as much space.
-     */
-    enum { MaxStringLength = 32 };
+	/**
+	 * Maximum length of keys and values. One pair takes twice as much space.
+	 */
+	enum
+	{
+		MaxStringLength = 32
+	};
 
-    /**
-     * It is guaranteed that the server will never require more than this number of key/value pairs.
-     * Total storage space needed is (MaxKeyValuePairs * MaxStringLength * 2), not including storage overhead.
-     */
-    enum { MaxKeyValuePairs = 512 };
+	/**
+	 * It is guaranteed that the server will never require more than this number of key/value pairs.
+	 * Total storage space needed is (MaxKeyValuePairs * MaxStringLength * 2), not including storage overhead.
+	 */
+	enum
+	{
+		MaxKeyValuePairs = 512
+	};
 
-    /**
-     * This type is used to exchange data chunks with the backend.
-     * It doesn't use any dynamic memory; please refer to the Array<> class for details.
-     */
-    typedef MakeString<MaxStringLength>::Type String;
+	/**
+	 * This type is used to exchange data chunks with the backend.
+	 * It doesn't use any dynamic memory; please refer to the Array<> class for details.
+	 */
+	typedef MakeString<MaxStringLength>::Type String;
 
-    /**
-     * Read one value from the storage.
-     * If such key does not exist, or if read failed, an empty string will be returned.
-     * This method should not block for more than 50 ms.
-     */
-    virtual String get(const String& key) const = 0;
+	/**
+	 * Read one value from the storage.
+	 * If such key does not exist, or if read failed, an empty string will be returned.
+	 * This method should not block for more than 50 ms.
+	 */
+	virtual String get(const String& key) const = 0;
 
-    /**
-     * Create or update value for the given key. Empty value should be regarded as a request to delete the key.
-     * This method should not block for more than 50 ms.
-     * Failures will be ignored.
-     */
-    virtual void set(const String& key, const String& value) = 0;
+	/**
+	 * Create or update value for the given key. Empty value should be regarded as a request to delete the key.
+	 * This method should not block for more than 50 ms.
+	 * Failures will be ignored.
+	 */
+	virtual void set(const String& key, const String& value) = 0;
 
-    virtual ~IStorageBackend() { }
+	virtual ~IStorageBackend()
+	{
+	}
 };
 
 }

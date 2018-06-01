@@ -80,29 +80,26 @@ static bool safety_button_pressed;
 static void safety_check_button(void *arg);
 static void failsafe_blink(void *arg);
 
-void
-safety_init(void)
+void safety_init(void)
 {
 	/* arrange for the button handler to be called at 10Hz */
 	hrt_call_every(&arming_call, 1000, 100000, safety_check_button, NULL);
 }
 
-void
-failsafe_led_init(void)
+void failsafe_led_init(void)
 {
 	/* arrange for the failsafe blinker to be called at 8Hz */
 	hrt_call_every(&failsafe_call, 1000, 125000, failsafe_blink, NULL);
 }
 
-static void
-safety_check_button(void *arg)
+static void safety_check_button(void *arg)
 {
 	/*
 	 * Debounce the safety button, change state if it has been held for long enough.
 	 *
 	 */
 	safety_button_pressed = BUTTON_SAFETY;
-
+	
 	/*
 	 * Keep pressed for a while to arm.
 	 *
@@ -111,17 +108,17 @@ safety_check_button(void *arg)
 	 * state machine, keep ARM_COUNTER_THRESHOLD the same
 	 * length in all cases of the if/else struct below.
 	 */
-	if (safety_button_pressed && !(r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF) &&
-			(r_setup_arming & PX4IO_P_SETUP_ARMING_IO_ARM_OK))
-	{
+	if (safety_button_pressed && !(r_status_flags& PX4IO_P_STATUS_FLAGS_SAFETY_OFF) &&
+	(r_setup_arming & PX4IO_P_SETUP_ARMING_IO_ARM_OK))
+	{	
 
 		if (counter < ARM_COUNTER_THRESHOLD)
-		{
+		{	
 			counter++;
 
 		}
 		else if (counter == ARM_COUNTER_THRESHOLD)
-		{
+		{	
 			/* switch to armed state */
 			PX4_ATOMIC_MODIFY_OR(r_status_flags, PX4IO_P_STATUS_FLAGS_SAFETY_OFF);
 			counter++;
@@ -129,15 +126,15 @@ safety_check_button(void *arg)
 
 	}
 	else if (safety_button_pressed && (r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF))
-	{
+	{	
 
 		if (counter < ARM_COUNTER_THRESHOLD)
-		{
+		{	
 			counter++;
 
 		}
 		else if (counter == ARM_COUNTER_THRESHOLD)
-		{
+		{	
 			/* change to disarmed state and notify the FMU */
 			PX4_ATOMIC_MODIFY_CLEAR(r_status_flags, PX4IO_P_STATUS_FLAGS_SAFETY_OFF);
 			counter++;
@@ -145,52 +142,51 @@ safety_check_button(void *arg)
 
 	}
 	else
-	{
+	{	
 		counter = 0;
 	}
 
 	/* Select the appropriate LED flash pattern depending on the current IO/FMU arm state */
 	uint16_t pattern = LED_PATTERN_FMU_REFUSE_TO_ARM;
-
-	if (r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
-	{
+	
+	if (r_status_flags& PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
+	{	
 		if (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED)
-		{
+		{	
 			pattern = LED_PATTERN_IO_FMU_ARMED;
 
 		}
 		else
-		{
+		{	
 			pattern = LED_PATTERN_IO_ARMED;
 		}
 
 	}
 	else if (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED)
-	{
+	{	
 		pattern = LED_PATTERN_FMU_ARMED;
 
 	}
 	else if (r_setup_arming & PX4IO_P_SETUP_ARMING_IO_ARM_OK)
-	{
+	{	
 		pattern = LED_PATTERN_FMU_OK_TO_ARM;
 
 	}
 
 	/* Turn the LED on if we have a 1 at the current bit position */
 	LED_SAFETY(pattern & (1 << blink_counter++));
-
+	
 	if (blink_counter > 15)
 	{
 		blink_counter = 0;
 	}
 }
 
-static void
-failsafe_blink(void *arg)
+static void failsafe_blink(void *arg)
 {
 	/* indicate that a serious initialisation error occured */
-	if (!(r_status_flags & PX4IO_P_STATUS_FLAGS_INIT_OK))
-	{
+	if (!(r_status_flags& PX4IO_P_STATUS_FLAGS_INIT_OK))
+	{	
 		LED_AMBER(true);
 		return;
 	}
@@ -199,12 +195,12 @@ failsafe_blink(void *arg)
 
 	/* blink the failsafe LED if we don't have FMU input */
 	if (!(r_status_flags & PX4IO_P_STATUS_FLAGS_FMU_OK))
-	{
+	{	
 		failsafe = !failsafe;
 
 	}
 	else
-	{
+	{	
 		failsafe = false;
 	}
 

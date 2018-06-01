@@ -67,7 +67,6 @@ __BEGIN_DECLS
 //{0,                      GPIO_SPEKTRUM_PWR_EN,     0},	Owned Spektum driver input to auto pilot
 //{0,                      GPIO_8266_PD,            0},	Owned by the 8266 driver
 //{0,                      GPIO_8266_RST,           0},	Owned by the 8266 driver
-
 /* PX4FMU GPIOs ***********************************************************************************/
 /* LEDs */
 /*                                Port[CON-PIN] FMUv5 Delta */
@@ -91,7 +90,6 @@ __BEGIN_DECLS
 
 #define GPIO_SPI_CS_ICM_20608_G /* PF13[CN12-57] */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTF|GPIO_PIN13)
 
-
 /*  Define the Ready interrupts */
 
 #define GPIO_DRDY_MPU9250       /* PB4[CN12-27]  */ (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTB|GPIO_PIN4)
@@ -114,7 +112,6 @@ __BEGIN_DECLS
 #define GPIO_DRDY_OFF_MPU9250		_PIN_OFF(GPIO_DRDY_MPU9250)
 #define GPIO_DRDY_OFF_HMC5983		_PIN_OFF(GPIO_DRDY_HMC5983)
 #define GPIO_DRDY_OFF_ICM_20608_G	_PIN_OFF(GPIO_DRDY_ICM_20608_G)
-
 
 /* SPI1 off */
 #define GPIO_SPI1_SCK_OFF	_PIN_OFF(GPIO_SPI1_SCK)
@@ -299,7 +296,6 @@ __BEGIN_DECLS
 #define SPEKTRUM_RX_AS_UART()                 px4_arch_configgpio(GPIO_USART1_RX)
 #define SPEKTRUM_OUT(_one_true)               px4_arch_gpiowrite(GPIO_PPM_IN_AS_OUT, (_one_true))
 
-
 #define SDIO_SLOTNO             0  /* Only one slot */
 #define SDIO_MINOR              0
 
@@ -352,7 +348,8 @@ __BEGIN_DECLS
 #define GPIO_SERVO_6          (1<<5)  /**< servo 6 output */
 
 #define GPIO_3V3_SENSORS_EN   (1<<6)  /**< PE3  - VDD_3V3_SENSORS_EN */
-#define GPIO_BRICK_VALID      (1<<7)  /**< PB10 - !VDD_BRICK_VALID */
+#define GPIO_BRICK_VALID      (1<<7)  /**< PB10 - !VDD_BRIC
+K_VALID */
 
 /* This board provides a DMA pool and APIs */
 

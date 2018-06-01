@@ -51,25 +51,31 @@ public:
 		unsigned nextState;
 	};
 
-	StateTable(Tran const *table, unsigned nStates, unsigned nSignals)
-		: myState(0), myTable(table), myNsignals(nSignals) {}
-
+	StateTable(Tran const *table, unsigned nStates, unsigned nSignals) :
+			    myState(0),
+			    myTable(table),
+			    myNsignals(nSignals)
+	{
+	}
+	
 	StateTable(const StateTable &) = delete;
 	StateTable &operator=(const StateTable &) = delete;
-
+	
 #define NO_ACTION &StateTable::doNothing
 #define ACTION(_target) StateTable::Action(_target)
-
-	virtual ~StateTable() {}
-
+	
+	virtual ~StateTable()
+	{
+	}
+	
 	void dispatch(unsigned const sig)
 	{
 		/* get transition using state table */
 		Tran const *t = myTable + myState * myNsignals + sig;
-
+		
 		/* accept new state */
 		myState = t->nextState;
-
+		
 		/*  */
 		(this->*(t->action))();
 	}

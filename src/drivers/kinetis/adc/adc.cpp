@@ -74,7 +74,7 @@
 
 #if defined(ADC_CHANNELS)
 
-typedef uint32_t 	adc_chan_t;
+typedef uint32_t adc_chan_t;
 #define ADC_TOTAL_CHANNELS 		32
 
 #define _REG(_addr)	(*(volatile uint32_t *)(_addr))
@@ -112,38 +112,38 @@ typedef uint32_t 	adc_chan_t;
 #define rCLM0(adc)  REG(adc, KINETIS_ADC_CLM0_OFFSET) /* ADC minus-side general calibration value register */
 
 class ADC : public device::CDev
-{
+{	
 public:
 	ADC(adc_chan_t channels);
 	~ADC();
 
-	virtual int		init();
+	virtual int init();
 
-	virtual int		ioctl(file *filp, int cmd, unsigned long arg);
-	virtual ssize_t		read(file *filp, char *buffer, size_t len);
+	virtual int ioctl(file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(file *filp, char *buffer, size_t len);
 
 protected:
-	virtual int		open_first(struct file *filp);
-	virtual int		close_last(struct file *filp);
+	virtual int open_first(struct file *filp);
+	virtual int close_last(struct file *filp);
 
 private:
-	static const hrt_abstime _tickrate = 10000;	/**< 100Hz base rate */
+	static const hrt_abstime _tickrate = 10000; /**< 100Hz base rate */
 
-	hrt_call		_call;
-	perf_counter_t		_sample_perf;
+	hrt_call _call;
+	perf_counter_t _sample_perf;
 
-	adc_chan_t		_channels; 	/**< bits set for channels */
-	unsigned		_channel_count;
-	adc_msg_s		*_samples;		/**< sample buffer */
+	adc_chan_t _channels; /**< bits set for channels */
+	unsigned _channel_count;
+	adc_msg_s *_samples; /**< sample buffer */
 
-	orb_advert_t		_to_system_power;
-	orb_advert_t		_to_adc_report;
+	orb_advert_t _to_system_power;
+	orb_advert_t _to_adc_report;
 
 	/** work trampoline */
-	static void		_tick_trampoline(void *arg);
+	static void _tick_trampoline(void *arg);
 
 	/** worker function */
-	void			_tick();
+	void _tick();
 
 	/**
 	 * Sample a single channel and return the measured value.
@@ -152,7 +152,7 @@ private:
 	 * @return			The sampled value, or 0xffff if
 	 *				sampling failed.
 	 */
-	uint16_t		_sample(unsigned channel);
+	uint16_t _sample(unsigned channel);
 
 	// update system_power ORB topic, only on FMUv2
 	void update_system_power(hrt_abstime now);
@@ -161,14 +161,14 @@ private:
 };
 
 ADC::ADC(adc_chan_t channels) :
-	CDev("adc", ADC0_DEVICE_PATH),
-	_sample_perf(perf_alloc(PC_ELAPSED, "adc_samples")),
-	_channels(channels),
-	_channel_count(0),
-	_samples(nullptr),
-	_to_system_power(nullptr),
-	_to_adc_report(nullptr)
-{
+CDev("adc", ADC0_DEVICE_PATH),
+_sample_perf(perf_alloc(PC_ELAPSED, "adc_samples")),
+_channels(channels),
+_channel_count(0),
+_samples(nullptr),
+_to_system_power(nullptr),
+_to_adc_report(nullptr)
+{	
 	_debug_enabled = true;
 
 	/* always enable the temperature sensor */
@@ -176,9 +176,9 @@ ADC::ADC(adc_chan_t channels) :
 
 	/* allocate the sample array */
 	for (unsigned i = 0; i < ADC_TOTAL_CHANNELS; i++)
-	{
+	{	
 		if (channels & (1 << i))
-		{
+		{	
 			_channel_count++;
 		}
 	}
@@ -188,13 +188,13 @@ ADC::ADC(adc_chan_t channels) :
 	/* prefill the channel numbers in the sample array */
 
 	if (_samples != nullptr)
-	{
+	{	
 		unsigned index = 0;
 
 		for (unsigned i = 0; i < ADC_TOTAL_CHANNELS; i++)
-		{
+		{	
 			if (channels & (1 << i))
-			{
+			{	
 				_samples[index].am_channel = i;
 				_samples[index].am_data = 0;
 				index++;
@@ -204,9 +204,9 @@ ADC::ADC(adc_chan_t channels) :
 }
 
 ADC::~ADC()
-{
+{	
 	if (_samples != nullptr)
-	{
+	{	
 		delete _samples;
 	}
 
@@ -217,7 +217,7 @@ ADC::~ADC()
 
 int
 ADC::init()
-{
+{	
 	/* Input is Buss Clock 56 Mhz We will use /8 for 7 Mhz */
 
 	irqstate_t flags = px4_enter_critical_section();
@@ -234,11 +234,11 @@ ADC::init()
 	rSC3(1) = ADC_SC3_CAL | ADC_SC3_CALF;
 
 	while ((rSC1A(1) & ADC_SC1_COCO) == 0)
-	{
+	{	
 		usleep(100);
 
 		if (rSC3(1) & ADC_SC3_CALF)
-		{
+		{	
 			return -1;
 		}
 	}
@@ -250,33 +250,33 @@ ADC::init()
 	/* Check the state of CALF at the end of calibration */
 
 	if (rSC3(1) & ADC_SC3_CALF)
-	{
+	{	
 		return -1;
 	}
 
 	/* Calculate the calibration values for single ended positive */
 
-	r = rCLP0(1) + rCLP1(1)  + rCLP2(1)  + rCLP3(1)  + rCLP4(1)  + rCLPS(1) ;
+	r = rCLP0(1) + rCLP1(1) + rCLP2(1) + rCLP3(1) + rCLP4(1) + rCLPS(1);
 	r = 0x8000U | (r >> 1U);
 	rPG(1) = r;
 
 	/* Calculate the calibration values for double ended Negitive */
 
-	r = rCLM0(1) + rCLM1(1)  + rCLM2(1)  + rCLM3(1)  + rCLM4(1)  + rCLMS(1) ;
+	r = rCLM0(1) + rCLM1(1) + rCLM2(1) + rCLM3(1) + rCLM4(1) + rCLMS(1);
 	r = 0x8000U | (r >> 1U);
 	rMG(1) = r;
 
 	/* kick off a sample and wait for it to complete */
 	hrt_abstime now = hrt_absolute_time();
 
-	rSC1A(1) =  ADC_SC1_ADCH(ADC_SC1_ADCH_TEMP);
+	rSC1A(1) = ADC_SC1_ADCH(ADC_SC1_ADCH_TEMP);
 
 	while (!(rSC1A(1) & ADC_SC1_COCO))
-	{
+	{	
 
 		/* don't wait for more than 500us, since that means something broke - should reset here if we see this */
 		if ((hrt_absolute_time() - now) > 500)
-		{
+		{	
 			DEVICE_LOG("sample timeout");
 			return -1;
 		}
@@ -284,24 +284,23 @@ ADC::init()
 		break;
 	}
 
-
 	/* create the device node */
 	return CDev::init();
 }
 
 int
 ADC::ioctl(file *filp, int cmd, unsigned long arg)
-{
+{	
 	return -ENOTTY;
 }
 
 ssize_t
 ADC::read(file *filp, char *buffer, size_t len)
-{
+{	
 	const size_t maxsize = sizeof(adc_msg_s) * _channel_count;
 
 	if (len > maxsize)
-	{
+	{	
 		len = maxsize;
 	}
 
@@ -315,7 +314,7 @@ ADC::read(file *filp, char *buffer, size_t len)
 
 int
 ADC::open_first(struct file *filp)
-{
+{	
 	/* get fresh data */
 	_tick();
 
@@ -327,25 +326,25 @@ ADC::open_first(struct file *filp)
 
 int
 ADC::close_last(struct file *filp)
-{
+{	
 	hrt_cancel(&_call);
 	return 0;
 }
 
 void
 ADC::_tick_trampoline(void *arg)
-{
+{	
 	(reinterpret_cast<ADC *>(arg))->_tick();
 }
 
 void
 ADC::_tick()
-{
+{	
 	hrt_abstime now = hrt_absolute_time();
 
 	/* scan the channel set and sample each */
 	for (unsigned i = 0; i < _channel_count; i++)
-	{
+	{	
 		_samples[i].am_data = _sample(_samples[i].am_channel);
 	}
 
@@ -355,19 +354,20 @@ ADC::_tick()
 
 void
 ADC::update_adc_report(hrt_abstime now)
-{
-	adc_report_s adc = {};
+{	
+	adc_report_s adc =
+	{};
 	adc.timestamp = now;
 
 	unsigned max_num = _channel_count;
 
 	if (max_num > (sizeof(adc.channel_id) / sizeof(adc.channel_id[0])))
-	{
+	{	
 		max_num = (sizeof(adc.channel_id) / sizeof(adc.channel_id[0]));
 	}
 
 	for (unsigned i = 0; i < max_num; i++)
-	{
+	{	
 		adc.channel_id[i] = _samples[i].am_channel;
 		adc.channel_value[i] = _samples[i].am_data * 3.3f / 4096.0f;
 	}
@@ -378,58 +378,57 @@ ADC::update_adc_report(hrt_abstime now)
 
 void
 ADC::update_system_power(hrt_abstime now)
-{
+{	
 #if defined (BOARD_ADC_USB_CONNECTED)
-	system_power_s system_power = {};
+	system_power_s system_power =
+	{};
 	system_power.timestamp = now;
 
 	system_power.voltage5V_v = 0;
 
 #if defined(ADC_5V_RAIL_SENSE)
-
+	
 	for (unsigned i = 0; i < _channel_count; i++)
-	{
+	{	
 
 		if (_samples[i].am_channel == ADC_5V_RAIL_SENSE)
-		{
+		{	
 			// it is 2:1 scaled
 			system_power.voltage5V_v = _samples[i].am_data * (6.6f / 4096);
 		}
 	}
 
 #endif
-
-
+	
 	/* Note once the board_config.h provides BOARD_ADC_USB_CONNECTED,
 	 * It must provide the true logic GPIO BOARD_ADC_xxxx macros.
 	 */
 	// these are not ADC related, but it is convenient to
 	// publish these to the same topic
-
 	system_power.usb_connected = BOARD_ADC_USB_CONNECTED;
 	/* If provided used the Valid signal from HW*/
 #if defined(BOARD_ADC_USB_VALID)
 	system_power.usb_valid = BOARD_ADC_USB_VALID;
 #else
 	/* If not provided then use connected */
-	system_power.usb_valid  = system_power.usb_connected;
+	system_power.usb_valid = system_power.usb_connected;
 #endif
-
-	system_power.brick_valid   = BOARD_ADC_BRICK_VALID;
-	system_power.servo_valid   = BOARD_ADC_SERVO_VALID;
+	
+	system_power.brick_valid = BOARD_ADC_BRICK_VALID;
+	system_power.servo_valid = BOARD_ADC_SERVO_VALID;
 
 	// OC pins are active low
-	system_power.periph_5V_OC  = BOARD_ADC_PERIPH_5V_OC;
+	system_power.periph_5V_OC = BOARD_ADC_PERIPH_5V_OC;
 	system_power.hipower_5V_OC = BOARD_ADC_HIPOWER_5V_OC;
 
 	/* lazily publish */
 	if (_to_system_power != nullptr)
-	{
+	{	
 		orb_publish(ORB_ID(system_power), _to_system_power, &system_power);
 
 	}
 	else
-	{
+	{	
 		_to_system_power = orb_advertise(ORB_ID(system_power), &system_power);
 	}
 
@@ -438,7 +437,7 @@ ADC::update_system_power(hrt_abstime now)
 
 uint16_t
 ADC::_sample(unsigned channel)
-{
+{	
 	perf_begin(_sample_perf);
 
 	/* clear any previous COCC */
@@ -452,11 +451,11 @@ ADC::_sample(unsigned channel)
 	hrt_abstime now = hrt_absolute_time();
 
 	while (!(rSC1A(1) & ADC_SC1_COCO))
-	{
+	{	
 
 		/* don't wait for more than 10us, since that means something broke - should reset here if we see this */
 		if ((hrt_absolute_time() - now) > 10)
-		{
+		{	
 			DEVICE_LOG("sample timeout");
 			return 0xffff;
 		}
@@ -475,63 +474,63 @@ ADC::_sample(unsigned channel)
 extern "C" __EXPORT int adc_main(int argc, char *argv[]);
 
 namespace
-{
-ADC	*g_adc;
+{	
+	ADC *g_adc;
 
-void
-test(void)
-{
+	void
+	test(void)
+	{	
 
-	int fd = open(ADC0_DEVICE_PATH, O_RDONLY);
+		int fd = open(ADC0_DEVICE_PATH, O_RDONLY);
 
-	if (fd < 0)
-	{
-		PX4_ERR("can't open ADC device %d", errno);
-		exit(1);
-	}
-
-	for (unsigned i = 0; i < 50; i++)
-	{
-		adc_msg_s data[ADC_TOTAL_CHANNELS];
-		ssize_t count = read(fd, data, sizeof(data));
-
-		if (count < 0)
-		{
-			PX4_ERR("read error");
+		if (fd < 0)
+		{	
+			PX4_ERR("can't open ADC device %d", errno);
 			exit(1);
 		}
 
-		unsigned channels = count / sizeof(data[0]);
+		for (unsigned i = 0; i < 50; i++)
+		{	
+			adc_msg_s data[ADC_TOTAL_CHANNELS];
+			ssize_t count = read(fd, data, sizeof(data));
 
-		for (unsigned j = 0; j < channels; j++)
-		{
-			printf("%d: %u  ", data[j].am_channel, data[j].am_data);
+			if (count < 0)
+			{	
+				PX4_ERR("read error");
+				exit(1);
+			}
+
+			unsigned channels = count / sizeof(data[0]);
+
+			for (unsigned j = 0; j < channels; j++)
+			{	
+				printf("%d: %u  ", data[j].am_channel, data[j].am_data);
+			}
+
+			printf("\n");
+			usleep(500000);
 		}
 
-		printf("\n");
-		usleep(500000);
+		exit(0);
 	}
-
-	exit(0);
-}
 }
 
 int
 adc_main(int argc, char *argv[])
-{
+{	
 	if (g_adc == nullptr)
-	{
+	{	
 		/* XXX this hardcodes the default channel set for the board in board_config.h - should be configurable */
 		g_adc = new ADC(ADC_CHANNELS);
 
 		if (g_adc == nullptr)
-		{
+		{	
 			PX4_ERR("couldn't allocate the ADC driver");
 			exit(1);
 		}
 
 		if (g_adc->init() != OK)
-		{
+		{	
 			delete g_adc;
 			PX4_ERR("ADC init failed");
 			exit(1);
@@ -539,9 +538,9 @@ adc_main(int argc, char *argv[])
 	}
 
 	if (argc > 1)
-	{
+	{	
 		if (!strcmp(argv[1], "test"))
-		{
+		{	
 			test();
 		}
 	}

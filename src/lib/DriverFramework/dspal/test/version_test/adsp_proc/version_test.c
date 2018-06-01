@@ -35,11 +35,10 @@
 
 int version_test_get_version_info(char* version_string, int version_stringLen, char* build_date_string, int build_date_stringLen, char* build_time_string, int build_time_stringLen)
 {
-	dspal_get_version_info(version_string, build_date_string,
-			       build_time_string);
+	dspal_get_version_info(version_string, build_date_string, build_time_string);
 	LOG_INFO("version: %s", version_string);
 	LOG_INFO("build date: %s", build_date_string);
 	LOG_INFO("build time: %s", build_time_string);
-
+	
 	return 0;
 }

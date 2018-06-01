@@ -57,7 +57,7 @@
 #define SIGEV_NONE      0
 
 /* The signal specified in sigev_signo shall be generated for the process when
-   the event of interest occurs. */
+ the event of interest occurs. */
 #define SIGEV_SIGNAL    1
 
 /* A notification function is called to perform notification. */
@@ -73,32 +73,36 @@
 
 __BEGIN_DECLS
 
-typedef unsigned long int   sigset_t;
+typedef unsigned long int sigset_t;
 
-union sigval {
-	int  sival_int;   /* Integer signal value. */
-	void *sival_ptr;  /* Pointer signal value. */
+union sigval
+{
+	int sival_int; /* Integer signal value. */
+	void *sival_ptr; /* Pointer signal value. */
 };
 
-typedef struct sigevent   sigevent;
-struct sigevent {
-	int            sigev_notify;			/* Notification type.       */
-	int            sigev_signo;			/* Signal number.           */
-	union sigval   sigev_value;			/* Signal value.            */
-	void (*sigev_notify_function)(union sigval);	/* Notification function.   */
+typedef struct sigevent sigevent;
+struct sigevent
+{
+	int sigev_notify; /* Notification type.       */
+	int sigev_signo; /* Signal number.           */
+	union sigval sigev_value; /* Signal value.            */
+	void (*sigev_notify_function)(union sigval); /* Notification function.   */
 	pthread_attr_t *sigev_notify_attributes;
 };
 
-typedef struct siginfo_t   siginfo_t;
-struct siginfo_t {
-	int          si_signo;
-	int          si_code;
+typedef struct siginfo_t siginfo_t;
+struct siginfo_t
+{
+	int si_signo;
+	int si_code;
 	union sigval si_value;
 };
-struct sigaction {
+struct sigaction
+{
 	void (*sa_handler)(int);
 	sigset_t sa_mask;
-	int      sa_flags;
+	int sa_flags;
 	void (*sa_sigaction)(int, siginfo_t *, void *);
 };
 
@@ -207,7 +211,6 @@ int _sigaction(int sig, const struct sigaction *act, struct sigaction *oact);
  *
  * Please refer to POSIX standard for details.
  */
-int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info,
-		 const struct timespec *restrict timeout);
+int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info, const struct timespec *restrict timeout);
 
 __END_DECLS

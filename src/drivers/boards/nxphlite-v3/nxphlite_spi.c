@@ -81,7 +81,7 @@ static const uint32_t spi2selects_gpio[] = PX4_EXTERNAL_BUS_CS_GPIO;
  ************************************************************************************/
 
 __EXPORT void board_spi_reset(int ms)
-{
+{	
 	/* Goal not to back feed the chips on the bus via IO lines */
 
 	/* First float the A_MISO line tied to SA0 to ensure SPI Auto selection*/
@@ -92,9 +92,9 @@ __EXPORT void board_spi_reset(int ms)
 	/* Next Change CS to inputs with pull downs */
 
 	for (unsigned int cs = 0; cs < arraySize(spi1selects_gpio); cs++)
-	{
+	{	
 		if (spi1selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_pinconfig(PX4_MK_GPIO(spi1selects_gpio[cs], GPIO_PULLDOWN));
 		}
 	}
@@ -127,9 +127,9 @@ __EXPORT void board_spi_reset(int ms)
 	/* Restore all the CS to ouputs inactive */
 
 	for (unsigned int cs = 0; cs < arraySize(spi1selects_gpio); cs++)
-	{
+	{	
 		if (spi1selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_pinconfig(spi1selects_gpio[cs]);
 		}
 	}
@@ -172,29 +172,29 @@ __EXPORT void board_spi_reset(int ms)
  ************************************************************************************/
 
 void nxphlite_spidev_initialize(void)
-{
+{	
 	board_spi_reset(10);
 
 	for (unsigned int cs = 0; cs < arraySize(spi0selects_gpio); cs++)
-	{
+	{	
 		if (spi0selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_pinconfig(spi0selects_gpio[cs]);
 		}
 	}
 
 	for (unsigned int cs = 0; cs < arraySize(spi1selects_gpio); cs++)
-	{
+	{	
 		if (spi1selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_pinconfig(spi1selects_gpio[cs]);
 		}
 	}
 
 	for (unsigned int cs = 0; cs < arraySize(spi2selects_gpio); cs++)
-	{
+	{	
 		if (spi2selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_pinconfig(spi2selects_gpio[cs]);
 		}
 	}
@@ -212,13 +212,13 @@ static struct spi_dev_s *spi_memory;
 static struct spi_dev_s *spi_ext;
 
 __EXPORT int nxphlite_spi_bus_initialize(void)
-{
+{	
 	/* Configure SPI-based devices */
 
 	spi_sensors = px4_spibus_initialize(PX4_SPI_BUS_SENSORS);
 
 	if (!spi_sensors)
-	{
+	{	
 		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS);
 		return -ENODEV;
 	}
@@ -231,7 +231,7 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
 	SPI_SETMODE(spi_sensors, SPIDEV_MODE0);
 
 	for (int cs = PX4_SENSOR_BUS_FIRST_CS; cs <= PX4_SENSOR_BUS_LAST_CS; cs++)
-	{
+	{	
 		SPI_SELECT(spi_sensors, cs, false);
 	}
 
@@ -240,7 +240,7 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
 	spi_memory = px4_spibus_initialize(PX4_SPI_BUS_MEMORY);
 
 	if (!spi_memory)
-	{
+	{	
 		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_MEMORY);
 		return -ENODEV;
 	}
@@ -253,7 +253,7 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
 	SPI_SETMODE(spi_memory, SPIDEV_MODE3);
 
 	for (int cs = PX4_MEMORY_BUS_FIRST_CS; cs <= PX4_MEMORY_BUS_LAST_CS; cs++)
-	{
+	{	
 		SPI_SELECT(spi_memory, cs, false);
 	}
 
@@ -262,7 +262,7 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
 	spi_ext = px4_spibus_initialize(PX4_SPI_BUS_EXTERNAL);
 
 	if (!spi_ext)
-	{
+	{	
 		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_EXTERNAL);
 		return -ENODEV;
 	}
@@ -275,10 +275,9 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
 	SPI_SETMODE(spi_ext, SPIDEV_MODE3);
 
 	for (int cs = PX4_EXTERNAL_BUS_FIRST_CS; cs <= PX4_EXTERNAL_BUS_LAST_CS; cs++)
-	{
+	{	
 		SPI_SELECT(spi_ext, cs, false);
 	}
-
 
 	return OK;
 
@@ -313,7 +312,7 @@ __EXPORT int nxphlite_spi_bus_initialize(void)
  ************************************************************************************/
 
 void kinetis_spi0select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 
 	/* SPI select is active low, so write !selected to select the device */
@@ -321,7 +320,7 @@ void kinetis_spi0select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 	uint32_t sel = devid;
 
 	if (devid == SPIDEV_FLASH(0))
-	{
+	{	
 		sel = PX4_SPIDEV_MEMORY;
 	}
 
@@ -329,10 +328,10 @@ void kinetis_spi0select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 
 	/* Making sure the other peripherals are not selected */
 
-	for (unsigned int cs = 0;  arraySize(spi0selects_gpio) > 1 && cs < arraySize(spi0selects_gpio); cs++)
-	{
+	for (unsigned int cs = 0; arraySize(spi0selects_gpio) > 1 && cs < arraySize(spi0selects_gpio); cs++)
+	{	
 		if (spi0selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_gpiowrite(spi0selects_gpio[cs], 1);
 		}
 	}
@@ -340,18 +339,18 @@ void kinetis_spi0select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 	uint32_t gpio = spi0selects_gpio[PX4_SPI_DEV_ID(sel)];
 
 	if (gpio)
-	{
+	{	
 		kinetis_gpiowrite(gpio, !selected);
 	}
 }
 
 uint8_t kinetis_spi0status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 
 void kinetis_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 
 	/* SPI select is active low, so write !selected to select the device */
@@ -361,10 +360,10 @@ void kinetis_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 
 	/* Making sure the other peripherals are not selected */
 
-	for (unsigned int cs = 0;  arraySize(spi1selects_gpio) > 1 && cs < arraySize(spi1selects_gpio); cs++)
-	{
+	for (unsigned int cs = 0; arraySize(spi1selects_gpio) > 1 && cs < arraySize(spi1selects_gpio); cs++)
+	{	
 		if (spi1selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_gpiowrite(spi1selects_gpio[cs], 1);
 		}
 	}
@@ -372,18 +371,18 @@ void kinetis_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 	uint32_t gpio = spi1selects_gpio[PX4_SPI_DEV_ID(sel)];
 
 	if (gpio)
-	{
+	{	
 		kinetis_gpiowrite(gpio, !selected);
 	}
 }
 
 uint8_t kinetis_spi1status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 
 void kinetis_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
 
 	/* SPI select is active low, so write !selected to select the device */
@@ -393,10 +392,10 @@ void kinetis_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 
 	/* Making sure the other peripherals are not selected */
 
-	for (unsigned int cs = 0;  arraySize(spi2selects_gpio) > 1 && cs < arraySize(spi2selects_gpio); cs++)
-	{
+	for (unsigned int cs = 0; arraySize(spi2selects_gpio) > 1 && cs < arraySize(spi2selects_gpio); cs++)
+	{	
 		if (spi2selects_gpio[cs] != 0)
-		{
+		{	
 			kinetis_gpiowrite(spi2selects_gpio[cs], 1);
 		}
 	}
@@ -404,15 +403,14 @@ void kinetis_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected
 	uint32_t gpio = spi2selects_gpio[PX4_SPI_DEV_ID(sel)];
 
 	if (gpio)
-	{
+	{	
 		kinetis_gpiowrite(gpio, !selected);
 	}
 }
 
 uint8_t kinetis_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
-
 
 #endif /* CONFIG_KINETIS_SPI0 || CONFIG_KINETIS_SPI1 || CONFIG_KINETIS_SPI2 */

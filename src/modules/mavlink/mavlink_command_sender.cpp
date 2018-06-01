@@ -49,7 +49,7 @@ px4_sem_t MavlinkCommandSender::_lock;
 void MavlinkCommandSender::initialize()
 {
 	px4_sem_init(&_lock, 1, 1);
-
+	
 	if (_instance == nullptr)
 	{
 		_instance = new MavlinkCommandSender();
@@ -58,12 +58,12 @@ void MavlinkCommandSender::initialize()
 
 MavlinkCommandSender &MavlinkCommandSender::instance()
 {
-
+	
 	return *_instance;
 }
 
 MavlinkCommandSender::MavlinkCommandSender() :
-	_commands(3)
+		    _commands(3)
 {
 }
 
@@ -76,8 +76,8 @@ int MavlinkCommandSender::handle_vehicle_command(const struct vehicle_command_s 
 {
 	lock();
 	CMD_DEBUG("new command: %d (channel: %d)", command.command, channel);
-
-	mavlink_command_long_t msg = {};
+	
+	mavlink_command_long_t msg = { };
 	msg.target_system = command.target_system;
 	msg.target_component = command.target_component;
 	msg.command = command.command;
@@ -90,25 +90,25 @@ int MavlinkCommandSender::handle_vehicle_command(const struct vehicle_command_s 
 	msg.param6 = command.param6;
 	msg.param7 = command.param7;
 	mavlink_msg_command_long_send_struct(channel, &msg);
-
+	
 	bool already_existing = false;
 	_commands.reset_to_start();
-
+	
 	while (command_item_t *item = _commands.get_next())
 	{
 		if (item->timestamp_us == command.timestamp)
 		{
-
+			
 			// We should activate the channel by setting num_sent_per_channel from -1 to 0.
 			item->num_sent_per_channel[channel] = 0;
 			already_existing = true;
 			break;
 		}
 	}
-
+	
 	if (!already_existing)
 	{
-
+		
 		command_item_t new_item;
 		new_item.command = msg;
 		new_item.timestamp_us = command.timestamp;
@@ -116,26 +116,22 @@ int MavlinkCommandSender::handle_vehicle_command(const struct vehicle_command_s 
 		new_item.last_time_sent_us = hrt_absolute_time();
 		_commands.put(new_item);
 	}
-
+	
 	unlock();
 	return 0;
 }
 
-void MavlinkCommandSender::handle_mavlink_command_ack(const mavlink_command_ack_t &ack,
-		uint8_t from_sysid, uint8_t from_compid)
+void MavlinkCommandSender::handle_mavlink_command_ack(const mavlink_command_ack_t &ack, uint8_t from_sysid, uint8_t from_compid)
 {
-	CMD_DEBUG("handling result %d for command %d (from %d:%d)",
-		  ack.result, ack.command, from_sysid, from_compid);
+	CMD_DEBUG("handling result %d for command %d (from %d:%d)", ack.result, ack.command, from_sysid, from_compid);
 	lock();
-
+	
 	_commands.reset_to_start();
-
+	
 	while (command_item_t *item = _commands.get_next())
 	{
 		// Check if the incoming ack matches any of the commands that we have sent.
-		if (item->command.command == ack.command &&
-				from_sysid == item->command.target_system &&
-				from_compid == item->command.target_component)
+		if (item->command.command == ack.command && from_sysid == item->command.target_system && from_compid == item->command.target_component)
 		{
 			// Drop it anyway because the command seems to have arrived at the destination, even if we
 			// receive IN_PROGRESS because we trust that it will be handled after that.
@@ -143,16 +139,16 @@ void MavlinkCommandSender::handle_mavlink_command_ack(const mavlink_command_ack_
 			break;
 		}
 	}
-
+	
 	unlock();
 }
 
 void MavlinkCommandSender::check_timeout(mavlink_channel_t channel)
 {
 	lock();
-
+	
 	_commands.reset_to_start();
-
+	
 	while (command_item_t *item = _commands.get_next())
 	{
 		if (hrt_elapsed_time(&item->last_time_sent_us) <= TIMEOUT_US)
@@ -160,51 +156,45 @@ void MavlinkCommandSender::check_timeout(mavlink_channel_t channel)
 			// We keep waiting for the timeout.
 			continue;
 		}
-
+		
 		// The goal of this is to retry from all channels. Therefore, we keep
 		// track of the retry count for each channel.
 		//
 		// When the first channel does a retry, the timeout is reset.
 		// (e.g. all channel have done 2 retries, then channel 0 is called
 		// and does retry number 3, and also resets the timeout timestamp).
-
+		
 		// First, we need to determine what the current max and min retry level
 		// are because we can only level up, if all have caught up.
 		// If num_sent_per_channel is at -1, the channel is inactive.
 		int8_t max_sent = 0;
 		int8_t min_sent = INT8_MAX;
-
+		
 		for (unsigned i = 0; i < MAX_MAVLINK_CHANNEL; ++i)
 		{
 			if (item->num_sent_per_channel[i] > max_sent)
 			{
 				max_sent = item->num_sent_per_channel[i];
 			}
-
-			if ((item->num_sent_per_channel[i] != -1) &&
-					(item->num_sent_per_channel[i] < min_sent))
+			
+			if ((item->num_sent_per_channel[i] != -1) && (item->num_sent_per_channel[i] < min_sent))
 			{
 				min_sent = item->num_sent_per_channel[i];
 			}
 		}
-
+		
 		if (item->num_sent_per_channel[channel] < max_sent)
 		{
 			// We are behind and need to do a retransmission.
 			mavlink_msg_command_long_send_struct(channel, &item->command);
 			item->num_sent_per_channel[channel]++;
-
-			CMD_DEBUG("command %d sent (not first, retries: %d/%d, channel: %d)",
-				  item->command.command,
-				  item->num_sent_per_channel[channel],
-				  max_sent,
-				  channel);
-
+			
+			CMD_DEBUG("command %d sent (not first, retries: %d/%d, channel: %d)", item->command.command, item->num_sent_per_channel[channel], max_sent, channel);
+			
 		}
-		else if (item->num_sent_per_channel[channel] == max_sent &&
-				min_sent == max_sent)
+		else if (item->num_sent_per_channel[channel] == max_sent && min_sent == max_sent)
 		{
-
+			
 			// If the next retry would be above the needed retries anyway, we can
 			// drop the item, and continue with other items.
 			if (item->num_sent_per_channel[channel] + 1 > RETRIES)
@@ -213,19 +203,15 @@ void MavlinkCommandSender::check_timeout(mavlink_channel_t channel)
 				_commands.drop_current();
 				continue;
 			}
-
+			
 			// We are the first of a new retransmission series.
 			mavlink_msg_command_long_send_struct(channel, &item->command);
 			item->num_sent_per_channel[channel]++;
 			// Therefore, we are the ones setting the timestamp of this retry round.
 			item->last_time_sent_us = hrt_absolute_time();
-
-			CMD_DEBUG("command %d sent (first, retries: %d/%d, channel: %d)",
-				  item->command.command,
-				  item->num_sent_per_channel[channel],
-				  max_sent,
-				  channel);
-
+			
+			CMD_DEBUG("command %d sent (first, retries: %d/%d, channel: %d)", item->command.command, item->num_sent_per_channel[channel], max_sent, channel);
+			
 		}
 		else
 		{
@@ -234,6 +220,6 @@ void MavlinkCommandSender::check_timeout(mavlink_channel_t channel)
 			continue;
 		}
 	}
-
+	
 	unlock();
 }

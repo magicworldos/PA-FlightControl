@@ -47,25 +47,25 @@ int frame_pos(int len_data)
 int frame_data(char *frame, int len_frame, char *data, int type, int len_data)
 {
 	memset(frame, 0, len_data);
-
+	
 	frame[frame_pos_head0] = FRM_HEAD_0;
 	frame[frame_pos_head1] = FRM_HEAD_1;
-
+	
 	frame[frame_pos_len_frame] = len_frame;
 	frame[frame_pos_type] = type;
 	frame[frame_pos_len_data] = len_data;
-
+	
 	memcpy(&frame[frame_pos_data], data, len_data);
-
+	
 	//len_frame - crc(2) - foot(2)
 	uint16_t crc16 = crc16_value((uint8_t*) frame, len_frame - 4);
-
+	
 	frame[frame_pos_crc0] = crc16 >> 8;
 	frame[frame_pos_crc1] = crc16 & 0xff;
-
+	
 	frame[frame_pos_foot0] = FRM_FOOT_0;
 	frame[frame_pos_foot1] = FRM_FOOT_1;
-
+	
 	return OK;
 }
 
@@ -76,7 +76,7 @@ int send_data_pos(vehicle_pos_s *pos)
 	char frame[len_frame];
 	frame_data(frame, len_frame, (char *) pos, DATA_TYPE_POS, len_data);
 	send_frame_data(frame, len_frame);
-
+	
 	return 0;
 }
 
@@ -86,13 +86,13 @@ int send_data_sp(vehicle_sp_s *sp)
 	{
 		return -1;
 	}
-
+	
 	int len_data = sizeof(vehicle_pos_s);
 	int len_frame = frame_pos(len_data);
 	char frame[len_frame];
 	frame_data(frame, len_frame, (char *) sp, DATA_TYPE_SP, len_data);
 	send_frame_data(frame, len_frame);
-
+	
 	return 0;
 }
 
@@ -102,13 +102,13 @@ int send_data_rc(rc_s *rc)
 	{
 		return -1;
 	}
-
+	
 	int len_data = sizeof(rc_s);
 	int len_frame = frame_pos(len_data);
 	char frame[len_frame];
 	frame_data(frame, len_frame, (char *) rc, DATA_TYPE_RC, len_data);
 	send_frame_data(frame, len_frame);
-
+	
 	return 0;
 }
 
@@ -129,10 +129,10 @@ int start(int argc, char *argv[])
 	_recv.tail = 0;
 	_recv.size = SIZE_BUFF;
 	memset(_recv.buff, 0x00, SIZE_BUFF);
-
+	
 	px4_main_t entry_point = (px4_main_t) task_main_read;
 	int task_id = px4_task_spawn_cmd("exctl", SCHED_DEFAULT, SCHED_PRIORITY_FAST_DRIVER, 2000, entry_point, (char * const *) argv);
-
+	
 	if (task_id < 0)
 	{
 		task_id = -1;
@@ -146,7 +146,7 @@ int stop(void)
 	_should_exit = true;
 	//wait task_main exit
 	usleep(200 * 1000);
-
+	
 	return OK;
 }
 
@@ -171,14 +171,14 @@ int frame_parse()
 	int ret = 0;
 	data_cnt = frame_count(&_recv);
 	int16_t tail = _recv.tail;
-
+	
 	frame_pos_head0 = 0;
 	frame_pos_head1 = frame_pos_head0 + 1;
 	frame_pos_len_frame = frame_pos_head1 + 1;
 	frame_pos_type = frame_pos_len_frame + 1;
 	frame_pos_len_data = frame_pos_type + 1;
 	frame_pos_data = frame_pos_len_data + 1;
-
+	
 	for (uint16_t i = 0; i < data_cnt; i++)
 	{
 		_buff[packet_index++] = _recv.buff[tail];
@@ -202,7 +202,7 @@ int frame_parse()
 					}
 				}
 				break;
-
+				
 			case PAR_LEN:
 				if (packet_index >= 5)
 				{
@@ -225,7 +225,7 @@ int frame_parse()
 					}
 				}
 				break;
-
+				
 			case PAR_END:
 				if (packet_index == frameLen)
 				{
@@ -239,20 +239,20 @@ int frame_parse()
 					packet_index = 0;
 				}
 				break;
-
+				
 			default:
 				break;
 		}
 		tail = (tail + 1) % _recv.size;
 	}
-
-	_ret:;
-
+	
+	_ret: ;
+	
 	if (ret == 1)
 	{
 		_recv.tail = tail;
 	}
-
+	
 	if (frame_type)
 	{
 	}
@@ -289,16 +289,16 @@ int task_main_read(int argc, char* argv[])
 	pthread_t pthddr;
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &task_main_write, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &task_main_write_rc, NULL);
-
+	
 	struct extctl_sp_s orb_sp = { 0 };
 	int orb_class_instance = -1;
 	orb_advert_t orb_sp_topic = orb_advertise_multi(ORB_ID(extctl_sp), &orb_sp, &orb_class_instance, ORB_PRIO_HIGH);
 	//publish once
 	orb_publish(ORB_ID(extctl_sp), orb_sp_topic, &orb_sp);
-
+	
 	vehicle_sp_s sp = { 0 };
 	vehicle_pos_s pos = { 0 };
-
+	
 	while (!_should_exit)
 	{
 		frame_read_data();
@@ -312,39 +312,39 @@ int task_main_read(int argc, char* argv[])
 					//printf("%7.3f, %7.3f, %7.3f t", (double) pos.vx, (double) pos.vy, (double) pos.vz);
 					//printf("\n");
 					break;
-
+					
 				case DATA_TYPE_SP:
 					memcpy(&sp, &_buff[frame_pos_data], sizeof(vehicle_sp_s));
-
+					
 					orb_sp.run_pos_control = sp.run_pos_control;
 					orb_sp.run_alt_control = sp.run_alt_control;
-
+					
 					orb_sp.yaw = sp.yaw;
-
+					
 					orb_sp.sp_x = sp.sp_x;
 					orb_sp.sp_y = sp.sp_y;
 					orb_sp.sp_z = sp.sp_z;
-
+					
 					orb_sp.vel_sp_x = sp.vel_sp_x;
 					orb_sp.vel_sp_y = sp.vel_sp_y;
 					orb_sp.vel_sp_z = sp.vel_sp_z;
-
+					
 					orb_publish(ORB_ID(extctl_sp), orb_sp_topic, &orb_sp);
 					break;
-
+					
 				default:
 					break;
 			}
 		}
-
+		
 		usleep(DEV_RW_USLEEP);
 	}
-
+	
 	//wait write thread exit.
 	usleep(DEV_RW_USLEEP);
-
+	
 	close(_serial_fd);
-
+	
 	return 0;
 }
 
@@ -352,49 +352,49 @@ int task_main_write(int argc, char* argv[])
 {
 	int pos_sub_local = orb_subscribe(ORB_ID(vehicle_local_position));
 	int pos_sub_global = orb_subscribe(ORB_ID(vehicle_global_position));
-
+	
 	struct vehicle_local_position_s pos_local;
 	struct vehicle_global_position_s pos_global;
-
+	
 	vehicle_pos_s pos = { 0 };
-
+	
 	while (!_should_exit)
 	{
 		uint8_t status_pos = 0;
 		bool updated = false;
-
+		
 		orb_check(pos_sub_local, &updated);
 		if (updated)
 		{
 			orb_copy(ORB_ID(vehicle_local_position), pos_sub_local, &pos_local);
-
+			
 			pos.x = pos_local.x;
 			pos.y = pos_local.y;
 			pos.z = pos_local.z;
-
+			
 			pos.vx = pos_local.vx;
 			pos.vy = pos_local.vy;
 			pos.vz = pos_local.vz;
-
+			
 			status_pos |= (1 << 0);
 		}
-
+		
 		orb_check(pos_sub_global, &updated);
 		if (updated)
 		{
 			orb_copy(ORB_ID(vehicle_global_position), pos_sub_global, &pos_global);
-
+			
 			pos.lat = pos_global.lat;
 			pos.lon = pos_global.lon;
 			pos.alt = pos_global.alt;
-
+			
 			pos.vel_n = pos_global.vel_n;
 			pos.vel_e = pos_global.vel_e;
 			pos.vel_d = pos_global.vel_d;
-
+			
 			status_pos |= (1 << 1);
 		}
-
+		
 		if (status_pos)
 		{
 			sem_wait(&sem_w);
@@ -403,7 +403,7 @@ int task_main_write(int argc, char* argv[])
 		}
 		usleep(DEV_RW_USLEEP);
 	}
-
+	
 	return 0;
 }
 
@@ -412,7 +412,7 @@ int task_main_write_rc(int argc, char* argv[])
 	int rc_sub = orb_subscribe(ORB_ID(input_rc));
 	struct input_rc_s in_rc;
 	rc_s rc = { 0 };
-
+	
 	while (!_should_exit)
 	{
 		bool updated = false;
@@ -534,17 +534,17 @@ int extctl_main(int argc, char *argv[])
 		start(argc, argv);
 		return OK;
 	}
-
+	
 	if (strcmp(argv[1], "stop") == 0)
 	{
 		stop();
 		return OK;
 	}
-
+	
 	if (false)
 	{
 		send_data_sp(NULL);
 	}
-
+	
 	return -1;
 }

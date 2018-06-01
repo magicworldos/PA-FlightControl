@@ -40,19 +40,21 @@
 #include "uORBTest_UnitTest.hpp"
 #endif
 
-extern "C" { __EXPORT int uorb_tests_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int uorb_tests_main(int argc, char *argv[]);
+}
 
 static void usage()
 {
 	PX4_INFO("Usage: uorb_tests [latency_test]");
 }
 
-int
-uorb_tests_main(int argc, char *argv[])
+int uorb_tests_main(int argc, char *argv[])
 {
-
+	
 #ifndef __PX4_QURT
-
+	
 	/*
 	 * Test the driver/device.
 	 */
@@ -60,13 +62,13 @@ uorb_tests_main(int argc, char *argv[])
 	{
 		uORBTest::UnitTest &t = uORBTest::UnitTest::instance();
 		int rc = t.test();
-
+		
 		if (rc == OK)
 		{
 			fprintf(stdout, "  [uORBTest] \t\tPASS\n");
 			fflush(stdout);
 			return 0;
-
+			
 		}
 		else
 		{
@@ -75,33 +77,33 @@ uorb_tests_main(int argc, char *argv[])
 			return -1;
 		}
 	}
-
+	
 	/*
 	 * Test the latency.
 	 */
 	if (argc > 1 && !strcmp(argv[1], "latency_test"))
 	{
-
+		
 		uORBTest::UnitTest &t = uORBTest::UnitTest::instance();
-
+		
 		if (argc > 2 && !strcmp(argv[2], "medium"))
 		{
 			return t.latency_test<struct orb_test_medium>(ORB_ID(orb_test_medium), true);
-
+			
 		}
 		else if (argc > 2 && !strcmp(argv[2], "large"))
 		{
 			return t.latency_test<struct orb_test_large>(ORB_ID(orb_test_large), true);
-
+			
 		}
 		else
 		{
 			return t.latency_test<struct orb_test>(ORB_ID(orb_test), true);
 		}
 	}
-
+	
 #endif
-
+	
 	usage();
 	return -EINVAL;
 }

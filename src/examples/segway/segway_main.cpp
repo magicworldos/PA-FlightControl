@@ -52,9 +52,9 @@
 
 #include "BlockSegwayController.hpp"
 
-static bool thread_should_exit = false;     /**< Deamon exit flag */
-static bool thread_running = false;     /**< Deamon status flag */
-static int deamon_task;             /**< Handle of deamon task / thread */
+static bool thread_should_exit = false; /**< Deamon exit flag */
+static bool thread_running = false; /**< Deamon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 
 /**
  * Deamon management function.
@@ -71,14 +71,13 @@ int segway_thread_main(int argc, char *argv[]);
  */
 static void usage(const char *reason);
 
-static void
-usage(const char *reason)
+static void usage(const char *reason)
 {
 	if (reason)
 	{
 		fprintf(stderr, "%s\n", reason);
 	}
-
+	
 	fprintf(stderr, "usage: segway {start|stop|status} [-p <additional params>]\n\n");
 	exit(1);
 }
@@ -93,77 +92,72 @@ usage(const char *reason)
  */
 int segway_main(int argc, char *argv[])
 {
-
+	
 	if (argc < 2)
 	{
 		usage("missing command");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			warnx("already running");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		thread_should_exit = false;
-
-		deamon_task = px4_task_spawn_cmd("segway",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 10,
-						 5120,
-						 segway_thread_main,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+		
+		deamon_task = px4_task_spawn_cmd("segway", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 10, 5120, segway_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		thread_should_exit = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			warnx("is running");
-
+			
 		}
 		else
 		{
 			warnx("not started");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	usage("unrecognized command");
 	exit(1);
 }
 
 int segway_thread_main(int argc, char *argv[])
 {
-
+	
 	warnx("starting");
-
+	
 	using namespace control;
-
+	
 	BlockSegwayController autopilot;
-
+	
 	thread_running = true;
-
+	
 	while (!thread_should_exit)
 	{
 		autopilot.update();
 	}
-
+	
 	warnx("exiting.");
-
+	
 	thread_running = false;
-
+	
 	return 0;
 }

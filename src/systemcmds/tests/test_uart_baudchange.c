@@ -60,38 +60,38 @@
 int test_uart_baudchange(int argc, char *argv[])
 {
 	int uart2_nwrite = 0;
-
+	
 	/* assuming NuttShell is on UART1 (/dev/ttyS0) */
 	int uart2 = open("/dev/ttyS2", O_RDWR | O_NONBLOCK | O_NOCTTY); //
-
+	
 	if (uart2 < 0)
 	{
 		printf("ERROR opening UART2, aborting..\n");
 		return uart2;
 	}
-
+	
 	struct termios uart2_config;
-
+	
 	struct termios uart2_config_original;
-
+	
 	int termios_state = 0;
-
+	
 	int ret;
-
+	
 	if ((termios_state = tcgetattr(uart2, &uart2_config)) < 0)
 	{
 		printf("ERROR getting termios config for UART2: %d\n", termios_state);
 		ret = termios_state;
 		goto cleanup;
 	}
-
+	
 	if ((termios_state = tcgetattr(uart2, &uart2_config_original)) < 0)
 	{
 		printf("ERROR getting termios config for UART2: %d\n", termios_state);
 		ret = termios_state;
 		goto cleanup;
 	}
-
+	
 	/* Set baud rate */
 	if (cfsetispeed(&uart2_config, B9600) < 0 || cfsetospeed(&uart2_config, B9600) < 0)
 	{
@@ -99,14 +99,14 @@ int test_uart_baudchange(int argc, char *argv[])
 		ret = ERROR;
 		goto cleanup;
 	}
-
+	
 	if ((termios_state = tcsetattr(uart2, TCSANOW, &uart2_config)) < 0)
 	{
 		printf("ERROR setting termios config for UART2\n");
 		ret = termios_state;
 		goto cleanup;
 	}
-
+	
 	/* Set back to original settings */
 	if ((termios_state = tcsetattr(uart2, TCSANOW, &uart2_config_original)) < 0)
 	{
@@ -114,29 +114,28 @@ int test_uart_baudchange(int argc, char *argv[])
 		ret = termios_state;
 		goto cleanup;
 	}
-
-	uint8_t sample_uart2[] = {'U', 'A', 'R', 'T', '2', ' ', '#', 0, '\n'};
-
+	
+	uint8_t sample_uart2[] = { 'U', 'A', 'R', 'T', '2', ' ', '#', 0, '\n' };
+	
 	int i, r;
-
+	
 	for (i = 0; i < 100; i++)
 	{
 		/* uart2 -> */
 		r = write(uart2, sample_uart2, sizeof(sample_uart2));
-
+		
 		if (r > 0)
 		{
 			uart2_nwrite += r;
 		}
 	}
-
+	
 	close(uart2);
-
+	
 	printf("uart2_nwrite %d\n", uart2_nwrite);
-
+	
 	return OK;
-cleanup:
-	close(uart2);
+	cleanup: close(uart2);
 	return ret;
-
+	
 }

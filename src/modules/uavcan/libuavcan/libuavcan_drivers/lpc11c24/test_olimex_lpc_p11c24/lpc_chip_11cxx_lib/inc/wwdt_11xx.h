@@ -33,7 +33,8 @@
 #define __WWDT_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup WWDT_11XX CHIP: LPC11xx Windowed Watchdog driver
@@ -52,19 +53,27 @@ extern "C" {
 /**
  * @brief Windowed Watchdog register block structure
  */
-typedef struct {				/*!< WWDT Structure         */
-	__IO uint32_t  MOD;			/*!< Watchdog mode register. This register contains the basic mode and status of the Watchdog Timer. */
-	__IO uint32_t  TC;			/*!< Watchdog timer constant register. This register determines the time-out value. */
-	__O  uint32_t  FEED;		/*!< Watchdog feed sequence register. Writing 0xAA followed by 0x55 to this register reloads the Watchdog timer with the value contained in WDTC. */
-	__I  uint32_t  TV;			/*!< Watchdog timer value register. This register reads out the current value of the Watchdog timer. */
+typedef struct
+{ /*!< WWDT Structure         */
+	__IO
+	uint32_t MOD; /*!< Watchdog mode register. This register contains the basic mode and status of the Watchdog Timer. */
+	__IO
+	uint32_t TC; /*!< Watchdog timer constant register. This register determines the time-out value. */
+	__O
+	uint32_t FEED; /*!< Watchdog feed sequence register. Writing 0xAA followed by 0x55 to this register reloads the Watchdog timer with the value contained in WDTC. */
+	__I
+	uint32_t TV; /*!< Watchdog timer value register. This register reads out the current value of the Watchdog timer. */
 #ifdef WATCHDOG_CLKSEL_SUPPORT
-	__IO uint32_t CLKSEL;		/*!< Watchdog clock select register. */
+	__IO uint32_t CLKSEL; /*!< Watchdog clock select register. */
 #else
-	__I  uint32_t  RESERVED0;
+	__I
+	uint32_t RESERVED0;
 #endif
 #ifdef WATCHDOG_WINDOW_SUPPORT
-	__IO uint32_t  WARNINT;		/*!< Watchdog warning interrupt register. This register contains the Watchdog warning interrupt compare value. */
-	__IO uint32_t  WINDOW;		/*!< Watchdog timer window register. This register contains the Watchdog window value. */
+	__IO
+	uint32_t WARNINT; /*!< Watchdog warning interrupt register. This register contains the Watchdog warning interrupt compare value. */
+	__IO
+	uint32_t WINDOW; /*!< Watchdog timer window register. This register contains the Watchdog window value. */
 #endif
 } LPC_WWDT_T;
 
@@ -237,10 +246,11 @@ STATIC INLINE uint32_t Chip_WWDT_GetCurrentCount(LPC_WWDT_T *pWWDT)
 /**
  * @brief Watchdog Clock Source definitions
  */
-typedef enum {
-	WWDT_CLKSRC_IRC = WWDT_CLKSEL_SOURCE(0),				/*!< Internal RC oscillator */
-	WWDT_CLKSRC_WATCHDOG_WDOSC = WWDT_CLKSEL_SOURCE(1),		/*!< Watchdog oscillator (WDOSC) */
-} CHIP_WWDT_CLK_SRC_T;
+typedef enum
+{	
+	WWDT_CLKSRC_IRC = WWDT_CLKSEL_SOURCE(0), /*!< Internal RC oscillator */
+	WWDT_CLKSRC_WATCHDOG_WDOSC = WWDT_CLKSEL_SOURCE(1), /*!< Watchdog oscillator (WDOSC) */
+}CHIP_WWDT_CLK_SRC_T;
 
 /**
  * @brief	Get the current value of WDT
@@ -249,7 +259,7 @@ typedef enum {
  * @return	Nothing
  */
 STATIC INLINE void Chip_WWDT_SelClockSource(LPC_WWDT_T *pWWDT, CHIP_WWDT_CLK_SRC_T wdtClkSrc)
-{
+{	
 	pWWDT->CLKSEL = wdtClkSrc & WWDT_CLKSEL_BITMASK;
 }
 

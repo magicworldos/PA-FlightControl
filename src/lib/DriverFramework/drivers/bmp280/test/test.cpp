@@ -34,10 +34,9 @@
 #include "DriverFramework.hpp"
 #include "BMP280.hpp"
 
-
 using namespace DriverFramework;
 
-class BMP280Tester : public BMP280
+class BMP280Tester: public BMP280
 {
 public:
 	using BMP280::BMP280;
@@ -53,17 +52,18 @@ private:
 int BMP280Tester::getSensorData(struct baro_sensor_data &out_data, bool is_new_data_required)
 {
 	int ret = -1;
-
+	
 	m_synchronize.lock();
-
-	if (is_new_data_required) {
+	
+	if (is_new_data_required)
+	{
 		m_synchronize.waitOnSignal(0);
 	}
-
+	
 	out_data = m_sensor_data_copy;
 	m_synchronize.unlock();
 	ret = 0;
-
+	
 	return ret;
 }
 
@@ -73,7 +73,7 @@ int BMP280Tester::_publish(struct baro_sensor_data &data)
 	m_sensor_data_copy = data;
 	m_synchronize.signal();
 	m_synchronize.unlock();
-
+	
 	return 0;
 }
 
@@ -83,8 +83,11 @@ public:
 	static const int TEST_PASS = 0;
 	static const int TEST_FAIL = 1;
 
-	PressureTester() : m_sensor(BARO_DEVICE_PATH) {}
-
+	PressureTester() :
+			    m_sensor(BARO_DEVICE_PATH)
+	{
+	}
+	
 	static void readSensorCallback(void *arg);
 
 	int run();
@@ -93,13 +96,13 @@ private:
 	void readSensor();
 	void wait();
 
-	BMP280Tester		m_sensor;
-	uint32_t 	m_read_attempts = 0;
-	uint32_t 	m_read_counter = 0;
+	BMP280Tester m_sensor;
+	uint32_t m_read_attempts = 0;
+	uint32_t m_read_counter = 0;
 	struct baro_sensor_data m_sensor_data;
 
-	int		m_pass;
-	bool		m_done = false;
+	int m_pass;
+	bool m_done = false;
 };
 
 int PressureTester::run()
@@ -107,52 +110,62 @@ int PressureTester::run()
 	DF_LOG_INFO("Entering: run");
 	// Default is fail unless pass critera met
 	m_pass = TEST_FAIL;
-
+	
 	// Register the driver
 	int ret = m_sensor.init();
-
+	
 	// Open the pressure sensor
 	DevHandle h;
 	DevMgr::getHandle(BARO_DEVICE_PATH, h);
-
-	if (!h.isValid()) {
-		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)",
-			    BARO_DEVICE_PATH, h.getError());
+	
+	if (!h.isValid())
+	{
+		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)", BARO_DEVICE_PATH, h.getError());
 		m_done = true;
-
-	} else {
+		
+	}
+	else
+	{
 		m_done = false;
 		m_sensor_data.read_counter = 0;
 	}
-
-	while (!m_done) {
+	
+	while (!m_done)
+	{
 		++m_read_attempts;
 		ret = m_sensor.getSensorData(m_sensor_data, true);
-
-		if (ret == 0) {
+		
+		if (ret == 0)
+		{
 			uint32_t count = m_sensor_data.read_counter;
-
-			if (m_read_counter != count) {
+			
+			if (m_read_counter != count)
+			{
 				DF_LOG_INFO("count: %d", count);
 				m_read_counter = count;
 				printPressureValues(m_sensor_data);
 			}
-
-		} else {
+			
+		}
+		else
+		{
 			DF_LOG_INFO("error: unable to read the pressure sensor device.");
 		}
-
-		if ((m_read_counter >= 1000) && (m_read_attempts == m_read_counter)) {
+		
+		if ((m_read_counter >= 1000) && (m_read_attempts == m_read_counter))
+		{
 			// Done test - PASSED
 			m_pass = TEST_PASS;
 			m_done = true;
-
-		} else if (m_read_attempts > 1000) {
+			
+		}
+		else if (m_read_attempts > 1000)
+		{
 			DF_LOG_INFO("error: unable to read the pressure sensor device.");
 			m_done = true;
 		}
 	}
-
+	
 	DF_LOG_INFO("Closing pressure sensor\n");
 	m_sensor.stop();
 	return m_pass;
@@ -161,17 +174,18 @@ int PressureTester::run()
 int do_test()
 {
 	int ret = Framework::initialize();
-
-	if (ret < 0) {
+	
+	if (ret < 0)
+	{
 		return ret;
 	}
-
+	
 	PressureTester pt;
-
+	
 	ret = pt.run();
-
+	
 	Framework::shutdown();
-
+	
 	DF_LOG_INFO("Test %s", (ret == PressureTester::TEST_PASS) ? "PASSED" : "FAILED");
 	return ret;
 }

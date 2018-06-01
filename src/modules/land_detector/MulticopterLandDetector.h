@@ -60,7 +60,7 @@
 namespace land_detector
 {
 
-class MulticopterLandDetector : public LandDetector
+class MulticopterLandDetector: public LandDetector
 {
 public:
 	MulticopterLandDetector();
@@ -82,7 +82,7 @@ protected:
 
 	virtual float _get_max_altitude() override;
 private:
-
+	
 	/** Time in us that landing conditions have to hold before triggering a land. */
 	static constexpr uint64_t LAND_DETECTOR_TRIGGER_TIME_US = 300000;
 
@@ -96,8 +96,8 @@ private:
 	static constexpr uint64_t LAND_DETECTOR_LAND_PHASE_TIME_US = 2000000;
 
 	/**
-	* @brief Handles for interesting parameters
-	**/
+	 * @brief Handles for interesting parameters
+	 **/
 	struct
 	{
 		param_t maxClimbRate;
@@ -136,13 +136,13 @@ private:
 	int _vehicle_control_mode_sub;
 	int _battery_sub;
 
-	struct vehicle_local_position_s				_vehicleLocalPosition;
-	struct vehicle_local_position_setpoint_s	_vehicleLocalPositionSetpoint;
-	struct actuator_controls_s					_actuators;
-	struct vehicle_attitude_s					_vehicleAttitude;
-	struct sensor_bias_s					_sensors;
-	struct vehicle_control_mode_s				_control_mode;
-	struct battery_status_s						_battery;
+	struct vehicle_local_position_s _vehicleLocalPosition;
+	struct vehicle_local_position_setpoint_s _vehicleLocalPositionSetpoint;
+	struct actuator_controls_s _actuators;
+	struct vehicle_attitude_s _vehicleAttitude;
+	struct sensor_bias_s _sensors;
+	struct vehicle_control_mode_s _control_mode;
+	struct battery_status_s _battery;
 
 	uint64_t _min_trust_start;		///< timestamp when minimum trust was applied first
 	uint64_t _landed_time;
@@ -155,6 +155,5 @@ private:
 	bool _has_low_thrust();
 	bool _is_climb_rate_enabled();
 };
-
 
 } // namespace land_detector

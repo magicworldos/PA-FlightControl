@@ -56,7 +56,8 @@
 #include <drivers/drv_hrt.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 #include <semaphore.h>
 #include <mpu9x50.h>
@@ -65,7 +66,10 @@ extern "C" {
 #endif
 
 /** driver 'main' command */
-extern "C" { __EXPORT int mpu9x50_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int mpu9x50_main(int argc, char *argv[]);
+}
 
 #define MAX_LEN_DEV_PATH 32
 
@@ -89,22 +93,22 @@ static px4_task_t _task_handle = -1;
 /** IMU measurement data */
 static struct mpu9x50_data _data;
 
-static orb_advert_t _gyro_pub = nullptr;	/**< gyro data publication */
-static int _gyro_orb_class_instance;        /**< instance handle for gyro devices */
-static orb_advert_t _accel_pub = nullptr;	/**< accelerameter data publication */
-static int _accel_orb_class_instance;        /**< instance handle for accel devices */
-static orb_advert_t _mag_pub = nullptr;		/**< compass data publication */
-static int _mag_orb_class_instance;        /**< instance handle for mag devices */
-static int _params_sub;										/**< parameter update subscription */
-static struct gyro_report _gyro;					/**< gyro report */
-static struct accel_report _accel;				/**< accel report */
-static struct mag_report _mag;						/**< mag report */
-static struct gyro_calibration_s _gyro_sc;				/**< gyro scale */
-static struct accel_calibration_s _accel_sc;			/**< accel scale */
-static struct mag_calibration_s _mag_sc;					/**< mag scale */
-static enum gyro_lpf_e _gyro_lpf = MPU9X50_GYRO_LPF_20HZ;	/**< gyro lpf enum value */
-static enum acc_lpf_e _accel_lpf = MPU9X50_ACC_LPF_20HZ;	/**< accel lpf enum value */
-static enum gyro_sample_rate_e _imu_sample_rate = MPU9x50_SAMPLE_RATE_500HZ;	/**< IMU sample rate enum */
+static orb_advert_t _gyro_pub = nullptr; /**< gyro data publication */
+static int _gyro_orb_class_instance; /**< instance handle for gyro devices */
+static orb_advert_t _accel_pub = nullptr; /**< accelerameter data publication */
+static int _accel_orb_class_instance; /**< instance handle for accel devices */
+static orb_advert_t _mag_pub = nullptr; /**< compass data publication */
+static int _mag_orb_class_instance; /**< instance handle for mag devices */
+static int _params_sub; /**< parameter update subscription */
+static struct gyro_report _gyro; /**< gyro report */
+static struct accel_report _accel; /**< accel report */
+static struct mag_report _mag; /**< mag report */
+static struct gyro_calibration_s _gyro_sc; /**< gyro scale */
+static struct accel_calibration_s _accel_sc; /**< accel scale */
+static struct mag_calibration_s _mag_sc; /**< mag scale */
+static enum gyro_lpf_e _gyro_lpf = MPU9X50_GYRO_LPF_20HZ; /**< gyro lpf enum value */
+static enum acc_lpf_e _accel_lpf = MPU9X50_ACC_LPF_20HZ; /**< accel lpf enum value */
+static enum gyro_sample_rate_e _imu_sample_rate = MPU9x50_SAMPLE_RATE_500HZ; /**< IMU sample rate enum */
 
 struct
 {
@@ -129,10 +133,9 @@ struct
 	param_t gyro_lpf_enum;
 	param_t accel_lpf_enum;
 	param_t imu_sample_rate_enum;
-} _params_handles;  /**< parameter handles */
+} _params_handles; /**< parameter handles */
 
 bool exit_mreasurement = false;
-
 
 /** Print out the usage information */
 static void usage();
@@ -141,7 +144,7 @@ static void usage();
 static void stop();
 
 /** task main trampoline function */
-static void	task_main_trampoline(int argc, char *argv[]);
+static void task_main_trampoline(int argc, char *argv[]);
 
 /** mpu9x50 measurement thread primary entry point */
 static void task_main(int argc, char *argv[]);
@@ -182,21 +185,21 @@ void *data_ready_isr(void *context)
 	{
 		return NULL;
 	}
-
+	
 	_isr_data_ready_timestamp = hrt_absolute_time();
 	// send signal to measurement thread
 	px4_task_kill(_task_handle, SIGRTMIN);
-
+	
 	return NULL;
 }
 
 void parameter_update_poll()
 {
 	bool updated;
-
+	
 	/* Check if parameters have changed */
 	orb_check(_params_sub, &updated);
-
+	
 	if (updated)
 	{
 		struct parameter_update_s param_update;
@@ -210,157 +213,157 @@ void parameters_update()
 	PX4_DEBUG("mpu9x50_parameters_update");
 	float v;
 	int v_int;
-
+	
 	// accel params
 	if (param_get(_params_handles.accel_x_offset, &v) == 0)
 	{
 		_accel_sc.x_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_x_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.accel_x_scale, &v) == 0)
 	{
-		_accel_sc.x_scale  = v;
+		_accel_sc.x_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_x_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.accel_y_offset, &v) == 0)
 	{
-		_accel_sc.y_offset  = v;
+		_accel_sc.y_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_y_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.accel_y_scale, &v) == 0)
 	{
-		_accel_sc.y_scale  = v;
+		_accel_sc.y_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_y_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.accel_z_offset, &v) == 0)
 	{
-		_accel_sc.z_offset  = v;
+		_accel_sc.z_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_z_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.accel_z_scale, &v) == 0)
 	{
-		_accel_sc.z_scale  = v;
+		_accel_sc.z_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update accel_z_scale %f", v);
 	}
-
+	
 	// gyro params
 	if (param_get(_params_handles.gyro_x_offset, &v) == 0)
 	{
 		_gyro_sc.x_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_x_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.gyro_x_scale, &v) == 0)
 	{
-		_gyro_sc.x_scale  = v;
+		_gyro_sc.x_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_x_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.gyro_y_offset, &v) == 0)
 	{
-		_gyro_sc.y_offset  = v;
+		_gyro_sc.y_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_y_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.gyro_y_scale, &v) == 0)
 	{
-		_gyro_sc.y_scale  = v;
+		_gyro_sc.y_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_y_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.gyro_z_offset, &v) == 0)
 	{
-		_gyro_sc.z_offset  = v;
+		_gyro_sc.z_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_z_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.gyro_z_scale, &v) == 0)
 	{
-		_gyro_sc.z_scale  = v;
+		_gyro_sc.z_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update gyro_z_scale %f", v);
 	}
-
+	
 	// mag params
 	if (param_get(_params_handles.mag_x_offset, &v) == 0)
 	{
 		_mag_sc.x_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_x_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.mag_x_scale, &v) == 0)
 	{
-		_mag_sc.x_scale  = v;
+		_mag_sc.x_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_x_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.mag_y_offset, &v) == 0)
 	{
-		_mag_sc.y_offset  = v;
+		_mag_sc.y_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_y_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.mag_y_scale, &v) == 0)
 	{
-		_mag_sc.y_scale  = v;
+		_mag_sc.y_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_y_scale %f", v);
 	}
-
+	
 	if (param_get(_params_handles.mag_z_offset, &v) == 0)
 	{
-		_mag_sc.z_offset  = v;
+		_mag_sc.z_offset = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_z_offset %f", v);
 	}
-
+	
 	if (param_get(_params_handles.mag_z_scale, &v) == 0)
 	{
-		_mag_sc.z_scale  = v;
+		_mag_sc.z_scale = v;
 		PX4_DEBUG("mpu9x50_parameters_update mag_z_scale %f", v);
 	}
-
+	
 	// LPF params
 	if (param_get(_params_handles.gyro_lpf_enum, &v_int) == 0)
 	{
 		if (v_int >= NUM_MPU9X50_GYRO_LPF)
 		{
 			PX4_WARN("invalid gyro_lpf_enum %d use default %d", v_int, _gyro_lpf);
-
+			
 		}
 		else
 		{
-			_gyro_lpf = (enum gyro_lpf_e)v_int;
+			_gyro_lpf = (enum gyro_lpf_e) v_int;
 			PX4_DEBUG("mpu9x50_parameters_update gyro_lpf_enum %d", _gyro_lpf);
 		}
 	}
-
+	
 	if (param_get(_params_handles.accel_lpf_enum, &v_int) == 0)
 	{
 		if (v_int >= NUM_MPU9X50_ACC_LPF)
 		{
 			PX4_WARN("invalid accel_lpf_enum %d use default %d", v_int, _accel_lpf);
-
+			
 		}
 		else
 		{
-			_accel_lpf = (enum acc_lpf_e)v_int;
+			_accel_lpf = (enum acc_lpf_e) v_int;
 			PX4_DEBUG("mpu9x50_parameters_update accel_lpf_enum %d", _accel_lpf);
 		}
 	}
-
+	
 	if (param_get(_params_handles.imu_sample_rate_enum, &v_int) == 0)
 	{
 		if (v_int >= NUM_MPU9X50_SAMPLE_RATE)
 		{
 			PX4_WARN("invalid imu_sample_rate %d use default %d", v_int, _imu_sample_rate);
-
+			
 		}
 		else
 		{
-			_imu_sample_rate = (enum gyro_sample_rate_e)v_int;
+			_imu_sample_rate = (enum gyro_sample_rate_e) v_int;
 			PX4_DEBUG("mpu9x50_parameters_update imu_sample_rate %d", _imu_sample_rate);
 		}
 	}
@@ -368,32 +371,32 @@ void parameters_update()
 
 void parameters_init()
 {
-	_params_handles.accel_x_offset		=	param_find("CAL_ACC0_XOFF");
-	_params_handles.accel_x_scale		=	param_find("CAL_ACC0_XSCALE");
-	_params_handles.accel_y_offset		=	param_find("CAL_ACC0_YOFF");
-	_params_handles.accel_y_scale		=	param_find("CAL_ACC0_YSCALE");
-	_params_handles.accel_z_offset		=	param_find("CAL_ACC0_ZOFF");
-	_params_handles.accel_z_scale		=	param_find("CAL_ACC0_ZSCALE");
-
-	_params_handles.gyro_x_offset		=	param_find("CAL_GYRO0_XOFF");
-	_params_handles.gyro_x_scale		=	param_find("CAL_GYRO0_XSCALE");
-	_params_handles.gyro_y_offset		=	param_find("CAL_GYRO0_YOFF");
-	_params_handles.gyro_y_scale		=	param_find("CAL_GYRO0_YSCALE");
-	_params_handles.gyro_z_offset		=	param_find("CAL_GYRO0_ZOFF");
-	_params_handles.gyro_z_scale		=	param_find("CAL_GYRO0_ZSCALE");
-
-	_params_handles.mag_x_offset		=	param_find("CAL_MAG0_XOFF");
-	_params_handles.mag_x_scale		=	param_find("CAL_MAG0_XSCALE");
-	_params_handles.mag_y_offset		=	param_find("CAL_MAG0_YOFF");
-	_params_handles.mag_y_scale		=	param_find("CAL_MAG0_YSCALE");
-	_params_handles.mag_z_offset		=	param_find("CAL_MAG0_ZOFF");
-	_params_handles.mag_z_scale		=	param_find("CAL_MAG0_ZSCALE");
-
-	_params_handles.gyro_lpf_enum		=	param_find("MPU_GYRO_LPF_ENM");
-	_params_handles.accel_lpf_enum		=	param_find("MPU_ACC_LPF_ENM");
-
-	_params_handles.imu_sample_rate_enum	=	param_find("MPU_SAMPLE_R_ENM");
-
+	_params_handles.accel_x_offset = param_find("CAL_ACC0_XOFF");
+	_params_handles.accel_x_scale = param_find("CAL_ACC0_XSCALE");
+	_params_handles.accel_y_offset = param_find("CAL_ACC0_YOFF");
+	_params_handles.accel_y_scale = param_find("CAL_ACC0_YSCALE");
+	_params_handles.accel_z_offset = param_find("CAL_ACC0_ZOFF");
+	_params_handles.accel_z_scale = param_find("CAL_ACC0_ZSCALE");
+	
+	_params_handles.gyro_x_offset = param_find("CAL_GYRO0_XOFF");
+	_params_handles.gyro_x_scale = param_find("CAL_GYRO0_XSCALE");
+	_params_handles.gyro_y_offset = param_find("CAL_GYRO0_YOFF");
+	_params_handles.gyro_y_scale = param_find("CAL_GYRO0_YSCALE");
+	_params_handles.gyro_z_offset = param_find("CAL_GYRO0_ZOFF");
+	_params_handles.gyro_z_scale = param_find("CAL_GYRO0_ZSCALE");
+	
+	_params_handles.mag_x_offset = param_find("CAL_MAG0_XOFF");
+	_params_handles.mag_x_scale = param_find("CAL_MAG0_XSCALE");
+	_params_handles.mag_y_offset = param_find("CAL_MAG0_YOFF");
+	_params_handles.mag_y_scale = param_find("CAL_MAG0_YSCALE");
+	_params_handles.mag_z_offset = param_find("CAL_MAG0_ZOFF");
+	_params_handles.mag_z_scale = param_find("CAL_MAG0_ZSCALE");
+	
+	_params_handles.gyro_lpf_enum = param_find("MPU_GYRO_LPF_ENM");
+	_params_handles.accel_lpf_enum = param_find("MPU_ACC_LPF_ENM");
+	
+	_params_handles.imu_sample_rate_enum = param_find("MPU_SAMPLE_R_ENM");
+	
 	parameters_update();
 }
 
@@ -403,34 +406,31 @@ bool create_pubs()
 	memset(&_gyro, 0, sizeof(struct gyro_report));
 	memset(&_accel, 0, sizeof(struct accel_report));
 	memset(&_mag, 0, sizeof(struct mag_report));
-
-	_gyro_pub = orb_advertise_multi(ORB_ID(sensor_gyro), &_gyro,
-					&_gyro_orb_class_instance, ORB_PRIO_HIGH - 1);
-
+	
+	_gyro_pub = orb_advertise_multi(ORB_ID(sensor_gyro), &_gyro, &_gyro_orb_class_instance, ORB_PRIO_HIGH - 1);
+	
 	if (_gyro_pub == nullptr)
 	{
 		PX4_ERR("sensor_gyro advert fail");
 		return false;
 	}
-
-	_accel_pub = orb_advertise_multi(ORB_ID(sensor_accel), &_accel,
-					 &_accel_orb_class_instance, ORB_PRIO_HIGH - 1);
-
+	
+	_accel_pub = orb_advertise_multi(ORB_ID(sensor_accel), &_accel, &_accel_orb_class_instance, ORB_PRIO_HIGH - 1);
+	
 	if (_accel_pub == nullptr)
 	{
 		PX4_ERR("sensor_accel advert fail");
 		return false;
 	}
-
-	_mag_pub = orb_advertise_multi(ORB_ID(sensor_mag), &_mag,
-				       &_mag_orb_class_instance, ORB_PRIO_HIGH - 1);
-
+	
+	_mag_pub = orb_advertise_multi(ORB_ID(sensor_mag), &_mag, &_mag_orb_class_instance, ORB_PRIO_HIGH - 1);
+	
 	if (_mag_pub == nullptr)
 	{
 		PX4_ERR("sensor_mag advert fail");
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -447,7 +447,7 @@ void update_reports()
 	_gyro.y_raw = _data.gyro_raw[1];
 	_gyro.z_raw = _data.gyro_raw[2];
 	_gyro.temperature_raw = _data.temperature_raw;
-
+	
 	_accel.timestamp = _data.timestamp;
 	_accel.x = ((_data.accel_raw[0] * _data.accel_scaling) - _accel_sc.x_offset) * _accel_sc.x_scale;
 	_accel.y = ((_data.accel_raw[1] * _data.accel_scaling) - _accel_sc.y_offset) * _accel_sc.y_scale;
@@ -459,7 +459,7 @@ void update_reports()
 	_accel.y_raw = _data.accel_raw[1];
 	_accel.z_raw = _data.accel_raw[2];
 	_accel.temperature_raw = _data.temperature_raw;
-
+	
 	if (_data.mag_data_ready)
 	{
 		_mag.timestamp = _data.timestamp;
@@ -480,31 +480,31 @@ void publish_reports()
 	if (orb_publish(ORB_ID(sensor_gyro), _gyro_pub, &_gyro) != OK)
 	{
 		PX4_WARN("failed to publish gyro report");
-
+		
 	}
 	else
 	{
 		//PX4_DEBUG("MPU_GYRO_RAW: %d %d %d", _gyro.x_raw, _gyro.y_raw, _gyro.z_raw)
 		//PX4_DEBUG("MPU_GYRO: %f %f %f", _gyro.x, _gyro.y, _gyro.z)
 	}
-
+	
 	if (orb_publish(ORB_ID(sensor_accel), _accel_pub, &_accel) != OK)
 	{
 		PX4_WARN("failed to publish accel report");
-
+		
 	}
 	else
 	{
 		//PX4_DEBUG("MPU_ACCEL_RAW: %d %d %d", _accel.x_raw, _accel.y_raw, _accel.z_raw)
 		//PX4_DEBUG("MPU_ACCEL: %f %f %f", _accel.x, _accel.y, _accel.z)
 	}
-
+	
 	if (_data.mag_data_ready)
 	{
 		if (orb_publish(ORB_ID(sensor_mag), _mag_pub, &_mag) != OK)
 		{
 			PX4_WARN("failed to publish mag report");
-
+			
 		}
 		else
 		{
@@ -517,99 +517,89 @@ void publish_reports()
 void task_main(int argc, char *argv[])
 {
 	PX4_WARN("enter mpu9x50 task_main");
-
+	
 	sigset_t set;
-	int      sig = 0;
+	int sig = 0;
 	int rv;
 	exit_mreasurement = false;
-
+	
 	parameters_init();
-
+	
 	// create the mpu9x50 default configuration structure
-	struct mpu9x50_config config =
-	{
-		.gyro_lpf = _gyro_lpf,
-		.acc_lpf  = _accel_lpf,
-		.gyro_fsr = MPU9X50_GYRO_FSR_500DPS,
-		.acc_fsr  = MPU9X50_ACC_FSR_4G,
-		.gyro_sample_rate = _imu_sample_rate,
-		.compass_enabled = true,
-		.compass_sample_rate = MPU9x50_COMPASS_SAMPLE_RATE_100HZ,
-		.spi_dev_path = _device,
-	};
-
+	struct mpu9x50_config config = { .gyro_lpf = _gyro_lpf, .acc_lpf = _accel_lpf, .gyro_fsr = MPU9X50_GYRO_FSR_500DPS, .acc_fsr = MPU9X50_ACC_FSR_4G, .gyro_sample_rate = _imu_sample_rate, .compass_enabled = true, .compass_sample_rate = MPU9x50_COMPASS_SAMPLE_RATE_100HZ, .spi_dev_path = _device, };
+	
 	// TODO-JYW:
 	// manually register with the DriverFramework to allow this driver to
 	// be found by other modules
 	//	DriverFramework::StubSensor<DriverFramework::SPIDevObj> stub_sensor("mpu9x50", "/dev/accel0", "/dev/accel");
-
+	
 	if (mpu9x50_initialize(&config) != 0)
 	{
 		PX4_WARN("error initializing mpu9x50. Quit!");
 		goto exit;
 	}
-
+	
 	if (mpu9x50_register_interrupt(SPI_INT_GPIO, &mpu9x50::data_ready_isr, NULL)
-			//if (mpu9x50_register_interrupt(SPI_INT_GPIO, &mpu9x50::data_ready_isr, NULL)
-
-			!= 0)
+	//if (mpu9x50_register_interrupt(SPI_INT_GPIO, &mpu9x50::data_ready_isr, NULL)
+	        
+	        != 0)
 	{
 		PX4_WARN("error registering data ready interrupt. Quit!");
 		goto exit;
 	}
-
+	
 	// create all uorb publications
 	if (!create_pubs())
 	{
 		goto exit;
 	}
-
+	
 	// subscribe to parameter_update topic
 	_params_sub = orb_subscribe(ORB_ID(parameter_update));
-
+	
 	// initialize signal
 	sigemptyset(&set);
 	sigaddset(&set, SIGRTMIN);
-
+	
 	while (!_task_should_exit)
 	{
 		// wait on signal
 		rv = sigwait(&set, &sig);
-
+		
 		// check if we are waken up by the proper signal
 		if (rv != 0 || sig != SIGRTMIN)
 		{
 			PX4_WARN("mpu9x50 sigwait failed rv %d sig %d", rv, sig);
 			continue;
 		}
-
+		
 		// read new IMU data and store the results in data
 		if (mpu9x50_get_data(&_data) != 0)
 		{
 			PX4_WARN("mpu9x50_get_data() failed");
 			continue;
 		}
-
+		
 		// since the context switch takes long time, override the timestamp provided by mpu9x50_get_data()
 		// with the ts of isr.
 		// Note: This is ok for MPU sample rate of < 1000; Higer than 1000 Sample rates will be an issue
 		// as the data is not consistent.
 		_data.timestamp = _isr_data_ready_timestamp;
-
+		
 		// poll parameter update
 		parameter_update_poll();
-
+		
 		// data is ready
 		update_reports();
-
+		
 		// publish all sensor reports
 		publish_reports();
-
+		
 	}
-
+	
 	exit_mreasurement = true;
-
-exit:
+	
+	exit:
 	PX4_WARN("closing mpu9x50");
 	mpu9x50_close();
 }
@@ -624,28 +614,23 @@ void task_main_trampoline(int argc, char *argv[])
 void start()
 {
 	ASSERT(_task_handle == -1);
-
+	
 	/* start the task */
-	_task_handle = px4_task_spawn_cmd("mpu9x50_main",
-					  SCHED_DEFAULT,
-					  SCHED_PRIORITY_MAX,
-					  1500,
-					  (px4_main_t)&task_main_trampoline,
-					  nullptr);
-
+	_task_handle = px4_task_spawn_cmd("mpu9x50_main", SCHED_DEFAULT, SCHED_PRIORITY_MAX, 1500, (px4_main_t) &task_main_trampoline, nullptr);
+	
 	if (_task_handle < 0)
 	{
 		warn("mpu9x50_main task start failed");
 		return;
 	}
-
+	
 	_is_running = true;
 }
 
 void stop()
 {
 	// TODO - set thread exit signal to terminate the task main thread
-
+	
 	_is_running = false;
 	_task_handle = -1;
 }
@@ -657,8 +642,9 @@ void usage()
 	PX4_WARN("    -D device");
 }
 
-}; // namespace mpu9x50
-
+}
+;
+// namespace mpu9x50
 
 int mpu9x50_main(int argc, char *argv[])
 {
@@ -666,7 +652,7 @@ int mpu9x50_main(int argc, char *argv[])
 	int ch;
 	int myoptind = 1;
 	const char *myoptarg = NULL;
-
+	
 	while ((ch = px4_getopt(argc, argv, "D:", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (ch)
@@ -674,25 +660,25 @@ int mpu9x50_main(int argc, char *argv[])
 			case 'D':
 				device = myoptarg;
 				break;
-
+				
 			default:
 				mpu9x50::usage();
 				return 1;
 		}
 	}
-
+	
 	// Check on required arguments
 	if (device == NULL || strlen(device) == 0)
 	{
 		mpu9x50::usage();
 		return 1;
 	}
-
+	
 	memset(mpu9x50::_device, 0, MAX_LEN_DEV_PATH);
 	strncpy(mpu9x50::_device, device, strlen(device));
-
+	
 	const char *verb = argv[myoptind];
-
+	
 	/*
 	 * Start/load the driver.
 	 */
@@ -703,9 +689,9 @@ int mpu9x50_main(int argc, char *argv[])
 			PX4_WARN("mpu9x50 already running");
 			return 1;
 		}
-
+		
 		mpu9x50::start();
-
+		
 	}
 	else if (!strcmp(verb, "stop"))
 	{
@@ -714,21 +700,21 @@ int mpu9x50_main(int argc, char *argv[])
 			PX4_WARN("mpu9x50 is not running");
 			return 1;
 		}
-
+		
 		mpu9x50::stop();
-
+		
 	}
 	else if (!strcmp(verb, "status"))
 	{
 		PX4_WARN("mpu9x50 is %s", mpu9x50::_is_running ? "running" : "stopped");
 		return 0;
-
+		
 	}
 	else
 	{
 		mpu9x50::usage();
 		return 1;
 	}
-
+	
 	return 0;
 }

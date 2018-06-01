@@ -55,7 +55,6 @@
 #include <float.h>
 #include <drivers/drv_hrt.h>
 
-
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -80,7 +79,6 @@
  * Private Functions
  ****************************************************************************/
 
-
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -93,42 +91,45 @@ int test_uart_send(int argc, char *argv[])
 {
 	/* input handling */
 	char *uart_name = "/dev/ttyS3";
-
-	if (argc > 1) { uart_name = argv[1]; }
-
+	
+	if (argc > 1)
+	{
+		uart_name = argv[1];
+	}
+	
 	/* assuming NuttShell is on UART1 (/dev/ttyS0) */
 	int test_uart = open(uart_name, O_RDWR | O_NONBLOCK | O_NOCTTY); //
-
+	
 	if (test_uart < 0)
 	{
 		printf("ERROR opening UART %s, aborting..\n", uart_name);
 		return test_uart;
-
+		
 	}
 	else
 	{
 		printf("Writing to UART %s\n", uart_name);
 	}
-
-	char sample_test_uart[25];// = {'S', 'A', 'M', 'P', 'L', 'E', ' ', '\n'};
-
+	
+	char sample_test_uart[25]; // = {'S', 'A', 'M', 'P', 'L', 'E', ' ', '\n'};
+	
 	int i, n;
-
+	
 	uint64_t start_time = hrt_absolute_time();
-
+	
 	for (i = 0; i < 30000; i++)
 	{
 		n = sprintf(sample_test_uart, "SAMPLE #%d\n", i);
 		write(test_uart, sample_test_uart, n);
 	}
-
+	
 	int interval = hrt_absolute_time() - start_time;
-
+	
 	int bytes = i * sizeof(sample_test_uart);
-
+	
 	printf("Wrote %d bytes in %d ms on UART %s\n", bytes, interval / 1000, uart_name);
-
+	
 	close(test_uart);
-
+	
 	return 0;
 }

@@ -62,14 +62,14 @@ void NavigatorMode::run(bool active)
 			_navigator->get_mission_result()->stay_in_failsafe = false;
 			_navigator->set_mission_result_updated();
 			on_activation();
-
+			
 		}
 		else
 		{
 			/* periodic updates when active */
 			on_active();
 		}
-
+		
 	}
 	else
 	{
@@ -77,14 +77,14 @@ void NavigatorMode::run(bool active)
 		if (_active)
 		{
 			on_inactivation();
-
+			
 		}
 		else
 		{
 			on_inactive();
 		}
 	}
-
+	
 	_active = active;
 }
 

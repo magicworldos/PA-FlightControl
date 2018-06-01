@@ -55,15 +55,15 @@ VtolAttitudeControl *g_control;
 }
 
 /**
-* Constructor
-*/
+ * Constructor
+ */
 VtolAttitudeControl::VtolAttitudeControl()
 {
-	_vtol_vehicle_status.vtol_in_rw_mode = true;	/* start vtol in rotary wing mode*/
-
+	_vtol_vehicle_status.vtol_in_rw_mode = true; /* start vtol in rotary wing mode*/
+	
 	_params.idle_pwm_mc = PWM_DEFAULT_MIN;
 	_params.vtol_motor_count = 0;
-
+	
 	_params_handles.idle_pwm_mc = param_find("VT_IDLE_PWM_MC");
 	_params_handles.vtol_motor_count = param_find("VT_MOT_COUNT");
 	_params_handles.vtol_fw_permanent_stab = param_find("VT_FW_PERM_STAB");
@@ -76,28 +76,28 @@ VtolAttitudeControl::VtolAttitudeControl()
 	_params_handles.fw_qc_max_roll = param_find("VT_FW_QC_R");
 	_params_handles.front_trans_time_openloop = param_find("VT_F_TR_OL_TM");
 	_params_handles.front_trans_time_min = param_find("VT_TRANS_MIN_TM");
-
+	
 	_params_handles.wv_takeoff = param_find("VT_WV_TKO_EN");
 	_params_handles.wv_land = param_find("VT_WV_LND_EN");
 	_params_handles.wv_loiter = param_find("VT_WV_LTR_EN");
-
+	
 	/* fetch initial parameter values */
 	parameters_update();
-
+	
 	if (_params.vtol_type == vtol_type::TAILSITTER)
 	{
 		_vtol_type = new Tailsitter(this);
-
+		
 	}
 	else if (_params.vtol_type == vtol_type::TILTROTOR)
 	{
 		_vtol_type = new Tiltrotor(this);
-
+		
 	}
 	else if (_params.vtol_type == vtol_type::STANDARD)
 	{
 		_vtol_type = new Standard(this);
-
+		
 	}
 	else
 	{
@@ -106,23 +106,23 @@ VtolAttitudeControl::VtolAttitudeControl()
 }
 
 /**
-* Destructor
-*/
+ * Destructor
+ */
 VtolAttitudeControl::~VtolAttitudeControl()
 {
 	if (_control_task != -1)
 	{
 		/* task wakes up every 100ms or so at the longest */
 		_task_should_exit = true;
-
+		
 		/* wait for a second for the task to quit at our request */
 		unsigned i = 0;
-
+		
 		do
 		{
 			/* wait 20ms */
 			usleep(20000);
-
+			
 			/* if we have given up, kill it */
 			if (++i > 50)
 			{
@@ -132,26 +132,26 @@ VtolAttitudeControl::~VtolAttitudeControl()
 		}
 		while (_control_task != -1);
 	}
-
+	
 	// free memory used by instances of base class VtolType
 	if (_vtol_type != nullptr)
 	{
 		delete _vtol_type;
 	}
-
+	
 	VTOL_att_control::g_control = nullptr;
 }
 
 /**
-* Check for changes in vehicle control mode.
-*/
+ * Check for changes in vehicle control mode.
+ */
 void VtolAttitudeControl::vehicle_control_mode_poll()
 {
 	bool updated;
-
+	
 	/* Check if vehicle control mode has changed */
 	orb_check(_v_control_mode_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_control_mode), _v_control_mode_sub, &_v_control_mode);
@@ -159,15 +159,15 @@ void VtolAttitudeControl::vehicle_control_mode_poll()
 }
 
 /**
-* Check for changes in manual inputs.
-*/
+ * Check for changes in manual inputs.
+ */
 void VtolAttitudeControl::vehicle_manual_poll()
 {
 	bool updated;
-
+	
 	/* get pilots inputs */
 	orb_check(_manual_control_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(manual_control_setpoint), _manual_control_sp_sub, &_manual_control_sp);
@@ -175,13 +175,13 @@ void VtolAttitudeControl::vehicle_manual_poll()
 }
 
 /**
-* Check for inputs from mc attitude controller.
-*/
+ * Check for inputs from mc attitude controller.
+ */
 void VtolAttitudeControl::actuator_controls_mc_poll()
 {
 	bool updated;
 	orb_check(_actuator_inputs_mc, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(actuator_controls_virtual_mc), _actuator_inputs_mc, &_actuators_mc_in);
@@ -189,13 +189,13 @@ void VtolAttitudeControl::actuator_controls_mc_poll()
 }
 
 /**
-* Check for inputs from fw attitude controller.
-*/
+ * Check for inputs from fw attitude controller.
+ */
 void VtolAttitudeControl::actuator_controls_fw_poll()
 {
 	bool updated;
 	orb_check(_actuator_inputs_fw, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(actuator_controls_virtual_fw), _actuator_inputs_fw, &_actuators_fw_in);
@@ -203,14 +203,13 @@ void VtolAttitudeControl::actuator_controls_fw_poll()
 }
 
 /**
-* Check for airspeed updates.
-*/
-void
-VtolAttitudeControl::vehicle_airspeed_poll()
+ * Check for airspeed updates.
+ */
+void VtolAttitudeControl::vehicle_airspeed_poll()
 {
 	bool updated;
 	orb_check(_airspeed_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(airspeed), _airspeed_sub, &_airspeed);
@@ -218,15 +217,14 @@ VtolAttitudeControl::vehicle_airspeed_poll()
 }
 
 /**
-* Check for attitude update.
-*/
-void
-VtolAttitudeControl::vehicle_attitude_poll()
+ * Check for attitude update.
+ */
+void VtolAttitudeControl::vehicle_attitude_poll()
 {
 	/* check if there is a new setpoint */
 	bool updated;
 	orb_check(_v_att_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_attitude), _v_att_sub, &_v_att);
@@ -234,66 +232,62 @@ VtolAttitudeControl::vehicle_attitude_poll()
 }
 
 /**
-* Check for sensor updates.
-*/
-void
-VtolAttitudeControl::vehicle_local_pos_poll()
+ * Check for sensor updates.
+ */
+void VtolAttitudeControl::vehicle_local_pos_poll()
 {
 	bool updated;
 	/* Check if parameters have changed */
 	orb_check(_local_pos_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_local_position), _local_pos_sub, &_local_pos);
 	}
-
+	
 }
 
 /**
-* Check for setpoint updates.
-*/
-void
-VtolAttitudeControl::vehicle_local_pos_sp_poll()
+ * Check for setpoint updates.
+ */
+void VtolAttitudeControl::vehicle_local_pos_sp_poll()
 {
 	bool updated;
 	/* Check if parameters have changed */
 	orb_check(_local_pos_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_local_position_setpoint), _local_pos_sp_sub, &_local_pos_sp);
 	}
-
+	
 }
 
 /**
-* Check for position setpoint updates.
-*/
-void
-VtolAttitudeControl::pos_sp_triplet_poll()
+ * Check for position setpoint updates.
+ */
+void VtolAttitudeControl::pos_sp_triplet_poll()
 {
 	bool updated;
 	/* Check if parameters have changed */
 	orb_check(_pos_sp_triplet_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(position_setpoint_triplet), _pos_sp_triplet_sub, &_pos_sp_triplet);
 	}
-
+	
 }
 
 /**
-* Check for mc virtual attitude setpoint updates.
-*/
-void
-VtolAttitudeControl::mc_virtual_att_sp_poll()
+ * Check for mc virtual attitude setpoint updates.
+ */
+void VtolAttitudeControl::mc_virtual_att_sp_poll()
 {
 	bool updated;
-
+	
 	orb_check(_mc_virtual_att_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(mc_virtual_attitude_setpoint), _mc_virtual_att_sp_sub, &_mc_virtual_att_sp);
@@ -301,15 +295,14 @@ VtolAttitudeControl::mc_virtual_att_sp_poll()
 }
 
 /**
-* Check for fw virtual attitude setpoint updates.
-*/
-void
-VtolAttitudeControl::fw_virtual_att_sp_poll()
+ * Check for fw virtual attitude setpoint updates.
+ */
+void VtolAttitudeControl::fw_virtual_att_sp_poll()
 {
 	bool updated;
-
+	
 	orb_check(_fw_virtual_att_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(fw_virtual_attitude_setpoint), _fw_virtual_att_sp_sub, &_fw_virtual_att_sp);
@@ -317,14 +310,13 @@ VtolAttitudeControl::fw_virtual_att_sp_poll()
 }
 
 /**
-* Check for command updates.
-*/
-void
-VtolAttitudeControl::vehicle_cmd_poll()
+ * Check for command updates.
+ */
+void VtolAttitudeControl::vehicle_cmd_poll()
 {
 	bool updated;
 	orb_check(_vehicle_cmd_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_command), _vehicle_cmd_sub, &_vehicle_cmd);
@@ -333,15 +325,14 @@ VtolAttitudeControl::vehicle_cmd_poll()
 }
 
 /**
-* Check for TECS status updates.
-*/
-void
-VtolAttitudeControl::tecs_status_poll()
+ * Check for TECS status updates.
+ */
+void VtolAttitudeControl::tecs_status_poll()
 {
 	bool updated;
-
+	
 	orb_check(_tecs_status_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(tecs_status), _tecs_status_sub, &_tecs_status);
@@ -349,15 +340,14 @@ VtolAttitudeControl::tecs_status_poll()
 }
 
 /**
-* Check for land detector updates.
-*/
-void
-VtolAttitudeControl::land_detected_poll()
+ * Check for land detector updates.
+ */
+void VtolAttitudeControl::land_detected_poll()
 {
 	bool updated;
-
+	
 	orb_check(_land_detected_sub, &updated);
-
+	
 	if (updated)
 	{
 		orb_copy(ORB_ID(vehicle_land_detected), _land_detected_sub, &_land_detected);
@@ -365,43 +355,31 @@ VtolAttitudeControl::land_detected_poll()
 }
 
 /**
-* Check received command
-*/
-void
-VtolAttitudeControl::handle_command()
+ * Check received command
+ */
+void VtolAttitudeControl::handle_command()
 {
 	// update transition command if necessary
 	if (_vehicle_cmd.command == vehicle_command_s::VEHICLE_CMD_DO_VTOL_TRANSITION)
 	{
 		_transition_command = int(_vehicle_cmd.param1 + 0.5f);
-
+		
 		// Report that we have received the command no matter what we actually do with it.
 		// This might not be optimal but is better than no response at all.
-
+		
 		if (_vehicle_cmd.from_external)
 		{
-			vehicle_command_ack_s command_ack =
-			{
-				.timestamp = hrt_absolute_time(),
-				.result_param2 = 0,
-				.command = _vehicle_cmd.command,
-				.result = (uint8_t)vehicle_command_ack_s::VEHICLE_RESULT_ACCEPTED,
-				.from_external = false,
-				.result_param1 = 0,
-				.target_system = _vehicle_cmd.source_system,
-				.target_component = _vehicle_cmd.source_component
-			};
-
+			vehicle_command_ack_s command_ack = { .timestamp = hrt_absolute_time(), .result_param2 = 0, .command = _vehicle_cmd.command, .result = (uint8_t) vehicle_command_ack_s::VEHICLE_RESULT_ACCEPTED, .from_external = false, .result_param1 = 0, .target_system = _vehicle_cmd.source_system, .target_component = _vehicle_cmd.source_component };
+			
 			if (_v_cmd_ack_pub == nullptr)
 			{
-				_v_cmd_ack_pub = orb_advertise_queue(ORB_ID(vehicle_command_ack), &command_ack,
-								     vehicle_command_ack_s::ORB_QUEUE_LENGTH);
-
+				_v_cmd_ack_pub = orb_advertise_queue(ORB_ID(vehicle_command_ack), &command_ack, vehicle_command_ack_s::ORB_QUEUE_LENGTH);
+				
 			}
 			else
 			{
 				orb_publish(ORB_ID(vehicle_command_ack), _v_cmd_ack_pub, &command_ack);
-
+				
 			}
 		}
 	}
@@ -411,30 +389,28 @@ VtolAttitudeControl::handle_command()
  * Returns true if fixed-wing mode is requested.
  * Changed either via switch or via command.
  */
-bool
-VtolAttitudeControl::is_fixed_wing_requested()
+bool VtolAttitudeControl::is_fixed_wing_requested()
 {
 	bool to_fw = false;
-
-	if (_manual_control_sp.transition_switch != manual_control_setpoint_s::SWITCH_POS_NONE &&
-			_v_control_mode.flag_control_manual_enabled)
+	
+	if (_manual_control_sp.transition_switch != manual_control_setpoint_s::SWITCH_POS_NONE && _v_control_mode.flag_control_manual_enabled)
 	{
 		to_fw = (_manual_control_sp.transition_switch == manual_control_setpoint_s::SWITCH_POS_ON);
-
+		
 	}
 	else
 	{
 		// listen to transition commands if not in manual or mode switch is not mapped
 		to_fw = (_transition_command == vtol_vehicle_status_s::VEHICLE_VTOL_STATE_FW);
 	}
-
+	
 	// handle abort request
 	if (_abort_front_transition)
 	{
 		if (to_fw)
 		{
 			to_fw = false;
-
+			
 		}
 		else
 		{
@@ -443,15 +419,14 @@ VtolAttitudeControl::is_fixed_wing_requested()
 			_vtol_vehicle_status.vtol_transition_failsafe = false;
 		}
 	}
-
+	
 	return to_fw;
 }
 
 /*
  * Abort front transition
  */
-void
-VtolAttitudeControl::abort_front_transition(const char *reason)
+void VtolAttitudeControl::abort_front_transition(const char *reason)
 {
 	if (!_abort_front_transition)
 	{
@@ -462,99 +437,97 @@ VtolAttitudeControl::abort_front_transition(const char *reason)
 }
 
 /**
-* Update parameters.
-*/
-int
-VtolAttitudeControl::parameters_update()
+ * Update parameters.
+ */
+int VtolAttitudeControl::parameters_update()
 {
 	float v;
 	int32_t l;
 	/* idle pwm for mc mode */
 	param_get(_params_handles.idle_pwm_mc, &_params.idle_pwm_mc);
-
+	
 	/* vtol motor count */
 	param_get(_params_handles.vtol_motor_count, &_params.vtol_motor_count);
-
+	
 	/* vtol fw permanent stabilization */
 	param_get(_params_handles.vtol_fw_permanent_stab, &l);
 	_vtol_vehicle_status.fw_permanent_stab = (l == 1);
-
+	
 	/* vtol pitch trim for fw mode */
 	param_get(_params_handles.fw_pitch_trim, &v);
 	_params.fw_pitch_trim = v;
-
+	
 	param_get(_params_handles.vtol_type, &l);
 	_params.vtol_type = l;
-
+	
 	/* vtol lock elevons in multicopter */
 	param_get(_params_handles.elevons_mc_lock, &l);
 	_params.elevons_mc_lock = l;
-
+	
 	/* minimum relative altitude for FW mode (QuadChute) */
 	param_get(_params_handles.fw_min_alt, &v);
 	_params.fw_min_alt = v;
-
+	
 	/* maximum negative altitude error for FW mode (Adaptive QuadChute) */
 	param_get(_params_handles.fw_alt_err, &v);
 	_params.fw_alt_err = v;
-
+	
 	/* maximum pitch angle (QuadChute) */
 	param_get(_params_handles.fw_qc_max_pitch, &l);
 	_params.fw_qc_max_pitch = l;
-
+	
 	/* maximum roll angle (QuadChute) */
 	param_get(_params_handles.fw_qc_max_roll, &l);
 	_params.fw_qc_max_roll = l;
-
+	
 	param_get(_params_handles.front_trans_time_openloop, &_params.front_trans_time_openloop);
-
+	
 	param_get(_params_handles.front_trans_time_min, &_params.front_trans_time_min);
-
+	
 	/*
 	 * Minimum transition time can be maximum 90 percent of the open loop transition time,
 	 * anything else makes no sense and can potentially lead to numerical problems.
 	 */
-	_params.front_trans_time_min = math::min(_params.front_trans_time_openloop * 0.9f,
-				       _params.front_trans_time_min);
-
+	_params.front_trans_time_min = math::min(_params.front_trans_time_openloop * 0.9f, _params.front_trans_time_min);
+	
 	/* weathervane */
 	param_get(_params_handles.wv_takeoff, &l);
 	_params.wv_takeoff = (l == 1);
-
+	
 	param_get(_params_handles.wv_loiter, &l);
 	_params.wv_loiter = (l == 1);
-
+	
 	param_get(_params_handles.wv_land, &l);
 	_params.wv_land = (l == 1);
-
+	
 	// update the parameters of the instances of base VtolType
 	if (_vtol_type != nullptr)
 	{
 		_vtol_type->parameters_update();
 	}
-
+	
 	return OK;
 }
 
 /**
-* Prepare message for mc attitude rates setpoint topic
-*/
+ * Prepare message for mc attitude rates setpoint topic
+ */
 void VtolAttitudeControl::fill_mc_att_rates_sp()
 {
 	bool updated;
 	orb_check(_mc_virtual_v_rates_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		vehicle_rates_setpoint_s v_rates_sp;
-
+		
 		if (orb_copy(ORB_ID(mc_virtual_rates_setpoint), _mc_virtual_v_rates_sp_sub, &v_rates_sp) == PX4_OK)
 		{
 			// publish the attitude rates setpoint
 			if (_v_rates_sp_pub != nullptr)
 			{
 				orb_publish(ORB_ID(vehicle_rates_setpoint), _v_rates_sp_pub, &v_rates_sp);
-
+				
 			}
 			else
 			{
@@ -565,24 +538,24 @@ void VtolAttitudeControl::fill_mc_att_rates_sp()
 }
 
 /**
-* Prepare message for fw attitude rates setpoint topic
-*/
+ * Prepare message for fw attitude rates setpoint topic
+ */
 void VtolAttitudeControl::fill_fw_att_rates_sp()
 {
 	bool updated;
 	orb_check(_fw_virtual_v_rates_sp_sub, &updated);
-
+	
 	if (updated)
 	{
 		vehicle_rates_setpoint_s v_rates_sp;
-
+		
 		if (orb_copy(ORB_ID(fw_virtual_rates_setpoint), _fw_virtual_v_rates_sp_sub, &v_rates_sp) == PX4_OK)
 		{
 			// publish the attitude rates setpoint
 			if (_v_rates_sp_pub != nullptr)
 			{
 				orb_publish(ORB_ID(vehicle_rates_setpoint), _v_rates_sp_pub, &v_rates_sp);
-
+				
 			}
 			else
 			{
@@ -592,8 +565,7 @@ void VtolAttitudeControl::fill_fw_att_rates_sp()
 	}
 }
 
-void
-VtolAttitudeControl::task_main_trampoline(int argc, char *argv[])
+void VtolAttitudeControl::task_main_trampoline(int argc, char *argv[])
 {
 	VTOL_att_control::g_control->task_main();
 }
@@ -601,63 +573,63 @@ VtolAttitudeControl::task_main_trampoline(int argc, char *argv[])
 void VtolAttitudeControl::task_main()
 {
 	fflush(stdout);
-
+	
 	/* do subscriptions */
-	_v_att_sp_sub          = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
+	_v_att_sp_sub = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
 	_mc_virtual_att_sp_sub = orb_subscribe(ORB_ID(mc_virtual_attitude_setpoint));
 	_fw_virtual_att_sp_sub = orb_subscribe(ORB_ID(fw_virtual_attitude_setpoint));
 	_mc_virtual_v_rates_sp_sub = orb_subscribe(ORB_ID(mc_virtual_rates_setpoint));
 	_fw_virtual_v_rates_sp_sub = orb_subscribe(ORB_ID(fw_virtual_rates_setpoint));
-	_v_att_sub             = orb_subscribe(ORB_ID(vehicle_attitude));
-	_v_control_mode_sub    = orb_subscribe(ORB_ID(vehicle_control_mode));
-	_params_sub            = orb_subscribe(ORB_ID(parameter_update));
+	_v_att_sub = orb_subscribe(ORB_ID(vehicle_attitude));
+	_v_control_mode_sub = orb_subscribe(ORB_ID(vehicle_control_mode));
+	_params_sub = orb_subscribe(ORB_ID(parameter_update));
 	_manual_control_sp_sub = orb_subscribe(ORB_ID(manual_control_setpoint));
-	_local_pos_sub         = orb_subscribe(ORB_ID(vehicle_local_position));
-	_local_pos_sp_sub         = orb_subscribe(ORB_ID(vehicle_local_position_setpoint));
-	_pos_sp_triplet_sub    = orb_subscribe(ORB_ID(position_setpoint_triplet));
-	_airspeed_sub          = orb_subscribe(ORB_ID(airspeed));
-	_vehicle_cmd_sub	   = orb_subscribe(ORB_ID(vehicle_command));
+	_local_pos_sub = orb_subscribe(ORB_ID(vehicle_local_position));
+	_local_pos_sp_sub = orb_subscribe(ORB_ID(vehicle_local_position_setpoint));
+	_pos_sp_triplet_sub = orb_subscribe(ORB_ID(position_setpoint_triplet));
+	_airspeed_sub = orb_subscribe(ORB_ID(airspeed));
+	_vehicle_cmd_sub = orb_subscribe(ORB_ID(vehicle_command));
 	_tecs_status_sub = orb_subscribe(ORB_ID(tecs_status));
 	_land_detected_sub = orb_subscribe(ORB_ID(vehicle_land_detected));
-
-	_actuator_inputs_mc    = orb_subscribe(ORB_ID(actuator_controls_virtual_mc));
-	_actuator_inputs_fw    = orb_subscribe(ORB_ID(actuator_controls_virtual_fw));
-
+	
+	_actuator_inputs_mc = orb_subscribe(ORB_ID(actuator_controls_virtual_mc));
+	_actuator_inputs_fw = orb_subscribe(ORB_ID(actuator_controls_virtual_fw));
+	
 	parameters_update();  // initialize parameter cache
-
+	
 	// make sure we start with idle in mc mode
 	_vtol_type->set_idle_mc();
-
+	
 	/* wakeup source*/
-	px4_pollfd_struct_t fds[1] = {};
-	fds[0].fd     = _actuator_inputs_mc;
+	px4_pollfd_struct_t fds[1] = { };
+	fds[0].fd = _actuator_inputs_mc;
 	fds[0].events = POLLIN;
-
+	
 	while (!_task_should_exit)
 	{
 		/* only update parameters if they changed */
 		bool params_updated = false;
 		orb_check(_params_sub, &params_updated);
-
+		
 		if (params_updated)
 		{
 			/* read from param to clear updated flag */
 			parameter_update_s update;
 			orb_copy(ORB_ID(parameter_update), _params_sub, &update);
-
+			
 			/* update parameters from storage */
 			parameters_update();
 		}
-
+		
 		/* wait for up to 100ms for data */
 		int pret = px4_poll(&fds[0], sizeof(fds) / sizeof(fds[0]), 100);
-
+		
 		/* timed out - periodic check for _task_should_exit */
 		if (pret == 0)
 		{
 			continue;
 		}
-
+		
 		/* this is undesirable but not much we can do - might want to flag unhappy status */
 		if (pret < 0)
 		{
@@ -666,7 +638,7 @@ void VtolAttitudeControl::task_main()
 			usleep(100000);
 			continue;
 		}
-
+		
 		// run vtol_att on MC actuator publications, unless in full FW mode
 		switch (_vtol_type->get_mode())
 		{
@@ -675,12 +647,12 @@ void VtolAttitudeControl::task_main()
 			case ROTARY_WING:
 				fds[0].fd = _actuator_inputs_mc;
 				break;
-
+				
 			case FIXED_WING:
 				fds[0].fd = _actuator_inputs_fw;
 				break;
 		}
-
+		
 		vehicle_control_mode_poll();
 		vehicle_manual_poll();
 		vehicle_attitude_poll();
@@ -693,22 +665,22 @@ void VtolAttitudeControl::task_main()
 		land_detected_poll();
 		actuator_controls_fw_poll();
 		actuator_controls_mc_poll();
-
+		
 		// update the vtol state machine which decides which mode we are in
 		_vtol_type->update_vtol_state();
-
+		
 		// reset transition command if not auto control
 		if (_v_control_mode.flag_control_manual_enabled)
 		{
 			if (_vtol_type->get_mode() == ROTARY_WING)
 			{
 				_transition_command = vtol_vehicle_status_s::VEHICLE_VTOL_STATE_MC;
-
+				
 			}
 			else if (_vtol_type->get_mode() == FIXED_WING)
 			{
 				_transition_command = vtol_vehicle_status_s::VEHICLE_VTOL_STATE_FW;
-
+				
 			}
 			else if (_vtol_type->get_mode() == TRANSITION_TO_MC)
 			{
@@ -718,131 +690,123 @@ void VtolAttitudeControl::task_main()
 				_transition_command = vtol_vehicle_status_s::VEHICLE_VTOL_STATE_MC;
 			}
 		}
-
+		
 		// check in which mode we are in and call mode specific functions
 		if (_vtol_type->get_mode() == ROTARY_WING)
 		{
-
+			
 			mc_virtual_att_sp_poll();
-
+			
 			// vehicle is in rotary wing mode
 			_vtol_vehicle_status.vtol_in_rw_mode = true;
 			_vtol_vehicle_status.vtol_in_trans_mode = false;
-
+			
 			// got data from mc attitude controller
 			_vtol_type->update_mc_state();
 			fill_mc_att_rates_sp();
-
+			
 		}
 		else if (_vtol_type->get_mode() == FIXED_WING)
 		{
-
+			
 			fw_virtual_att_sp_poll();
-
+			
 			// vehicle is in fw mode
 			_vtol_vehicle_status.vtol_in_rw_mode = false;
 			_vtol_vehicle_status.vtol_in_trans_mode = false;
-
+			
 			_vtol_type->update_fw_state();
 			fill_fw_att_rates_sp();
-
+			
 		}
 		else if (_vtol_type->get_mode() == TRANSITION_TO_MC || _vtol_type->get_mode() == TRANSITION_TO_FW)
 		{
-
+			
 			mc_virtual_att_sp_poll();
 			fw_virtual_att_sp_poll();
-
+			
 			// vehicle is doing a transition
 			_vtol_vehicle_status.vtol_in_trans_mode = true;
 			_vtol_vehicle_status.vtol_in_rw_mode = true; //making mc attitude controller work during transition
 			_vtol_vehicle_status.in_transition_to_fw = (_vtol_type->get_mode() == TRANSITION_TO_FW);
-
+			
 			_vtol_type->update_transition_state();
 			fill_mc_att_rates_sp();
 		}
-
+		
 		_vtol_type->fill_actuator_outputs();
-
+		
 		/* Only publish if the proper mode(s) are enabled */
-		if (_v_control_mode.flag_control_attitude_enabled ||
-				_v_control_mode.flag_control_rates_enabled ||
-				_v_control_mode.flag_control_manual_enabled)
+		if (_v_control_mode.flag_control_attitude_enabled || _v_control_mode.flag_control_rates_enabled || _v_control_mode.flag_control_manual_enabled)
 		{
-
+			
 			if (_v_att_sp_pub != nullptr)
 			{
 				/* publish the attitude setpoint */
 				orb_publish(ORB_ID(vehicle_attitude_setpoint), _v_att_sp_pub, &_v_att_sp);
-
+				
 			}
 			else
 			{
 				/* advertise and publish */
 				_v_att_sp_pub = orb_advertise(ORB_ID(vehicle_attitude_setpoint), &_v_att_sp);
 			}
-
+			
 			if (_actuators_0_pub != nullptr)
 			{
 				orb_publish(ORB_ID(actuator_controls_0), _actuators_0_pub, &_actuators_out_0);
-
+				
 			}
 			else
 			{
 				_actuators_0_pub = orb_advertise(ORB_ID(actuator_controls_0), &_actuators_out_0);
 			}
-
+			
 			if (_actuators_1_pub != nullptr)
 			{
 				orb_publish(ORB_ID(actuator_controls_1), _actuators_1_pub, &_actuators_out_1);
-
+				
 			}
 			else
 			{
 				_actuators_1_pub = orb_advertise(ORB_ID(actuator_controls_1), &_actuators_out_1);
 			}
 		}
-
+		
 		/*Advertise/Publish vtol vehicle status*/
 		_vtol_vehicle_status.timestamp = hrt_absolute_time();
-
+		
 		if (_vtol_vehicle_status_pub != nullptr)
 		{
 			orb_publish(ORB_ID(vtol_vehicle_status), _vtol_vehicle_status_pub, &_vtol_vehicle_status);
-
+			
 		}
 		else
 		{
 			_vtol_vehicle_status_pub = orb_advertise(ORB_ID(vtol_vehicle_status), &_vtol_vehicle_status);
 		}
 	}
-
+	
 	PX4_WARN("exit");
 	_control_task = -1;
 }
 
-int
-VtolAttitudeControl::start()
+int VtolAttitudeControl::start()
 {
 	ASSERT(_control_task == -1);
-
+	
 	/* start the task */
-	_control_task = px4_task_spawn_cmd("vtol_att_control",
-					   SCHED_DEFAULT,
-					   SCHED_PRIORITY_ATTITUDE_CONTROL + 1,
-					   1230,
-					   (px4_main_t)&VtolAttitudeControl::task_main_trampoline,
-					   nullptr);
-
+	_control_task = px4_task_spawn_cmd("vtol_att_control", SCHED_DEFAULT,
+	SCHED_PRIORITY_ATTITUDE_CONTROL + 1, 1230, (px4_main_t) &VtolAttitudeControl::task_main_trampoline, nullptr);
+	
 	if (_control_task < 0)
 	{
 		PX4_WARN("task start failed");
 		return -errno;
 	}
-
+	
 	return OK;
 }
-
 
 int vtol_att_control_main(int argc, char *argv[])
 {
@@ -850,24 +814,24 @@ int vtol_att_control_main(int argc, char *argv[])
 	{
 		PX4_WARN("usage: vtol_att_control {start|stop|status}");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (VTOL_att_control::g_control != nullptr)
 		{
 			PX4_WARN("already running");
 			return 0;
 		}
-
+		
 		VTOL_att_control::g_control = new VtolAttitudeControl;
-
+		
 		if (VTOL_att_control::g_control == nullptr)
 		{
 			PX4_WARN("alloc failed");
 			return 1;
 		}
-
+		
 		if (OK != VTOL_att_control::g_control->start())
 		{
 			delete VTOL_att_control::g_control;
@@ -875,10 +839,10 @@ int vtol_att_control_main(int argc, char *argv[])
 			PX4_WARN("start failed");
 			return 1;
 		}
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		if (VTOL_att_control::g_control == nullptr)
@@ -886,27 +850,27 @@ int vtol_att_control_main(int argc, char *argv[])
 			PX4_WARN("not running");
 			return 0;
 		}
-
+		
 		delete VTOL_att_control::g_control;
 		VTOL_att_control::g_control = nullptr;
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (VTOL_att_control::g_control)
 		{
 			PX4_WARN("running");
-
+			
 		}
 		else
 		{
 			PX4_WARN("not running");
 		}
-
+		
 		return 0;
 	}
-
+	
 	PX4_WARN("unrecognized command");
 	return 1;
 }

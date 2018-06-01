@@ -32,12 +32,13 @@
 #include "dspal_types.h"
 #include "dspal_signal.h"
 
-struct mq_attr {
-	long	mq_flags;	/* Message queue flags. */
-	long	mq_maxmsg;	/* Maximum number of messages. */
-	long	mq_msgsize;	/* Maximum message size. */
-	long	mq_curmsgs;	/* Number of messages currently queued. */
-	long    __reserved[4];  /* Ignored for input, zeroed for output */
+struct mq_attr
+{
+	long mq_flags; /* Message queue flags. */
+	long mq_maxmsg; /* Maximum number of messages. */
+	long mq_msgsize; /* Maximum message size. */
+	long mq_curmsgs; /* Number of messages currently queued. */
+	long __reserved[4]; /* Ignored for input, zeroed for output */
 };
 
 struct timespec;
@@ -49,12 +50,9 @@ mqd_t mq_open(const char *, int, ...);
 int mq_close(mqd_t);
 int mq_unlink(const char *);
 int mq_send(mqd_t, const char *, size_t, unsigned);
-int mq_timedsend(mqd_t, const char *, size_t, unsigned,
-		 const struct timespec *);
+int mq_timedsend(mqd_t, const char *, size_t, unsigned, const struct timespec *);
 ssize_t mq_receive(mqd_t, char *, size_t, unsigned *);
-ssize_t mq_timedreceive(mqd_t, char *__restrict, size_t,
-			unsigned *__restrict, const struct timespec *__restrict);
+ssize_t mq_timedreceive(mqd_t, char *__restrict, size_t, unsigned *__restrict, const struct timespec *__restrict);
 int mq_getattr(mqd_t, struct mq_attr *);
-int mq_setattr(mqd_t, const struct mq_attr *__restrict,
-	       struct mq_attr *__restrict);
+int mq_setattr(mqd_t, const struct mq_attr *__restrict, struct mq_attr *__restrict);
 __END_DECLS

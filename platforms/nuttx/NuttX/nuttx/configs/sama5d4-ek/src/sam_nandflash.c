@@ -100,66 +100,66 @@
  ****************************************************************************/
 
 int board_nandflash_config(int cs)
-{
-  uint32_t regval;
+{	
+	uint32_t regval;
 
-  /* The Embest and Ronetix CM boards and one Hynix NAND HY27UF(08/16)2G2B
-   * Series NAND (MT29F2G08ABAEAWP).  This part has a capacity of 256Mx8bit
-   * () with spare 8Mx8 bit capacity. The device contains 2048 blocks, composed
-   * by 64 x 2112 byte pages.  The effective size is approximately 256MiB.
-   *
-   * NAND is available on CS3.
-   */
+	/* The Embest and Ronetix CM boards and one Hynix NAND HY27UF(08/16)2G2B
+	 * Series NAND (MT29F2G08ABAEAWP).  This part has a capacity of 256Mx8bit
+	 * () with spare 8Mx8 bit capacity. The device contains 2048 blocks, composed
+	 * by 64 x 2112 byte pages.  The effective size is approximately 256MiB.
+	 *
+	 * NAND is available on CS3.
+	 */
 
-  if (cs == HSMC_CS3)
-    {
-      /* Make sure that the SMC peripheral is enabled. */
+	if (cs == HSMC_CS3)
+	{	
+		/* Make sure that the SMC peripheral is enabled. */
 
-      sam_hsmc_enableclk();
+		sam_hsmc_enableclk();
 
-      /* Configure the SMC */
+		/* Configure the SMC */
 
-      regval = HSMC_SETUP_NWE_SETUP(1) |  HSMC_SETUP_NCS_WRSETUP(1) |
-               HSMC_SETUP_NRD_SETUP(2) | HSMC_SETUP_NCS_RDSETUP(1);
-      putreg32(regval, SAM_HSMC_SETUP(HSMC_CS3));
+		regval = HSMC_SETUP_NWE_SETUP(1) | HSMC_SETUP_NCS_WRSETUP(1) |
+		HSMC_SETUP_NRD_SETUP(2) | HSMC_SETUP_NCS_RDSETUP(1);
+		putreg32(regval, SAM_HSMC_SETUP(HSMC_CS3));
 
-      regval = HSMC_PULSE_NWE_PULSE(5) | HSMC_PULSE_NCS_WRPULSE(7) |
-               HSMC_PULSE_NRD_PULSE(5) | HSMC_PULSE_NCS_RDPULSE(7);
-      putreg32(regval, SAM_HSMC_PULSE(HSMC_CS3));
+		regval = HSMC_PULSE_NWE_PULSE(5) | HSMC_PULSE_NCS_WRPULSE(7) |
+		HSMC_PULSE_NRD_PULSE(5) | HSMC_PULSE_NCS_RDPULSE(7);
+		putreg32(regval, SAM_HSMC_PULSE(HSMC_CS3));
 
-      regval = HSMC_CYCLE_NWE_CYCLE(8) | HSMC_CYCLE_NRD_CYCLE(9);
-      putreg32(regval, SAM_HSMC_CYCLE(HSMC_CS3));
+		regval = HSMC_CYCLE_NWE_CYCLE(8) | HSMC_CYCLE_NRD_CYCLE(9);
+		putreg32(regval, SAM_HSMC_CYCLE(HSMC_CS3));
 
-      regval = HSMC_TIMINGS_TCLR(3) | HSMC_TIMINGS_TADL(10) |
-               HSMC_TIMINGS_TAR(3) | HSMC_TIMINGS_TRR(4) |
-               HSMC_TIMINGS_TWB(5) | HSMC_TIMINGS_RBNSEL(3) |
-               HSMC_TIMINGS_NFSEL;
-      putreg32(regval, SAM_HSMC_TIMINGS(HSMC_CS3));
+		regval = HSMC_TIMINGS_TCLR(3) | HSMC_TIMINGS_TADL(10) |
+		HSMC_TIMINGS_TAR(3) | HSMC_TIMINGS_TRR(4) |
+		HSMC_TIMINGS_TWB(5) | HSMC_TIMINGS_RBNSEL(3) |
+		HSMC_TIMINGS_NFSEL;
+		putreg32(regval, SAM_HSMC_TIMINGS(HSMC_CS3));
 
-      regval = HSMC_MODE_READMODE | HSMC_MODE_WRITEMODE |
-               HSMC_MODE_BIT_8 | HSMC_MODE_TDFCYCLES(1);
-      putreg32(regval, SAM_HSMC_MODE(HSMC_CS3));
+		regval = HSMC_MODE_READMODE | HSMC_MODE_WRITEMODE |
+		HSMC_MODE_BIT_8 | HSMC_MODE_TDFCYCLES(1);
+		putreg32(regval, SAM_HSMC_MODE(HSMC_CS3));
 
-      /* Configure NAND PIO pins
-       *
-       * NAND Interface:
-       *
-       *   NCS3/NANDCE - Dedicated pin; no configuration needed
-       *   NANDCLE     - PE21
-       *   NANDALE     - PE22
-       *   NRD/NANDOE  - Dedicated pin; no configuration needed
-       *   NWE/NANDWE  - Dedicated pin; no configuration needed
-       *   NANDRDY     - Dedicated pin; no configuration needed
-       *   M_EBI_D0-7  - Dedicated pins; no configuration needed
-       */
+		/* Configure NAND PIO pins
+		 *
+		 * NAND Interface:
+		 *
+		 *   NCS3/NANDCE - Dedicated pin; no configuration needed
+		 *   NANDCLE     - PE21
+		 *   NANDALE     - PE22
+		 *   NRD/NANDOE  - Dedicated pin; no configuration needed
+		 *   NWE/NANDWE  - Dedicated pin; no configuration needed
+		 *   NANDRDY     - Dedicated pin; no configuration needed
+		 *   M_EBI_D0-7  - Dedicated pins; no configuration needed
+		 */
 
-      sam_configpio(PIO_HSMC_NANDALE);
-      sam_configpio(PIO_HSMC_NANDCLE);
+		sam_configpio(PIO_HSMC_NANDALE);
+		sam_configpio(PIO_HSMC_NANDCLE);
 
-      return OK;
-    }
+		return OK;
+	}
 
-  return -ENODEV;
+	return -ENODEV;
 }
 
 /****************************************************************************
@@ -172,59 +172,59 @@ int board_nandflash_config(int cs)
 
 #ifdef HAVE_NAND
 int sam_nand_automount(int minor)
-{
-  FAR struct mtd_dev_s *mtd;
-  static bool initialized = false;
-  int ret;
+{	
+	FAR struct mtd_dev_s *mtd;
+	static bool initialized = false;
+	int ret;
 
-  /* Have we already initialized? */
+	/* Have we already initialized? */
 
-  if (!initialized)
-    {
-      /* Create and initialize an NAND MATD device */
+	if (!initialized)
+	{	
+		/* Create and initialize an NAND MATD device */
 
-      mtd = sam_nand_initialize(HSMC_CS3);
-      if (!mtd)
-        {
-          ferr("ERROR: Failed to create the NAND driver on CS%d\n", HSMC_CS3);
-          return -ENODEV;
-        }
+		mtd = sam_nand_initialize(HSMC_CS3);
+		if (!mtd)
+		{	
+			ferr("ERROR: Failed to create the NAND driver on CS%d\n", HSMC_CS3);
+			return -ENODEV;
+		}
 
 #if defined(CONFIG_SAMA5D4EK_NAND_FTL)
-      /* Use the FTL layer to wrap the MTD driver as a block driver */
+		/* Use the FTL layer to wrap the MTD driver as a block driver */
 
-      ret = ftl_initialize(NAND_MINOR, mtd);
-      if (ret < 0)
-        {
-          ferr("ERROR: Failed to initialize the FTL layer: %d\n", ret);
-          return ret;
-        }
+		ret = ftl_initialize(NAND_MINOR, mtd);
+		if (ret < 0)
+		{	
+			ferr("ERROR: Failed to initialize the FTL layer: %d\n", ret);
+			return ret;
+		}
 
 #elif defined(CONFIG_SAMA5D4EK_NAND_NXFFS)
-      /* Initialize to provide NXFFS on the MTD interface */
+		/* Initialize to provide NXFFS on the MTD interface */
 
-      ret = nxffs_initialize(mtd);
-      if (ret < 0)
-        {
-          ferr("ERROR: NXFFS initialization failed: %d\n", ret);
-          return ret;
-        }
+		ret = nxffs_initialize(mtd);
+		if (ret < 0)
+		{	
+			ferr("ERROR: NXFFS initialization failed: %d\n", ret);
+			return ret;
+		}
 
-      /* Mount the file system at /mnt/nand */
+		/* Mount the file system at /mnt/nand */
 
-      ret = mount(NULL, "/mnt/nand", "nxffs", 0, NULL);
-      if (ret < 0)
-        {
-          ferr("ERROR: Failed to mount the NXFFS volume: %d\n", errno);
-          return ret;
-        }
+		ret = mount(NULL, "/mnt/nand", "nxffs", 0, NULL);
+		if (ret < 0)
+		{	
+			ferr("ERROR: Failed to mount the NXFFS volume: %d\n", errno);
+			return ret;
+		}
 #endif
-      /* Now we are initialized */
+		/* Now we are initialized */
 
-      initialized = true;
-    }
+		initialized = true;
+	}
 
-  return OK;
+	return OK;
 }
 #endif
 

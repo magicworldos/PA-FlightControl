@@ -47,7 +47,7 @@ class Mavlink;
 
 class MavlinkStream
 {
-
+	
 public:
 	MavlinkStream *next;
 
@@ -66,8 +66,11 @@ public:
 	 *
 	 * @return the inveral in microseconds (us) between messages
 	 */
-	int get_interval() { return _interval; }
-
+	int get_interval()
+	{
+		return _interval;
+	}
+	
 	/**
 	 * @return 0 if updated / sent, -1 if unchanged
 	 */
@@ -78,8 +81,11 @@ public:
 	/**
 	 * @return true if steam rate shouldn't be adjusted
 	 */
-	virtual bool const_rate() { return false; }
-
+	virtual bool const_rate()
+	{
+		return false;
+	}
+	
 	/**
 	 * Get maximal total messages size on update
 	 */
@@ -93,16 +99,19 @@ public:
 	 * this equals usually zero, as no bandwidth
 	 * needs to be reserved
 	 */
-	virtual unsigned get_size_avg() { return get_size(); }
-
+	virtual unsigned get_size_avg()
+	{
+		return get_size();
+	}
+	
 protected:
-	Mavlink     *_mavlink;
+	Mavlink *_mavlink;
 	int _interval;		///< if set to negative value = unlimited rate
-
+	
 #ifndef __PX4_QURT
 	virtual bool send(const hrt_abstime t) = 0;
 #endif
-
+	
 private:
 	hrt_abstime _last_sent;
 
@@ -110,6 +119,5 @@ private:
 	MavlinkStream(const MavlinkStream &);
 	MavlinkStream &operator=(const MavlinkStream &);
 };
-
 
 #endif /* MAVLINK_STREAM_H_ */

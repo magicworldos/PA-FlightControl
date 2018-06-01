@@ -57,10 +57,10 @@ public:
 	static void delete_all(const char *dir);
 
 public:
-
-	bool        get_entry(int idx, uint32_t &size, uint32_t &date, char *filename = 0, int filename_len = 0);
-	bool        open_for_transmit();
-	size_t      get_log_data(uint8_t len, uint8_t *buffer);
+	
+	bool get_entry(int idx, uint32_t &size, uint32_t &date, char *filename = 0, int filename_len = 0);
+	bool open_for_transmit();
+	size_t get_log_data(uint8_t len, uint8_t *buffer);
 
 	enum
 	{
@@ -69,23 +69,23 @@ public:
 		LOG_HANDLER_SENDING_DATA
 	};
 
-	int         next_entry;
-	int         last_entry;
-	int         log_count;
+	int next_entry;
+	int last_entry;
+	int log_count;
 
-	int         current_status;
-	uint16_t    current_log_index;
-	uint32_t    current_log_size;
-	uint32_t    current_log_data_offset;
-	uint32_t    current_log_data_remaining;
-	FILE       *current_log_filep;
-	char        current_log_filename[128];
+	int current_status;
+	uint16_t current_log_index;
+	uint32_t current_log_size;
+	uint32_t current_log_data_offset;
+	uint32_t current_log_data_remaining;
+	FILE *current_log_filep;
+	char current_log_filename[128];
 
 private:
-	void        _init();
-	bool        _get_session_date(const char *path, const char *dir, time_t &date);
-	void        _scan_logs(FILE *f, const char *dir, time_t &date);
-	bool        _get_log_time_size(const char *path, const char *file, time_t &date, uint32_t &size);
+	void _init();
+	bool _get_session_date(const char *path, const char *dir, time_t &date);
+	void _scan_logs(FILE *f, const char *dir, time_t &date);
+	bool _get_log_time_size(const char *path, const char *file, time_t &date, uint32_t &size);
 };
 
 // MAVLink LOG_* Message Handler
@@ -115,6 +115,6 @@ private:
 	size_t _log_send_listing();
 	size_t _log_send_data();
 
-	LogListHelper    *_pLogHandlerHelper;
+	LogListHelper *_pLogHandlerHelper;
 	Mavlink *_mavlink;
 };

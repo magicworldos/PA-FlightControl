@@ -55,8 +55,8 @@
 #include "ecl_controller.h"
 
 class __EXPORT ECL_RollController :
-	public ECL_Controller
-{
+public ECL_Controller
+{	
 public:
 	ECL_RollController();
 	~ECL_RollController() = default;

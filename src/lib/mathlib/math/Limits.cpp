@@ -37,12 +37,10 @@
  * Limiting / constrain helper functions
  */
 
-
 #include <math.h>
 #include <stdint.h>
 
 #include "Limits.hpp"
-
 
 namespace math
 {
@@ -52,22 +50,22 @@ namespace math
 #endif
 
 float __EXPORT radians(float degrees)
-{
+{	
 	return (degrees / 180.0f) * M_PI_F;
 }
 
 double __EXPORT radians(double degrees)
-{
+{	
 	return (degrees / 180.0) * M_PI;
 }
 
 float __EXPORT degrees(float radians)
-{
+{	
 	return (radians / M_PI_F) * 180.0f;
 }
 
 double __EXPORT degrees(double radians)
-{
+{	
 	return (radians / M_PI) * 180.0;
 }
 

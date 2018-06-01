@@ -83,10 +83,10 @@ __EXPORT void stm32_usbinitialize(void)
 
 #ifdef CONFIG_STM32_OTGFS
 	/* XXX We only support device mode
-	stm32_configgpio(GPIO_OTGFS_VBUS);
-	stm32_configgpio(GPIO_OTGFS_PWRON);
-	stm32_configgpio(GPIO_OTGFS_OVER);
-	*/
+	 stm32_configgpio(GPIO_OTGFS_VBUS);
+	 stm32_configgpio(GPIO_OTGFS_PWRON);
+	 stm32_configgpio(GPIO_OTGFS_OVER);
+	 */
 #endif
 }
 

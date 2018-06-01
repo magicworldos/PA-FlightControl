@@ -48,15 +48,15 @@
 #include "mission_block.h"
 #include <uORB/topics/follow_target.h>
 
-class FollowTarget : public MissionBlock
+class FollowTarget: public MissionBlock
 {
-
+	
 public:
 	FollowTarget(Navigator *navigator, const char *name);
 
 	FollowTarget(const FollowTarget &) = delete;
 	FollowTarget &operator=(const FollowTarget &) = delete;
-
+	
 	~FollowTarget();
 
 	void on_inactive() override;
@@ -64,7 +64,7 @@ public:
 	void on_active() override;
 
 private:
-
+	
 	static constexpr int TARGET_TIMEOUT_MS = 2500;
 	static constexpr int TARGET_ACCEPTANCE_RADIUS_M = 5;
 	static constexpr int INTERPOLATION_PNTS = 20;
@@ -87,41 +87,20 @@ private:
 		FOLLOW_FROM_LEFT
 	};
 
-	static constexpr float _follow_position_matricies[4][9] =
-	{
-		{
-			1.0F,  -1.0F, 0.0F,
-			1.0F,   1.0F, 0.0F,
-			0.0F,   0.0F, 1.0F
-		}, // follow right
-
-		{
-			-1.0F,  0.0F, 0.0F,
-			0.0F, -1.0F, 0.0F,
-			0.0F,  0.0F, 1.0F
-		}, // follow behind
-
-		{
-			1.0F,   0.0F, 0.0F,
-			0.0F,   1.0F, 0.0F,
-			0.0F,   0.0F, 1.0F
-		}, // follow front
-
-		{
-			1.0F,   1.0F, 0.0F,
-			-1.0F,   1.0F, 0.0F,
-			0.0F,   0.0F, 1.0F
-		}
-	}; // follow left side
-
-
+	static constexpr float _follow_position_matricies[4][9] = { { 1.0F, -1.0F, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F }, // follow right
+	
+	{ -1.0F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F, 1.0F }, // follow behind
+	
+	{ 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F }, // follow front
+	
+	{ 1.0F, 1.0F, 0.0F, -1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F } }; // follow left side
+	
 	Navigator *_navigator;
-	control::BlockParamFloat	_param_min_alt;
-	control::BlockParamFloat 	_param_tracking_dist;
-	control::BlockParamInt 		_param_tracking_side;
-	control::BlockParamFloat 	_param_tracking_resp;
-	control::BlockParamFloat 	_param_yaw_auto_max;
-
+	control::BlockParamFloat _param_min_alt;
+	control::BlockParamFloat _param_tracking_dist;
+	control::BlockParamInt _param_tracking_side;
+	control::BlockParamFloat _param_tracking_resp;
+	control::BlockParamFloat _param_yaw_auto_max;
 
 	FollowTargetState _follow_target_state;
 	int _follow_target_position;
@@ -149,7 +128,7 @@ private:
 	float _yaw_angle;
 
 	// Mavlink defined motion reporting capabilities
-
+	
 	enum
 	{
 		POS = 0,

@@ -79,6 +79,6 @@ __EXPORT void led_toggle(int led)
 	{
 		_led_state[led] = !_led_state[led];
 		PX4_DEBUG("LED%d_TOGGLE: %s", led, _led_state[led] ? "ON" : "OFF");
-
+		
 	}
 }

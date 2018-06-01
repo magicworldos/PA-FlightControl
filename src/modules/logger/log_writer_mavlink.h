@@ -58,8 +58,11 @@ public:
 
 	void stop_log();
 
-	bool is_started() const { return _is_started; }
-
+	bool is_started() const
+	{
+		return _is_started;
+	}
+	
 	/** @see LogWriter::write_message() */
 	int write_message(void *ptr, size_t size);
 
@@ -69,9 +72,9 @@ public:
 	{
 		return _need_reliable_transfer;
 	}
-
+	
 private:
-
+	
 	/** publish message, wait for ack if needed & reset message */
 	int publish_message();
 

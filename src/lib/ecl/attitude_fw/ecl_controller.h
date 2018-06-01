@@ -52,7 +52,8 @@
 #include <stdint.h>
 #include <systemlib/perf_counter.h>
 
-struct ECL_ControlData {
+struct ECL_ControlData
+{
 	float roll;
 	float pitch;
 	float yaw;
@@ -75,7 +76,7 @@ struct ECL_ControlData {
 };
 
 class __EXPORT ECL_Controller
-{
+{	
 public:
 	ECL_Controller(const char *name);
 	~ECL_Controller() = default;
@@ -91,7 +92,8 @@ public:
 	void set_k_ff(float k_ff);
 	void set_integrator_max(float max);
 	void set_max_rate(float max_rate);
-	void set_bodyrate_setpoint(float rate) {_bodyrate_setpoint = rate;}
+	void set_bodyrate_setpoint(float rate)
+	{	_bodyrate_setpoint = rate;}
 
 	/* Getters */
 	float get_rate_error();

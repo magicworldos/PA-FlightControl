@@ -33,16 +33,16 @@
 
 #include <sys/cdefs.h>
 
-typedef	unsigned int	sem_t;
+typedef unsigned int sem_t;
 
 #define	SEM_FAILED	((sem_t *)0)
 #define	SEM_VALUE_MAX	((unsigned int) 30)
 
 __BEGIN_DECLS
-int    sem_init(sem_t *, int, unsigned int);
-int    sem_wait(sem_t *);
-int    sem_trywait(sem_t *);
-int    sem_post(sem_t *);
-int    sem_getvalue(sem_t *__restrict, int *__restrict);
-int    sem_destroy(sem_t *);
+int sem_init(sem_t *, int, unsigned int);
+int sem_wait(sem_t *);
+int sem_trywait(sem_t *);
+int sem_post(sem_t *);
+int sem_getvalue(sem_t *__restrict, int *__restrict);
+int sem_destroy(sem_t *);
 __END_DECLS

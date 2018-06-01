@@ -59,7 +59,7 @@ int PCA9685::init(int bus, int address)
 {
 	_fd = open_fd(bus, address);
 	reset();
-
+	
 	usleep(1000 * 100);
 	/* 12BIT 精度输出下，好赢电调可以到200HZ刷新 */
 	/* 200HZ for 12bit Resolution, supported by most of the esc's */
@@ -74,12 +74,12 @@ int PCA9685::send_output_pwm(const uint16_t *pwm, int num_outputs)
 	{
 		num_outputs = 16;
 	}
-
+	
 	for (int i = 0; i < num_outputs; ++i)
 	{
 		setPWM(i, pwm[i]);
 	}
-
+	
 	return 0;
 }
 
@@ -96,7 +96,7 @@ PCA9685::PCA9685(int bus, int address)
 PCA9685::~PCA9685()
 {
 	reset();
-
+	
 	if (_fd >= 0)
 	{
 		close(_fd);
@@ -116,10 +116,10 @@ void PCA9685::setPWMFreq(int freq)
 {
 	if (_fd != -1)
 	{
-		uint8_t prescale = (CLOCK_FREQ / MAX_PWM_RES / freq)  - 1;
+		uint8_t prescale = (CLOCK_FREQ / MAX_PWM_RES / freq) - 1;
 		//printf ("Setting prescale value to: %d\n", prescale);
 		//printf ("Using Frequency: %d\n", freq);
-
+		
 		uint8_t oldmode = read_byte(_fd, MODE1);
 		uint8_t newmode = (oldmode & 0x7F) | 0x10;    //sleep
 		write_byte(_fd, MODE1, newmode);        // go to sleep
@@ -129,7 +129,6 @@ void PCA9685::setPWMFreq(int freq)
 		write_byte(_fd, MODE1, oldmode | 0x80);
 	}
 }
-
 
 void PCA9685::setPWM(uint8_t led, int value)
 {
@@ -141,32 +140,32 @@ void PCA9685::setPWM(uint8_t led, int on_value, int off_value)
 	if (_fd != -1)
 	{
 		write_byte(_fd, LED0_ON_L + LED_MULTIPLYER * led, on_value & 0xFF);
-
+		
 		write_byte(_fd, LED0_ON_H + LED_MULTIPLYER * led, on_value >> 8);
-
+		
 		write_byte(_fd, LED0_OFF_L + LED_MULTIPLYER * led, off_value & 0xFF);
-
+		
 		write_byte(_fd, LED0_OFF_H + LED_MULTIPLYER * led, off_value >> 8);
 	}
-
+	
 }
 
 uint8_t PCA9685::read_byte(int fd, uint8_t address)
 {
-
+	
 	uint8_t buf[1];
 	buf[0] = address;
-
+	
 	if (write(fd, buf, 1) != 1)
 	{
 		return -1;
 	}
-
+	
 	if (read(fd, buf, 1) != 1)
 	{
 		return -1;
 	}
-
+	
 	return buf[0];
 }
 
@@ -175,7 +174,7 @@ void PCA9685::write_byte(int fd, uint8_t address, uint8_t data)
 	uint8_t buf[2];
 	buf[0] = address;
 	buf[1] = data;
-
+	
 	if (write(fd, buf, sizeof(buf)) != sizeof(buf))
 	{
 		PX4_ERR("Write failed (%i)", errno);
@@ -187,18 +186,18 @@ int PCA9685::open_fd(int bus, int address)
 	int fd;
 	char bus_file[64];
 	snprintf(bus_file, sizeof(bus_file), "/dev/i2c-%d", bus);
-
+	
 	if ((fd = open(bus_file, O_RDWR)) < 0)
 	{
 		PX4_ERR("Couldn't open I2C Bus %d [open_fd():open %d]", bus, errno);
 		return -1;
 	}
-
+	
 	if (ioctl(fd, I2C_SLAVE, address) < 0)
 	{
 		PX4_ERR("I2C slave %d failed [open_fd():ioctl %d]", address, errno);
 		return -1;
 	}
-
+	
 	return fd;
 }

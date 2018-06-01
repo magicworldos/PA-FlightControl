@@ -43,7 +43,7 @@
 #include "dspal_types.h"
 #include <sys/timespec.h>
 
-typedef int              clockid_t; /* ignored */
+typedef int clockid_t; /* ignored */
 #define _CLOCKID_T
 
 typedef int timer_t;
@@ -60,7 +60,8 @@ typedef int timer_t;
 #include "dspal_signal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Timer functions */
@@ -95,8 +96,7 @@ extern "C" {
  * the sigev_signo having a default signal number (SIGALRM), and the
  * sigev_value member having the value of the timer ID.
  */
-int timer_create(clockid_t clockid, struct sigevent *restrict evp,
-		 timer_t *restrict timerid);
+int timer_create(clockid_t clockid, struct sigevent *restrict evp, timer_t *restrict timerid);
 
 /** Delete a POSIX timer.
  * Please refer to POSIX standard for details.
@@ -108,14 +108,11 @@ int timer_delete(timer_t timerid);
  */
 int timer_gettime(timer_t timerid, struct itimerspec *value);
 
-
 /** Set the time remaining on a POSIX timer.
  * Please refer to POSIX standard for details.
  * @param flags [in] ignored in this implementation
  */
-int timer_settime(timer_t timerid, int flags,
-		  const struct itimerspec *restrict value,
-		  struct itimerspec *restrict ovalue);
+int timer_settime(timer_t timerid, int flags, const struct itimerspec *restrict value, struct itimerspec *restrict ovalue);
 
 /** Get the resolution of the specified clock
  * Please refer to POSIX standard for details

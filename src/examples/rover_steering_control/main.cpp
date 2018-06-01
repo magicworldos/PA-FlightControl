@@ -126,33 +126,31 @@ static void usage(const char *reason);
  * @param att_sp The current attitude setpoint - the values the system would like to reach.
  * @param att The current attitude. The controller should make the attitude match the setpoint
  */
-void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att,
-		      struct actuator_controls_s *actuators);
+void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att, struct actuator_controls_s *actuators);
 
 /* Variables */
-static bool thread_should_exit = false;		/**< Daemon exit flag */
-static bool thread_running = false;		/**< Daemon status flag */
-static int deamon_task;				/**< Handle of deamon task / thread */
+static bool thread_should_exit = false; /**< Daemon exit flag */
+static bool thread_running = false; /**< Daemon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 static struct params pp;
 static struct param_handles ph;
 
 int parameters_init(struct param_handles *h)
 {
 	/* PID parameters */
-	h->yaw_p 	=	param_find("RV_YAW_P");
-
+	h->yaw_p = param_find("RV_YAW_P");
+	
 	return OK;
 }
 
 int parameters_update(const struct param_handles *h, struct params *p)
 {
 	param_get(h->yaw_p, &(p->yaw_p));
-
+	
 	return OK;
 }
 
-void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att,
-		      struct actuator_controls_s *actuators)
+void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att, struct actuator_controls_s *actuators)
 {
 	/*
 	 * The PX4 architecture provides a mixer outside of the controller.
@@ -177,16 +175,16 @@ void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const st
 	/* set r/p zero */
 	actuators->control[0] = 0.0f;
 	actuators->control[1] = 0.0f;
-
+	
 	/*
 	 * Calculate yaw error and apply P gain
 	 */
 	float yaw_err = matrix::Eulerf(matrix::Quatf(att->q)).psi() - matrix::Eulerf(matrix::Quatf(att_sp->q_d)).psi();
 	actuators->control[2] = yaw_err * pp.yaw_p;
-
+	
 	/* copy throttle */
 	actuators->control[3] = att_sp->thrust;
-
+	
 	actuators->timestamp = hrt_absolute_time();
 }
 
@@ -195,7 +193,7 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 {
 	/* read arguments */
 	bool verbose = false;
-
+	
 	for (int i = 1; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0)
@@ -203,12 +201,11 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 			verbose = true;
 		}
 	}
-
+	
 	/* initialize parameters, first the handles, then the values */
 	parameters_init(&ph);
 	parameters_update(&ph, &pp);
-
-
+	
 	/*
 	 * PX4 uses a publish/subscribe design pattern to enable
 	 * multi-threaded communication.
@@ -224,9 +221,6 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 	 * http://en.wikipedia.org/wiki/Publish–subscribe_pattern
 	 *
 	 */
-
-
-
 
 	/*
 	 * Declare and safely initialize all structs to zero.
@@ -246,54 +240,53 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 	memset(&vstatus, 0, sizeof(vstatus));
 	struct position_setpoint_s global_sp;
 	memset(&global_sp, 0, sizeof(global_sp));
-
+	
 	/* output structs - this is what is sent to the mixer */
 	struct actuator_controls_s actuators;
 	memset(&actuators, 0, sizeof(actuators));
-
-
+	
 	/* publish actuator controls with zero values */
 	for (unsigned i = 0; i < (sizeof(actuators.control) / sizeof(actuators.control[0])); i++)
 	{
 		actuators.control[i] = 0.0f;
 	}
-
-	struct vehicle_attitude_setpoint_s _att_sp = {};
-
+	
+	struct vehicle_attitude_setpoint_s _att_sp = { };
+	
 	/*
 	 * Advertise that this controller will publish actuator
 	 * control values and the rate setpoint
 	 */
 	orb_advert_t actuator_pub = orb_advertise(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, &actuators);
-
+	
 	/* subscribe to topics. */
 	int att_sub = orb_subscribe(ORB_ID(vehicle_attitude));
-
+	
 	int global_pos_sub = orb_subscribe(ORB_ID(vehicle_global_position));
-
+	
 	int manual_sp_sub = orb_subscribe(ORB_ID(manual_control_setpoint));
-
+	
 	int vstatus_sub = orb_subscribe(ORB_ID(vehicle_status));
-
+	
 	int att_sp_sub = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
-
+	
 	int param_sub = orb_subscribe(ORB_ID(parameter_update));
-
+	
 	/* Setup of loop */
 
 	struct pollfd fds[2];
-
+	
 	fds[0].fd = param_sub;
-
+	
 	fds[0].events = POLLIN;
-
+	
 	fds[1].fd = att_sub;
-
+	
 	fds[1].events = POLLIN;
-
+	
 	while (!thread_should_exit)
 	{
-
+		
 		/*
 		 * Wait for a sensor or param update, check for exit condition every 500 ms.
 		 * This means that the execution will block here without consuming any resources,
@@ -305,7 +298,7 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 		 * update speed - it runs as fast as the attitude updates with minimal latency.
 		 */
 		int ret = poll(fds, 2, 500);
-
+		
 		if (ret < 0)
 		{
 			/*
@@ -313,7 +306,7 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 			 * but its good design practice to make output an error message.
 			 */
 			warnx("poll error");
-
+			
 		}
 		else if (ret == 0)
 		{
@@ -321,23 +314,22 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 		}
 		else
 		{
-
+			
 			/* only update parameters if they changed */
 			if (fds[0].revents & POLLIN)
 			{
 				/* read from param to clear updated flag (uORB API requirement) */
 				struct parameter_update_s update;
 				orb_copy(ORB_ID(parameter_update), param_sub, &update);
-
+				
 				/* if a param update occured, re-read our parameters */
 				parameters_update(&ph, &pp);
 			}
-
+			
 			/* only run controller if attitude changed */
 			if (fds[1].revents & POLLIN)
 			{
-
-
+				
 				/* Check if there is a new position measurement or position setpoint */
 				bool pos_updated;
 				orb_check(global_pos_sub, &pos_updated);
@@ -345,39 +337,39 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 				orb_check(att_sp_sub, &att_sp_updated);
 				bool manual_sp_updated;
 				orb_check(manual_sp_sub, &manual_sp_updated);
-
+				
 				/* get a local copy of attitude */
 				orb_copy(ORB_ID(vehicle_attitude), att_sub, &att);
-
+				
 				if (att_sp_updated)
 				{
 					orb_copy(ORB_ID(vehicle_attitude_setpoint), att_sp_sub, &_att_sp);
 				}
-
+				
 				/* control attitude / heading */
 				control_attitude(&_att_sp, &att, &actuators);
-
+				
 				if (manual_sp_updated)
-					/* get the RC (or otherwise user based) input */
+				/* get the RC (or otherwise user based) input */
 				{
 					orb_copy(ORB_ID(manual_control_setpoint), manual_sp_sub, &manual_sp);
 				}
-
+				
 				// XXX copy from manual depending on flight / usage mode to override
-
+				
 				/* get the system status and the flight mode we're in */
 				orb_copy(ORB_ID(vehicle_status), vstatus_sub, &vstatus);
-
+				
 				/* sanity check and publish actuator outputs */
-				if (PX4_ISFINITE(actuators.control[0]) &&
-						PX4_ISFINITE(actuators.control[1]) &&
-						PX4_ISFINITE(actuators.control[2]) &&
-						PX4_ISFINITE(actuators.control[3]))
-				{
+				if (PX4_ISFINITE(actuators.control[0])&&
+				PX4_ISFINITE(actuators.control[1]) &&
+				PX4_ISFINITE(actuators.control[2]) &&
+				PX4_ISFINITE(actuators.control[3]))
+				{	
 					orb_publish(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, actuator_pub, &actuators);
 
 					if (verbose)
-					{
+					{	
 						warnx("published");
 					}
 				}
@@ -387,32 +379,31 @@ int rover_steering_control_thread_main(int argc, char *argv[])
 
 	warnx("exiting, stopping all motors.");
 	thread_running = false;
-
+	
 	/* kill all outputs */
 	for (unsigned i = 0; i < (sizeof(actuators.control) / sizeof(actuators.control[0])); i++)
 	{
 		actuators.control[i] = 0.0f;
 	}
-
+	
 	actuators.timestamp = hrt_absolute_time();
-
+	
 	orb_publish(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, actuator_pub, &actuators);
-
+	
 	fflush(stdout);
-
+	
 	return 0;
 }
 
 /* Startup Functions */
 
-static void
-usage(const char *reason)
+static void usage(const char *reason)
 {
 	if (reason)
 	{
 		fprintf(stderr, "%s\n", reason);
 	}
-
+	
 	fprintf(stderr, "usage: rover_steering_control {start|stop|status}\n\n");
 	exit(1);
 }
@@ -431,52 +422,45 @@ int rover_steering_control_main(int argc, char *argv[])
 	{
 		usage("missing command");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			warnx("running");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd("rover_steering_control",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 20,
-						 2048,
-						 rover_steering_control_thread_main,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+		deamon_task = px4_task_spawn_cmd("rover_steering_control", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 20, 2048, rover_steering_control_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
 		thread_running = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		thread_should_exit = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			warnx("running");
-
+			
 		}
 		else
 		{
 			warnx("not started");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	usage("unrecognized command");
 	exit(1);
 }
-
-
 

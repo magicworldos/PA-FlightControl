@@ -44,19 +44,18 @@
 #include <drivers/drv_hrt.h>
 #include <drivers/drv_led.h>
 
-static void	usage();
+static void usage();
 
 static orb_advert_t led_control_pub = nullptr;
 
-extern "C" {
-	__EXPORT int led_control_main(int argc, char *argv[]);
+extern "C"
+{
+__EXPORT int led_control_main(int argc, char *argv[]);
 }
 
-static void
-usage()
+static void usage()
 {
-	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
+	PRINT_MODULE_DESCRIPTION(R"DESCR_STR(
 ### Description
 Command-line tool to control & test the (external) LED's.
 
@@ -71,9 +70,9 @@ Blink the first LED 5 times in blue:
 $ led_control blink -c blue -l 0 -n 5
 
 )DESCR_STR");
-
+	
 	PRINT_MODULE_USAGE_NAME("led_control", "command");
-
+	
 	PRINT_MODULE_USAGE_COMMAND_DESCR("test", "Run a test pattern");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("on", "Turn LED on");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("off", "Turn LED off");
@@ -83,7 +82,7 @@ $ led_control blink -c blue -l 0 -n 5
 	PRINT_MODULE_USAGE_PARAM_STRING('s', "normal", "fast|normal|slow", "Set blinking speed", true);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("breathe", "Continuously fade LED in & out");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("flash", "Two fast blinks and then off with frequency of 1Hz");
-
+	
 	PRINT_MODULE_USAGE_PARAM_COMMENT("The following arguments apply to all of the above commands except for 'test':");
 	PRINT_MODULE_USAGE_PARAM_STRING('c', "white", "red|blue|green|yellow|purple|amber|cyan|white", "color", true);
 	PRINT_MODULE_USAGE_PARAM_INT('l', -1, 0, 100, "Which LED to control: 0, 1, 2, ... (default=all)", true);
@@ -93,11 +92,14 @@ $ led_control blink -c blue -l 0 -n 5
 static void publish_led_control(led_control_s &led_control)
 {
 	led_control.timestamp = hrt_absolute_time();
-
-	if (led_control_pub == nullptr) {
+	
+	if (led_control_pub == nullptr)
+	{
 		led_control_pub = orb_advertise_queue(ORB_ID(led_control), &led_control, LED_UORB_QUEUE_LENGTH);
-
-	} else {
+		
+	}
+	else
+	{
 		orb_publish(ORB_ID(led_control), led_control_pub, &led_control);
 	}
 }
@@ -105,29 +107,32 @@ static void publish_led_control(led_control_s &led_control)
 static void run_led_test1()
 {
 	PX4_INFO("generating LED pattern...");
-
-	led_control_s led_control = {};
+	
+	led_control_s led_control = { };
 	led_control.led_mask = 0xff;
 	led_control.mode = led_control_s::MODE_OFF;
 	led_control.priority = led_control_s::MAX_PRIORITY;
 	publish_led_control(led_control);
-
+	
 	usleep(200 * 1000);
-
+	
 	// generate some pattern
-	for (int round = led_control_s::COLOR_RED; round <= led_control_s::COLOR_WHITE; ++round) {
-		for (int led = 0; led < BOARD_MAX_LEDS; ++led) {
+	for (int round = led_control_s::COLOR_RED; round <= led_control_s::COLOR_WHITE; ++round)
+	{
+		for (int led = 0; led < BOARD_MAX_LEDS; ++led)
+		{
 			led_control.led_mask = 1 << led;
 			led_control.mode = led_control_s::MODE_ON;
 			led_control.color = round;
 			publish_led_control(led_control);
 			usleep(80 * 1000);
 		}
-
+		
 		usleep(100 * 1000);
 		led_control.led_mask = 0xff;
-
-		for (int i = 0; i < 3; ++i) {
+		
+		for (int i = 0; i < 3; ++i)
+		{
 			led_control.mode = led_control_s::MODE_ON;
 			publish_led_control(led_control);
 			usleep(100 * 1000);
@@ -135,142 +140,185 @@ static void run_led_test1()
 			publish_led_control(led_control);
 			usleep(100 * 1000);
 		}
-
+		
 		usleep(200 * 1000);
 	}
-
+	
 	usleep(500 * 1000);
-
+	
 	// reset
 	led_control.led_mask = 0xff;
 	led_control.mode = led_control_s::MODE_DISABLED;
 	publish_led_control(led_control);
-
+	
 	PX4_INFO("Done");
 }
 
-int
-led_control_main(int argc, char *argv[])
+int led_control_main(int argc, char *argv[])
 {
 	int myoptind = 1;
 	int ch;
 	const char *myoptarg = nullptr;
 	uint8_t blink_speed = led_control_s::MODE_BLINK_NORMAL;
-	led_control_s led_control = {};
+	led_control_s led_control = { };
 	led_control.num_blinks = 3;
 	led_control.priority = led_control_s::MAX_PRIORITY;
 	led_control.mode = 0xff;
 	led_control.led_mask = 0xff;
 	led_control.color = led_control_s::COLOR_WHITE;
-
-	while ((ch = px4_getopt(argc, argv, "c:l:n:s:p:", &myoptind, &myoptarg)) != EOF) {
-		switch (ch) {
-		case 'c':
-			if (!strcmp(myoptarg, "red")) {
-				led_control.color = led_control_s::COLOR_RED;
-
-			} else if (!strcmp(myoptarg, "blue")) {
-				led_control.color = led_control_s::COLOR_BLUE;
-
-			} else if (!strcmp(myoptarg, "green")) {
-				led_control.color = led_control_s::COLOR_GREEN;
-
-			} else if (!strcmp(myoptarg, "yellow")) {
-				led_control.color = led_control_s::COLOR_YELLOW;
-
-			} else if (!strcmp(myoptarg, "purple")) {
-				led_control.color = led_control_s::COLOR_PURPLE;
-
-			} else if (!strcmp(myoptarg, "amber")) {
-				led_control.color = led_control_s::COLOR_AMBER;
-
-			} else if (!strcmp(myoptarg, "cyan")) {
-				led_control.color = led_control_s::COLOR_CYAN;
-
-			} else if (!strcmp(myoptarg, "white")) {
-				led_control.color = led_control_s::COLOR_WHITE;
-
-			} else {
+	
+	while ((ch = px4_getopt(argc, argv, "c:l:n:s:p:", &myoptind, &myoptarg)) != EOF)
+	{
+		switch (ch)
+		{
+			case 'c':
+				if (!strcmp(myoptarg, "red"))
+				{
+					led_control.color = led_control_s::COLOR_RED;
+					
+				}
+				else if (!strcmp(myoptarg, "blue"))
+				{
+					led_control.color = led_control_s::COLOR_BLUE;
+					
+				}
+				else if (!strcmp(myoptarg, "green"))
+				{
+					led_control.color = led_control_s::COLOR_GREEN;
+					
+				}
+				else if (!strcmp(myoptarg, "yellow"))
+				{
+					led_control.color = led_control_s::COLOR_YELLOW;
+					
+				}
+				else if (!strcmp(myoptarg, "purple"))
+				{
+					led_control.color = led_control_s::COLOR_PURPLE;
+					
+				}
+				else if (!strcmp(myoptarg, "amber"))
+				{
+					led_control.color = led_control_s::COLOR_AMBER;
+					
+				}
+				else if (!strcmp(myoptarg, "cyan"))
+				{
+					led_control.color = led_control_s::COLOR_CYAN;
+					
+				}
+				else if (!strcmp(myoptarg, "white"))
+				{
+					led_control.color = led_control_s::COLOR_WHITE;
+					
+				}
+				else
+				{
+					usage();
+					return 1;
+				}
+				
+				break;
+				
+			case 'l':
+				led_control.led_mask = 1 << strtol(myoptarg, nullptr, 0);
+				break;
+				
+			case 'n':
+				led_control.num_blinks = strtol(myoptarg, nullptr, 0);
+				break;
+				
+			case 's':
+				if (!strcmp(myoptarg, "fast"))
+				{
+					blink_speed = led_control_s::MODE_BLINK_FAST;
+					
+				}
+				else if (!strcmp(myoptarg, "normal"))
+				{
+					blink_speed = led_control_s::MODE_BLINK_NORMAL;
+					
+				}
+				else if (!strcmp(myoptarg, "slow"))
+				{
+					blink_speed = led_control_s::MODE_BLINK_SLOW;
+					
+				}
+				else
+				{
+					usage();
+					return 1;
+				}
+				
+				break;
+				
+			case 'p':
+				led_control.priority = strtol(myoptarg, nullptr, 0);
+				break;
+				
+			default:
 				usage();
-				return 1;
-			}
-
-			break;
-
-		case 'l':
-			led_control.led_mask = 1 << strtol(myoptarg, nullptr, 0);
-			break;
-
-		case 'n':
-			led_control.num_blinks = strtol(myoptarg, nullptr, 0);
-			break;
-
-		case 's':
-			if (!strcmp(myoptarg, "fast")) {
-				blink_speed = led_control_s::MODE_BLINK_FAST;
-
-			} else if (!strcmp(myoptarg, "normal")) {
-				blink_speed = led_control_s::MODE_BLINK_NORMAL;
-
-			} else if (!strcmp(myoptarg, "slow")) {
-				blink_speed = led_control_s::MODE_BLINK_SLOW;
-
-			} else {
-				usage();
-				return 1;
-			}
-
-			break;
-
-		case 'p':
-			led_control.priority = strtol(myoptarg, nullptr, 0);
-			break;
-
-		default:
-			usage();
-			return -1;
-			break;
+				return -1;
+				break;
 		}
 	}
-
-	if (led_control.priority > led_control_s::MAX_PRIORITY) {
+	
+	if (led_control.priority > led_control_s::MAX_PRIORITY)
+	{
 		led_control.priority = led_control_s::MAX_PRIORITY;
 	}
-
-	if (myoptind >= argc) {
+	
+	if (myoptind >= argc)
+	{
 		usage();
 		return 1;
 	}
-
-	if (!strcmp(argv[myoptind], "test")) {
+	
+	if (!strcmp(argv[myoptind], "test"))
+	{
 		run_led_test1();
-
-	} else if (!strcmp(argv[myoptind], "on")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "on"))
+	{
 		led_control.mode = led_control_s::MODE_ON;
-
-	} else if (!strcmp(argv[myoptind], "off")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "off"))
+	{
 		led_control.mode = led_control_s::MODE_OFF;
-
-	} else if (!strcmp(argv[myoptind], "reset")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "reset"))
+	{
 		led_control.mode = led_control_s::MODE_DISABLED;
-
-	} else if (!strcmp(argv[myoptind], "blink")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "blink"))
+	{
 		led_control.mode = blink_speed;
-
-	} else if (!strcmp(argv[myoptind], "breathe")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "breathe"))
+	{
 		led_control.mode = led_control_s::MODE_BREATHE;
-
-	} else if (!strcmp(argv[myoptind], "flash")) {
+		
+	}
+	else if (!strcmp(argv[myoptind], "flash"))
+	{
 		led_control.mode = led_control_s::MODE_FLASH;
-
-	} else {
+		
+	}
+	else
+	{
 		usage();
 		return 1;
 	}
-
-	if (led_control.mode != 0xff) {
+	
+	if (led_control.mode != 0xff)
+	{
 		publish_led_control(led_control);
 	}
-
+	
 	return 0;
 }

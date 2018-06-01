@@ -41,9 +41,10 @@
 
 template<class T>
 class __EXPORT ListNode
-{
+{	
 public:
-	ListNode() : _sibling() {}
+	ListNode() : _sibling()
+	{}
 	virtual ~ListNode() = default;
 
 	// no copy, assignment, move, move assignment
@@ -52,8 +53,10 @@ public:
 	ListNode(ListNode &&) = delete;
 	ListNode &operator=(ListNode &&) = delete;
 
-	void setSibling(T sibling) { _sibling = sibling; }
-	const T getSibling() { return _sibling; }
+	void setSibling(T sibling)
+	{	_sibling = sibling;}
+	const T getSibling()
+	{	return _sibling;}
 
 protected:
 	T _sibling;
@@ -61,9 +64,10 @@ protected:
 
 template<class T>
 class __EXPORT List
-{
+{	
 public:
-	List() : _head() {}
+	List() : _head()
+	{}
 	virtual ~List() = default;
 
 	// no copy, assignment, move, move assignment
@@ -73,12 +77,13 @@ public:
 	List &operator=(List &&) = delete;
 
 	void add(T newNode)
-	{
+	{	
 		newNode->setSibling(getHead());
 		_head = newNode;
 	}
 
-	const T getHead() { return _head; }
+	const T getHead()
+	{	return _head;}
 
 protected:
 	T _head;

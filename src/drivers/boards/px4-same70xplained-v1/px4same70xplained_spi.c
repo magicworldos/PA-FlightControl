@@ -89,7 +89,7 @@ __EXPORT void board_spi_initialize(void)
 	sam_configgpio(GPIO_EXTI_ACCEL_DRDY);
 	sam_configgpio(GPIO_EXTI_MPU_DRDY);
 #endif
-
+	
 #ifdef CONFIG_SAMV7_SPI1_MASTER
 	sam_configgpio(GPIO_SPI_CS_EXT0);
 	sam_configgpio(GPIO_SPI_CS_EXT1);
@@ -129,86 +129,86 @@ __EXPORT void board_spi_initialize(void)
 
 #ifdef CONFIG_SAMV7_SPI0_MASTER
 void sam_spi0select(uint32_t devid, bool selected)
-{
+{	
 	switch (devid)
-	{
+	{	
 		case PX4_SPIDEV_GYRO:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_GYRO, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
-			sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_GYRO, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
+		sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
+		break;
 
 		case PX4_SPIDEV_ACCEL_MAG:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
+		break;
 
 		case PX4_SPIDEV_BARO:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
-			sam_gpiowrite(GPIO_SPI_CS_BARO, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
+		sam_gpiowrite(GPIO_SPI_CS_BARO, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_MPU, 1);
+		break;
 
 		case PX4_SPIDEV_MPU:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
-			sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
-			sam_gpiowrite(GPIO_SPI_CS_MPU, !selected);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_GYRO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
+		sam_gpiowrite(GPIO_SPI_CS_BARO, 1);
+		sam_gpiowrite(GPIO_SPI_CS_MPU, !selected);
+		break;
 
 		default:
-			break;
+		break;
 	}
 }
 #endif
 
 #ifdef CONFIG_SAMV7_SPI1_MASTER
 void sam_spi1select(uint32_t devid, bool selected)
-{
+{	
 	switch (devid)
-	{
+	{	
 		case PX4_SPIDEV_EXT0:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_EXT0, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_EXT0, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+		break;
 
 		case PX4_SPIDEV_EXT1:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT1, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT1, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+		break;
 
 		case PX4_SPIDEV_EXT2:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT2, !selected);
-			sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT2, !selected);
+		sam_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+		break;
 
 		case PX4_SPIDEV_EXT3:
-			/* Making sure the other peripherals are not selected */
-			sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
-			sam_gpiowrite(GPIO_SPI_CS_EXT3, !selected);
-			break;
+		/* Making sure the other peripherals are not selected */
+		sam_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+		sam_gpiowrite(GPIO_SPI_CS_EXT3, !selected);
+		break;
 
 		default:
-			break;
+		break;
 
 	}
 }
@@ -230,14 +230,14 @@ void sam_spi1select(uint32_t devid, bool selected)
 
 #ifdef CONFIG_SAMV7_SPI0_MASTER
 uint8_t sam_spi0status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 #endif
 
 #ifdef CONFIG_SAMV7_SPI1_MASTER
 uint8_t sam_spi1status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 #endif

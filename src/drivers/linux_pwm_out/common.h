@@ -45,13 +45,14 @@ namespace linux_pwm_out
 class PWMOutBase
 {
 public:
-
-	virtual ~PWMOutBase() {}
-
+	
+	virtual ~PWMOutBase()
+	{
+	}
+	
 	virtual int init() = 0;
 
 	virtual int send_output_pwm(const uint16_t *pwm, int num_outputs) = 0;
 };
-
 
 } /* namespace rpi_pwm_out */

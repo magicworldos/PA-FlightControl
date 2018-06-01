@@ -51,10 +51,10 @@ float BlockLowPass::update(float input)
 	{
 		setState(input);
 	}
-
+	
 	float b = 2 * float(M_PI) * getFCut() * getDt();
 	float a = b / (1 + b);
-	setState(a * input + (1 - a)*getState());
+	setState(a * input + (1 - a) * getState());
 	return getState();
 }
 

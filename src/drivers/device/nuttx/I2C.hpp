@@ -45,69 +45,74 @@
 #include <px4_i2c.h>
 
 namespace device __EXPORT
-{
-
-/**
- * Abstract class for character device on I2C
- */
-class __EXPORT I2C : public CDev
-{
-
-public:
-
-	static int	set_bus_clock(unsigned bus, unsigned clock_hz);
-
-	static unsigned	int	_bus_clocks[BOARD_NUMBER_I2C_BUSES];
-
-protected:
-	/**
-	 * The number of times a read or write operation will be retried on
-	 * error.
-	 */
-	uint8_t		_retries{0};
+{	
 
 	/**
-	 * @ Constructor
-	 *
-	 * @param name		Driver name
-	 * @param devname	Device node name
-	 * @param bus		I2C bus on which the device lives
-	 * @param address	I2C bus address, or zero if set_address will be used
-	 * @param frequency	I2C bus frequency for the device (currently not used)
+	 * Abstract class for character device on I2C
 	 */
-	I2C(const char *name, const char *devname, int bus, uint16_t address, uint32_t frequency);
-	virtual ~I2C();
+	class __EXPORT I2C : public CDev
+	{	
 
-	virtual int	init();
+	public:
 
-	/**
-	 * Check for the presence of the device on the bus.
-	 */
-	virtual int	probe() { return PX4_OK; }
+		static int set_bus_clock(unsigned bus, unsigned clock_hz);
 
-	/**
-	 * Perform an I2C transaction to the device.
-	 *
-	 * At least one of send_len and recv_len must be non-zero.
-	 *
-	 * @param send		Pointer to bytes to send.
-	 * @param send_len	Number of bytes to send.
-	 * @param recv		Pointer to buffer for bytes received.
-	 * @param recv_len	Number of bytes to receive.
-	 * @return		OK if the transfer was successful, -errno
-	 *			otherwise.
-	 */
-	int		transfer(const uint8_t *send, unsigned send_len, uint8_t *recv, unsigned recv_len);
+		static unsigned int _bus_clocks[BOARD_NUMBER_I2C_BUSES];
 
-	bool		external() { return px4_i2c_bus_external(_device_id.devid_s.bus); }
+	protected:
+		/**
+		 * The number of times a read or write operation will be retried on
+		 * error.
+		 */
+		uint8_t _retries
+		{	0};
 
-private:
-	uint32_t		_frequency{0};
-	px4_i2c_dev_t		*_dev{nullptr};
+		/**
+		 * @ Constructor
+		 *
+		 * @param name		Driver name
+		 * @param devname	Device node name
+		 * @param bus		I2C bus on which the device lives
+		 * @param address	I2C bus address, or zero if set_address will be used
+		 * @param frequency	I2C bus frequency for the device (currently not used)
+		 */
+		I2C(const char *name, const char *devname, int bus, uint16_t address, uint32_t frequency);
+		virtual ~I2C();
 
-	I2C(const device::I2C &);
-	I2C operator=(const device::I2C &);
-};
+		virtual int init();
+
+		/**
+		 * Check for the presence of the device on the bus.
+		 */
+		virtual int probe()
+		{	return PX4_OK;}
+
+		/**
+		 * Perform an I2C transaction to the device.
+		 *
+		 * At least one of send_len and recv_len must be non-zero.
+		 *
+		 * @param send		Pointer to bytes to send.
+		 * @param send_len	Number of bytes to send.
+		 * @param recv		Pointer to buffer for bytes received.
+		 * @param recv_len	Number of bytes to receive.
+		 * @return		OK if the transfer was successful, -errno
+		 *			otherwise.
+		 */
+		int transfer(const uint8_t *send, unsigned send_len, uint8_t *recv, unsigned recv_len);
+
+		bool external()
+		{	return px4_i2c_bus_external(_device_id.devid_s.bus);}
+
+	private:
+		uint32_t _frequency
+		{	0};
+		px4_i2c_dev_t *_dev
+		{	nullptr};
+
+		I2C(const device::I2C &);
+		I2C operator=(const device::I2C &);
+	};
 
 } // namespace device
 

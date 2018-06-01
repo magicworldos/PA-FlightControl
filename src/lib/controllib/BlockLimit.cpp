@@ -50,13 +50,13 @@ float BlockLimit::update(float input)
 	if (input > getMax())
 	{
 		input = _max.get();
-
+		
 	}
 	else if (input < getMin())
 	{
 		input = getMin();
 	}
-
+	
 	return input;
 }
 

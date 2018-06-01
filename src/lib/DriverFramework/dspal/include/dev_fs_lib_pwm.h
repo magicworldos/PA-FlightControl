@@ -78,7 +78,8 @@
  * ioctl codes used to extend the functionality of the standard read/write file
  * semantics for PWM signal generation
  */
-enum DSPAL_PWM_IOCTLS {
+enum DSPAL_PWM_IOCTLS
+{
 	PWM_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */                                 //!< PWM_IOCTL_INVALID
 	PWM_IOCTL_SIGNAL_DEFINITION, /**< used to define the gpio number(s) and period of the pulse width(s) */     //!< PWM_IOCTL_SIGNAL_DEFINITION
 	PWM_IOCTL_GET_UPDATE_BUFFER, /**< returns a buffer used to update the pulse width in real-time */      //!< PWM_IOCTL_GET_PULSE_WIDTH_BUFFER
@@ -93,11 +94,12 @@ enum DSPAL_PWM_IOCTLS {
  * of the pulse.  @see PWM_IOCTL_GET_UPDATE_BUFFER
  *
  */
-struct dspal_pwm {
-	uint32_t gpio_id;               /**< ID of the GPIO line used for PWM generation */
-	uint32_t gpio_cfg;              /**< internal use only */
-	uint32_t pulse_width_in_usecs;  /**< duration of the pulse in usecs */
-	uint32_t pulse_state;           /**< a read-only value, indicating the current state of the pulse */
+struct dspal_pwm
+{
+	uint32_t gpio_id; /**< ID of the GPIO line used for PWM generation */
+	uint32_t gpio_cfg; /**< internal use only */
+	uint32_t pulse_width_in_usecs; /**< duration of the pulse in usecs */
+	uint32_t pulse_state; /**< a read-only value, indicating the current state of the pulse */
 };
 
 /**
@@ -107,7 +109,8 @@ struct dspal_pwm {
  * Upon the return from the function signal generation will begin at the specified period and pulse width
  * for each I/O line specified.
  */
-struct dspal_pwm_ioctl_signal_definition {
+struct dspal_pwm_ioctl_signal_definition
+{
 	uint32_t period_in_usecs; /**< the period of the pulses generated, can only be changed once after the device is first opened */
 	uint32_t num_gpios; /**< number of signals specified in the following array */
 	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator */
@@ -129,7 +132,8 @@ struct dspal_pwm_ioctl_signal_definition {
  *
  * The I/O lines used cannot be changed from those defined in in the PWM_IOCTL_SIGNAL_DEFINITION structure.
  */
-struct dspal_pwm_ioctl_update_buffer {
+struct dspal_pwm_ioctl_update_buffer
+{
 	uint32_t num_gpios; /**< the number of PWM's specified in the following array */
 	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
 	uint32_t reserved_1; /**< reserved value used for debugging. */

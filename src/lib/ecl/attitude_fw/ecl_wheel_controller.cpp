@@ -48,16 +48,17 @@
 #include <ecl/ecl.h>
 
 ECL_WheelController::ECL_WheelController() :
-	ECL_Controller("wheel")
+		    ECL_Controller("wheel")
 {
 }
 
 float ECL_WheelController::control_bodyrate(const struct ECL_ControlData &ctl_data)
 {
 	/* Do not calculate control signal with bad inputs */
-	if (!(PX4_ISFINITE(ctl_data.body_z_rate) &&
-	      PX4_ISFINITE(ctl_data.groundspeed) &&
-	      PX4_ISFINITE(ctl_data.groundspeed_scaler))) {
+	if (!(PX4_ISFINITE(ctl_data.body_z_rate)&&
+	PX4_ISFINITE(ctl_data.groundspeed) &&
+	PX4_ISFINITE(ctl_data.groundspeed_scaler)))
+	{	
 		return math::constrain(_last_output, -1.0f, 1.0f);
 	}
 
@@ -69,7 +70,8 @@ float ECL_WheelController::control_bodyrate(const struct ECL_ControlData &ctl_da
 	/* lock integral for long intervals */
 	bool lock_integrator = ctl_data.lock_integrator;
 
-	if (dt_micros > 500000) {
+	if (dt_micros > 500000)
+	{	
 		lock_integrator = true;
 	}
 
@@ -78,19 +80,23 @@ float ECL_WheelController::control_bodyrate(const struct ECL_ControlData &ctl_da
 
 	/* Calculate body angular rate error */
 	_rate_error = _rate_setpoint - ctl_data.body_z_rate; //body angular rate error
-
-	if (!lock_integrator && _k_i > 0.0f && ctl_data.groundspeed > min_speed) {
+	
+	if (!lock_integrator && _k_i > 0.0f && ctl_data.groundspeed > min_speed)
+	{	
 
 		float id = _rate_error * dt * ctl_data.groundspeed_scaler;
 
 		/*
 		 * anti-windup: do not allow integrator to increase if actuator is at limit
 		 */
-		if (_last_output < -1.0f) {
+		if (_last_output < -1.0f)
+		{	
 			/* only allow motion to center: increase value */
 			id = math::max(id, 0.0f);
 
-		} else if (_last_output > 1.0f) {
+		}
+		else if (_last_output > 1.0f)
+		{	
 			/* only allow motion to center: decrease value */
 			id = math::min(id, 0.0f);
 		}
@@ -104,17 +110,17 @@ float ECL_WheelController::control_bodyrate(const struct ECL_ControlData &ctl_da
 
 	/* Apply PI rate controller and store non-limited output */
 	_last_output = _rate_setpoint * _k_ff * ctl_data.groundspeed_scaler +
-		       ctl_data.groundspeed_scaler * ctl_data.groundspeed_scaler * (_rate_error * _k_p + integrator_constrained);
+	ctl_data.groundspeed_scaler * ctl_data.groundspeed_scaler * (_rate_error * _k_p + integrator_constrained);
 
 	return math::constrain(_last_output, -1.0f, 1.0f);
 }
 
-
 float ECL_WheelController::control_attitude(const struct ECL_ControlData &ctl_data)
 {
 	/* Do not calculate control signal with bad inputs */
-	if (!(PX4_ISFINITE(ctl_data.yaw_setpoint) &&
-	      PX4_ISFINITE(ctl_data.yaw))) {
+	if (!(PX4_ISFINITE(ctl_data.yaw_setpoint)&&
+	PX4_ISFINITE(ctl_data.yaw)))
+	{	
 		return _rate_setpoint;
 	}
 
@@ -122,14 +128,18 @@ float ECL_WheelController::control_attitude(const struct ECL_ControlData &ctl_da
 	float yaw_error = _wrap_pi(ctl_data.yaw_setpoint - ctl_data.yaw);
 
 	/*  Apply P controller: rate setpoint from current error and time constant */
-	_rate_setpoint =  yaw_error / _tc;
+	_rate_setpoint = yaw_error / _tc;
 
 	/* limit the rate */
-	if (_max_rate > 0.01f) {
-		if (_rate_setpoint > 0.0f) {
+	if (_max_rate > 0.01f)
+	{	
+		if (_rate_setpoint > 0.0f)
+		{	
 			_rate_setpoint = (_rate_setpoint > _max_rate) ? _max_rate : _rate_setpoint;
 
-		} else {
+		}
+		else
+		{	
 			_rate_setpoint = (_rate_setpoint < -_max_rate) ? -_max_rate : _rate_setpoint;
 		}
 

@@ -47,11 +47,11 @@ extern "C" __EXPORT int muorb_test_entry(int argc, char **argv);
 int muorb_test_entry(int argc, char **argv)
 {
 	px4::init(argc, argv, "muorb_test");
-
+	
 	PX4_DEBUG("muorb_test");
 	MuorbTestExample hello;
 	hello.main();
-
+	
 	PX4_DEBUG("goodbye");
 	return 0;
 }

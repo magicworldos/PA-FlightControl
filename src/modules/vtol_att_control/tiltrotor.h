@@ -32,11 +32,11 @@
  ****************************************************************************/
 
 /**
-* @file tiltrotor.h
-*
-* @author Roman Bapst 		<bapstroman@gmail.com>
-*
-*/
+ * @file tiltrotor.h
+ *
+ * @author Roman Bapst 		<bapstroman@gmail.com>
+ *
+ */
 
 #ifndef TILTROTOR_H
 #define TILTROTOR_H
@@ -44,11 +44,11 @@
 #include <systemlib/param/param.h>
 #include <drivers/drv_hrt.h>
 
-class Tiltrotor : public VtolType
+class Tiltrotor: public VtolType
 {
-
+	
 public:
-
+	
 	Tiltrotor(VtolAttitudeControl *_att_controller);
 	~Tiltrotor();
 
@@ -60,19 +60,19 @@ public:
 	virtual void waiting_on_tecs();
 
 private:
-
+	
 	struct
 	{
-		float front_trans_dur;			/**< duration of first part of front transition */
-		float back_trans_dur;			/**< duration of back transition */
-		float tilt_mc;					/**< actuator value corresponding to mc tilt */
-		float tilt_transition;			/**< actuator value corresponding to transition tilt (e.g 45 degrees) */
-		float tilt_fw;					/**< actuator value corresponding to fw tilt */
-		float airspeed_trans;			/**< airspeed at which we switch to fw mode after transition */
-		float airspeed_blend_start;		/**< airspeed at which we start blending mc/fw controls */
-		int32_t elevons_mc_lock;			/**< lock elevons in multicopter mode */
+		float front_trans_dur; /**< duration of first part of front transition */
+		float back_trans_dur; /**< duration of back transition */
+		float tilt_mc; /**< actuator value corresponding to mc tilt */
+		float tilt_transition; /**< actuator value corresponding to transition tilt (e.g 45 degrees) */
+		float tilt_fw; /**< actuator value corresponding to fw tilt */
+		float airspeed_trans; /**< airspeed at which we switch to fw mode after transition */
+		float airspeed_blend_start; /**< airspeed at which we start blending mc/fw controls */
+		int32_t elevons_mc_lock; /**< lock elevons in multicopter mode */
 		float front_trans_dur_p2;
-		int32_t fw_motors_off;			/**< bitmask of all motors that should be off in fixed wing mode */
+		int32_t fw_motors_off; /**< bitmask of all motors that should be off in fixed wing mode */
 		int32_t airspeed_disabled;
 		int32_t diff_thrust;
 		float diff_thrust_scale;
@@ -97,11 +97,11 @@ private:
 
 	enum vtol_mode
 	{
-		MC_MODE = 0,			/**< vtol is in multicopter mode */
-		TRANSITION_FRONT_P1,	/**< vtol is in front transition part 1 mode */
-		TRANSITION_FRONT_P2,	/**< vtol is in front transition part 2 mode */
-		TRANSITION_BACK,		/**< vtol is in back transition mode */
-		FW_MODE					/**< vtol is in fixed wing mode */
+		MC_MODE = 0, /**< vtol is in multicopter mode */
+		TRANSITION_FRONT_P1, /**< vtol is in front transition part 1 mode */
+		TRANSITION_FRONT_P2, /**< vtol is in front transition part 2 mode */
+		TRANSITION_BACK, /**< vtol is in back transition mode */
+		FW_MODE /**< vtol is in fixed wing mode */
 	};
 
 	/**
@@ -119,14 +119,14 @@ private:
 
 	struct
 	{
-		vtol_mode flight_mode;			/**< vtol flight mode, defined by enum vtol_mode */
-		hrt_abstime transition_start;	/**< absoulte time at which front transition started */
+		vtol_mode flight_mode; /**< vtol flight mode, defined by enum vtol_mode */
+		hrt_abstime transition_start; /**< absoulte time at which front transition started */
 	} _vtol_schedule;
 
-	float _tilt_control;		/**< actuator value for the tilt servo */
-
-	const float _min_front_trans_dur;	/**< min possible time in which rotors are rotated into the first position */
-
+	float _tilt_control; /**< actuator value for the tilt servo */
+	
+	const float _min_front_trans_dur; /**< min possible time in which rotors are rotated into the first position */
+	
 	/**
 	 * Return a bitmap of channels that should be turned off in fixed wing mode.
 	 */
@@ -146,6 +146,6 @@ private:
 	 * Update parameters.
 	 */
 	virtual void parameters_update();
-
+	
 };
 #endif

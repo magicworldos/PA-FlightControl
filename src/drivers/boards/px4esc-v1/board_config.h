@@ -84,7 +84,6 @@
 #define GPIO_DC_CAL   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | \
 		       GPIO_PORTA | GPIO_PIN6 | GPIO_OUTPUT_CLEAR)
 
-
 /* GPIO ***********************************************************************
  *
  *   GPIO      Function                                     MPU        Board
@@ -130,7 +129,6 @@
  *  PC[05] PC5/USART3_RX/SPDIFRX_IN3/FMC_SDCKE0               25       DBG_RX
  *
  */
-
 
 /* Analog ***********************************************************************
  *
@@ -179,7 +177,6 @@
 #define GPIO_LED3       (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | \
 			 GPIO_PORTC | GPIO_PIN9 | GPIO_OUTPUT_CLEAR)
 #define GPIO_LED_BLUE  GPIO_LED3
-
 
 /* GPIO ***********************************************************************
  *

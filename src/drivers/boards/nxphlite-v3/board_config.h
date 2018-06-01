@@ -68,7 +68,6 @@ __BEGIN_DECLS
 #define GPIO_LED_G             (GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE | PIN_PORTC | PIN9)
 #define GPIO_LED_B             (GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE | PIN_PORTC | PIN8)
 
-
 #define GPIO_LED_1             (GPIO_HIGHDRIVE | GPIO_OUTPUT_ZER0 | PIN_PORTD | PIN13)
 #define GPIO_LED_2             (GPIO_HIGHDRIVE | GPIO_OUTPUT_ZER0 | PIN_PORTD | PIN14)
 
@@ -76,7 +75,6 @@ __BEGIN_DECLS
 
 #define GPIO_NFC_IO            (GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE  | PIN_PORTA | PIN26)
 #define GPIO_SENSOR_P_EN       (GPIO_HIGHDRIVE | GPIO_OUTPUT_ONE  | PIN_PORTB | PIN8)
-
 
 /* UART tty Mapping
  * Device   tty        alt           Connector Name
@@ -99,7 +97,6 @@ __BEGIN_DECLS
 
 #define HRT_PPM_CHANNEL        1  /* Use TPM1 capture/compare channel 1 */
 #define GPIO_PPM_IN            PIN_TPM1_CH1_1    /* PTC3 USART1 RX and PTA9 and PIN_TPM1_CH1 AKA FrSky_IN_RC_IN */
-
 
 /*
  *
@@ -157,7 +154,6 @@ __BEGIN_DECLS
 #define GPIO_CAN0_STB           (GPIO_LOWDRIVE | GPIO_OUTPUT_ONE  | PIN_PORTC | PIN19)
 #define GPIO_CAN1_STB           (GPIO_LOWDRIVE | GPIO_OUTPUT_ONE  | PIN_PORTC | PIN18)
 
-
 /* Safety Switch
  * TBD
  */
@@ -206,7 +202,6 @@ __BEGIN_DECLS
 #define PX4_SPI_BUS_EXTERNAL                PX4_BUS_NUMBER_TO_PX4(2)
 #define PX4_SPI_BUS_RAMTRON                 PX4_SPI_BUS_MEMORY
 #define PX4_SPI_BUS_EXT                     PX4_SPI_BUS_EXTERNAL
-
 
 /* SPI chip selects */
 
@@ -305,7 +300,6 @@ __BEGIN_DECLS
 		      (1 << ADC_AD2) | \
 		      (1 << ADC_AD3))
 
-
 /* GPIO that require Configuration */
 
 #define PX4_ADC_GPIO  \
@@ -314,11 +308,8 @@ __BEGIN_DECLS
 	/* PTB6  ADC1_SE12 */  ADC1_GPIO(12),  \
 	/* PTB7  ADC1_SE13 */  ADC1_GPIO(13)
 
-
-
 #define BOARD_BATTERY1_V_DIV   (10.177939394f)
 #define BOARD_BATTERY1_A_PER_V (15.391030303f)
-
 
 /* User GPIOs
  *
@@ -366,15 +357,12 @@ __BEGIN_DECLS
  *      Defined in board.h
  */
 // todo:Design this!
-
 #define DIRECT_PWM_OUTPUT_CHANNELS  8
 #define DIRECT_INPUT_TIMER_CHANNELS 8
 
 /* Power supply control and monitoring GPIOs */
 // None
-
 #define GPIO_PERIPH_3V3_EN  0
-
 
 /* Tone alarm output PTA11 - TMP 2_CH1 is On +P12-4, -P12-5
  * It is driving a NPN
@@ -399,7 +387,6 @@ __BEGIN_DECLS
 
 #define BOARD_NAME "NXPHLITE_V3"
 
-
 /* Define True logic Power Control in arch agnostic form */
 
 #define VDD_ETH_EN(on_true)                px4_arch_gpiowrite(nGPIO_ETHERNET_P_EN, !(on_true))
@@ -414,7 +401,6 @@ __BEGIN_DECLS
 
 /* Map to control term used in RC lib */
 #define SPEKTRUM_POWER(on_true) VDD_3V3_SPEKTRUM_POWER_EN((on_true))
-
 
 /*
  * By Providing BOARD_ADC_USB_CONNECTED (using the px4_arch abstraction)
@@ -446,7 +432,6 @@ __BEGIN_DECLS
 #define LED_TIM3_CH1OUT   /* PTD1  RGB_R */ PIN_FTM3_CH1_1
 #define LED_TIM3_CH5OUT   /* PTC9  RGB_G */ PIN_FTM3_CH5_1
 #define LED_TIM3_CH4OUT   /* PTC8  RGB_B */ PIN_FTM3_CH4_1
-
 
 /*
  * GPIO numbers.
@@ -545,7 +530,6 @@ __BEGIN_DECLS
 #  endif
 #endif /* HAVE_AUTOMOUNTER */
 
-
 /************************************************************************************
  * Public data
  ************************************************************************************/
@@ -574,7 +558,7 @@ void nxphlite_spidev_initialize(void);
  *
  ************************************************************************************/
 
-int  nxphlite_spi_bus_initialize(void);
+int nxphlite_spi_bus_initialize(void);
 
 /****************************************************************************************************
  * Name: board_spi_reset board_peripheral_reset

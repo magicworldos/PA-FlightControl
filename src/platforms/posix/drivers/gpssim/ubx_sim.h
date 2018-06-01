@@ -44,14 +44,14 @@ class UBX_SIM
 public:
 	UBX_SIM(const int &fd, struct vehicle_gps_position_s *gps_position, struct satellite_info_s *satellite_info);
 	~UBX_SIM();
-	int			receive(const unsigned timeout);
-	int			configure(unsigned &baudrate);
+	int receive(const unsigned timeout);
+	int configure(unsigned &baudrate);
 
 private:
-	int			_fd;
+	int _fd;
 	struct vehicle_gps_position_s *_gps_position;
 	struct satellite_info_s *_satellite_info;
-	bool			_enable_sat_info;
+	bool _enable_sat_info;
 };
 
 #endif /* UBX_SIM_H_ */

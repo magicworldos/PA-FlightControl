@@ -53,34 +53,35 @@
 /**
  * This is a driver for the MD25 motor controller utilizing the I2C interface.
  */
-class MD25 : public device::I2C
+class MD25: public device::I2C
 {
 public:
-
+	
 	/**
-	* modes
-	*
-	* NOTE: this driver assumes we are always
-	* in mode 0!
-	*
-	* seprate speed mode:
-	*  motor speed1 = speed1
-	*  motor speed2 = speed2
-	* turn speed mode:
-	*	motor speed1 = speed1 + speed2
-	*  motor speed2 = speed2 - speed2
-	* unsigned:
-	*  full rev (0), stop(128), full fwd (255)
-	* signed:
-	*  full rev (-127), stop(0), full fwd (128)
-	*
-	* modes numbers:
-	* 0 : unsigned separate (default)
-	* 1 : signed separate
-	* 2 : unsigned turn
-	* 3 : signed turn
-	*/
-	enum e_mode {
+	 * modes
+	 *
+	 * NOTE: this driver assumes we are always
+	 * in mode 0!
+	 *
+	 * seprate speed mode:
+	 *  motor speed1 = speed1
+	 *  motor speed2 = speed2
+	 * turn speed mode:
+	 *	motor speed1 = speed1 + speed2
+	 *  motor speed2 = speed2 - speed2
+	 * unsigned:
+	 *  full rev (0), stop(128), full fwd (255)
+	 * signed:
+	 *  full rev (-127), stop(0), full fwd (128)
+	 *
+	 * modes numbers:
+	 * 0 : unsigned separate (default)
+	 * 1 : signed separate
+	 * 2 : unsigned turn
+	 * 3 : signed turn
+	 */
+	enum e_mode
+	{
 		MODE_UNSIGNED_SPEED = 0,
 		MODE_SIGNED_SPEED,
 		MODE_UNSIGNED_SPEED_TURN,
@@ -88,7 +89,8 @@ public:
 	};
 
 	/** commands */
-	enum e_cmd {
+	enum e_cmd
+	{
 		CMD_RESET_ENCODERS = 32,
 		CMD_DISABLE_SPEED_REGULATION = 48,
 		CMD_ENABLE_SPEED_REGULATION = 49,
@@ -100,7 +102,8 @@ public:
 	};
 
 	/** control channels */
-	enum e_channels {
+	enum e_channels
+	{
 		CH_SPEED_LEFT = 0,
 		CH_SPEED_RIGHT
 	};
@@ -112,10 +115,7 @@ public:
 	 * @param address the adddress on the I2C bus
 	 * @param speed the speed of the I2C communication
 	 */
-	MD25(const char *deviceName,
-	     int bus,
-	     uint16_t address,
-	     uint32_t speed = 100000);
+	MD25(const char *deviceName, int bus, uint16_t address, uint32_t speed = 100000);
 
 	/**
 	 * deconstructor
@@ -229,7 +229,7 @@ public:
 	 * set motor 1 speed
 	 * @param normSpeed normalize speed between -1 and 1
 	 * @return non-zero -> error
-	*/
+	 */
 	int setMotor1Speed(float normSpeed);
 
 	/**

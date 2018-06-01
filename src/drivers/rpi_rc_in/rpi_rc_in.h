@@ -64,7 +64,7 @@ class RcInput
 {
 public:
 	RcInput() = default;
-
+	
 	~RcInput();
 
 	/** @return 0 on success, -errno on failure */
@@ -80,7 +80,7 @@ public:
 	{
 		return _is_running;
 	}
-
+	
 private:
 	void _cycle();
 	void _measure();
@@ -89,10 +89,10 @@ private:
 
 	bool _should_exit = false;
 	bool _is_running = false;
-	struct work_s _work = {};
+	struct work_s _work = { };
 	orb_advert_t _rcinput_pub = nullptr;
 	int _channels = 8; //D8R-II plus
-	struct input_rc_s _data = {};
+	struct input_rc_s _data = { };
 
 	int *_mem = nullptr;
 	key_t _key = 4096; ///< shared memory key (matches the ppmdecode program's key)

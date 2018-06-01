@@ -122,9 +122,7 @@ int parameters_update(const struct param_handles *h, struct params *p);
  * @param att The current attitude. The controller should make the attitude match the setpoint
  * @param rates_sp The angular rate setpoint. This is the output of the controller.
  */
-void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att,
-		      struct vehicle_rates_setpoint_s *rates_sp,
-		      struct actuator_controls_s *actuators);
+void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att, struct vehicle_rates_setpoint_s *rates_sp, struct actuator_controls_s *actuators);
 
 /**
  * Control heading.
@@ -138,21 +136,18 @@ void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const st
  * @param att The current attitude
  * @param att_sp The attitude setpoint. This is the output of the controller
  */
-void control_heading(const struct vehicle_global_position_s *pos, const struct position_setpoint_s *sp,
-		     const struct vehicle_attitude_s *att, struct vehicle_attitude_setpoint_s *att_sp);
+void control_heading(const struct vehicle_global_position_s *pos, const struct position_setpoint_s *sp, const struct vehicle_attitude_s *att, struct vehicle_attitude_setpoint_s *att_sp);
 
 /* Variables */
-static bool thread_should_exit = false;		/**< Daemon exit flag */
-static bool thread_running = false;		/**< Daemon status flag */
-static int deamon_task;				/**< Handle of deamon task / thread */
+static bool thread_should_exit = false; /**< Daemon exit flag */
+static bool thread_running = false; /**< Daemon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 static struct params p;
 static struct param_handles ph;
 
-void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att,
-		      struct vehicle_rates_setpoint_s *rates_sp,
-		      struct actuator_controls_s *actuators)
+void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const struct vehicle_attitude_s *att, struct vehicle_rates_setpoint_s *rates_sp, struct actuator_controls_s *actuators)
 {
-
+	
 	/*
 	 * The PX4 architecture provides a mixer outside of the controller.
 	 * The mixer is fed with a default vector of actuator controls, representing
@@ -179,10 +174,10 @@ void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const st
 
 	matrix::Eulerf att_euler = matrix::Quatf(att->q);
 	matrix::Eulerf att_sp_euler = matrix::Quatf(att_sp->q_d);
-
+	
 	float roll_err = att_euler.phi() - att_sp_euler.phi();
 	actuators->control[0] = roll_err * p.roll_p;
-
+	
 	/*
 	 * Calculate pitch error and apply P gain
 	 */
@@ -190,38 +185,37 @@ void control_attitude(const struct vehicle_attitude_setpoint_s *att_sp, const st
 	actuators->control[1] = pitch_err * p.pitch_p;
 }
 
-void control_heading(const struct vehicle_global_position_s *pos, const struct position_setpoint_s *sp,
-		     const struct vehicle_attitude_s *att, struct vehicle_attitude_setpoint_s *att_sp)
+void control_heading(const struct vehicle_global_position_s *pos, const struct position_setpoint_s *sp, const struct vehicle_attitude_s *att, struct vehicle_attitude_setpoint_s *att_sp)
 {
-
+	
 	/*
 	 * Calculate heading error of current position to desired position
 	 */
 
 	float bearing = get_bearing_to_next_waypoint(pos->lat, pos->lon, sp->lat, sp->lon);
-
+	
 	matrix::Eulerf att_euler = matrix::Quatf(att->q);
-
+	
 	/* calculate heading error */
 	float yaw_err = att_euler.psi() - bearing;
 	/* apply control gain */
 	float roll_body = yaw_err * p.hdng_p;
-
+	
 	/* limit output, this commonly is a tuning parameter, too */
 	if (roll_body < -0.6f)
 	{
 		roll_body = -0.6f;
-
+		
 	}
 	else if (att_sp->roll_body > 0.6f)
 	{
 		roll_body = 0.6f;
 	}
-
+	
 	matrix::Eulerf att_spe(roll_body, 0, bearing);
-
+	
 	matrix::Quatf qd(att_spe);
-
+	
 	att_sp->q_d[0] = qd(0);
 	att_sp->q_d[1] = qd(1);
 	att_sp->q_d[2] = qd(2);
@@ -231,10 +225,10 @@ void control_heading(const struct vehicle_global_position_s *pos, const struct p
 int parameters_init(struct param_handles *handles)
 {
 	/* PID parameters */
-	handles->hdng_p 	=	param_find("EXFW_HDNG_P");
-	handles->roll_p 	=	param_find("EXFW_ROLL_P");
-	handles->pitch_p 	=	param_find("EXFW_PITCH_P");
-
+	handles->hdng_p = param_find("EXFW_HDNG_P");
+	handles->roll_p = param_find("EXFW_ROLL_P");
+	handles->pitch_p = param_find("EXFW_PITCH_P");
+	
 	return 0;
 }
 
@@ -243,17 +237,16 @@ int parameters_update(const struct param_handles *handles, struct params *parame
 	param_get(handles->hdng_p, &(parameters->hdng_p));
 	param_get(handles->roll_p, &(parameters->roll_p));
 	param_get(handles->pitch_p, &(parameters->pitch_p));
-
+	
 	return 0;
 }
-
 
 /* Main Thread */
 int fixedwing_control_thread_main(int argc, char *argv[])
 {
 	/* read arguments */
 	bool verbose = false;
-
+	
 	for (int i = 1; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0)
@@ -261,15 +254,14 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 			verbose = true;
 		}
 	}
-
+	
 	/* welcome user (warnx prints a line, including an appended\n, with variable arguments */
 	warnx("[example fixedwing control] started");
-
+	
 	/* initialize parameters, first the handles, then the values */
 	parameters_init(&ph);
 	parameters_update(&ph, &p);
-
-
+	
 	/*
 	 * PX4 uses a publish/subscribe design pattern to enable
 	 * multi-threaded communication.
@@ -285,9 +277,6 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 	 * http://en.wikipedia.org/wiki/Publish–subscribe_pattern
 	 *
 	 */
-
-
-
 
 	/*
 	 * Declare and safely initialize all structs to zero.
@@ -309,25 +298,24 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 	memset(&vstatus, 0, sizeof(vstatus));
 	struct position_setpoint_s global_sp;
 	memset(&global_sp, 0, sizeof(global_sp));
-
+	
 	/* output structs - this is what is sent to the mixer */
 	struct actuator_controls_s actuators;
 	memset(&actuators, 0, sizeof(actuators));
-
-
+	
 	/* publish actuator controls with zero values */
 	for (unsigned i = 0; i < actuator_controls_s::NUM_ACTUATOR_CONTROLS; i++)
 	{
 		actuators.control[i] = 0.0f;
 	}
-
+	
 	/*
 	 * Advertise that this controller will publish actuator
 	 * control values and the rate setpoint
 	 */
 	orb_advert_t actuator_pub = orb_advertise(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, &actuators);
 	orb_advert_t rates_pub = orb_advertise(ORB_ID(vehicle_rates_setpoint), &rates_sp);
-
+	
 	/* subscribe to topics. */
 	int att_sub = orb_subscribe(ORB_ID(vehicle_attitude));
 	int global_pos_sub = orb_subscribe(ORB_ID(vehicle_global_position));
@@ -335,18 +323,18 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 	int vstatus_sub = orb_subscribe(ORB_ID(vehicle_status));
 	int global_sp_sub = orb_subscribe(ORB_ID(position_setpoint_triplet));
 	int param_sub = orb_subscribe(ORB_ID(parameter_update));
-
+	
 	/* Setup of loop */
 
-	struct pollfd fds[2] = {};
+	struct pollfd fds[2] = { };
 	fds[0].fd = param_sub;
 	fds[0].events = POLLIN;
 	fds[1].fd = att_sub;
 	fds[1].events = POLLIN;
-
+	
 	while (!thread_should_exit)
 	{
-
+		
 		/*
 		 * Wait for a sensor or param update, check for exit condition every 500 ms.
 		 * This means that the execution will block here without consuming any resources,
@@ -358,7 +346,7 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 		 * update speed - it runs as fast as the attitude updates with minimal latency.
 		 */
 		int ret = poll(fds, 2, 500);
-
+		
 		if (ret < 0)
 		{
 			/*
@@ -366,7 +354,7 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 			 * but its good design practice to make output an error message.
 			 */
 			warnx("poll error");
-
+			
 		}
 		else if (ret == 0)
 		{
@@ -374,23 +362,22 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 		}
 		else
 		{
-
+			
 			/* only update parameters if they changed */
 			if (fds[0].revents & POLLIN)
 			{
 				/* read from param to clear updated flag (uORB API requirement) */
 				struct parameter_update_s update;
 				orb_copy(ORB_ID(parameter_update), param_sub, &update);
-
+				
 				/* if a param update occured, re-read our parameters */
 				parameters_update(&ph, &p);
 			}
-
+			
 			/* only run controller if attitude changed */
 			if (fds[1].revents & POLLIN)
 			{
-
-
+				
 				/* Check if there is a new position measurement or position setpoint */
 				bool pos_updated;
 				orb_check(global_pos_sub, &pos_updated);
@@ -398,46 +385,46 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 				orb_check(global_sp_sub, &global_sp_updated);
 				bool manual_sp_updated;
 				orb_check(manual_sp_sub, &manual_sp_updated);
-
+				
 				/* get a local copy of attitude */
 				orb_copy(ORB_ID(vehicle_attitude), att_sub, &att);
-
+				
 				if (global_sp_updated)
 				{
 					struct position_setpoint_triplet_s triplet;
 					orb_copy(ORB_ID(position_setpoint_triplet), global_sp_sub, &triplet);
 					memcpy(&global_sp, &triplet.current, sizeof(global_sp));
 				}
-
+				
 				if (manual_sp_updated)
-					/* get the RC (or otherwise user based) input */
+				/* get the RC (or otherwise user based) input */
 				{
 					orb_copy(ORB_ID(manual_control_setpoint), manual_sp_sub, &manual_sp);
 				}
-
+				
 				/* check if the throttle was ever more than 50% - go later only to failsafe if yes */
-				if (PX4_ISFINITE(manual_sp.z) &&
-						(manual_sp.z >= 0.6f) &&
-						(manual_sp.z <= 1.0f))
-				{
+				if (PX4_ISFINITE(manual_sp.z)&&
+				(manual_sp.z >= 0.6f) &&
+				(manual_sp.z <= 1.0f))
+				{	
 				}
 
 				/* get the system status and the flight mode we're in */
 				orb_copy(ORB_ID(vehicle_status), vstatus_sub, &vstatus);
-
+				
 				/* publish rates */
 				orb_publish(ORB_ID(vehicle_rates_setpoint), rates_pub, &rates_sp);
-
+				
 				/* sanity check and publish actuator outputs */
-				if (PX4_ISFINITE(actuators.control[0]) &&
-						PX4_ISFINITE(actuators.control[1]) &&
-						PX4_ISFINITE(actuators.control[2]) &&
-						PX4_ISFINITE(actuators.control[3]))
-				{
+				if (PX4_ISFINITE(actuators.control[0])&&
+				PX4_ISFINITE(actuators.control[1]) &&
+				PX4_ISFINITE(actuators.control[2]) &&
+				PX4_ISFINITE(actuators.control[3]))
+				{	
 					orb_publish(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, actuator_pub, &actuators);
 
 					if (verbose)
-					{
+					{	
 						warnx("published");
 					}
 				}
@@ -447,30 +434,29 @@ int fixedwing_control_thread_main(int argc, char *argv[])
 
 	printf("[ex_fixedwing_control] exiting, stopping all motors.\n");
 	thread_running = false;
-
+	
 	/* kill all outputs */
 	for (unsigned i = 0; i < actuator_controls_s::NUM_ACTUATOR_CONTROLS; i++)
 	{
 		actuators.control[i] = 0.0f;
 	}
-
+	
 	orb_publish(ORB_ID_VEHICLE_ATTITUDE_CONTROLS, actuator_pub, &actuators);
-
+	
 	fflush(stdout);
-
+	
 	return 0;
 }
 
 /* Startup Functions */
 
-static void
-usage(const char *reason)
+static void usage(const char *reason)
 {
 	if (reason)
 	{
 		fprintf(stderr, "%s\n", reason);
 	}
-
+	
 	fprintf(stderr, "usage: ex_fixedwing_control {start|stop|status}\n\n");
 	exit(1);
 }
@@ -489,49 +475,44 @@ int ex_fixedwing_control_main(int argc, char *argv[])
 	{
 		usage("missing command");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			printf("ex_fixedwing_control already running\n");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd("ex_fixedwing_control",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 20,
-						 2048,
-						 fixedwing_control_thread_main,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+		deamon_task = px4_task_spawn_cmd("ex_fixedwing_control", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 20, 2048, fixedwing_control_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
 		thread_running = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		thread_should_exit = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			printf("\tex_fixedwing_control is running\n");
-
+			
 		}
 		else
 		{
 			printf("\tex_fixedwing_control not started\n");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	usage("unrecognized command");
 	exit(1);
 }

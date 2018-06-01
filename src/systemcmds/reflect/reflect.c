@@ -66,20 +66,20 @@ static void allocate_blocks(void)
 	while (nblocks < MAX_BLOCKS)
 	{
 		blocks[nblocks] = calloc(1, sizeof(struct block));
-
+		
 		if (blocks[nblocks] == NULL)
 		{
 			break;
 		}
-
+		
 		for (uint32_t i = 0; i < sizeof(blocks[nblocks]->v) / sizeof(uint32_t); i++)
 		{
 			blocks[nblocks]->v[i] = VALUE(i);
 		}
-
+		
 		nblocks++;
 	}
-
+	
 	printf("Allocated %u blocks\n", nblocks);
 }
 
@@ -94,37 +94,36 @@ static void check_blocks(void)
 	}
 }
 
-int
-reflect_main(int argc, char *argv[])
+int reflect_main(int argc, char *argv[])
 {
 	uint32_t total = 0;
 	printf("Starting reflector\n");
-
+	
 	allocate_blocks();
-
+	
 	while (true)
 	{
 		char buf[128];
 		ssize_t n = read(0, buf, sizeof(buf));
-
+		
 		if (n < 0)
 		{
 			break;
 		}
-
+		
 		if (n > 0)
 		{
 			write(1, buf, n);
 		}
-
+		
 		total += n;
-
+		
 		if (total > 1024000)
 		{
 			check_blocks();
 			total = 0;
 		}
 	}
-
+	
 	return OK;
 }

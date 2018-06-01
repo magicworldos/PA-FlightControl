@@ -57,7 +57,7 @@
 
 class Navigator;
 
-class Geofence : public control::SuperBlock
+class Geofence: public control::SuperBlock
 {
 public:
 	Geofence(Navigator *navigator);
@@ -90,9 +90,7 @@ public:
 	 *
 	 * @return true: system is obeying fence, false: system is violating fence
 	 */
-	bool check(const struct vehicle_global_position_s &global_position,
-		   const struct vehicle_gps_position_s &gps_position, float baro_altitude_amsl,
-		   const struct home_position_s home_pos, bool home_position_set);
+	bool check(const struct vehicle_global_position_s &global_position, const struct vehicle_gps_position_s &gps_position, float baro_altitude_amsl, const struct home_position_s home_pos, bool home_position_set);
 
 	/**
 	 * Return whether a mission item obeys the geofence.
@@ -126,12 +124,24 @@ public:
 	 */
 	int loadFromFile(const char *filename);
 
-	bool isEmpty() { return _num_polygons == 0; }
-
-	int getAltitudeMode() { return _param_altitude_mode.get(); }
-	int getSource() { return _param_source.get(); }
-	int getGeofenceAction() { return _param_action.get(); }
-
+	bool isEmpty()
+	{
+		return _num_polygons == 0;
+	}
+	
+	int getAltitudeMode()
+	{
+		return _param_altitude_mode.get();
+	}
+	int getSource()
+	{
+		return _param_source.get();
+	}
+	int getGeofenceAction()
+	{
+		return _param_action.get();
+	}
+	
 	bool isHomeRequired();
 
 	/**
@@ -140,13 +150,13 @@ public:
 	void printStatus();
 
 private:
-	Navigator	*_navigator{nullptr};
+	Navigator *_navigator { nullptr };
 
-	hrt_abstime _last_horizontal_range_warning{0};
-	hrt_abstime _last_vertical_range_warning{0};
+	hrt_abstime _last_horizontal_range_warning { 0 };
+	hrt_abstime _last_vertical_range_warning { 0 };
 
-	float _altitude_min{0.0f};
-	float _altitude_max{0.0f};
+	float _altitude_min { 0.0f };
+	float _altitude_max { 0.0f };
 
 	struct PolygonInfo
 	{
@@ -158,11 +168,11 @@ private:
 			float circle_radius;
 		};
 	};
-	PolygonInfo *_polygons{nullptr};
-	int _num_polygons{0};
+	PolygonInfo *_polygons { nullptr };
+	int _num_polygons { 0 };
 
-	map_projection_reference_s _projection_reference = {}; ///< reference to convert (lon, lat) to local [m]
-
+	map_projection_reference_s _projection_reference = { }; ///< reference to convert (lon, lat) to local [m]
+	
 	/* Params */
 	control::BlockParamInt _param_action;
 	control::BlockParamInt _param_altitude_mode;
@@ -171,9 +181,9 @@ private:
 	control::BlockParamFloat _param_max_hor_distance;
 	control::BlockParamFloat _param_max_ver_distance;
 
-	int _outside_counter{0};
-	uint16_t _update_counter{0}; ///< dataman update counter: if it does not match, we polygon data was updated
-
+	int _outside_counter { 0 };
+	uint16_t _update_counter { 0 }; ///< dataman update counter: if it does not match, we polygon data was updated
+	
 	/**
 	 * implementation of updateFence(), but without locking
 	 */

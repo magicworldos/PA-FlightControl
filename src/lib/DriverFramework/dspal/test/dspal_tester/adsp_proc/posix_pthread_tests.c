@@ -45,7 +45,6 @@
 #define SKIP_PTHREAD_KILL
 #define DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS 3
 
-
 /**
  * @brief Test if pthread_attr_init and pthread_attr_destroy work.
  * Errors printed to log.
@@ -56,20 +55,26 @@
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_attr_init(void)
 {
 	int rv = 0;
 	pthread_attr_t attr;
-
+	
 	rv = pthread_attr_init(&attr);
-
-	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_init returned error");
+	}
+	
 	rv = pthread_attr_destroy(&attr);
-
-	if (rv != 0) { FAIL("pthread_attr_destroy returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_destroy returned error");
+	}
+	
 	return TEST_PASS;
 }
 
@@ -83,12 +88,12 @@ int dspal_tester_test_pthread_attr_init(void)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_create_helper(void *test_value)
 {
-	int *v = (int *)test_value;
+	int *v = (int *) test_value;
 	(*v) = 1;
-
+	
 	return NULL;
 }
 
@@ -109,40 +114,50 @@ void *test_pthread_create_helper(void *test_value)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_create(void)
 {
 	int rv = 0;
-
+	
 	int test_value = 0;
 	pthread_t thread;
-
+	
 	rv = pthread_create(&thread, NULL, test_pthread_create_helper, &test_value);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
-	if (test_value == 0) { FAIL("test value did not change"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
+	if (test_value == 0)
+	{
+		FAIL("test value did not change");
+	}
+	
 	return TEST_PASS;
 }
 
 void *test_pthread_cancel_helper(void *unused)
 {
-	while (TRUE) {
+	while (TRUE)
+	{
 		//pause(); TODO: find cancelable method
 	}
-
+	
 	return NULL;
 }
 
 int dspal_tester_test_pthread_cancel(void)
 {
 	return TEST_SKIP;
-
+	
 #if 0 // I need to find a cancelable method in order to test this
 	int rv = 0;
 
@@ -151,15 +166,18 @@ int dspal_tester_test_pthread_cancel(void)
 
 	rv = pthread_create(&thread, NULL, test_pthread_cancel_helper, &test_value);
 
-	if (rv != 0) { FAIL("thread_create returned error"); }
+	if (rv != 0)
+	{	FAIL("thread_create returned error");}
 
 	rv = pthread_cancel(thread);
 
-	if (rv != 0) { FAIL("thread_join returned error"); }
+	if (rv != 0)
+	{	FAIL("thread_join returned error");}
 
 	rv = pthread_join(thread, NULL);
 
-	if (rv != 0) { FAIL("thread_join returned error"); }
+	if (rv != 0)
+	{	FAIL("thread_join returned error");}
 
 	return TEST_PASS;
 #endif
@@ -174,12 +192,12 @@ int dspal_tester_test_pthread_cancel(void)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_self_helper(void *thread_self)
 {
-	pthread_t *v = (pthread_t *)thread_self;
+	pthread_t *v = (pthread_t *) thread_self;
 	(*v) = pthread_self();
-
+	
 	return NULL;
 }
 
@@ -202,24 +220,33 @@ void *test_pthread_self_helper(void *thread_self)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_self(void)
 {
 	int rv = 0;
-
+	
 	pthread_t thread;
 	pthread_t thread_self;
-
+	
 	rv = pthread_create(&thread, NULL, test_pthread_self_helper, &thread_self);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
-	if (thread_self != thread) { FAIL("pthread_self did not return the expected value"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
+	if (thread_self != thread)
+	{
+		FAIL("pthread_self did not return the expected value");
+	}
+	
 	return TEST_PASS;
 }
 
@@ -232,14 +259,14 @@ int dspal_tester_test_pthread_self(void)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_exit_helper(void *test_value)
 {
 	pthread_exit(NULL);
-
-	int *v = (int *)test_value;
+	
+	int *v = (int *) test_value;
 	(*v) = 1;
-
+	
 	return NULL;
 }
 
@@ -263,25 +290,34 @@ void *test_pthread_exit_helper(void *test_value)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_exit(void)
 {
 	int rv = 0;
-
+	
 	int test_value = 0;
-
+	
 	pthread_t thread;
-
+	
 	rv = pthread_create(&thread, NULL, test_pthread_exit_helper, &test_value);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
-	if (test_value != 0) { FAIL("test value should not have changed"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
+	if (test_value != 0)
+	{
+		FAIL("test value should not have changed");
+	}
+	
 	return TEST_PASS;
 }
 
@@ -293,7 +329,7 @@ int last_signal;
  * @par Sets 'last_signal' variable to the signal number.
  *
  * @param   signo[in]   signal number
-*/
+ */
 void test_pthread_kill_sig_handler(int signo)
 {
 	last_signal = signo;
@@ -310,15 +346,16 @@ void test_pthread_kill_sig_handler(int signo)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_kill_helper(void *unused)
 {
 	const int MAX_RUN_TIME = 2; // in seconds
-
+	
 	time_t stop_time = time(NULL) + MAX_RUN_TIME;
-
-	while (last_signal == 0 && time(NULL) < stop_time);
-
+	
+	while (last_signal == 0 && time(NULL) < stop_time)
+		;
+	
 	return NULL;
 }
 
@@ -344,13 +381,13 @@ void *test_pthread_kill_helper(void *unused)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_kill(void)
 {
 #ifdef SKIP_PTHREAD_KILL
 	return TEST_SKIP;
 #else
-
+	
 	int rv = 0;
 
 	int last_signal = 0;
@@ -366,21 +403,26 @@ int dspal_tester_test_pthread_kill(void)
 
 	rv = sigaction(SIGALRM, &actions, NULL);
 
-	if (rv != 0) { FAIL("sigaction returned error"); }
+	if (rv != 0)
+	{	FAIL("sigaction returned error");}
 
 	rv = pthread_create(&thread, NULL, test_pthread_kill_helper, NULL);
 
-	if (rv != 0) { FAIL("thread_create returned error"); }
+	if (rv != 0)
+	{	FAIL("thread_create returned error");}
 
 	rv = pthread_kill(thread, SIGALRM);
 
-	if (rv != 0) { FAIL("pthread_kill returned error"); }
+	if (rv != 0)
+	{	FAIL("pthread_kill returned error");}
 
 	rv = pthread_join(thread, NULL);
 
-	if (rv != 0) { FAIL("thread_join returned error"); }
+	if (rv != 0)
+	{	FAIL("thread_join returned error");}
 
-	if (last_signal != SIGALRM) { FAIL("last signal is not SIGALRM"); }
+	if (last_signal != SIGALRM)
+	{	FAIL("last signal is not SIGALRM");}
 
 	return TEST_PASS;
 
@@ -402,32 +444,45 @@ int dspal_tester_test_pthread_kill(void)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_mutex_lock(void)
 {
 	int rv = 0;
 	pthread_mutex_t lock;
-
+	
 	rv = pthread_mutex_init(&lock, NULL);
-
-	if (rv != 0) { FAIL("pthread_mutex_init returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_init returned error");
+	}
+	
 	pthread_mutex_lock(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_lock returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_lock returned error");
+	}
+	
 	rv = pthread_mutex_unlock(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_unlock returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_unlock returned error");
+	}
+	
 	rv = pthread_mutex_destroy(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_destroy returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_destroy returned error");
+	}
+	
 	return TEST_PASS;
 }
 
-typedef struct {
+typedef struct
+{
 	int *int_value;
 	pthread_mutex_t *mutex;
 } test_mutex_t;
@@ -444,19 +499,19 @@ typedef struct {
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_mutex_lock_thread_helper(void *test_value)
 {
 	int rv = 0;
-	test_mutex_t *v = (test_mutex_t *)test_value;
+	test_mutex_t *v = (test_mutex_t *) test_value;
 	*(v->int_value) = 1;
-
+	
 	pthread_mutex_lock(v->mutex);
-
+	
 	*(v->int_value) = 2;
-
+	
 	rv = pthread_mutex_unlock(v->mutex);
-
+	
 	return NULL;
 }
 
@@ -483,57 +538,83 @@ void *test_pthread_mutex_lock_thread_helper(void *test_value)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_mutex_lock_thread(void)
 {
 	const int MAX_RUN_TIME = 2; // in seconds
-
+	
 	int rv = 0;
 	int test_value = 0;
-
+	
 	pthread_mutex_t lock;
 	pthread_t thread;
-
+	
 	test_mutex_t test_mutex;
 	test_mutex.int_value = &test_value;
 	test_mutex.mutex = &lock;
-
+	
 	rv = pthread_mutex_init(&lock, NULL);
-
-	if (rv != 0) { FAIL("pthread_mutex_init returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_init returned error");
+	}
+	
 	pthread_mutex_lock(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_lock returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_lock returned error");
+	}
+	
 	rv = pthread_create(&thread, NULL, test_pthread_mutex_lock_thread_helper, &test_mutex);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	time_t stop_time = time(NULL) + MAX_RUN_TIME;
-
-	while (test_value != 1 && time(NULL) < stop_time);
-
-	if (test_value != 1) { FAIL("test value did not change"); }
-
+	
+	while (test_value != 1 && time(NULL) < stop_time)
+		;
+	
+	if (test_value != 1)
+	{
+		FAIL("test value did not change");
+	}
+	
 	rv = pthread_mutex_unlock(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_unlock returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_unlock returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
 	stop_time = time(NULL) + MAX_RUN_TIME;
-
-	while (test_value != 2 && time(NULL) < stop_time);
-
-	if (test_value != 2) { FAIL("test value did not change"); }
-
+	
+	while (test_value != 2 && time(NULL) < stop_time)
+		;
+	
+	if (test_value != 2)
+	{
+		FAIL("test value did not change");
+	}
+	
 	rv = pthread_mutex_destroy(&lock);
-
-	if (rv != 0) { FAIL("pthread_mutex_destroy returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_mutex_destroy returned error");
+	}
+	
 	return TEST_PASS;
 }
 
@@ -547,30 +628,33 @@ int dspal_tester_test_pthread_mutex_lock_thread(void)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_stack_helper(void *test_value)
 {
 	// allocate mem on the stack and see if it crashes
-
-	int *v = (int *)test_value;
+	
+	int *v = (int *) test_value;
 	(*v) = -1;
-
+	
 	const int SIZE = 4 * 1024 - 256;
-
+	
 	uint8 mem_on_stack[SIZE];
-
-	for (int i = 0; i < SIZE; i += 1) {
-		mem_on_stack[i] = (uint8)i;
+	
+	for (int i = 0; i < SIZE; i += 1)
+	{
+		mem_on_stack[i] = (uint8) i;
 	}
-
-	for (int i = 0; i < SIZE; i += 1) {
-		if (mem_on_stack[i] != (uint8)i) {
+	
+	for (int i = 0; i < SIZE; i += 1)
+	{
+		if (mem_on_stack[i] != (uint8) i)
+		{
 			(*v) = -2;
 		}
 	}
-
+	
 	(*v) = 1;
-
+	
 	return NULL;
 }
 
@@ -598,37 +682,50 @@ void *test_pthread_stack_helper(void *test_value)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_stack(void)
 {
 	int rv = 0;
-
+	
 	int test_value = 0;
 	pthread_t thread;
 	pthread_attr_t attr;
 	size_t stacksize = 4 * 1024;
-
+	
 	rv = pthread_attr_init(&attr);
-
-	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_init returned error");
+	}
+	
 	rv = pthread_attr_setstacksize(&attr, stacksize);
-
-	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_setstacksize returned error");
+	}
+	
 	rv = pthread_create(&thread, &attr, test_pthread_stack_helper, &test_value);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
-	if (test_value != 1) {
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
+	if (test_value != 1)
+	{
 		LOG_ERR("test value: %d", test_value);
 		FAIL("test value is not passing");
 	}
-
+	
 	return TEST_PASS;
 }
 
@@ -642,35 +739,38 @@ int dspal_tester_test_pthread_stack(void)
  *
  * @return
  * NULL ------ Always
-*/
+ */
 void *test_pthread_heap_helper(void *test_value)
 {
 	// allocate mem on the stack and see if it crashes
-
-	int *v = (int *)test_value;
+	
+	int *v = (int *) test_value;
 	(*v) = -1;
-
+	
 	const int SIZE = 1024;
-
-	uint8 *mem_on_heap1 = (uint8 *)malloc(SIZE * sizeof(uint8));
-	uint8 *mem_on_heap2 = (uint8 *)malloc(SIZE * sizeof(uint8));
-
-	for (int i = 0; i < SIZE; i += 1) {
-		mem_on_heap1[i] = (uint8)i;
-		mem_on_heap2[i] = (uint8)i;
+	
+	uint8 *mem_on_heap1 = (uint8 *) malloc(SIZE * sizeof(uint8));
+	uint8 *mem_on_heap2 = (uint8 *) malloc(SIZE * sizeof(uint8));
+	
+	for (int i = 0; i < SIZE; i += 1)
+	{
+		mem_on_heap1[i] = (uint8) i;
+		mem_on_heap2[i] = (uint8) i;
 	}
-
-	for (int i = 0; i < SIZE; i += 1) {
-		if (mem_on_heap1[i] != (uint8)i || mem_on_heap2[i] != (uint8)i) {
+	
+	for (int i = 0; i < SIZE; i += 1)
+	{
+		if (mem_on_heap1[i] != (uint8) i || mem_on_heap2[i] != (uint8) i)
+		{
 			(*v) = -2;
 		}
 	}
-
+	
 	free(mem_on_heap1);
 	free(mem_on_heap2);
-
+	
 	(*v) = 1;
-
+	
 	return NULL;
 }
 
@@ -697,27 +797,34 @@ void *test_pthread_heap_helper(void *test_value)
  *
  * @return
  * TEST_PASS ------ Always
-*/
+ */
 int dspal_tester_test_pthread_heap(void)
 {
 	int rv = 0;
-
+	
 	int test_value = 0;
 	pthread_t thread;
-
+	
 	rv = pthread_create(&thread, NULL, test_pthread_heap_helper, &test_value);
-
-	if (rv != 0) { FAIL("thread_create returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("thread_create returned error");
+	}
+	
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) { FAIL("thread_join returned error"); }
-
-	if (test_value != 1) {
+	
+	if (rv != 0)
+	{
+		FAIL("thread_join returned error");
+	}
+	
+	if (test_value != 1)
+	{
 		LOG_ERR("test value: %d", test_value);
 		FAIL("test value is not passing");
 	}
-
+	
 	return TEST_PASS;
 }
 
@@ -733,25 +840,24 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 {
 	pthread_mutex_t mutex;
 	pthread_mutexattr_t attr;
-	pthread_cond_t *cond = (pthread_cond_t *)test_value;
+	pthread_cond_t *cond = (pthread_cond_t *) test_value;
 	int mutex_lock_status;
 	struct timespec timeout;
 	struct timespec now;
 	int cond_status, return_status = 0;
-
+	
 	/*
 	 * Initialize and lock the mutex used to prevent race conditions when accessing
 	 * the condition from multiple threads.  Explicitly set the mutex type to normal
 	 * to prevent the use of the default recursive mutex.
 	 */
-	if (pthread_mutexattr_init(&attr) != 0 ||
-	    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 ||
-	    pthread_mutex_init(&mutex, &attr) != 0) {
+	if (pthread_mutexattr_init(&attr) != 0 || pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 || pthread_mutex_init(&mutex, &attr) != 0)
+	{
 		LOG_ERR("error: pthread mutex initialization failed");
 		return_status = -1;
 		goto exit;
 	}
-
+	
 	/*
 	 * Obtain the current time and add the specified timeout, since
 	 * the timeout must be specified as absolute time.
@@ -759,60 +865,65 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	clock_gettime(CLOCK_REALTIME, &now);
 	timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
 	timeout.tv_nsec = now.tv_nsec;
-
+	
 	/*
 	 * Initialize the parameters to cause a new mutex and cond object
 	 * to be instantiated.
 	 */
-	if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0) {
+	if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0)
+	{
 		LOG_ERR("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
 	}
-
-	*cond = PTHREAD_COND_INITIALIZER;
+	
+*cond = PTHREAD_COND_INITIALIZER;
 
 	/*
 	 * Wait once, long enough for a timeout to occur.
 	 */
-	LOG_DEBUG("entering first pthread_cond_timedwait call, testing timeout");
+		LOG_DEBUG("entering first pthread_cond_timedwait call, testing timeout");
 	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
-
-	if (cond_status != ETIMEDOUT) {
-		LOG_ERR("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
-			cond_status, ETIMEDOUT);
+	
+	if (cond_status != ETIMEDOUT)
+	{
+		LOG_ERR("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d", cond_status, ETIMEDOUT);
 		return_status = -1;
-
-	} else {
+		
+	}
+	else
+	{
 		LOG_DEBUG("first pthread_cond_timedwait call timed out as expected.");
 	}
-
+	
 	/*
 	 * Update the time to the new absolute time for the next timeout.
 	 */
 	clock_gettime(CLOCK_REALTIME, &now);
 	timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
 	timeout.tv_nsec = now.tv_nsec;
-
+	
 	/*
 	 * Wait again, but this time expect to be signaled before the timeout
 	 * has occurred.
 	 */
 	LOG_DEBUG("entering second pthread_cond_timedwait call, no timeout expected");
 	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
-
-	if (cond_status == ETIMEDOUT) {
+	
+	if (cond_status == ETIMEDOUT)
+	{
 		LOG_ERR("error: pthread_cond_timewait timed out unexpectedly");
 		return_status = -1;
-
-	} else {
-		LOG_INFO("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
-			 cond_status, ETIMEDOUT);
+		
 	}
-
+	else
+	{
+		LOG_INFO("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d", cond_status, ETIMEDOUT);
+	}
+	
 	/*
 	 * Leave the mutex unlocked since it is no longer needed.
 	 */
 	pthread_mutex_unlock(&mutex);
-
+	
 	/*
 	 * Free the resources allocated by the called function through
 	 * the use of the {_}_INITIALIZER constant and direct call to the
@@ -820,9 +931,8 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	 */
 	pthread_mutex_destroy(&mutex);
 	pthread_cond_destroy(cond);
-
-exit:
-	return (void *)return_status;
+	
+	exit: return (void *) return_status;
 }
 
 /**
@@ -835,7 +945,7 @@ exit:
  * @return
  * TEST_PASS
  * TEST_FAIL
-*/
+ */
 
 int dspal_tester_test_pthread_cond_timedwait(void)
 {
@@ -843,82 +953,95 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 	pthread_cond_t cond;
 	int test_value = TEST_FAIL;
 	pthread_t thread;
-
+	
 	pthread_attr_t attr;
-
-    /* 
-     * Stack increase is necessary for the newer DSP because of changes 
-     * in the timer structures  
-     */
-	size_t stacksize = 2 * 1024; 
-
+	
+	/* 
+	 * Stack increase is necessary for the newer DSP because of changes 
+	 * in the timer structures  
+	 */
+	size_t stacksize = 2 * 1024;
+	
 	rv = pthread_attr_init(&attr);
-
-	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_init returned error");
+	}
+	
 	rv = pthread_attr_setstacksize(&attr, stacksize);
-
-	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
-
+	
+	if (rv != 0)
+	{
+		FAIL("pthread_attr_setstacksize returned error");
+	}
+	
 	/*
 	 * Create the thread passing a reference to the cond structure
 	 * just initialized.
 	 */
 	rv = pthread_create(&thread, &attr, test_pthread_cond_timedwait_helper, &cond);
-
-	if (rv != 0) {
+	
+	if (rv != 0)
+	{
 		LOG_ERR("error pthread_create: %d", rv);
 		goto exit;
 	}
-
+	
 	/*
 	 * Begin the first test by sleeping long enough for the timeout to
 	 * have occurred.
 	 */
 	usleep((DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS + 2) * 1000000);
-
+	
 	/*
 	 * Now trigger the condition to verify that it was detected before
 	 * the timeout period has expired.
 	 */
 	LOG_DEBUG("entering pthread_cond_signal for the next cond wait (after the timeout)");
 	rv = pthread_cond_signal(&cond);
-
-	if (rv != 0) {
+	
+	if (rv != 0)
+	{
 		LOG_ERR("error pthread_cond_signal: %d", rv);
 		goto exit;
 	}
-
+	
 	LOG_INFO("pthread_cond_signal has returned, waiting for the helper thread to exit");
 	rv = pthread_join(thread, NULL);
-
-	if (rv != 0) {
+	
+	if (rv != 0)
+	{
 		LOG_ERR("error pthread_join: %d", rv);
 		goto exit;
 	}
-
+	
 	test_value = TEST_PASS;
+	
+	exit:
 
-exit:
-
-	if (test_value != TEST_PASS) {
+	if (test_value != TEST_PASS)
+	{
 		LOG_ERR("error: dspal_tester_test_pthread_cond_timedwait");
-
-	} else {
+		
+	}
+	else
+	{
 		LOG_INFO("success: dspal_tester_test_pthread_cond_timedwait");
 	}
-
+	
 	return test_value;
 }
 
 int dspal_tester_test_rpcmem(unsigned char* data, int dataLen)
 {
-    LOG_ERR("Got call: data %x data_len %d", data, dataLen);
-
-    for (int i = 0; i < dataLen; i++) {
-        data[i] = data[i]+1; 
-    }
-
-    return TEST_PASS;
+	LOG_ERR("Got call: data %x data_len %d", data, dataLen);
+	
+	for (int i = 0; i < dataLen; i++)
+	{
+		data[i] = data[i] + 1;
+	}
+	
+	return TEST_PASS;
 }
 

@@ -7,24 +7,28 @@
 using control::BlockPI;
 using control::BlockP;
 
-class BlockSegwayController : public control::BlockUorbEnabledAutopilot
+class BlockSegwayController: public control::BlockUorbEnabledAutopilot
 {
 public:
 	BlockSegwayController() :
-		BlockUorbEnabledAutopilot(nullptr, "SEG"),
-		th2v(this, "TH2V"),
-		q2v(this, "Q2V"),
-		_attPoll(),
-		_timeStamp(0)
+			    BlockUorbEnabledAutopilot(nullptr, "SEG"),
+			    th2v(this, "TH2V"),
+			    q2v(this, "Q2V"),
+			    _attPoll(),
+			    _timeStamp(0)
 	{
 		_attPoll.fd = _att.getHandle();
 		_attPoll.events = POLLIN;
 	}
-
+	
 	void update();
 
 private:
-	enum {CH_LEFT, CH_RIGHT};
+	enum
+	{
+		CH_LEFT,
+		CH_RIGHT
+	};
 
 	BlockPI th2v;
 	BlockP q2v;

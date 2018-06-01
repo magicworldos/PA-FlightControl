@@ -35,7 +35,8 @@
 #include "error.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup ROMAPI_11XX CHIP: LPC11XX ROM API declarations and functions
@@ -46,15 +47,16 @@ extern "C" {
 /**
  * @brief LPC11XX High level ROM API structure
  */
-typedef struct {
-	const uint32_t usbdApiBase;				/*!< USBD API function table base address */
-	const uint32_t reserved0;				/*!< Reserved */
-	const uint32_t candApiBase;				/*!< CAN API function table base address */
-	const uint32_t pwrApiBase;				/*!< Power API function table base address */
-	const uint32_t reserved1;				/*!< Reserved */
-	const uint32_t reserved2;				/*!< Reserved */
-	const uint32_t reserved3;				/*!< Reserved */
-	const uint32_t reserved4;				/*!< Reserved */
+typedef struct
+{
+	const uint32_t usbdApiBase; /*!< USBD API function table base address */
+	const uint32_t reserved0; /*!< Reserved */
+	const uint32_t candApiBase; /*!< CAN API function table base address */
+	const uint32_t pwrApiBase; /*!< Power API function table base address */
+	const uint32_t reserved1; /*!< Reserved */
+	const uint32_t reserved2; /*!< Reserved */
+	const uint32_t reserved3; /*!< Reserved */
+	const uint32_t reserved4; /*!< Reserved */
 } LPC_ROM_API_T;
 
 /**
@@ -63,7 +65,7 @@ typedef struct {
 typedef void (*IAP_ENTRY_T)(unsigned int[], unsigned int[]);
 
 static INLINE void iap_entry(unsigned int cmd_param[], unsigned int status_result[])
-{
+{	
 	((IAP_ENTRY_T) IAP_ENTRY_LOCATION)(cmd_param, status_result);
 }
 

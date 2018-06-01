@@ -69,12 +69,12 @@ enum ST24_DECODE_STATE
 #pragma pack(push, 1)
 typedef struct
 {
-	uint8_t	header1;			///< 0x55 for a valid packet
-	uint8_t	header2;			///< 0x55 for a valid packet
-	uint8_t	length;				///< length includes type, data, and crc = sizeof(type)+sizeof(data[payload_len])+sizeof(crc8)
-	uint8_t	type;				///< from enum ST24_PACKET_TYPE
-	uint8_t	st24_data[ST24_DATA_LEN_MAX];
-	uint8_t	crc8;				///< crc8 checksum, calculated by st24_common_crc8 and including fields length, type and st24_data
+	uint8_t header1;			///< 0x55 for a valid packet
+	uint8_t header2;			///< 0x55 for a valid packet
+	uint8_t length;				///< length includes type, data, and crc = sizeof(type)+sizeof(data[payload_len])+sizeof(crc8)
+	uint8_t type;				///< from enum ST24_PACKET_TYPE
+	uint8_t st24_data[ST24_DATA_LEN_MAX];
+	uint8_t crc8;				///< crc8 checksum, calculated by st24_common_crc8 and including fields length, type and st24_data
 } ReceiverFcPacket;
 
 /**
@@ -85,9 +85,9 @@ typedef struct
 typedef struct
 {
 	uint16_t t;			///< packet counter or clock
-	uint8_t	rssi;			///< signal strength
-	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
-	uint8_t	channel[18];		///< channel data, 12 channels (12 bit numbers)
+	uint8_t rssi;			///< signal strength
+	uint8_t lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
+	uint8_t channel[18];		///< channel data, 12 channels (12 bit numbers)
 } ChannelData12;
 
 /**
@@ -97,9 +97,9 @@ typedef struct
 typedef struct
 {
 	uint16_t t;			///< packet counter or clock
-	uint8_t	rssi;			///< signal strength
-	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
-	uint8_t	channel[36];		///< channel data, 24 channels (12 bit numbers)
+	uint8_t rssi;			///< signal strength
+	uint8_t lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
+	uint8_t channel[36];		///< channel data, 24 channels (12 bit numbers)
 } ChannelData24;
 
 /**
@@ -138,17 +138,17 @@ typedef struct
 typedef struct
 {
 	uint16_t t;			///< packet counter or clock
-	int32_t	lat;			///< lattitude (degrees)	+/- 90 deg
-	int32_t	lon;			///< longitude (degrees)	+/- 180 deg
-	int32_t	alt;			///< 0.01m resolution, altitude (meters)
-	int16_t	vx, vy, vz; 		///< velocity 0.01m res, +/-320.00 North-East- Down
-	uint8_t	nsat;			///<number of satellites
-	uint8_t	voltage; 		///< 25.4V	voltage = 5 + 255*0.1 = 30.5V, min=5V
-	uint8_t	current; 		///< 0.5A resolution
-	int16_t	roll, pitch, yaw;	///< 0.01 degree resolution
-	uint8_t	motorStatus;		///< 1 bit per motor for status 1=good, 0= fail
-	uint8_t	imuStatus;		///< inertial measurement unit status
-	uint8_t	pressCompassStatus;	///< baro / compass status
+	int32_t lat;			///< lattitude (degrees)	+/- 90 deg
+	int32_t lon;			///< longitude (degrees)	+/- 180 deg
+	int32_t alt;			///< 0.01m resolution, altitude (meters)
+	int16_t vx, vy, vz; 		///< velocity 0.01m res, +/-320.00 North-East- Down
+	uint8_t nsat;			///<number of satellites
+	uint8_t voltage; 		///< 25.4V	voltage = 5 + 255*0.1 = 30.5V, min=5V
+	uint8_t current; 		///< 0.5A resolution
+	int16_t roll, pitch, yaw;	///< 0.01 degree resolution
+	uint8_t motorStatus;		///< 1 bit per motor for status 1=good, 0= fail
+	uint8_t imuStatus;		///< inertial measurement unit status
+	uint8_t pressCompassStatus;	///< baro / compass status
 } TelemetryData;
 
 #pragma pack(pop)
@@ -172,7 +172,6 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len);
  * @param max_chan_count maximum channels to decode - if more channels are decoded, the last n are skipped and success (0) is returned
  * @return 0 for success (a decoded packet), 1 for no packet yet (accumulating), 2 for unknown packet, 3 for out of sync, 4 for checksum error
  */
-__EXPORT int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count,
-			 uint16_t *channels, uint16_t max_chan_count);
+__EXPORT int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels, uint16_t max_chan_count);
 
 __END_DECLS

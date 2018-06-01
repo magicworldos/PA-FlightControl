@@ -49,7 +49,7 @@
 /**
  * @class TimestampedList
  */
-template <class T>
+template<class T>
 class TimestampedList
 {
 public:
@@ -62,14 +62,14 @@ public:
 	{
 		delete[] _list;
 	}
-
+	
 	/**
 	 * Insert a value into the list, overwrite the oldest entry if full.
 	 */
 	void put(const T &new_value)
 	{
 		hrt_abstime now = hrt_absolute_time();
-
+		
 		// Insert it wherever there is a free space.
 		for (int i = 0; i < _list_len; ++i)
 		{
@@ -80,10 +80,10 @@ public:
 				return;
 			}
 		}
-
+		
 		// Find oldest entry.
 		int oldest_i = 0;
-
+		
 		for (int i = 1; i < _list_len; ++i)
 		{
 			if (_list[i].timestamp_us < _list[oldest_i].timestamp_us)
@@ -91,12 +91,12 @@ public:
 				oldest_i = i;
 			}
 		}
-
+		
 		// And overwrite oldest.
 		_list[oldest_i].timestamp_us = now;
 		_list[oldest_i].value = new_value;
 	}
-
+	
 	/**
 	 * Before iterating using get_next(), reset to start.
 	 */
@@ -104,7 +104,7 @@ public:
 	{
 		_current_i = -1;
 	}
-
+	
 	/**
 	 * Iterate through all active values (not sorted).
 	 * Return nullptr if at end of list.
@@ -115,7 +115,7 @@ public:
 	{
 		// Increment first, then leave it until called again.
 		++_current_i;
-
+		
 		for (int i = _current_i; i < _list_len; ++i)
 		{
 			if (_list[i].timestamp_us != 0)
@@ -124,10 +124,10 @@ public:
 				return &_list[i].value;
 			}
 		}
-
+		
 		return nullptr;
 	}
-
+	
 	/**
 	 * Disable the last item that we have gotten.
 	 */
@@ -138,7 +138,7 @@ public:
 			_list[_current_i].timestamp_us = 0;
 		}
 	}
-
+	
 	/**
 	 * Update the timestamp of the item we have gotten.
 	 */
@@ -149,11 +149,11 @@ public:
 			_list[_current_i].timestamp = hrt_absolute_time();
 		}
 	}
-
+	
 	/* do not allow copying or assigning this class */
 	TimestampedList(const TimestampedList &) = delete;
 	TimestampedList operator=(const TimestampedList &) = delete;
-
+	
 private:
 	typedef struct
 	{

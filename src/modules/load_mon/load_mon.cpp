@@ -71,7 +71,7 @@ extern "C" __EXPORT int load_mon_main(int argc, char *argv[]);
 // Run it at 1 Hz.
 const unsigned LOAD_MON_INTERVAL_US = 1000000;
 
-class LoadMon : public ModuleBase<LoadMon>
+class LoadMon: public ModuleBase<LoadMon>
 {
 public:
 	LoadMon();
@@ -84,7 +84,7 @@ public:
 	{
 		return print_usage("unknown command");
 	}
-
+	
 	/** @see ModuleBase */
 	static int print_usage(const char *reason = nullptr);
 
@@ -112,7 +112,7 @@ private:
 	int _stack_task_index;
 	orb_advert_t _task_stack_info_pub;
 #endif
-
+	
 	struct work_s _work;
 
 	struct cpuload_s _cpuload;
@@ -124,26 +124,27 @@ private:
 
 LoadMon::LoadMon() :
 #ifdef __PX4_NUTTX
-	_task_stack_info {},
-	_stack_task_index(0),
-	_task_stack_info_pub(nullptr),
+		    _task_stack_info
+		    {},
+		    _stack_task_index(0),
+		    _task_stack_info_pub(nullptr),
 #endif
-	_work {},
-	_cpuload{},
-	_cpuload_pub(nullptr),
-	_last_idle_time(0),
-	_stack_perf(perf_alloc(PC_ELAPSED, "stack_check")),
-	_stack_check_enabled(false)
+		    _work { },
+		    _cpuload { },
+		    _cpuload_pub(nullptr),
+		    _last_idle_time(0),
+		    _stack_perf(perf_alloc(PC_ELAPSED, "stack_check")),
+		    _stack_check_enabled(false)
 {
 	// Enable stack checking by param
 	param_t param_stack_check = param_find("SYS_STCK_EN");
-
+	
 	if (param_stack_check != PARAM_INVALID)
 	{
 		int ret_val = 0;
 		param_get(param_stack_check, &ret_val);
 		_stack_check_enabled = ret_val > 0;
-
+		
 		// Only be verbose if enabled
 		if (_stack_check_enabled)
 		{
@@ -160,44 +161,42 @@ LoadMon::~LoadMon()
 int LoadMon::task_spawn(int argc, char *argv[])
 {
 	LoadMon *obj = new LoadMon();
-
+	
 	if (!obj)
 	{
 		PX4_ERR("alloc failed");
 		return -1;
 	}
-
+	
 	/* Schedule a cycle to start things. */
-	int ret = work_queue(LPWORK, &obj->_work, (worker_t)&LoadMon::cycle_trampoline, obj, 0);
-
+	int ret = work_queue(LPWORK, &obj->_work, (worker_t) & LoadMon::cycle_trampoline, obj, 0);
+	
 	if (ret < 0)
 	{
 		delete obj;
 		return ret;
 	}
-
+	
 	_object = obj;
 	_task_id = task_id_is_work_queue;
 	return 0;
 }
 
-void
-LoadMon::cycle_trampoline(void *arg)
+void LoadMon::cycle_trampoline(void *arg)
 {
 	LoadMon *dev = reinterpret_cast<LoadMon *>(arg);
-
+	
 	dev->_cycle();
 }
 
 void LoadMon::_cycle()
 {
 	_compute();
-
+	
 	if (!should_exit())
 	{
-		work_queue(LPWORK, &_work, (worker_t)&LoadMon::cycle_trampoline, this,
-			   USEC2TICK(LOAD_MON_INTERVAL_US));
-
+		work_queue(LPWORK, &_work, (worker_t) & LoadMon::cycle_trampoline, this, USEC2TICK(LOAD_MON_INTERVAL_US));
+		
 	}
 	else
 	{
@@ -213,28 +212,28 @@ void LoadMon::_compute()
 		_last_idle_time = system_load.tasks[0].total_runtime;
 		return;
 	}
-
+	
 	/* compute system load */
 	const hrt_abstime interval_idletime = system_load.tasks[0].total_runtime - _last_idle_time;
 	_last_idle_time = system_load.tasks[0].total_runtime;
-
+	
 	_cpuload.timestamp = hrt_absolute_time();
-	_cpuload.load = 1.0f - (float)interval_idletime / (float)LOAD_MON_INTERVAL_US;
+	_cpuload.load = 1.0f - (float) interval_idletime / (float) LOAD_MON_INTERVAL_US;
 	_cpuload.ram_usage = _ram_used();
-
+	
 #ifdef __PX4_NUTTX
-
+	
 	if (_stack_check_enabled)
-	{
+	{	
 		_stack_usage();
 	}
 
 #endif
-
+	
 	if (_cpuload_pub == nullptr)
 	{
 		_cpuload_pub = orb_advertise(ORB_ID(cpuload), &_cpuload);
-
+		
 	}
 	else
 	{
@@ -252,12 +251,12 @@ float LoadMon::_ram_used()
 #else
 	(void)mallinfo(&mem);
 #endif
-
+	
 	// mem.arena: total ram (bytes)
 	// mem.uordblks: used (bytes)
 	// mem.fordblks: free (bytes)
 	// mem.mxordblk: largest remaining block (bytes)
-
+	
 	return (float)mem.uordblks / mem.arena;
 #else
 	return 0.0f;
@@ -266,14 +265,14 @@ float LoadMon::_ram_used()
 
 #ifdef __PX4_NUTTX
 void LoadMon::_stack_usage()
-{
+{	
 	int task_index = 0;
 
 	/* Scan maximum num_tasks_per_cycle tasks to reduce load. */
 	const int num_tasks_per_cycle = 2;
 
 	for (int i = _stack_task_index; i < _stack_task_index + num_tasks_per_cycle; i++)
-	{
+	{	
 		task_index = i % CONFIG_MAX_TASKS;
 		unsigned stack_free = 0;
 		bool checked_task = false;
@@ -282,12 +281,12 @@ void LoadMon::_stack_usage()
 		sched_lock();
 
 		if (system_load.tasks[task_index].valid && system_load.tasks[task_index].tcb->pid > 0)
-		{
+		{	
 
 			stack_free = up_check_tcbstack_remain(system_load.tasks[task_index].tcb);
 
 			strncpy((char *)_task_stack_info.task_name, system_load.tasks[task_index].tcb->name,
-				task_stack_info_s::MAX_REPORT_TASK_NAME_LEN);
+					task_stack_info_s::MAX_REPORT_TASK_NAME_LEN);
 
 			checked_task = true;
 		}
@@ -296,18 +295,18 @@ void LoadMon::_stack_usage()
 		perf_end(_stack_perf);
 
 		if (checked_task)
-		{
+		{	
 
 			_task_stack_info.stack_free = stack_free;
 			_task_stack_info.timestamp = hrt_absolute_time();
 
 			if (_task_stack_info_pub == nullptr)
-			{
+			{	
 				_task_stack_info_pub = orb_advertise_queue(ORB_ID(task_stack_info), &_task_stack_info, num_tasks_per_cycle);
 
 			}
 			else
-			{
+			{	
 				orb_publish(ORB_ID(task_stack_info), _task_stack_info_pub, &_task_stack_info);
 			}
 
@@ -315,14 +314,14 @@ void LoadMon::_stack_usage()
 			 * Found task low on stack, report and exit. Continue here in next cycle.
 			 */
 			if (stack_free < STACK_LOW_WARNING_THRESHOLD)
-			{
+			{	
 				PX4_WARN("%s low on stack! (%i bytes left)", _task_stack_info.task_name, stack_free);
 				break;
 			}
 
 		}
 		else
-		{
+		{	
 			/* No task here, check one more task in same cycle. */
 			_stack_task_index++;
 		}
@@ -346,9 +345,8 @@ int LoadMon::print_usage(const char *reason)
 	{
 		PX4_ERR("%s\n", reason);
 	}
-
-	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
+	
+	PRINT_MODULE_DESCRIPTION(R"DESCR_STR(
 ### Description
 Background process running periodically with 1 Hz on the LP work queue to calculate the CPU load and RAM
 usage and publish the `cpuload` topic.
@@ -356,13 +354,13 @@ usage and publish the `cpuload` topic.
 On NuttX it also checks the stack usage of each process and if it falls below 300 bytes, a warning is output,
 which will also appear in the log file.
 )DESCR_STR");
-
+	
 	PRINT_MODULE_USAGE_NAME("load_mon", "system");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("start", "Start the background task");
-	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
+	PRINT_MODULE_USAGE_DEFAULT_COMMANDS()
+	;
 	return 0;
 }
-
 
 int load_mon_main(int argc, char *argv[])
 {

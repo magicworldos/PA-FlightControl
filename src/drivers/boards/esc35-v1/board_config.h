@@ -84,7 +84,6 @@
 #define GPIO_DC_CAL   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | \
 		       GPIO_PORTA | GPIO_PIN6 | GPIO_OUTPUT_CLEAR)
 
-
 /* CAN ************************************************************************ *
  *
  *   GPIO      Function                                     MPU        Board
@@ -188,7 +187,6 @@ void stm32_usbinitialize(void);
  ************************************************************************************/
 
 void stm32_usb_set_pwr_callback(xcpt_t pwr_changed_handler);
-
 
 /****************************************************************************
  * Name: stm32_led_initialize

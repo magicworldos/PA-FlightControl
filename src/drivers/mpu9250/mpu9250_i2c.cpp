@@ -64,65 +64,64 @@
 device::Device *MPU9250_I2C_interface(int bus, bool external_bus);
 
 class MPU9250_I2C : public device::I2C
-{
+{	
 public:
 	MPU9250_I2C(int bus);
 	virtual ~MPU9250_I2C();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
 
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 protected:
-	virtual int	probe();
+	virtual int probe();
 
 };
 
-
 device::Device *
 MPU9250_I2C_interface(int bus, bool external_bus)
-{
+{	
 	return new MPU9250_I2C(bus);
 }
 
 MPU9250_I2C::MPU9250_I2C(int bus) :
-	I2C("MPU9250_I2C", nullptr, bus, PX4_I2C_OBDEV_MPU9250, 400000)
-{
-	_device_id.devid_s.devtype =  DRV_ACC_DEVTYPE_MPU9250;
+I2C("MPU9250_I2C", nullptr, bus, PX4_I2C_OBDEV_MPU9250, 400000)
+{	
+	_device_id.devid_s.devtype = DRV_ACC_DEVTYPE_MPU9250;
 }
 
 MPU9250_I2C::~MPU9250_I2C()
-{
+{	
 }
 
 int
 MPU9250_I2C::init()
-{
+{	
 	/* this will call probe() */
 	return I2C::init();
 }
 
 int
 MPU9250_I2C::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 
 		case ACCELIOCGEXTERNAL:
-			return external();
+		return external();
 
 		case DEVIOCGDEVICEID:
-			return CDev::ioctl(nullptr, operation, arg);
+		return CDev::ioctl(nullptr, operation, arg);
 
 		case MPUIOCGIS_I2C:
-			return 1;
+		return 1;
 
 		default:
-			ret = -EINVAL;
+		ret = -EINVAL;
 	}
 
 	return ret;
@@ -130,11 +129,11 @@ MPU9250_I2C::ioctl(unsigned operation, unsigned &arg)
 
 int
 MPU9250_I2C::write(unsigned reg_speed, void *data, unsigned count)
-{
+{	
 	uint8_t cmd[MPU_MAX_WRITE_BUFFER_SIZE];
 
 	if (sizeof(cmd) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 
@@ -145,7 +144,7 @@ MPU9250_I2C::write(unsigned reg_speed, void *data, unsigned count)
 
 int
 MPU9250_I2C::read(unsigned reg_speed, void *data, unsigned count)
-{
+{	
 	/* We want to avoid copying the data of MPUReport: So if the caller
 	 * supplies a buffer not MPUReport in size, it is assume to be a reg or
 	 * reg 16 read
@@ -157,10 +156,9 @@ MPU9250_I2C::read(unsigned reg_speed, void *data, unsigned count)
 	return transfer(&cmd, 1, &((uint8_t *)data)[offset], count);
 }
 
-
 int
 MPU9250_I2C::probe()
-{
+{	
 	uint8_t whoami = 0;
 	uint8_t expected = MPU_WHOAMI_9250;
 	return (read(MPUREG_WHOAMI, &whoami, 1) == OK && (whoami == expected)) ? 0 : -EIO;

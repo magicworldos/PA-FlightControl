@@ -76,7 +76,6 @@ __EXPORT void stm32_spiinitialize(void)
 #endif
 }
 
-
 __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
 {
 	/* SPI select is active low, so write !selected to select the device */

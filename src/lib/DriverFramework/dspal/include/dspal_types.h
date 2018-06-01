@@ -52,11 +52,10 @@ __BEGIN_DECLS
 #define restrict
 #endif
 
-
 #define PTHREAD_MUTEX_OPAQUE
 
-typedef int   		pid_t;
-typedef unsigned int	uid_t;
+typedef int pid_t;
+typedef unsigned int uid_t;
 
 #define MAX_LEN_DEVICE_PATH_IN_BYTES 32
 
@@ -71,7 +70,7 @@ typedef unsigned int	uid_t;
 #define PTHREAD_MAX_PRIORITY         255
 #define PTHREAD_DEFAULT_PRIORITY     20
 
-typedef signed int   ssize_t;
+typedef signed int ssize_t;
 #define _SSIZE_T
 
 #ifndef TRUE
@@ -85,17 +84,18 @@ typedef signed int   ssize_t;
 typedef unsigned int cpu_set_t;
 
 typedef unsigned int pthread_t;
-typedef struct pthread_attr_t {
-	void         *stackaddr;
-	int          internal_stack; /* this flag==1 means the stack needs to be freed by posix */
-	size_t       stacksize;
-	int          priority;
+typedef struct pthread_attr_t
+{
+	void *stackaddr;
+	int internal_stack; /* this flag==1 means the stack needs to be freed by posix */
+	size_t stacksize;
+	int priority;
 	unsigned int timetest_id;
-	cpu_set_t    cpumask;
-	char         name[PTHREAD_NAME_LEN];
+	cpu_set_t cpumask;
+	char name[PTHREAD_NAME_LEN];
 	/* This flag indicates whether pthread lib should create thread contexts for other OSALs */
 	/* This is used internally by POSIX and not available for general usage */
-	int          ext_context;
+	int ext_context;
 } pthread_attr_t;
 
 #define PTHREAD_MUTEX_ATTR_UNINITIALIZED    0
@@ -128,8 +128,9 @@ typedef struct pthread_attr_t {
 #define PTHREAD_PRIO_PROTECT         2
 
 //mutex attr
-typedef struct pthread_mutexattr_t   pthread_mutexattr_t;
-struct pthread_mutexattr_t {
+typedef struct pthread_mutexattr_t pthread_mutexattr_t;
+struct pthread_mutexattr_t
+{
 	int is_initialized;
 	int type;
 	int pshared;
@@ -144,22 +145,24 @@ typedef void dspal_barrier_t;
 typedef unsigned int pthread_mutex_t;
 typedef struct _pthread_mutex_t _pthread_mutex_t;
 
-struct _pthread_mutex_t {
+struct _pthread_mutex_t
+{
 	pthread_mutexattr_t attr;
-	dspal_mutex_t       *mutex;		/* holding qurt mutex or rmutex pointer */
-	void (*lock)(dspal_mutex_t *);		/* the function pointer for lock */
-	void (*unlock)(dspal_mutex_t *);	/* the function pointer for unlock */
-	int (*trylock)(dspal_mutex_t *);	/* the function pointer for trylock */
+	dspal_mutex_t *mutex; /* holding qurt mutex or rmutex pointer */
+	void (*lock)(dspal_mutex_t *); /* the function pointer for lock */
+	void (*unlock)(dspal_mutex_t *); /* the function pointer for unlock */
+	int (*trylock)(dspal_mutex_t *); /* the function pointer for trylock */
 };
 
 #else
-typedef struct pthread_mutex_t {
-	dspal_mutex_t       *kmutex;		/* holding kernel mutex (qurt mutex or rmutex) pointer */
-	void (*lock)(dspal_mutex_t *);		/* the function pointer for lock */
-	void (*unlock)(dspal_mutex_t *);	/* the function pointer for unlock */
-	int (*trylock)(dspal_mutex_t *);	/* the function pointer for trylock */
+typedef struct pthread_mutex_t
+{	
+	dspal_mutex_t *kmutex; /* holding kernel mutex (qurt mutex or rmutex) pointer */
+	void (*lock)(dspal_mutex_t *); /* the function pointer for lock */
+	void (*unlock)(dspal_mutex_t *); /* the function pointer for unlock */
+	int (*trylock)(dspal_mutex_t *); /* the function pointer for trylock */
 	pthread_mutexattr_t attr;
-} pthread_mutex_t;
+}pthread_mutex_t;
 #endif
 
 #define PTHREAD_SPINLOCK_UNLOCKED    0
@@ -167,7 +170,8 @@ typedef struct pthread_mutex_t {
 
 typedef unsigned int pthread_spinlock_t;
 
-typedef struct pthread_condattr_t {
+typedef struct pthread_condattr_t
+{
 	int is_initialized;
 	int pshared;
 } pthread_condattr_t;
@@ -178,15 +182,17 @@ typedef unsigned int timer_type;
 typedef unsigned int timer_group_type;
 
 typedef struct _pthread_cond_t _pthread_cond_t;
-struct _pthread_cond_t {
+struct _pthread_cond_t
+{
 	pthread_condattr_t attr;
-	dspal_cond_t      *qurt_cond;
-	timer_type         pthread_wait_timer;
-	timer_group_type   pthread_wait_timer_group;
-	int                is_timed_out;
+	dspal_cond_t *qurt_cond;
+	timer_type pthread_wait_timer;
+	timer_group_type pthread_wait_timer_group;
+	int is_timed_out;
 };
 
-typedef struct pthread_barrierattr_t {
+typedef struct pthread_barrierattr_t
+{
 	int is_initialized;
 	int pshared;
 } pthread_barrierattr_t;
@@ -194,9 +200,10 @@ typedef struct pthread_barrierattr_t {
 typedef unsigned int pthread_barrier_t;
 
 typedef struct _pthread_barrier_t _pthread_barrier_t;
-struct _pthread_barrier_t {
+struct _pthread_barrier_t
+{
 	pthread_barrierattr_t attr;
-	dspal_barrier_t       *qurt_barrier;
+	dspal_barrier_t *qurt_barrier;
 };
 
 typedef long off_t;

@@ -46,8 +46,7 @@
 #include <uORB/topics/battery_status.h>
 #include <drivers/drv_hrt.h>
 
-
-class Battery : public control::SuperBlock
+class Battery: public control::SuperBlock
 {
 public:
 	/**
@@ -68,18 +67,27 @@ public:
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _param_n_cells.get(); }
-
+	int cell_count()
+	{
+		return _param_n_cells.get();
+	}
+	
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _param_v_empty.get(); }
-
+	float empty_cell_voltage()
+	{
+		return _param_v_empty.get();
+	}
+	
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _param_v_full.get(); }
-
+	float full_cell_voltage()
+	{
+		return _param_v_full.get();
+	}
+	
 	/**
 	 * Update current battery status message.
 	 *
@@ -90,10 +98,7 @@ public:
 	 * @param priority: The brick number -1. The term priority refers to the Vn connection on the LTC4417
 	 * @param throttle_normalized: throttle from 0 to 1
 	 */
-	void updateBatteryStatus(hrt_abstime timestamp, float voltage_v, float current_a,
-				 bool connected, bool selected_source, int priority,
-				 float throttle_normalized,
-				 bool armed, battery_status_s *status);
+	void updateBatteryStatus(hrt_abstime timestamp, float voltage_v, float current_a, bool connected, bool selected_source, int priority, float throttle_normalized, bool armed, battery_status_s *status);
 
 private:
 	void filterVoltage(float voltage_v);

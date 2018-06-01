@@ -50,22 +50,22 @@
 #include <errno.h>
 #include "hrt_work.h"
 
-static struct sq_queue_s	callout_queue;
+static struct sq_queue_s callout_queue;
 
 /* latency histogram */
 #define LATENCY_BUCKET_COUNT 8
 __EXPORT const uint16_t latency_bucket_count = LATENCY_BUCKET_COUNT;
-__EXPORT const uint16_t	latency_buckets[LATENCY_BUCKET_COUNT] = { 1, 2, 5, 10, 20, 50, 100, 1000 };
-__EXPORT uint32_t	latency_counters[LATENCY_BUCKET_COUNT + 1];
+__EXPORT const uint16_t latency_buckets[LATENCY_BUCKET_COUNT] = { 1, 2, 5, 10, 20, 50, 100, 1000 };
+__EXPORT uint32_t latency_counters[LATENCY_BUCKET_COUNT + 1];
 
-static void		hrt_call_reschedule(void);
+static void hrt_call_reschedule(void);
 
 // Intervals in usec
 #define HRT_INTERVAL_MIN	50
 #define HRT_INTERVAL_MAX	50000000
 
-static px4_sem_t 	_hrt_lock;
-static struct work_s	_hrt_work;
+static px4_sem_t _hrt_lock;
+static struct work_s _hrt_work;
 #ifndef __PX4_QURT
 static hrt_abstime px4_timestart = 0;
 #else
@@ -98,12 +98,12 @@ static void hrt_unlock(void)
 #include <sys/time.h>
 
 int px4_clock_gettime(clockid_t clk_id, struct timespec *tp)
-{
+{	
 	struct timeval now;
 	int rv = gettimeofday(&now, NULL);
 
 	if (rv)
-	{
+	{	
 		return rv;
 	}
 
@@ -114,7 +114,7 @@ int px4_clock_gettime(clockid_t clk_id, struct timespec *tp)
 }
 
 int px4_clock_settime(clockid_t clk_id, struct timespec *tp)
-{
+{	
 	/* do nothing right now */
 	return 0;
 }
@@ -124,13 +124,13 @@ int px4_clock_settime(clockid_t clk_id, struct timespec *tp)
 #include "dspal_time.h"
 
 int px4_clock_settime(clockid_t clk_id, struct timespec *tp)
-{
+{	
 	/* do nothing right now */
 	return 0;
 }
 
 int px4_clock_gettime(clockid_t clk_id, struct timespec *tp)
-{
+{	
 	return clock_gettime(clk_id, tp);
 }
 
@@ -154,7 +154,7 @@ uint64_t hrt_system_time(void)
 hrt_abstime _hrt_absolute_time_internal(void)
 {
 	struct timespec ts;
-
+	
 #if defined(__PX4_QURT)
 	// Don't use the timestart on the DSP on Snapdragon because we manually
 	// set the px4_timestart using the hrt_set_absolute_time_offset().
@@ -167,13 +167,13 @@ hrt_abstime _hrt_absolute_time_internal(void)
 	return ts_to_abstime(&ts);
 
 #else
-
+	
 	if (!px4_timestart)
 	{
 		px4_clock_gettime(CLOCK_MONOTONIC, &ts);
 		px4_timestart = ts_to_abstime(&ts);
 	}
-
+	
 	px4_clock_gettime(CLOCK_MONOTONIC, &ts);
 	return ts_to_abstime(&ts) - px4_timestart;
 #endif
@@ -181,7 +181,7 @@ hrt_abstime _hrt_absolute_time_internal(void)
 
 #ifdef __PX4_QURT
 int hrt_set_absolute_time_offset(int32_t time_diff_us)
-{
+{	
 	dsp_offset = time_diff_us;
 	return 0;
 }
@@ -193,30 +193,30 @@ int hrt_set_absolute_time_offset(int32_t time_diff_us)
 hrt_abstime hrt_absolute_time(void)
 {
 	pthread_mutex_lock(&_hrt_mutex);
-
+	
 	hrt_abstime ret;
-
+	
 	if (_start_delay_time > 0)
 	{
 		ret = _start_delay_time;
-
+		
 	}
 	else
 	{
 		ret = _hrt_absolute_time_internal();
 	}
-
+	
 	ret -= _delay_interval;
-
+	
 	if (ret < max_time)
 	{
-		PX4_ERR("WARNING! TIME IS NEGATIVE! %d vs %d", (int)ret, (int)max_time);
+		PX4_ERR("WARNING! TIME IS NEGATIVE! %d vs %d", (int )ret, (int )max_time);
 		ret = max_time;
 	}
-
+	
 	max_time = ret;
 	pthread_mutex_unlock(&_hrt_mutex);
-
+	
 	return ret;
 }
 
@@ -234,11 +234,11 @@ __EXPORT hrt_abstime hrt_reset(void)
  */
 hrt_abstime ts_to_abstime(struct timespec *ts)
 {
-	hrt_abstime	result;
-
-	result = (hrt_abstime)(ts->tv_sec) * 1000000;
+	hrt_abstime result;
+	
+	result = (hrt_abstime) (ts->tv_sec) * 1000000;
 	result += ts->tv_nsec / 1000;
-
+	
 	return result;
 }
 
@@ -266,14 +266,13 @@ hrt_abstime hrt_store_absolute_time(volatile hrt_abstime *now)
 	return ts;
 }
 
-
 /*
  * If this returns true, the entry has been invoked and removed from the callout list,
  * or it has never been entered.
  *
  * Always returns false for repeating callouts.
  */
-bool	hrt_called(struct hrt_call *entry)
+bool hrt_called(struct hrt_call *entry)
 {
 	return (entry->deadline == 0);
 }
@@ -281,12 +280,12 @@ bool	hrt_called(struct hrt_call *entry)
 /*
  * Remove the entry from the callout list.
  */
-void	hrt_cancel(struct hrt_call *entry)
+void hrt_cancel(struct hrt_call *entry)
 {
 	hrt_lock();
 	sq_rem(&entry->link, &callout_queue);
 	entry->deadline = 0;
-
+	
 	/* if this is a periodic call being removed by the callout, prevent it from
 	 * being re-entered when the callout returns.
 	 */
@@ -298,7 +297,7 @@ void	hrt_cancel(struct hrt_call *entry)
 /*
  * initialise a hrt_call structure
  */
-void	hrt_call_init(struct hrt_call *entry)
+void hrt_call_init(struct hrt_call *entry)
 {
 	memset(entry, 0, sizeof(*entry));
 }
@@ -310,7 +309,7 @@ void	hrt_call_init(struct hrt_call *entry)
  * callouts will then continue from that new base time at the
  * previously specified period.
  */
-void	hrt_call_delay(struct hrt_call *entry, hrt_abstime delay)
+void hrt_call_delay(struct hrt_call *entry, hrt_abstime delay)
 {
 	entry->deadline = hrt_absolute_time() + delay;
 }
@@ -318,78 +317,77 @@ void	hrt_call_delay(struct hrt_call *entry, hrt_abstime delay)
 /*
  * Initialise the HRT.
  */
-void	hrt_init(void)
+void hrt_init(void)
 {
 	sq_init(&callout_queue);
-
+	
 	int sem_ret = px4_sem_init(&_hrt_lock, 0, 1);
-
+	
 	if (sem_ret)
 	{
 		PX4_ERR("SEM INIT FAIL: %s", strerror(errno));
 	}
-
+	
 	memset(&_hrt_work, 0, sizeof(_hrt_work));
 }
 
-void	hrt_start_delay()
+void hrt_start_delay()
 {
 	pthread_mutex_lock(&_hrt_mutex);
 	_start_delay_time = _hrt_absolute_time_internal();
 	pthread_mutex_unlock(&_hrt_mutex);
 }
 
-void	hrt_stop_delay_delta(hrt_abstime delta)
+void hrt_stop_delay_delta(hrt_abstime delta)
 {
 	pthread_mutex_lock(&_hrt_mutex);
-
+	
 	uint64_t delta_measured = _hrt_absolute_time_internal() - _start_delay_time;
-
+	
 	if (delta_measured < delta)
 	{
 		delta = delta_measured;
 	}
-
+	
 	_delay_interval += delta;
 	_start_delay_time = 0;
-
+	
 	pthread_mutex_unlock(&_hrt_mutex);
-
+	
 }
 
-void	hrt_stop_delay()
+void hrt_stop_delay()
 {
 	pthread_mutex_lock(&_hrt_mutex);
 	uint64_t delta = _hrt_absolute_time_internal() - _start_delay_time;
 	_delay_interval += delta;
 	_start_delay_time = 0;
-
+	
 	pthread_mutex_unlock(&_hrt_mutex);
-
+	
 }
 
-static void
-hrt_call_enter(struct hrt_call *entry)
+static void hrt_call_enter(struct hrt_call *entry)
 {
-	struct hrt_call	*call, *next;
-
+	struct hrt_call *call, *next;
+	
 	//PX4_INFO("hrt_call_enter");
-	call = (struct hrt_call *)sq_peek(&callout_queue);
-
+	call = (struct hrt_call *) sq_peek(&callout_queue);
+	
 	if ((call == NULL) || (entry->deadline < call->deadline))
 	{
 		sq_addfirst(&entry->link, &callout_queue);
 		//if (call != NULL) PX4_INFO("call enter at head, reschedule (%lu %lu)", entry->deadline, call->deadline);
 		/* we changed the next deadline, reschedule the timer event */
 		hrt_call_reschedule();
-
+		
 	}
 	else
 	{
 		do
 		{
-			next = (struct hrt_call *)sq_next(&call->link);
-
+			next = (struct hrt_call *) sq_next(&call->link);
+			
 			if ((next == NULL) || (entry->deadline < next->deadline))
 			{
 				//lldbg("call enter after head\n");
@@ -399,7 +397,7 @@ hrt_call_enter(struct hrt_call *entry)
 		}
 		while ((call = next) != NULL);
 	}
-
+	
 	//PX4_INFO("scheduled");
 }
 
@@ -408,19 +406,18 @@ hrt_call_enter(struct hrt_call *entry)
  *
  * This routine simulates a timer interrupt handler
  */
-static void
-hrt_tim_isr(void *p)
+static void hrt_tim_isr(void *p)
 {
-
+	
 	//PX4_INFO("hrt_tim_isr");
 	/* run any callouts that have met their deadline */
 	hrt_call_invoke();
-
+	
 	hrt_lock();
-
+	
 	/* and schedule the next interrupt */
 	hrt_call_reschedule();
-
+	
 	hrt_unlock();
 }
 
@@ -429,16 +426,15 @@ hrt_tim_isr(void *p)
  *
  * This routine must be called with interrupts disabled.
  */
-static void
-hrt_call_reschedule()
+static void hrt_call_reschedule()
 {
-	hrt_abstime	now = hrt_absolute_time();
-	hrt_abstime	delay = HRT_INTERVAL_MAX;
-	struct hrt_call	*next = (struct hrt_call *)sq_peek(&callout_queue);
-	hrt_abstime	deadline = now + HRT_INTERVAL_MAX;
-
+	hrt_abstime now = hrt_absolute_time();
+	hrt_abstime delay = HRT_INTERVAL_MAX;
+	struct hrt_call *next = (struct hrt_call *) sq_peek(&callout_queue);
+	hrt_abstime deadline = now + HRT_INTERVAL_MAX;
+	
 	//PX4_INFO("hrt_call_reschedule");
-
+	
 	/*
 	 * Determine what the next deadline will be.
 	 *
@@ -459,7 +455,7 @@ hrt_call_reschedule()
 			//lldbg("pre-expired\n");
 			/* set a minimal deadline so that we call ASAP */
 			delay = HRT_INTERVAL_MIN;
-
+			
 		}
 		else if (next->deadline < deadline)
 		{
@@ -467,38 +463,37 @@ hrt_call_reschedule()
 			delay = next->deadline - now;
 		}
 	}
-
+	
 	// There is no timer ISR, so simulate one by putting an event on the
 	// high priority work queue
-
+	
 	// Remove the existing expiry and update with the new expiry
 	hrt_work_cancel(&_hrt_work);
-
-	hrt_work_queue(&_hrt_work, (worker_t)&hrt_tim_isr, NULL, delay);
+	
+	hrt_work_queue(&_hrt_work, (worker_t) &hrt_tim_isr, NULL, delay);
 }
 
-static void
-hrt_call_internal(struct hrt_call *entry, hrt_abstime deadline, hrt_abstime interval, hrt_callout callout, void *arg)
+static void hrt_call_internal(struct hrt_call *entry, hrt_abstime deadline, hrt_abstime interval, hrt_callout callout, void *arg)
 {
 	PX4_DEBUG("hrt_call_internal deadline=%lu interval = %lu", deadline, interval);
 	hrt_lock();
-
+	
 	//PX4_INFO("hrt_call_internal after lock");
 	/* if the entry is currently queued, remove it */
 	/* note that we are using a potentially uninitialised
-	   entry->link here, but it is safe as sq_rem() doesn't
-	   dereference the passed node unless it is found in the
-	   list. So we potentially waste a bit of time searching the
-	   queue for the uninitialised entry->link but we don't do
-	   anything actually unsafe.
-	*/
+	 entry->link here, but it is safe as sq_rem() doesn't
+	 dereference the passed node unless it is found in the
+	 list. So we potentially waste a bit of time searching the
+	 queue for the uninitialised entry->link but we don't do
+	 anything actually unsafe.
+	 */
 	if (entry->deadline != 0)
 	{
 		sq_rem(&entry->link, &callout_queue);
 	}
-
+	
 #if 1
-
+	
 	// Use this to debug busy CPU that keeps rescheduling with 0 period time
 	/*if (interval < HRT_INTERVAL_MIN) {*/
 	/*PX4_ERR("hrt_call_internal interval too short: %" PRIu64, interval);*/
@@ -510,7 +505,7 @@ hrt_call_internal(struct hrt_call *entry, hrt_abstime deadline, hrt_abstime inte
 	entry->period = interval;
 	entry->callout = callout;
 	entry->arg = arg;
-
+	
 	hrt_call_enter(entry);
 	hrt_unlock();
 }
@@ -521,14 +516,10 @@ hrt_call_internal(struct hrt_call *entry, hrt_abstime deadline, hrt_abstime inte
  * If callout is NULL, this can be used to implement a timeout by testing the call
  * with hrt_called().
  */
-void	hrt_call_after(struct hrt_call *entry, hrt_abstime delay, hrt_callout callout, void *arg)
+void hrt_call_after(struct hrt_call *entry, hrt_abstime delay, hrt_callout callout, void *arg)
 {
 	//printf("hrt_call_after\n");
-	hrt_call_internal(entry,
-			  hrt_absolute_time() + delay,
-			  0,
-			  callout,
-			  arg);
+	hrt_call_internal(entry, hrt_absolute_time() + delay, 0, callout, arg);
 }
 
 /*
@@ -537,19 +528,15 @@ void	hrt_call_after(struct hrt_call *entry, hrt_abstime delay, hrt_callout callo
  * Note thet the interval is timed between scheduled, not actual, call times, so the call rate may
  * jitter but should not drift.
  */
-void	hrt_call_every(struct hrt_call *entry, hrt_abstime delay, hrt_abstime interval, hrt_callout callout, void *arg)
+void hrt_call_every(struct hrt_call *entry, hrt_abstime delay, hrt_abstime interval, hrt_callout callout, void *arg)
 {
-	hrt_call_internal(entry,
-			  hrt_absolute_time() + delay,
-			  interval,
-			  callout,
-			  arg);
+	hrt_call_internal(entry, hrt_absolute_time() + delay, interval, callout, arg);
 }
 
 /*
  * Call callout(arg) at absolute time calltime.
  */
-void	hrt_call_at(struct hrt_call *entry, hrt_abstime calltime, hrt_callout callout, void *arg)
+void hrt_call_at(struct hrt_call *entry, hrt_abstime calltime, hrt_callout callout, void *arg)
 {
 	hrt_call_internal(entry, calltime, 0, callout, arg);
 }
@@ -558,55 +545,54 @@ void	hrt_call_at(struct hrt_call *entry, hrt_abstime calltime, hrt_callout callo
 /*
  * Convert absolute time to a timespec.
  */
-void	abstime_to_ts(struct timespec *ts, hrt_abstime abstime);
+void abstime_to_ts(struct timespec *ts, hrt_abstime abstime);
 #endif
 
-static void
-hrt_call_invoke(void)
+static void hrt_call_invoke(void)
 {
-	struct hrt_call	*call;
+	struct hrt_call *call;
 	hrt_abstime deadline;
-
+	
 	hrt_lock();
-
+	
 	while (true)
 	{
 		/* get the current time */
 		hrt_abstime now = hrt_absolute_time();
-
-		call = (struct hrt_call *)sq_peek(&callout_queue);
-
+		
+		call = (struct hrt_call *) sq_peek(&callout_queue);
+		
 		if (call == NULL)
 		{
 			break;
 		}
-
+		
 		if (call->deadline > now)
 		{
 			break;
 		}
-
+		
 		sq_rem(&call->link, &callout_queue);
 		//PX4_INFO("call pop");
-
+		
 		/* save the intended deadline for periodic calls */
 		deadline = call->deadline;
-
+		
 		/* zero the deadline, as the call has occurred */
 		call->deadline = 0;
-
+		
 		/* invoke the callout (if there is one) */
 		if (call->callout)
 		{
 			// Unlock so we don't deadlock in callback
 			hrt_unlock();
-
+			
 			//PX4_INFO("call %p: %p(%p)", call, call->callout, call->arg);
 			call->callout(call->arg);
-
+			
 			hrt_lock();
 		}
-
+		
 		/* if the callout has a non-zero period, it has to be re-entered */
 		if (call->period != 0)
 		{
@@ -618,11 +604,11 @@ hrt_call_invoke(void)
 				call->deadline = deadline + call->period;
 				//PX4_INFO("call deadline set to %lu now=%lu", call->deadline,  now);
 			}
-
+			
 			hrt_call_enter(call);
 		}
 	}
-
+	
 	hrt_unlock();
 }
 

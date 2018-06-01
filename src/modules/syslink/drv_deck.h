@@ -40,10 +40,7 @@
 #include <stdint.h>
 #include <sys/ioctl.h>
 
-
 #define DECK_DEVICE_PATH	"/dev/deck"
-
-
 
 /* structure of the data stored in deck memory */
 typedef struct
@@ -54,10 +51,8 @@ typedef struct
 	uint8_t productId;
 	uint8_t crc;
 	uint8_t data[104];
-
-} __attribute__((packed)) deck_descriptor_t;
-
-
+	
+}__attribute__((packed)) deck_descriptor_t;
 
 /*
  * ioctl() definitions
@@ -73,8 +68,5 @@ typedef struct
 #define DECKIOSNUM	_DECKIOC(1)
 
 #define DECKIOID	_DECKIOC(2)
-
-
-
 
 #endif

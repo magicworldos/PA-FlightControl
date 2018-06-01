@@ -45,11 +45,11 @@
 int PX4_MAIN(int argc, char **argv)
 {
 	px4::init(argc, argv, "vcdevtest");
-
+	
 	printf("vcdevtest\n");
 	VCDevExample vcdevtest;
 	vcdevtest.main();
-
+	
 	printf("goodbye\n");
 	return 0;
 }

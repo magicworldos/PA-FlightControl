@@ -32,11 +32,11 @@
  ****************************************************************************/
 
 /**
-* @file geo_mag_declination.h
-*
-* Calculation / lookup table for earth magnetic field declination.
-*
-*/
+ * @file geo_mag_declination.h
+ *
+ * Calculation / lookup table for earth magnetic field declination.
+ *
+ */
 
 #pragma once
 

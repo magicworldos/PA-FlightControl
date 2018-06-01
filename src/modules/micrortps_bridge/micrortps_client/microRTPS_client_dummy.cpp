@@ -38,7 +38,6 @@
 
 extern "C" __EXPORT int micrortps_client_main(int argc, char *argv[]);
 
-
 static void usage(const char *name)
 {
 	PX4_INFO("usage: %s start|stop\n\n", name);
@@ -51,20 +50,20 @@ int micrortps_client_main(int argc, char *argv[])
 		usage(argv[0]);
 		return -1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
 		PX4_WARN("PX4 built without RTPS bridge support, EXITING...\n");
 		return -1;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		PX4_INFO("Not running");
 		return -1;
 	}
-
+	
 	usage(argv[0]);
-
+	
 	return -1;
 }

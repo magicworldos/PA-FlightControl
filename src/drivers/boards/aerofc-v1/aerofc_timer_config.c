@@ -51,7 +51,6 @@
 
 #include "board_config.h"
 
-
 // Invalidate all timers (base == 0): we don't have any
 __EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] = { };
 

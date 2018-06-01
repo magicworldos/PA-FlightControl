@@ -16,10 +16,12 @@ namespace uavcan
 class UAVCAN_EXPORT ITransferBuffer
 {
 public:
-    virtual ~ITransferBuffer() { }
-
-    virtual int read(unsigned offset, uint8_t* data, unsigned len) const = 0;
-    virtual int write(unsigned offset, const uint8_t* data, unsigned len) = 0;
+	virtual ~ITransferBuffer()
+	{
+	}
+	
+	virtual int read(unsigned offset, uint8_t* data, unsigned len) const = 0;
+	virtual int write(unsigned offset, const uint8_t* data, unsigned len) = 0;
 };
 
 }

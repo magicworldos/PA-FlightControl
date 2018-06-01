@@ -33,7 +33,6 @@
 
 #pragma once
 
-
 #include <stdint.h>
 
 #define CRTP_PORT_CONSOLE 0x00
@@ -62,15 +61,14 @@ typedef struct
 		uint8_t header;
 		struct
 		{
-			uint8_t channel : 2;
-			uint8_t link : 2;
-			uint8_t port : 4;
+			uint8_t channel :2;
+			uint8_t link :2;
+			uint8_t port :4;
 		};
 	};
 
 	uint8_t data[CRTP_MAX_DATA_SIZE];
-} __attribute__((packed)) crtp_message_t;
-
+}__attribute__((packed)) crtp_message_t;
 
 typedef struct
 {

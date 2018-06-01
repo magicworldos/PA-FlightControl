@@ -55,7 +55,6 @@
 #include <float.h>
 #include <drivers/drv_hrt.h>
 
-
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -81,23 +80,22 @@
  ****************************************************************************/
 
 /* emulate hrt_absolute_time using the cycle counter */
-static hrt_abstime
-cycletime(void)
+static hrt_abstime cycletime(void)
 {
 	static uint64_t basetime;
 	static uint32_t lasttime;
 	uint32_t cycles;
-
-	cycles = *(unsigned long *)0xe0001004;
-
+	
+	cycles = *(unsigned long *) 0xe0001004;
+	
 	if (cycles < lasttime)
 	{
 		basetime += 0x100000000ULL;
 	}
-
+	
 	lasttime = cycles;
-
-	return (basetime + cycles) / 168;	/* XXX magic number */
+	
+	return (basetime + cycles) / 168; /* XXX magic number */
 }
 
 /****************************************************************************
@@ -113,56 +111,56 @@ int test_time(int argc, char *argv[])
 	hrt_abstime h, c;
 	int64_t lowdelta, maxdelta = 0;
 	int64_t delta, deltadelta;
-
+	
 	/* enable the cycle counter */
-	(*(unsigned long *)0xe000edfc) |= (1 << 24);    /* DEMCR |= DEMCR_TRCENA */
-	(*(unsigned long *)0xe0001000) |= 1;    	/* DWT_CTRL |= DWT_CYCCNT_ENA */
-
+	(*(unsigned long *) 0xe000edfc) |= (1 << 24); /* DEMCR |= DEMCR_TRCENA */
+	(*(unsigned long *) 0xe0001000) |= 1; /* DWT_CTRL |= DWT_CYCCNT_ENA */
+	
 	/* get an average delta between the two clocks - this should stay roughly the same */
 	delta = 0;
-
+	
 	for (unsigned i = 0; i < 100; i++)
 	{
 		uint32_t flags = px4_enter_critical_section();
-
+		
 		h = hrt_absolute_time();
 		c = cycletime();
-
+		
 		px4_leave_critical_section(flags);
-
+		
 		delta += h - c;
 	}
-
+	
 	lowdelta = abs(delta / 100);
-
+	
 	/* loop checking the time */
 	for (unsigned i = 0; i < 100; i++)
 	{
-
+		
 		usleep(rand());
-
+		
 		uint32_t flags = px4_enter_critical_section();
-
+		
 		c = cycletime();
 		h = hrt_absolute_time();
-
+		
 		px4_leave_critical_section(flags);
-
+		
 		delta = abs(h - c);
 		deltadelta = abs(delta - lowdelta);
-
+		
 		if (deltadelta > maxdelta)
 		{
 			maxdelta = deltadelta;
 		}
-
+		
 		if (deltadelta > 1000)
 		{
 			fprintf(stderr, "h %" PRIu64 " c %" PRIu64 " d %" PRId64 "\n", h, c, delta - lowdelta);
 		}
 	}
-
+	
 	printf("Maximum jitter %" PRId64 "us\n", maxdelta);
-
+	
 	return 0;
 }

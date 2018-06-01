@@ -33,23 +33,22 @@
  ****************************************************************************/
 
 /* Inprecise clock rates for the watchdog oscillator */
-STATIC const uint32_t wdtOSCRate[WDTLFO_OSC_4_60 + 1] = {
-	0,					/* WDT_OSC_ILLEGAL */
-	600000,				/* WDT_OSC_0_60 */
-	1050000,			/* WDT_OSC_1_05 */
-	1400000,			/* WDT_OSC_1_40 */
-	1750000,			/* WDT_OSC_1_75 */
-	2100000,			/* WDT_OSC_2_10 */
-	2400000,			/* WDT_OSC_2_40 */
-	2700000,			/* WDT_OSC_2_70 */
-	3000000,			/* WDT_OSC_3_00 */
-	3250000,			/* WDT_OSC_3_25 */
-	3500000,			/* WDT_OSC_3_50 */
-	3750000,			/* WDT_OSC_3_75 */
-	4000000,			/* WDT_OSC_4_00 */
-	4200000,			/* WDT_OSC_4_20 */
-	4400000,			/* WDT_OSC_4_40 */
-	4600000				/* WDT_OSC_4_60 */
+STATIC const uint32_t wdtOSCRate[WDTLFO_OSC_4_60 + 1] = { 0, /* WDT_OSC_ILLEGAL */
+600000, /* WDT_OSC_0_60 */
+1050000, /* WDT_OSC_1_05 */
+1400000, /* WDT_OSC_1_40 */
+1750000, /* WDT_OSC_1_75 */
+2100000, /* WDT_OSC_2_10 */
+2400000, /* WDT_OSC_2_40 */
+2700000, /* WDT_OSC_2_70 */
+3000000, /* WDT_OSC_3_00 */
+3250000, /* WDT_OSC_3_25 */
+3500000, /* WDT_OSC_3_50 */
+3750000, /* WDT_OSC_3_75 */
+4000000, /* WDT_OSC_4_00 */
+4200000, /* WDT_OSC_4_20 */
+4400000, /* WDT_OSC_4_40 */
+4600000 /* WDT_OSC_4_60 */
 };
 
 /*****************************************************************************
@@ -65,11 +64,11 @@ STATIC uint32_t Chip_Clock_GetWDTLFORate(uint32_t reg)
 {
 	uint32_t div;
 	CHIP_WDTLFO_OSC_T clk;
-
+	
 	/* Get WDT oscillator settings */
 	clk = (CHIP_WDTLFO_OSC_T) ((reg >> 5) & 0xF);
 	div = reg & 0x1F;
-
+	
 	/* Compute clock rate and divided by divde value */
 	return wdtOSCRate[clk] / ((div + 1) << 1);
 }
@@ -78,7 +77,7 @@ STATIC uint32_t Chip_Clock_GetWDTLFORate(uint32_t reg)
 STATIC uint32_t Chip_Clock_GetPLLFreq(uint32_t PLLReg, uint32_t inputRate)
 {
 	uint32_t msel = ((PLLReg & 0x1F) + 1);
-
+	
 	return inputRate * msel;
 }
 
@@ -89,33 +88,35 @@ STATIC uint32_t Chip_Clock_GetPLLFreq(uint32_t PLLReg, uint32_t inputRate)
 /* Set System PLL clock source */
 void Chip_Clock_SetSystemPLLSource(CHIP_SYSCTL_PLLCLKSRC_T src)
 {
-	LPC_SYSCTL->SYSPLLCLKSEL  = (uint32_t) src;
-	LPC_SYSCTL->SYSPLLCLKUEN  = 0;
-	LPC_SYSCTL->SYSPLLCLKUEN  = 1;
+	LPC_SYSCTL->SYSPLLCLKSEL = (uint32_t) src;
+	LPC_SYSCTL->SYSPLLCLKUEN = 0;
+	LPC_SYSCTL->SYSPLLCLKUEN = 1;
 }
 
 /* Bypass System Oscillator and set oscillator frequency range */
 void Chip_Clock_SetPLLBypass(bool bypass, bool highfr)
 {
 	uint32_t ctrl = 0;
-
-	if (bypass) {
+	
+	if (bypass)
+	{
 		ctrl |= (1 << 0);
 	}
-	if (highfr) {
+	if (highfr)
+	{
 		ctrl |= (1 << 1);
 	}
-
+	
 	LPC_SYSCTL->SYSOSCCTRL = ctrl;
 }
 
 #if defined(CHIP_LPC11UXX)
 /* Set USB PLL clock source */
 void Chip_Clock_SetUSBPLLSource(CHIP_SYSCTL_PLLCLKSRC_T src)
-{
-	LPC_SYSCTL->USBPLLCLKSEL  = (uint32_t) src;
-	LPC_SYSCTL->USBPLLCLKUEN  = 0;
-	LPC_SYSCTL->USBPLLCLKUEN  = 1;
+{	
+	LPC_SYSCTL->USBPLLCLKSEL = (uint32_t) src;
+	LPC_SYSCTL->USBPLLCLKUEN = 0;
+	LPC_SYSCTL->USBPLLCLKUEN = 1;
 }
 
 #endif
@@ -123,15 +124,15 @@ void Chip_Clock_SetUSBPLLSource(CHIP_SYSCTL_PLLCLKSRC_T src)
 /* Set main system clock source */
 void Chip_Clock_SetMainClockSource(CHIP_SYSCTL_MAINCLKSRC_T src)
 {
-	LPC_SYSCTL->MAINCLKSEL  = (uint32_t) src;
-	LPC_SYSCTL->MAINCLKUEN  = 0;
-	LPC_SYSCTL->MAINCLKUEN  = 1;
+	LPC_SYSCTL->MAINCLKSEL = (uint32_t) src;
+	LPC_SYSCTL->MAINCLKUEN = 0;
+	LPC_SYSCTL->MAINCLKUEN = 1;
 }
 
 #if defined(CHIP_LPC11UXX)
 /* Set USB clock source and divider */
 void Chip_Clock_SetUSBClockSource(CHIP_SYSCTL_USBCLKSRC_T src, uint32_t div)
-{
+{	
 	LPC_SYSCTL->USBCLKSEL = (uint32_t) src;
 	LPC_SYSCTL->USBCLKUEN = 0;
 	LPC_SYSCTL->USBCLKUEN = 1;
@@ -143,7 +144,7 @@ void Chip_Clock_SetUSBClockSource(CHIP_SYSCTL_USBCLKSRC_T src, uint32_t div)
 #if defined(CHIP_LPC110X) || defined(CHIP_LPC11XXLV) || defined(CHIP_LPC11CXX) || defined(CHIP_LPC11EXX) || defined(CHIP_LPC1125)
 /* Set WDT clock source and divider */
 void Chip_Clock_SetWDTClockSource(CHIP_SYSCTL_WDTCLKSRC_T src, uint32_t div)
-{
+{	
 	LPC_SYSCTL->WDTCLKSEL = (uint32_t) src;
 	LPC_SYSCTL->WDTCLKUEN = 0;
 	LPC_SYSCTL->WDTCLKUEN = 1;
@@ -173,7 +174,7 @@ uint32_t Chip_Clock_GetWDTOSCRate(void)
 #if defined(CHIP_LPC11AXX)
 /* Return estimated low frequency oscillator rate */
 uint32_t Chip_Clock_GetLFOOSCRate(void)
-{
+{	
 	return Chip_Clock_GetWDTLFORate(LPC_SYSCTL->LFOSCCTRL);
 }
 
@@ -183,52 +184,53 @@ uint32_t Chip_Clock_GetLFOOSCRate(void)
 uint32_t Chip_Clock_GetSystemPLLInClockRate(void)
 {
 	uint32_t clkRate;
-
-	switch ((CHIP_SYSCTL_PLLCLKSRC_T) (LPC_SYSCTL->SYSPLLCLKSEL & 0x3)) {
-	case SYSCTL_PLLCLKSRC_IRC:
-		clkRate = Chip_Clock_GetIntOscRate();
-		break;
-
-	case SYSCTL_PLLCLKSRC_MAINOSC:
-		clkRate = Chip_Clock_GetMainOscRate();
-		break;
-
+	
+	switch ((CHIP_SYSCTL_PLLCLKSRC_T) (LPC_SYSCTL->SYSPLLCLKSEL & 0x3))
+	{
+		case SYSCTL_PLLCLKSRC_IRC:
+			clkRate = Chip_Clock_GetIntOscRate();
+			break;
+			
+		case SYSCTL_PLLCLKSRC_MAINOSC:
+			clkRate = Chip_Clock_GetMainOscRate();
+			break;
+			
 #if defined(CHIP_LPC11AXX)
-	case SYSCTL_PLLCLKSRC_EXT_CLKIN:
-		clkRate = Chip_Clock_GetExtClockInRate();
-		break;
+			case SYSCTL_PLLCLKSRC_EXT_CLKIN:
+			clkRate = Chip_Clock_GetExtClockInRate();
+			break;
 #endif
-
-	default:
-		clkRate = 0;
+			
+		default:
+			clkRate = 0;
 	}
-
+	
 	return clkRate;
 }
 
 /* Return System PLL output clock rate */
 uint32_t Chip_Clock_GetSystemPLLOutClockRate(void)
 {
-	return Chip_Clock_GetPLLFreq(LPC_SYSCTL->SYSPLLCTRL,
-								 Chip_Clock_GetSystemPLLInClockRate());
+	return Chip_Clock_GetPLLFreq(LPC_SYSCTL->SYSPLLCTRL, Chip_Clock_GetSystemPLLInClockRate());
 }
 
 #if defined(CHIP_LPC11UXX)
 /* Return USB PLL input clock rate */
 uint32_t Chip_Clock_GetUSBPLLInClockRate(void)
-{
+{	
 	uint32_t clkRate;
 
-	switch ((CHIP_SYSCTL_PLLCLKSRC_T) (LPC_SYSCTL->USBPLLCLKSEL & 0x3)) {
-	case SYSCTL_PLLCLKSRC_IRC:
+	switch ((CHIP_SYSCTL_PLLCLKSRC_T) (LPC_SYSCTL->USBPLLCLKSEL & 0x3))
+	{	
+		case SYSCTL_PLLCLKSRC_IRC:
 		clkRate = Chip_Clock_GetIntOscRate();
 		break;
 
-	case SYSCTL_PLLCLKSRC_MAINOSC:
+		case SYSCTL_PLLCLKSRC_MAINOSC:
 		clkRate = Chip_Clock_GetMainOscRate();
 		break;
 
-	default:
+		default:
 		clkRate = 0;
 	}
 
@@ -237,9 +239,9 @@ uint32_t Chip_Clock_GetUSBPLLInClockRate(void)
 
 /* Return USB PLL output clock rate */
 uint32_t Chip_Clock_GetUSBPLLOutClockRate(void)
-{
+{	
 	return Chip_Clock_GetPLLFreq(LPC_SYSCTL->USBPLLCTRL,
-								 Chip_Clock_GetUSBPLLInClockRate());
+			Chip_Clock_GetUSBPLLInClockRate());
 }
 
 #endif
@@ -248,32 +250,33 @@ uint32_t Chip_Clock_GetUSBPLLOutClockRate(void)
 uint32_t Chip_Clock_GetMainClockRate(void)
 {
 	uint32_t clkRate = 0;
-
-	switch ((CHIP_SYSCTL_MAINCLKSRC_T) (LPC_SYSCTL->MAINCLKSEL & 0x3)) {
-	case SYSCTL_MAINCLKSRC_IRC:
-		clkRate = Chip_Clock_GetIntOscRate();
-		break;
-
-	case SYSCTL_MAINCLKSRC_PLLIN:
-		clkRate = Chip_Clock_GetSystemPLLInClockRate();
-		break;
-
+	
+	switch ((CHIP_SYSCTL_MAINCLKSRC_T) (LPC_SYSCTL->MAINCLKSEL & 0x3))
+	{
+		case SYSCTL_MAINCLKSRC_IRC:
+			clkRate = Chip_Clock_GetIntOscRate();
+			break;
+			
+		case SYSCTL_MAINCLKSRC_PLLIN:
+			clkRate = Chip_Clock_GetSystemPLLInClockRate();
+			break;
+			
 #if defined(CHIP_LPC11AXX)
-	case SYSCTL_MAINCLKSRC_LFOSC:
-		clkRate = Chip_Clock_GetLFOOSCRate();
-		break;
+			case SYSCTL_MAINCLKSRC_LFOSC:
+			clkRate = Chip_Clock_GetLFOOSCRate();
+			break;
 
 #else
-	case SYSCTL_MAINCLKSRC_WDTOSC:
-		clkRate = Chip_Clock_GetWDTOSCRate();
-		break;
+		case SYSCTL_MAINCLKSRC_WDTOSC:
+			clkRate = Chip_Clock_GetWDTOSCRate();
+			break;
 #endif
-
-	case SYSCTL_MAINCLKSRC_PLLOUT:
-		clkRate = Chip_Clock_GetSystemPLLOutClockRate();
-		break;
+			
+		case SYSCTL_MAINCLKSRC_PLLOUT:
+			clkRate = Chip_Clock_GetSystemPLLOutClockRate();
+			break;
 	}
-
+	
 	return clkRate;
 }
 

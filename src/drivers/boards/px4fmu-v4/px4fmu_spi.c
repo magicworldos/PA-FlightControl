@@ -75,9 +75,9 @@
 __EXPORT void stm32_spiinitialize(int mask)
 {
 #ifdef CONFIG_STM32_SPI1
-
+	
 	if (mask & PX4_SPI_BUS_SENSORS)
-	{
+	{	
 		stm32_configgpio(GPIO_SPI1_CS_PORTC_PIN2);
 		stm32_configgpio(GPIO_SPI1_CS_PORTC_PIN15);
 		stm32_configgpio(GPIO_SPI1_CS_PORTE_PIN15);
@@ -88,17 +88,17 @@ __EXPORT void stm32_spiinitialize(int mask)
 	}
 
 #endif
-
+	
 #ifdef CONFIG_STM32_SPI2
-
+	
 	if (mask & (PX4_SPI_BUS_RAMTRON | PX4_SPI_BUS_BARO))
-	{
+	{	
 		stm32_configgpio(GPIO_SPI2_CS_MS5611);
 		stm32_configgpio(GPIO_SPI2_CS_FRAM);
 	}
 
 #endif
-
+	
 }
 
 __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
@@ -107,18 +107,18 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 
 	switch (devid)
 	{
-
+		
 		/* Shared PC2 CS devices */
 
 		case PX4_SPIDEV_BMI:
 		case PX4_SPIDEV_MPU:
 			/* Making sure the other peripherals are not selected */
-			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTC_PIN2,  !selected);
+			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTC_PIN2, !selected);
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTC_PIN15, 1);
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTE_PIN15, 1);
 			break;
-
-		/* Shared PC15 CS devices */
+			
+			/* Shared PC15 CS devices */
 
 		case PX4_SPIDEV_ICM:
 		case PX4_SPIDEV_ICM_20602:
@@ -129,8 +129,8 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTC_PIN15, !selected);
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTE_PIN15, 1);
 			break;
-
-		/* Shared PE15 CS devices */
+			
+			/* Shared PE15 CS devices */
 
 		case PX4_SPIDEV_HMC:
 		case PX4_SPIDEV_BMI055_GYR:
@@ -139,7 +139,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTC_PIN15, 1);
 			px4_arch_gpiowrite(GPIO_SPI1_CS_PORTE_PIN15, !selected);
 			break;
-
+			
 		default:
 			break;
 	}
@@ -150,33 +150,32 @@ __EXPORT uint8_t stm32_spi1status(FAR struct spi_dev_s *dev, uint32_t devid)
 	return SPI_STATUS_PRESENT;
 }
 
-
 #ifdef CONFIG_STM32_SPI2
 __EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	/* SPI select is active low, so write !selected to select the device */
 
 	switch (devid)
-	{
+	{	
 		case SPIDEV_FLASH(0):
-			/* Making sure the other peripherals are not selected */
-			stm32_gpiowrite(GPIO_SPI2_CS_MS5611, 1);
-			stm32_gpiowrite(GPIO_SPI2_CS_FRAM, !selected);
-			break;
+		/* Making sure the other peripherals are not selected */
+		stm32_gpiowrite(GPIO_SPI2_CS_MS5611, 1);
+		stm32_gpiowrite(GPIO_SPI2_CS_FRAM, !selected);
+		break;
 
 		case PX4_SPIDEV_BARO:
-			/* Making sure the other peripherals are not selected */
-			stm32_gpiowrite(GPIO_SPI2_CS_FRAM, 1);
-			stm32_gpiowrite(GPIO_SPI2_CS_MS5611, !selected);
-			break;
+		/* Making sure the other peripherals are not selected */
+		stm32_gpiowrite(GPIO_SPI2_CS_FRAM, 1);
+		stm32_gpiowrite(GPIO_SPI2_CS_MS5611, !selected);
+		break;
 
 		default:
-			break;
+		break;
 	}
 }
 
 __EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	/* FRAM is always present */
 	return SPI_STATUS_PRESENT;
 }
@@ -189,56 +188,53 @@ __EXPORT void board_spi_reset(int ms)
 	stm32_configgpio(GPIO_DRDY_OFF_PORTD_PIN15);
 	stm32_configgpio(GPIO_DRDY_OFF_PORTC_PIN14);
 	stm32_configgpio(GPIO_DRDY_OFF_PORTE_PIN12);
-
+	
 	stm32_gpiowrite(GPIO_DRDY_OFF_PORTD_PIN15, 0);
 	stm32_gpiowrite(GPIO_DRDY_OFF_PORTC_PIN14, 0);
 	stm32_gpiowrite(GPIO_DRDY_OFF_PORTE_PIN12, 0);
-
+	
 	/* disable SPI bus 1  CS */
 
 	stm32_configgpio(GPIO_SPI1_CS_OFF_PORTC_PIN2);
 	stm32_configgpio(GPIO_SPI1_CS_OFF_PORTC_PIN15);
 	stm32_configgpio(GPIO_SPI1_CS_OFF_PORTE_PIN15);
-
+	
 	stm32_gpiowrite(GPIO_SPI1_CS_OFF_PORTC_PIN2, 0);
 	stm32_gpiowrite(GPIO_SPI1_CS_OFF_PORTC_PIN15, 0);
 	stm32_gpiowrite(GPIO_SPI1_CS_OFF_PORTE_PIN15, 0);
-
+	
 	/* disable SPI bus 1*/
 
 	stm32_configgpio(GPIO_SPI1_SCK_OFF);
 	stm32_configgpio(GPIO_SPI1_MISO_OFF);
 	stm32_configgpio(GPIO_SPI1_MOSI_OFF);
-
+	
 	stm32_gpiowrite(GPIO_SPI1_SCK_OFF, 0);
 	stm32_gpiowrite(GPIO_SPI1_MISO_OFF, 0);
 	stm32_gpiowrite(GPIO_SPI1_MOSI_OFF, 0);
-
-
+	
 	/* N.B we do not have control over the SPI 2 buss powered devices
 	 * so the the ms5611 is not resetable.
 	 */
 
-
 	/* set the sensor rail off (default) */
 	stm32_configgpio(GPIO_VDD_3V3_SENSORS_EN);
-
+	
 	/* wait for the sensor rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 
 	/* switch the sensor rail back on */
 	stm32_gpiowrite(GPIO_VDD_3V3_SENSORS_EN, 1);
-
+	
 	/* wait a bit before starting SPI, different times didn't influence results */
 	usleep(100);
-
+	
 	stm32_spiinitialize(PX4_SPI_BUS_SENSORS);
 	stm32_configgpio(GPIO_SPI1_SCK);
 	stm32_configgpio(GPIO_SPI1_MISO);
 	stm32_configgpio(GPIO_SPI1_MOSI);
-
-
+	
 }

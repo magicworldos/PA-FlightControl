@@ -64,19 +64,19 @@ extern int lib_lowvprintf(const char *fmt, va_list ap);
 
 static void
 warnerr_core(int errcode, const char *fmt, va_list args)
-{
+{	
 #if CONFIG_NFILE_STREAMS > 0
 	fprintf(stderr, "%s: ", px4_get_taskname());
 	vfprintf(stderr, fmt, args);
 
 	/* convenience as many parts of NuttX use negative errno */
 	if (errcode < 0)
-	{
+	{	
 		errcode = -errcode;
 	}
 
 	if (errcode < NOCODE)
-	{
+	{	
 		fprintf(stderr, ": %s", strerror(errcode));
 	}
 
@@ -87,12 +87,12 @@ warnerr_core(int errcode, const char *fmt, va_list args)
 
 	/* convenience as many parts of NuttX use negative errno */
 	if (errcode < 0)
-	{
+	{	
 		errcode = -errcode;
 	}
 
 	if (errcode < NOCODE)
-	{
+	{	
 		syslog(": %s", strerror(errcode));
 	}
 
@@ -102,8 +102,8 @@ warnerr_core(int errcode, const char *fmt, va_list args)
 
 void
 err(int exitcode, const char *fmt, ...)
-{
-	va_list	args;
+{	
+	va_list args;
 
 	va_start(args, fmt);
 	warnerr_core(errno, fmt, args);
@@ -113,14 +113,14 @@ err(int exitcode, const char *fmt, ...)
 
 void
 verr(int exitcode, const char *fmt, va_list args)
-{
+{	
 	warnerr_core(errno, fmt, args);
 	exit(exitcode);
 }
 
 void
 errc(int exitcode, int errcode, const char *fmt, ...)
-{
+{	
 	va_list args;
 
 	va_start(args, fmt);
@@ -131,14 +131,14 @@ errc(int exitcode, int errcode, const char *fmt, ...)
 
 void
 verrc(int exitcode, int errcode, const char *fmt, va_list args)
-{
+{	
 	warnerr_core(errcode, fmt, args);
 	exit(exitcode);
 }
 
 void
 errx(int exitcode, const char *fmt, ...)
-{
+{	
 	va_list args;
 
 	va_start(args, fmt);
@@ -149,14 +149,14 @@ errx(int exitcode, const char *fmt, ...)
 
 void
 verrx(int exitcode, const char *fmt, va_list args)
-{
+{	
 	warnerr_core(NOCODE, fmt, args);
 	exit(exitcode);
 }
 
 void
 warn(const char *fmt, ...)
-{
+{	
 	va_list args;
 
 	va_start(args, fmt);
@@ -166,13 +166,13 @@ warn(const char *fmt, ...)
 
 void
 vwarn(const char *fmt, va_list args)
-{
+{	
 	warnerr_core(errno, fmt, args);
 }
 
 void
 warnc(int errcode, const char *fmt, ...)
-{
+{	
 	va_list args;
 
 	va_start(args, fmt);
@@ -182,13 +182,13 @@ warnc(int errcode, const char *fmt, ...)
 
 void
 vwarnc(int errcode, const char *fmt, va_list args)
-{
+{	
 	warnerr_core(errcode, fmt, args);
 }
 
 void
 warnx(const char *fmt, ...)
-{
+{	
 	va_list args;
 
 	va_start(args, fmt);
@@ -198,7 +198,7 @@ warnx(const char *fmt, ...)
 
 void
 vwarnx(const char *fmt, va_list args)
-{
+{	
 	warnerr_core(NOCODE, fmt, args);
 }
 #endif

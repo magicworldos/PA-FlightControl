@@ -35,7 +35,6 @@
 
 #include <stdint.h>
 
-
 extern const char *syslink_magic;
 
 #define SYSLINK_GROUP	0xF0
@@ -68,15 +67,13 @@ extern const char *syslink_magic;
 #define SYSLINK_RADIO_RATE_1M 1
 #define SYSLINK_RADIO_RATE_2M 2
 
-
 typedef struct
 {
 	uint8_t type;
 	uint8_t length;
 	uint8_t data[SYSLINK_MAX_DATA_LEN];
 	uint8_t cksum[2];
-} __attribute__((packed)) syslink_message_t;
-
+}__attribute__((packed)) syslink_message_t;
 
 #define OW_SIZE 112
 #define OW_READ_BLOCK 29
@@ -85,27 +82,27 @@ typedef struct
 typedef struct
 {
 	uint8_t nmems;
-} __attribute__((packed)) syslink_ow_scan_t;
+}__attribute__((packed)) syslink_ow_scan_t;
 
 typedef struct
 {
 	uint8_t family; // Should by 0x0D for most chips
 	uint8_t sn[6];
 	uint8_t crc;
-} __attribute__((packed)) syslink_ow_id_t;
+}__attribute__((packed)) syslink_ow_id_t;
 
 typedef struct
 {
 	uint8_t idx;
 	uint8_t id[8];
-} __attribute__((packed)) syslink_ow_getinfo_t;
+}__attribute__((packed)) syslink_ow_getinfo_t;
 
 typedef struct
 {
 	uint8_t idx;
 	uint16_t addr;
 	uint8_t data[OW_READ_BLOCK];
-} __attribute__((packed)) syslink_ow_read_t;
+}__attribute__((packed)) syslink_ow_read_t;
 
 typedef struct
 {
@@ -113,8 +110,7 @@ typedef struct
 	uint16_t addr;
 	uint16_t length;
 	uint8_t data[OW_WRITE_BLOCK];
-} __attribute__((packed)) syslink_ow_write_t;
-
+}__attribute__((packed)) syslink_ow_write_t;
 
 typedef enum
 {
@@ -129,12 +125,12 @@ typedef struct
 {
 	SYSLINK_STATE state;
 	int index;
-
+	
 } syslink_parse_state;
 
-
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 extern void syslink_parse_init(syslink_parse_state *state);

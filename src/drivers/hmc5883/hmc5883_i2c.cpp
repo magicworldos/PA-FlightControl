@@ -66,61 +66,61 @@
 device::Device *HMC5883_I2C_interface(int bus);
 
 class HMC5883_I2C : public device::I2C
-{
+{	
 public:
 	HMC5883_I2C(int bus);
 	virtual ~HMC5883_I2C();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
 
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 protected:
-	virtual int	probe();
+	virtual int probe();
 
 };
 
 device::Device *
 HMC5883_I2C_interface(int bus)
-{
+{	
 	return new HMC5883_I2C(bus);
 }
 
 HMC5883_I2C::HMC5883_I2C(int bus) :
-	I2C("HMC5883_I2C", nullptr, bus, HMC5883L_ADDRESS, 400000)
-{
+I2C("HMC5883_I2C", nullptr, bus, HMC5883L_ADDRESS, 400000)
+{	
 	_device_id.devid_s.devtype = DRV_MAG_DEVTYPE_HMC5883;
 }
 
 HMC5883_I2C::~HMC5883_I2C()
-{
+{	
 }
 
 int
 HMC5883_I2C::init()
-{
+{	
 	/* this will call probe() */
 	return I2C::init();
 }
 
 int
 HMC5883_I2C::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 
 		case MAGIOCGEXTERNAL:
-			return external();
+		return external();
 
 		case DEVIOCGDEVICEID:
-			return CDev::ioctl(nullptr, operation, arg);
+		return CDev::ioctl(nullptr, operation, arg);
 
 		default:
-			ret = -EINVAL;
+		ret = -EINVAL;
 	}
 
 	return ret;
@@ -128,15 +128,16 @@ HMC5883_I2C::ioctl(unsigned operation, unsigned &arg)
 
 int
 HMC5883_I2C::probe()
-{
-	uint8_t data[3] = {0, 0, 0};
+{	
+	uint8_t data[3] =
+	{	0, 0, 0};
 
 	_retries = 10;
 
 	if (read(ADDR_ID_A, &data[0], 1) ||
 			read(ADDR_ID_B, &data[1], 1) ||
 			read(ADDR_ID_C, &data[2], 1))
-	{
+	{	
 		DEVICE_DEBUG("read_reg fail");
 		return -EIO;
 	}
@@ -146,7 +147,7 @@ HMC5883_I2C::probe()
 	if ((data[0] != ID_A_WHO_AM_I) ||
 			(data[1] != ID_B_WHO_AM_I) ||
 			(data[2] != ID_C_WHO_AM_I))
-	{
+	{	
 		DEVICE_DEBUG("ID byte mismatch (%02x,%02x,%02x)", data[0], data[1], data[2]);
 		return -EIO;
 	}
@@ -156,11 +157,11 @@ HMC5883_I2C::probe()
 
 int
 HMC5883_I2C::write(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t buf[32];
 
 	if (sizeof(buf) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 
@@ -172,7 +173,7 @@ HMC5883_I2C::write(unsigned address, void *data, unsigned count)
 
 int
 HMC5883_I2C::read(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t cmd = address;
 	return transfer(&cmd, 1, (uint8_t *)data, count);
 }

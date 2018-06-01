@@ -64,22 +64,29 @@ namespace control
  * @see Limit
  */
 class __EXPORT BlockIntegralTrap : public SuperBlock
-{
+{	
 public:
 // methods
 	BlockIntegralTrap(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_u(0),
-		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() {}
+	SuperBlock(parent, name),
+	_u(0),
+	_y(0),
+	_limit(this, "")
+	{}
+	virtual ~BlockIntegralTrap()
+	{}
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
+	float getU()
+	{	return _u;}
+	float getY()
+	{	return _y;}
+	float getMax()
+	{	return _limit.getMax();}
+	void setU(float u)
+	{	_u = u;}
+	void setY(float y)
+	{	_y = y;}
 protected:
 // attributes
 	float _u; /**< previous input */
@@ -87,4 +94,5 @@ protected:
 	BlockLimitSym _limit; /**< limiter */
 };
 
-} // namespace control
+}
+ // namespace control

@@ -22,19 +22,19 @@ namespace
  *
  * @{
  */
-const int16_t ErrFailure                 = 1;   ///< General failure
-const int16_t ErrInvalidParam            = 2;
-const int16_t ErrMemory                  = 3;
-const int16_t ErrDriver                  = 4;   ///< Platform driver error
-const int16_t ErrUnknownDataType         = 5;
-const int16_t ErrInvalidMarshalData      = 6;
+const int16_t ErrFailure = 1;   ///< General failure
+const int16_t ErrInvalidParam = 2;
+const int16_t ErrMemory = 3;
+const int16_t ErrDriver = 4;   ///< Platform driver error
+const int16_t ErrUnknownDataType = 5;
+const int16_t ErrInvalidMarshalData = 6;
 const int16_t ErrInvalidTransferListener = 7;
-const int16_t ErrNotInited               = 8;
-const int16_t ErrRecursiveCall           = 9;
-const int16_t ErrLogic                   = 10;
-const int16_t ErrPassiveMode             = 11;  ///< Operation not permitted in passive mode
-const int16_t ErrTransferTooLong         = 12;  ///< Transfer of this length cannot be sent with given transfer type
-const int16_t ErrInvalidConfiguration    = 13;
+const int16_t ErrNotInited = 8;
+const int16_t ErrRecursiveCall = 9;
+const int16_t ErrLogic = 10;
+const int16_t ErrPassiveMode = 11;  ///< Operation not permitted in passive mode
+const int16_t ErrTransferTooLong = 12;  ///< Transfer of this length cannot be sent with given transfer type
+const int16_t ErrInvalidConfiguration = 13;
 /**
  * @}
  */

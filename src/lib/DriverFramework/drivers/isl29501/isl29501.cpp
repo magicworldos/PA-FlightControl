@@ -45,33 +45,38 @@ using namespace DriverFramework;
 //Open connection and initialise ISL distance sensor
 int ISL29501::start()
 {
-
+	
 	int result = I2CDevObj::start();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("error: could not start DevObj");
 		goto exit;
 	}
-
+	
 	/* Configure the I2C bus parameters for the sensor. */
 	_slave_addr = _detect();
-
-	if (_slave_addr == 0) {
+	
+	if (_slave_addr == 0)
+	{
 		_detected = true;
-
-	} else {
+		
+	}
+	else
+	{
 		DF_LOG_ERR("Unable to connect to the device: %s", m_dev_path);
 		goto exit;
 	}
-
+	
 	init_params();
-exit:
+	exit:
 
-	if (result != 0) {
+	if (result != 0)
+	{
 		DF_LOG_ERR("error: Failed to start ISL");
 		I2CDevObj::stop();
 	}
-
+	
 	return result;
 }
 
@@ -177,12 +182,13 @@ int ISL29501::write_reg(uint8_t address, uint8_t data)
 uint8_t ISL29501::read_reg(uint8_t address)
 {
 	uint8_t ret = 0;
-
-	if (_readReg(address, &ret, sizeof(ret)) == -1) {
+	
+	if (_readReg(address, &ret, sizeof(ret)) == -1)
+	{
 		_read_failure = true;
 		DF_LOG_ERR("Read Failure");
 	}
-
+	
 	return ret;
 }
 
@@ -190,14 +196,15 @@ uint8_t ISL29501::read_reg(uint8_t address)
 int ISL29501::stop()
 {
 	int result = DevObj::stop();
-
-	if (result != 0) {
+	
+	if (result != 0)
+	{
 		DF_LOG_ERR("DevObj stop failed");
 		return result;
 	}
-
+	
 	usleep(100000);
-
+	
 	return 0;
 }
 
@@ -212,25 +219,27 @@ int ISL29501::calibration()
 	write_reg(0x2f, 0);	//DIST_CAL_OFF_MSB
 	write_reg(0x30, 0);	//DIST_CAL_OFF_LSB
 	usleep(100000);
-
-	for (uint8_t i = 0; i < 100; i++) {
+	
+	for (uint8_t i = 0; i < 100; i++)
+	{
 		raw_data = read_reg(0xd2);		//DIST_REG_LSB
 		raw_data |= (read_reg(0xd1)) << 8; //DIST_REG_MSB
 		raw_avg += float(raw_data) / 100;
 	}
-
+	
 	raw_avg /= 2000;	//convert to meters
 	float offset;
 	offset = (raw_avg - REF_DIST) * 2000;
-
-	if (offset < 0) {
+	
+	if (offset < 0)
+	{
 		return -1;
 	}
-
+	
 	uint8_t off_lsb, off_msb;
 	off_lsb = (0xFF & uint16_t(offset));
 	off_msb = (0xFF00 & uint16_t(offset)) >> 8;
-
+	
 	write_reg(0x2f, off_msb);
 	write_reg(0x30, off_lsb);
 	return 0;
@@ -241,74 +250,80 @@ int ISL29501::_detect()
 {
 	uint8_t dev_id;
 	int result;
-
-	for (uint8_t i = 0; i <= 3; i++) {
+	
+	for (uint8_t i = 0; i <= 3; i++)
+	{
 		result = _setSlaveConfig(_slave_addr,
-					 ISL_BUS_FREQUENCY_IN_KHZ,
-					 ISL_TRANSFER_TIMEOUT_IN_USECS);
-
-		if (result != 0) {
+		ISL_BUS_FREQUENCY_IN_KHZ,
+		ISL_TRANSFER_TIMEOUT_IN_USECS);
+		
+		if (result != 0)
+		{
 			_slave_addr++;
 			continue;
 		}
-
+		
 		result = DevObj::start();
-
-		if (result == 0) {
+		
+		if (result == 0)
+		{
 			dev_id = read_reg(0x00);
-
-			if (dev_id == 0x0A) {
+			
+			if (dev_id == 0x0A)
+			{
 				_detected = true;
 				DF_LOG_INFO("Detected ISL sensor @ 0x%x", _slave_addr);
 				return 0;
 			}
 		}
-
+		
 		_slave_addr++;
 		DevObj::stop();
 	}
-
+	
 	return -1;
 }
 
 // read distance data from ISL sensor
 void ISL29501::_measure()
 {
-	if (!_detected) {
+	if (!_detected)
+	{
 		return;
 	}
-
+	
 	float distance;
 	//setup for reading sensor
 	write_reg(0xB0, 0x49);
 	uint16_t data_msb, data_lsb, prec;
 	uint16_t offset;
 	uint8_t inter, data_invalid;
-
+	
 	//read data ready flag
 	inter = read_reg(0x69);
-
+	
 	//read sensor offset
 	offset = read_reg(0x30);
 	offset |= (read_reg(0x2f) << 8);
-
+	
 	//read data validity
 	data_invalid = read_reg(0xd0);
-
+	
 	//read corrected data
 	data_lsb = read_reg(0xd2);
 	data_msb = read_reg(0xd1);
-
+	
 	//check if data was ready
-	if (!inter) {
+	if (!inter)
+	{
 		DF_LOG_ERR("Bad Distance Data Flags: 0x%x 0x%x", data_invalid, inter);
 		return;
 	}
-
+	
 	//read quality of data
 	//TODO: send this data to EKF for processing
 	prec = read_reg(0xd4);
-	prec |= ((uint16_t)read_reg(0xd3)) << 8;
+	prec |= ((uint16_t) read_reg(0xd3)) << 8;
 	//read temperature of sensor
 	//TODO: do temperature correction
 	uint8_t temperature;
@@ -319,20 +334,22 @@ void ISL29501::_measure()
 	float phase = (distance / 33.3f) * M_PI_F * 2.0f;
 	distance += (1.1637f * phase * phase * phase - 3.8654f * phase * phase + 1.3796f * phase - 0.0436f);
 	DF_LOG_DEBUG("distance: %f offset: 0x%x ", (double)distance, offset);
-
-	if (distance < 0) {
+	
+	if (distance < 0)
+	{
 		distance = 0;
 	}
-
+	
 	//pack data into structure
 	m_sensor_data.temperature = float(temperature);
 	m_sensor_data.dist = distance;
-
+	
 	//do not publish data if any of the reads failed
-	if (!_read_failure) {
+	if (!_read_failure)
+	{
 		_publish(m_sensor_data);
 	}
-
+	
 	_read_failure = false;
 }
 

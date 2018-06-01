@@ -137,18 +137,19 @@ int blockLowPassTest()
 	ASSERT_CL(equal(1.0f, lowPass.getState()));
 	// test update
 	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
-
+	
 	// test end condition
 	for (int i = 0; i < 100; i++)
 	{
 		lowPass.update(2.0f);
 	}
-
+	
 	ASSERT_CL(equal(2.0f, lowPass.getState()));
 	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
 	printf("PASS\n");
 	return 0;
-};
+}
+;
 
 int blockHighPassTest()
 {
@@ -169,13 +170,13 @@ int blockHighPassTest()
 	ASSERT_CL(equal(1.0f, highPass.getY()));
 	// test update
 	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
-
+	
 	// test end condition
 	for (int i = 0; i < 100; i++)
 	{
 		highPass.update(2.0f);
 	}
-
+	
 	ASSERT_CL(equal(0.0f, highPass.getY()));
 	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
 	printf("PASS\n");
@@ -198,18 +199,19 @@ int blockLowPass2Test()
 	ASSERT_CL(equal(1.0f, lowPass.getState()));
 	// test update
 	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
-
+	
 	// test end condition
 	for (int i = 0; i < 100; i++)
 	{
 		lowPass.update(2.0f);
 	}
-
+	
 	ASSERT_CL(equal(2.0f, lowPass.getState()));
 	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
 	printf("PASS\n");
 	return 0;
-};
+}
+;
 
 int blockIntegralTest()
 {
@@ -224,23 +226,23 @@ int blockIntegralTest()
 	// set Y
 	integral.setY(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
-
+	
 	// test exceed max
 	for (int i = 0; i < 100; i++)
 	{
 		integral.update(1.0f);
 	}
-
+	
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
-
+	
 	for (int i = 0; i < 100; i++)
 	{
 		integral.update(-1.0f);
 	}
-
+	
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
 	integral.setY(0.1f);
@@ -266,24 +268,24 @@ int blockIntegralTrapTest()
 	// set Y
 	integral.setY(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
-
+	
 	// test exceed max
 	for (int i = 0; i < 100; i++)
 	{
 		integral.update(1.0f);
 	}
-
+	
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
 	integral.setU(-1.0f);
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
-
+	
 	for (int i = 0; i < 100; i++)
 	{
 		integral.update(-1.0f);
 	}
-
+	
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
 	integral.setU(2.0f);
@@ -445,7 +447,7 @@ int blockRandUniformTest()
 	// test update
 	int n = 10000;
 	float mean = blockRandUniform.update();
-
+	
 	for (int i = 2; i < n + 1; i++)
 	{
 		float val = blockRandUniform.update();
@@ -453,9 +455,8 @@ int blockRandUniformTest()
 		ASSERT_CL(less_than_or_equal(val, blockRandUniform.getMax()));
 		ASSERT_CL(greater_than_or_equal(val, blockRandUniform.getMin()));
 	}
-
-	ASSERT_CL(equal(mean, (blockRandUniform.getMin() +
-			       blockRandUniform.getMax()) / 2, 1e-1));
+	
+	ASSERT_CL(equal(mean, (blockRandUniform.getMin() + blockRandUniform.getMax()) / 2, 1e-1));
 	printf("PASS\n");
 	return 0;
 }
@@ -473,7 +474,7 @@ int blockRandGaussTest()
 	int n = 10000;
 	float mean = blockRandGauss.update();
 	float sum = 0;
-
+	
 	// recursive mean, stdev algorithm from Knuth
 	for (int i = 2; i < n + 1; i++)
 	{
@@ -482,9 +483,9 @@ int blockRandGaussTest()
 		sum += (val - mean) * (val - newMean);
 		mean = newMean;
 	}
-
+	
 	float stdDev = sqrtf(sum / (n - 1));
-	(void)(stdDev);
+	(void) (stdDev);
 	ASSERT_CL(equal(mean, blockRandGauss.getMean(), 1e-1));
 	ASSERT_CL(equal(stdDev, blockRandGauss.getStdDev(), 1e-1));
 	printf("PASS\n");
@@ -517,17 +518,17 @@ int blockDelayTest()
 	Vector2f y1 = delay.update(u1);
 	ASSERT_CL(equal(y1(0), u1(0)));
 	ASSERT_CL(equal(y1(1), u1(1)));
-
+	
 	Vector2f u2(4, 5);
 	Vector2f y2 = delay.update(u2);
 	ASSERT_CL(equal(y2(0), u1(0)));
 	ASSERT_CL(equal(y2(1), u1(1)));
-
+	
 	Vector2f u3(7, 8);
 	Vector2f y3 = delay.update(u3);
 	ASSERT_CL(equal(y3(0), u1(0)));
 	ASSERT_CL(equal(y3(1), u1(1)));
-
+	
 	Vector2f u4(9, 10);
 	Vector2f y4 = delay.update(u4);
 	ASSERT_CL(equal(y4(0), u2(0)));

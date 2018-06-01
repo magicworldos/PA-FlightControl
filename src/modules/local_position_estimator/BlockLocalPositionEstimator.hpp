@@ -42,16 +42,9 @@ static const size_t N_DIST_SUBS = 4;
 // chi squared distribution, false alarm probability 0.0001
 // see fault_table.py
 // note skip 0 index so we can use degree of freedom as index
-static const float BETA_TABLE[7] = {0,
-				    8.82050518214,
-				    12.094592431,
-				    13.9876612368,
-				    16.0875642296,
-				    17.8797700658,
-				    19.6465647819,
-				   };
+static const float BETA_TABLE[7] = { 0, 8.82050518214, 12.094592431, 13.9876612368, 16.0875642296, 17.8797700658, 19.6465647819, };
 
-class BlockLocalPositionEstimator : public control::SuperBlock
+class BlockLocalPositionEstimator: public control::SuperBlock
 {
 // dynamics:
 //
@@ -100,20 +93,90 @@ class BlockLocalPositionEstimator : public control::SuperBlock
 //      land (detects when landed)): pz (always measures agl = 0)
 //
 public:
-
+	
 	// constants
-	enum {X_x = 0, X_y, X_z, X_vx, X_vy, X_vz, X_bx, X_by, X_bz, X_tz, n_x};
-	enum {U_ax = 0, U_ay, U_az, n_u};
-	enum {Y_baro_z = 0, n_y_baro};
-	enum {Y_lidar_z = 0, n_y_lidar};
-	enum {Y_flow_vx = 0, Y_flow_vy, n_y_flow};
-	enum {Y_sonar_z = 0, n_y_sonar};
-	enum {Y_gps_x = 0, Y_gps_y, Y_gps_z, Y_gps_vx, Y_gps_vy, Y_gps_vz, n_y_gps};
-	enum {Y_vision_x = 0, Y_vision_y, Y_vision_z, n_y_vision};
-	enum {Y_mocap_x = 0, Y_mocap_y, Y_mocap_z, n_y_mocap};
-	enum {Y_land_vx = 0, Y_land_vy, Y_land_agl, n_y_land};
-	enum {POLL_FLOW = 0, POLL_SENSORS, POLL_PARAM, n_poll};
-	enum {
+	enum
+	{
+		X_x = 0,
+		X_y,
+		X_z,
+		X_vx,
+		X_vy,
+		X_vz,
+		X_bx,
+		X_by,
+		X_bz,
+		X_tz,
+		n_x
+	};
+	enum
+	{
+		U_ax = 0,
+		U_ay,
+		U_az,
+		n_u
+	};
+	enum
+	{
+		Y_baro_z = 0,
+		n_y_baro
+	};
+	enum
+	{
+		Y_lidar_z = 0,
+		n_y_lidar
+	};
+	enum
+	{
+		Y_flow_vx = 0,
+		Y_flow_vy,
+		n_y_flow
+	};
+	enum
+	{
+		Y_sonar_z = 0,
+		n_y_sonar
+	};
+	enum
+	{
+		Y_gps_x = 0,
+		Y_gps_y,
+		Y_gps_z,
+		Y_gps_vx,
+		Y_gps_vy,
+		Y_gps_vz,
+		n_y_gps
+	};
+	enum
+	{
+		Y_vision_x = 0,
+		Y_vision_y,
+		Y_vision_z,
+		n_y_vision
+	};
+	enum
+	{
+		Y_mocap_x = 0,
+		Y_mocap_y,
+		Y_mocap_z,
+		n_y_mocap
+	};
+	enum
+	{
+		Y_land_vx = 0,
+		Y_land_vy,
+		Y_land_agl,
+		n_y_land
+	};
+	enum
+	{
+		POLL_FLOW = 0,
+		POLL_SENSORS,
+		POLL_PARAM,
+		n_poll
+	};
+	enum
+	{
 		FUSE_GPS = 1 << 0,
 		FUSE_FLOW = 1 << 1,
 		FUSE_VIS_POS = 1 << 2,
@@ -125,7 +188,8 @@ public:
 		FUSE_LAND_TARGET = 1 << 8
 	};
 
-	enum sensor_t {
+	enum sensor_t
+	{
 		SENSOR_BARO = 1 << 0,
 		SENSOR_GPS = 1 << 1,
 		SENSOR_LIDAR = 1 << 2,
@@ -137,7 +201,8 @@ public:
 		SENSOR_LAND_TARGET = 1 << 8,
 	};
 
-	enum estimate_t {
+	enum estimate_t
+	{
 		EST_XY = 1 << 0,
 		EST_Z = 1 << 1,
 		EST_TZ = 1 << 2,
@@ -156,10 +221,7 @@ private:
 	// methods
 	// ----------------------------
 	//
-	Vector<float, n_x> dynamics(
-		float t,
-		const Vector<float, n_x> &x,
-		const Vector<float, n_u> &u);
+	Vector<float, n_x> dynamics(float t, const Vector<float, n_x> &x, const Vector<float, n_u> &u);
 	void initP();
 	void initSS();
 	void updateSSStates();
@@ -169,49 +231,49 @@ private:
 	void predict();
 
 	// lidar
-	int  lidarMeasure(Vector<float, n_y_lidar> &y);
+	int lidarMeasure(Vector<float, n_y_lidar> &y);
 	void lidarCorrect();
 	void lidarInit();
 	void lidarCheckTimeout();
 
 	// sonar
-	int  sonarMeasure(Vector<float, n_y_sonar> &y);
+	int sonarMeasure(Vector<float, n_y_sonar> &y);
 	void sonarCorrect();
 	void sonarInit();
 	void sonarCheckTimeout();
 
 	// baro
-	int  baroMeasure(Vector<float, n_y_baro> &y);
+	int baroMeasure(Vector<float, n_y_baro> &y);
 	void baroCorrect();
 	void baroInit();
 	void baroCheckTimeout();
 
 	// gps
-	int  gpsMeasure(Vector<double, n_y_gps> &y);
+	int gpsMeasure(Vector<double, n_y_gps> &y);
 	void gpsCorrect();
 	void gpsInit();
 	void gpsCheckTimeout();
 
 	// flow
-	int  flowMeasure(Vector<float, n_y_flow> &y);
+	int flowMeasure(Vector<float, n_y_flow> &y);
 	void flowCorrect();
 	void flowInit();
 	void flowCheckTimeout();
 
 	// vision
-	int  visionMeasure(Vector<float, n_y_vision> &y);
+	int visionMeasure(Vector<float, n_y_vision> &y);
 	void visionCorrect();
 	void visionInit();
 	void visionCheckTimeout();
 
 	// mocap
-	int  mocapMeasure(Vector<float, n_y_mocap> &y);
+	int mocapMeasure(Vector<float, n_y_mocap> &y);
 	void mocapCorrect();
 	void mocapInit();
 	void mocapCheckTimeout();
 
 	// land
-	int  landMeasure(Vector<float, n_y_land> &y);
+	int landMeasure(Vector<float, n_y_land> &y);
 	void landCorrect();
 	void landInit();
 	void landCheckTimeout();
@@ -234,7 +296,7 @@ private:
 
 	// attributes
 	// ----------------------------
-
+	
 	// subscriptions
 	uORB::Subscription<actuator_armed_s> _sub_armed;
 	uORB::Subscription<vehicle_land_detected_s> _sub_land;
@@ -264,65 +326,65 @@ private:
 
 	// general parameters
 	BlockParamInt _fusion;
-	BlockParamFloat  _vxy_pub_thresh;
-	BlockParamFloat  _z_pub_thresh;
+	BlockParamFloat _vxy_pub_thresh;
+	BlockParamFloat _z_pub_thresh;
 
 	// sonar parameters
-	BlockParamFloat  _sonar_z_stddev;
-	BlockParamFloat  _sonar_z_offset;
+	BlockParamFloat _sonar_z_stddev;
+	BlockParamFloat _sonar_z_offset;
 
 	// lidar parameters
-	BlockParamFloat  _lidar_z_stddev;
-	BlockParamFloat  _lidar_z_offset;
+	BlockParamFloat _lidar_z_stddev;
+	BlockParamFloat _lidar_z_offset;
 
 	// accel parameters
-	BlockParamFloat  _accel_xy_stddev;
-	BlockParamFloat  _accel_z_stddev;
+	BlockParamFloat _accel_xy_stddev;
+	BlockParamFloat _accel_z_stddev;
 
 	// baro parameters
-	BlockParamFloat  _baro_stddev;
+	BlockParamFloat _baro_stddev;
 
 	// gps parameters
-	BlockParamFloat  _gps_delay;
-	BlockParamFloat  _gps_xy_stddev;
-	BlockParamFloat  _gps_z_stddev;
-	BlockParamFloat  _gps_vxy_stddev;
-	BlockParamFloat  _gps_vz_stddev;
-	BlockParamFloat  _gps_eph_max;
-	BlockParamFloat  _gps_epv_max;
+	BlockParamFloat _gps_delay;
+	BlockParamFloat _gps_xy_stddev;
+	BlockParamFloat _gps_z_stddev;
+	BlockParamFloat _gps_vxy_stddev;
+	BlockParamFloat _gps_vz_stddev;
+	BlockParamFloat _gps_eph_max;
+	BlockParamFloat _gps_epv_max;
 
 	// vision parameters
-	BlockParamFloat  _vision_xy_stddev;
-	BlockParamFloat  _vision_z_stddev;
-	BlockParamFloat  _vision_delay;
+	BlockParamFloat _vision_xy_stddev;
+	BlockParamFloat _vision_z_stddev;
+	BlockParamFloat _vision_delay;
 
 	// mocap parameters
-	BlockParamFloat  _mocap_p_stddev;
+	BlockParamFloat _mocap_p_stddev;
 
 	// flow parameters
-	BlockParamFloat  _flow_z_offset;
-	BlockParamFloat  _flow_scale;
+	BlockParamFloat _flow_z_offset;
+	BlockParamFloat _flow_scale;
 	//BlockParamFloat  _flow_board_x_offs;
 	//BlockParamFloat  _flow_board_y_offs;
-	BlockParamInt    _flow_min_q;
-	BlockParamFloat  _flow_r;
-	BlockParamFloat  _flow_rr;
+	BlockParamInt _flow_min_q;
+	BlockParamFloat _flow_r;
+	BlockParamFloat _flow_rr;
 
 	// land parameters
-	BlockParamFloat  _land_z_stddev;
-	BlockParamFloat  _land_vxy_stddev;
+	BlockParamFloat _land_z_stddev;
+	BlockParamFloat _land_vxy_stddev;
 
 	// process noise
-	BlockParamFloat  _pn_p_noise_density;
-	BlockParamFloat  _pn_v_noise_density;
-	BlockParamFloat  _pn_b_noise_density;
-	BlockParamFloat  _pn_t_noise_density;
-	BlockParamFloat  _t_max_grade;
+	BlockParamFloat _pn_p_noise_density;
+	BlockParamFloat _pn_v_noise_density;
+	BlockParamFloat _pn_b_noise_density;
+	BlockParamFloat _pn_t_noise_density;
+	BlockParamFloat _t_max_grade;
 
 	// init origin
-	BlockParamInt    _fake_origin;
-	BlockParamFloat  _init_origin_lat;
-	BlockParamFloat  _init_origin_lon;
+	BlockParamInt _fake_origin;
+	BlockParamFloat _init_origin_lat;
+	BlockParamFloat _init_origin_lon;
 
 	// flow gyro filter
 	BlockHighPass _flow_gyro_x_high_pass;
@@ -379,15 +441,15 @@ private:
 	uint8_t _estimatorInitialized;
 
 	// state space
-	Vector<float, n_x>  _x;	// state vector
-	Vector<float, n_u>  _u;	// input vector
-	Matrix<float, n_x, n_x>  _P;	// state covariance matrix
-
+	Vector<float, n_x> _x;	// state vector
+	Vector<float, n_u> _u;	// input vector
+	Matrix<float, n_x, n_x> _P;	// state covariance matrix
+	
 	matrix::Dcm<float> _R_att;
 	Vector3f _eul;
 
-	Matrix<float, n_x, n_x>  _A;	// dynamics matrix
-	Matrix<float, n_x, n_u>  _B;	// input matrix
-	Matrix<float, n_u, n_u>  _R;	// input covariance
-	Matrix<float, n_x, n_x>  _Q;	// process noise covariance
+	Matrix<float, n_x, n_x> _A;	// dynamics matrix
+	Matrix<float, n_x, n_u> _B;	// input matrix
+	Matrix<float, n_u, n_u> _R;	// input covariance
+	Matrix<float, n_x, n_x> _Q;	// process noise covariance
 };

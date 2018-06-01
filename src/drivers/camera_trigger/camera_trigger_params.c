@@ -40,19 +40,19 @@
  */
 
 /**
-* Camera trigger Interface
-*
-* Selects the trigger interface
-*
-* @value 1 GPIO
-* @value 2 Seagull MAP2 (over PWM)
-* @value 3 MAVLink (forward via MAV_CMD_IMAGE_START_CAPTURE)
-* @value 4 Generic PWM (IR trigger, servo)
-*
-* @reboot_required true
-*
-* @group Camera trigger
-*/
+ * Camera trigger Interface
+ *
+ * Selects the trigger interface
+ *
+ * @value 1 GPIO
+ * @value 2 Seagull MAP2 (over PWM)
+ * @value 3 MAVLink (forward via MAV_CMD_IMAGE_START_CAPTURE)
+ * @value 4 Generic PWM (IR trigger, servo)
+ *
+ * @reboot_required true
+ *
+ * @group Camera trigger
+ */
 PARAM_DEFINE_INT32(TRIG_INTERFACE, 4);
 
 /**

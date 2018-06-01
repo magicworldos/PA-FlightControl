@@ -73,7 +73,6 @@
 #define BPM280_CONFIG_F8		(0x3<<2)
 #define BPM280_CONFIG_F16		(0x4<<2)
 
-
 #define BPM280_CTRL_MODE_SLEEP	0x0
 #define BPM280_CTRL_MODE_FORCE	0x1		/* on demand, goes to sleep after */
 #define BPM280_CTRL_MODE_NORMAL	0x3
@@ -100,7 +99,8 @@ struct calibration_s
 	int16_t p7;
 	int16_t p8;
 	int16_t p9;
-}; //calibration data
+};
+//calibration data
 
 struct data_s
 {
@@ -111,7 +111,8 @@ struct data_s
 	uint8_t t_msb;
 	uint8_t t_lsb;
 	uint8_t t_xlsb;
-}; // data
+};
+// data
 #pragma pack(pop)
 
 struct fcalibration_s
@@ -135,7 +136,7 @@ class IBMP280
 {
 public:
 	virtual ~IBMP280() = default;
-
+	
 	virtual bool is_external() = 0;
 	virtual int init() = 0;
 
@@ -150,11 +151,10 @@ public:
 
 	// bulk read of calibration data into buffer, return same pointer
 	virtual bmp280::calibration_s *get_calibration(uint8_t addr) = 0;
-
+	
 };
 
 } /* namespace */
-
 
 /* interface factories */
 extern bmp280::IBMP280 *bmp280_spi_interface(uint8_t busnum, uint8_t device, bool external);

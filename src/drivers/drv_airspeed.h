@@ -64,12 +64,11 @@
 #define AIRSPEEDIOCSSCALE		__AIRSPEEDIOC(0)
 #define AIRSPEEDIOCGSCALE		__AIRSPEEDIOC(1)
 
-
 /** airspeed scaling factors; out = (in * Vscale) + offset */
 struct airspeed_scale
 {
-	float	offset_pa;
-	float	scale;
+	float offset_pa;
+	float scale;
 };
 
 #endif /* _DRV_AIRSPEED_H */

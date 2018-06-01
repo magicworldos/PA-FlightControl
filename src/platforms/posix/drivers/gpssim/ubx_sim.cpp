@@ -70,12 +70,11 @@
 #define UBX_WAIT_BEFORE_READ	20		// ms, wait before reading to save read() calls
 #define DISABLE_MSG_INTERVAL	1000000		// us, try to disable message with this interval
 
-
 UBX::UBX(const int &fd, struct vehicle_gps_position_s *gps_position, struct satellite_info_s *satellite_info) :
-	_fd(fd),
-	_gps_position(gps_position),
-	_satellite_info(satellite_info),
-{
+_fd(fd),
+_gps_position(gps_position),
+_satellite_info(satellite_info),
+{	
 }
 
 UBX::~UBX()

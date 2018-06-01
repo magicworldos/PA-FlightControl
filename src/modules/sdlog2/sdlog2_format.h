@@ -41,26 +41,26 @@
  */
 
 /*
-Format characters in the format string for binary log messages
-  b   : int8_t
-  B   : uint8_t
-  h   : int16_t
-  H   : uint16_t
-  i   : int32_t
-  I   : uint32_t
-  f   : float
-  n   : char[4]
-  N   : char[16]
-  Z   : char[64]
-  c   : int16_t * 100
-  C   : uint16_t * 100
-  e   : int32_t * 100
-  E   : uint32_t * 100
-  L   : int32_t latitude/longitude
-  M   : uint8_t flight mode
+ Format characters in the format string for binary log messages
+ b   : int8_t
+ B   : uint8_t
+ h   : int16_t
+ H   : uint16_t
+ i   : int32_t
+ I   : uint32_t
+ f   : float
+ n   : char[4]
+ N   : char[16]
+ Z   : char[64]
+ c   : int16_t * 100
+ C   : uint16_t * 100
+ e   : int32_t * 100
+ E   : uint32_t * 100
+ L   : int32_t latitude/longitude
+ M   : uint8_t flight mode
 
-  q   : int64_t
-  Q   : uint64_t
+ q   : int64_t
+ Q   : uint64_t
  */
 
 #ifndef SDLOG2_FORMAT_H_

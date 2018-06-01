@@ -49,38 +49,38 @@
  */
 enum Rotation
 {
-	ROTATION_NONE                = 0,
-	ROTATION_YAW_45              = 1,
-	ROTATION_YAW_90              = 2,
-	ROTATION_YAW_135             = 3,
-	ROTATION_YAW_180             = 4,
-	ROTATION_YAW_225             = 5,
-	ROTATION_YAW_270             = 6,
-	ROTATION_YAW_315             = 7,
-	ROTATION_ROLL_180            = 8,
-	ROTATION_ROLL_180_YAW_45     = 9,
-	ROTATION_ROLL_180_YAW_90     = 10,
-	ROTATION_ROLL_180_YAW_135    = 11,
-	ROTATION_PITCH_180           = 12,
-	ROTATION_ROLL_180_YAW_225    = 13,
-	ROTATION_ROLL_180_YAW_270    = 14,
-	ROTATION_ROLL_180_YAW_315    = 15,
-	ROTATION_ROLL_90             = 16,
-	ROTATION_ROLL_90_YAW_45      = 17,
-	ROTATION_ROLL_90_YAW_90      = 18,
-	ROTATION_ROLL_90_YAW_135     = 19,
-	ROTATION_ROLL_270            = 20,
-	ROTATION_ROLL_270_YAW_45     = 21,
-	ROTATION_ROLL_270_YAW_90     = 22,
-	ROTATION_ROLL_270_YAW_135    = 23,
-	ROTATION_PITCH_90            = 24,
-	ROTATION_PITCH_270           = 25,
-	ROTATION_ROLL_270_YAW_270    = 26,
-	ROTATION_ROLL_180_PITCH_270  = 27,
-	ROTATION_PITCH_90_YAW_180    = 28,
-	ROTATION_PITCH_90_ROLL_90	 = 29,
+	ROTATION_NONE = 0,
+	ROTATION_YAW_45 = 1,
+	ROTATION_YAW_90 = 2,
+	ROTATION_YAW_135 = 3,
+	ROTATION_YAW_180 = 4,
+	ROTATION_YAW_225 = 5,
+	ROTATION_YAW_270 = 6,
+	ROTATION_YAW_315 = 7,
+	ROTATION_ROLL_180 = 8,
+	ROTATION_ROLL_180_YAW_45 = 9,
+	ROTATION_ROLL_180_YAW_90 = 10,
+	ROTATION_ROLL_180_YAW_135 = 11,
+	ROTATION_PITCH_180 = 12,
+	ROTATION_ROLL_180_YAW_225 = 13,
+	ROTATION_ROLL_180_YAW_270 = 14,
+	ROTATION_ROLL_180_YAW_315 = 15,
+	ROTATION_ROLL_90 = 16,
+	ROTATION_ROLL_90_YAW_45 = 17,
+	ROTATION_ROLL_90_YAW_90 = 18,
+	ROTATION_ROLL_90_YAW_135 = 19,
+	ROTATION_ROLL_270 = 20,
+	ROTATION_ROLL_270_YAW_45 = 21,
+	ROTATION_ROLL_270_YAW_90 = 22,
+	ROTATION_ROLL_270_YAW_135 = 23,
+	ROTATION_PITCH_90 = 24,
+	ROTATION_PITCH_270 = 25,
+	ROTATION_ROLL_270_YAW_270 = 26,
+	ROTATION_ROLL_180_PITCH_270 = 27,
+	ROTATION_PITCH_90_YAW_180 = 28,
+	ROTATION_PITCH_90_ROLL_90 = 29,
 	ROTATION_YAW_293_PITCH_68_ROLL_90 = 30,
-	ROTATION_PITCH_90_ROLL_270	 = 31,
+	ROTATION_PITCH_90_ROLL_270 = 31,
 	ROTATION_PITCH_9_YAW_180 = 32,
 	ROTATION_MAX
 };
@@ -92,42 +92,7 @@ typedef struct
 	uint16_t yaw;
 } rot_lookup_t;
 
-const rot_lookup_t rot_lookup[] =
-{
-	{  0,   0,   0 },
-	{  0,   0,  45 },
-	{  0,   0,  90 },
-	{  0,   0, 135 },
-	{  0,   0, 180 },
-	{  0,   0, 225 },
-	{  0,   0, 270 },
-	{  0,   0, 315 },
-	{180,   0,   0 },
-	{180,   0,  45 },
-	{180,   0,  90 },
-	{180,   0, 135 },
-	{  0, 180,   0 },
-	{180,   0, 225 },
-	{180,   0, 270 },
-	{180,   0, 315 },
-	{ 90,   0,   0 },
-	{ 90,   0,  45 },
-	{ 90,   0,  90 },
-	{ 90,   0, 135 },
-	{270,   0,   0 },
-	{270,   0,  45 },
-	{270,   0,  90 },
-	{270,   0, 135 },
-	{  0,  90,   0 },
-	{  0, 270,   0 },
-	{270,   0, 270 },
-	{180, 270,   0 },
-	{  0,  90, 180 },
-	{ 90,  90,   0 },
-	{ 90,  68, 293 },
-	{270,  90,   0 },
-	{  0,   9, 180 },
-};
+const rot_lookup_t rot_lookup[] = { { 0, 0, 0 }, { 0, 0, 45 }, { 0, 0, 90 }, { 0, 0, 135 }, { 0, 0, 180 }, { 0, 0, 225 }, { 0, 0, 270 }, { 0, 0, 315 }, { 180, 0, 0 }, { 180, 0, 45 }, { 180, 0, 90 }, { 180, 0, 135 }, { 0, 180, 0 }, { 180, 0, 225 }, { 180, 0, 270 }, { 180, 0, 315 }, { 90, 0, 0 }, { 90, 0, 45 }, { 90, 0, 90 }, { 90, 0, 135 }, { 270, 0, 0 }, { 270, 0, 45 }, { 270, 0, 90 }, { 270, 0, 135 }, { 0, 90, 0 }, { 0, 270, 0 }, { 270, 0, 270 }, { 180, 270, 0 }, { 0, 90, 180 }, { 90, 90, 0 }, { 90, 68, 293 }, { 270, 90, 0 }, { 0, 9, 180 }, };
 
 /**
  * Get the rotation matrix
@@ -135,12 +100,10 @@ const rot_lookup_t rot_lookup[] =
 __EXPORT void
 get_rot_matrix(enum Rotation rot, math::Matrix<3, 3> *rot_matrix);
 
-
 /**
  * rotate a 3 element float vector in-place
  */
 __EXPORT void
 rotate_3f(enum Rotation rot, float &x, float &y, float &z);
-
 
 #endif /* ROTATION_H_ */

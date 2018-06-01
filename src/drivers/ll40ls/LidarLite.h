@@ -31,7 +31,6 @@
  *
  ****************************************************************************/
 
-
 /**
  * @file LidarLite.h
  * @author Johan Jansen <jnsn.johan@gmail.com>
@@ -69,9 +68,9 @@ public:
 	virtual void stop() = 0;
 
 	/**
-	* @brief
-	*   Diagnostics - print some basic information about the driver.
-	*/
+	 * @brief
+	 *   Diagnostics - print some basic information about the driver.
+	 */
 	virtual void print_info() = 0;
 
 	/**
@@ -84,24 +83,24 @@ public:
 
 protected:
 	/**
-	* Set the min and max distance thresholds if you want the end points of the sensors
-	* range to be brought in at all, otherwise it will use the defaults LL40LS_MIN_DISTANCE
-	* and LL40LS_MAX_DISTANCE
-	*/
-	void                set_minimum_distance(const float min);
-	void                set_maximum_distance(const float max);
-	float               get_minimum_distance() const;
-	float               get_maximum_distance() const;
+	 * Set the min and max distance thresholds if you want the end points of the sensors
+	 * range to be brought in at all, otherwise it will use the defaults LL40LS_MIN_DISTANCE
+	 * and LL40LS_MAX_DISTANCE
+	 */
+	void set_minimum_distance(const float min);
+	void set_maximum_distance(const float max);
+	float get_minimum_distance() const;
+	float get_maximum_distance() const;
 
-	uint32_t            getMeasureTicks() const;
+	uint32_t getMeasureTicks() const;
 
-	virtual int         measure() = 0;
-	virtual int         collect() = 0;
+	virtual int measure() = 0;
+	virtual int collect() = 0;
 
-	virtual int         reset_sensor() = 0;
+	virtual int reset_sensor() = 0;
 
 private:
-	float               _min_distance;
-	float               _max_distance;
-	uint32_t            _measure_ticks;
+	float _min_distance;
+	float _max_distance;
+	uint32_t _measure_ticks;
 };

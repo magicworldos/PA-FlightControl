@@ -63,22 +63,22 @@
 /* This structure represents the changeable state of the automounter */
 
 struct nxphlite_automount_state_s
-{
-	volatile automount_handler_t handler;    /* Upper half handler */
-	FAR void *arg;                           /* Handler argument */
-	bool enable;                             /* Fake interrupt enable */
-	bool pending;                            /* Set if there an event while disabled */
+{	
+	volatile automount_handler_t handler; /* Upper half handler */
+	FAR void *arg; /* Handler argument */
+	bool enable; /* Fake interrupt enable */
+	bool pending; /* Set if there an event while disabled */
 };
 
 /* This structure represents the static configuration of an automounter */
 
 struct nxphlite_automount_config_s
-{
+{	
 	/* This must be first thing in structure so that we can simply cast from struct
 	 * automount_lower_s to struct nxphlite_automount_config_s
 	 */
 
-	struct automount_lower_s lower;          /* Publicly visible part */
+	struct automount_lower_s lower; /* Publicly visible part */
 	FAR struct nxphlite_automount_state_s *state; /* Changeable state */
 };
 
@@ -86,8 +86,8 @@ struct nxphlite_automount_config_s
  * Private Function Prototypes
  ************************************************************************************/
 
-static int  nxphlite_attach(FAR const struct automount_lower_s *lower,
-			    automount_handler_t isr, FAR void *arg);
+static int nxphlite_attach(FAR const struct automount_lower_s *lower,
+		automount_handler_t isr, FAR void *arg);
 static void nxphlite_enable(FAR const struct automount_lower_s *lower, bool enable);
 static bool nxphlite_inserted(FAR const struct automount_lower_s *lower);
 
@@ -97,19 +97,19 @@ static bool nxphlite_inserted(FAR const struct automount_lower_s *lower);
 
 static struct nxphlite_automount_state_s g_sdhc_state;
 static const struct nxphlite_automount_config_s g_sdhc_config =
-{
-	.lower        =
-	{
-		.fstype     = CONFIG_NXPHLITE_SDHC_AUTOMOUNT_FSTYPE,
-		.blockdev   = CONFIG_NXPHLITE_SDHC_AUTOMOUNT_BLKDEV,
+{	
+	.lower =
+	{	
+		.fstype = CONFIG_NXPHLITE_SDHC_AUTOMOUNT_FSTYPE,
+		.blockdev = CONFIG_NXPHLITE_SDHC_AUTOMOUNT_BLKDEV,
 		.mountpoint = CONFIG_NXPHLITE_SDHC_AUTOMOUNT_MOUNTPOINT,
-		.ddelay     = MSEC2TICK(CONFIG_NXPHLITE_SDHC_AUTOMOUNT_DDELAY),
-		.udelay     = MSEC2TICK(CONFIG_NXPHLITE_SDHC_AUTOMOUNT_UDELAY),
-		.attach     = nxphlite_attach,
-		.enable     = nxphlite_enable,
-		.inserted   = nxphlite_inserted
+		.ddelay = MSEC2TICK(CONFIG_NXPHLITE_SDHC_AUTOMOUNT_DDELAY),
+		.udelay = MSEC2TICK(CONFIG_NXPHLITE_SDHC_AUTOMOUNT_UDELAY),
+		.attach = nxphlite_attach,
+		.enable = nxphlite_enable,
+		.inserted = nxphlite_inserted
 	},
-	.state        = &g_sdhc_state
+	.state = &g_sdhc_state
 };
 
 /************************************************************************************
@@ -133,8 +133,8 @@ static const struct nxphlite_automount_config_s g_sdhc_config =
  ************************************************************************************/
 
 static int nxphlite_attach(FAR const struct automount_lower_s *lower,
-			   automount_handler_t isr, FAR void *arg)
-{
+		automount_handler_t isr, FAR void *arg)
+{	
 	FAR const struct nxphlite_automount_config_s *config;
 	FAR struct nxphlite_automount_state_s *state;
 
@@ -151,7 +151,7 @@ static int nxphlite_attach(FAR const struct automount_lower_s *lower,
 
 	state->handler = NULL;
 	state->pending = false;
-	state->arg     = arg;
+	state->arg = arg;
 	state->handler = isr;
 	return OK;
 }
@@ -172,7 +172,7 @@ static int nxphlite_attach(FAR const struct automount_lower_s *lower,
  ************************************************************************************/
 
 static void nxphlite_enable(FAR const struct automount_lower_s *lower, bool enable)
-{
+{	
 	FAR const struct nxphlite_automount_config_s *config;
 	FAR struct nxphlite_automount_state_s *state;
 	irqstate_t flags;
@@ -192,11 +192,11 @@ static void nxphlite_enable(FAR const struct automount_lower_s *lower, bool enab
 	/* Did an interrupt occur while interrupts were disabled? */
 
 	if (enable && state->pending)
-	{
+	{	
 		/* Yes.. perform the fake interrupt if the interrutp is attached */
 
 		if (state->handler)
-		{
+		{	
 			bool inserted = nxphlite_cardinserted();
 			(void)state->handler(&config->lower, state->arg, inserted);
 		}
@@ -222,7 +222,7 @@ static void nxphlite_enable(FAR const struct automount_lower_s *lower, bool enab
  ************************************************************************************/
 
 static bool nxphlite_inserted(FAR const struct automount_lower_s *lower)
-{
+{	
 	return nxphlite_cardinserted();
 }
 
@@ -245,7 +245,7 @@ static bool nxphlite_inserted(FAR const struct automount_lower_s *lower)
  ************************************************************************************/
 
 void nxphlite_automount_initialize(void)
-{
+{	
 	FAR void *handle;
 
 	finfo("Initializing automounter(s)\n");
@@ -255,7 +255,7 @@ void nxphlite_automount_initialize(void)
 	handle = automount_initialize(&g_sdhc_config.lower);
 
 	if (!handle)
-	{
+	{	
 		ferr("ERROR: Failed to initialize auto-mounter for SDHC0\n");
 	}
 }
@@ -285,18 +285,18 @@ void nxphlite_automount_initialize(void)
  ************************************************************************************/
 
 void nxphlite_automount_event(bool inserted)
-{
+{	
 	FAR const struct nxphlite_automount_config_s *config = &g_sdhc_config;
 	FAR struct nxphlite_automount_state_s *state = &g_sdhc_state;
 
 	/* Is the auto-mounter interrupt attached? */
 
 	if (state->handler)
-	{
+	{	
 		/* Yes.. Have we been asked to hold off interrupts? */
 
 		if (!state->enable)
-		{
+		{	
 			/* Yes.. just remember the there is a pending interrupt. We will
 			 * deliver the interrupt when interrupts are "re-enabled."
 			 */
@@ -305,7 +305,7 @@ void nxphlite_automount_event(bool inserted)
 
 		}
 		else
-		{
+		{	
 			/* No.. forward the event to the handler */
 
 			(void)state->handler(&config->lower, state->arg, inserted);

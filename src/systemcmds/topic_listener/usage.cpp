@@ -38,17 +38,15 @@
 
 #include <px4_module.h>
 
-static void
-usage()
+static void usage()
 {
-	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
+	PRINT_MODULE_DESCRIPTION(R"DESCR_STR(
 Utility to listen on uORB topics and print the data to the console.
 
 Limitation: it can only listen to the first instance of a topic.
 
 )DESCR_STR");
-
+	
 	PRINT_MODULE_USAGE_NAME_SIMPLE("listener", "command");
 	PRINT_MODULE_USAGE_ARG("<topic_name> [<num_msgs>]", "uORB topic name and optionally number of messages (default=1)", false);
 }

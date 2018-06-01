@@ -38,18 +38,17 @@
 
 #include "tests_main.h"
 
-int
-test_perf(int argc, char *argv[])
+int test_perf(int argc, char *argv[])
 {
 	perf_counter_t cc = perf_alloc(PC_COUNT, "test_count");
 	perf_counter_t ec = perf_alloc(PC_ELAPSED, "test_elapsed");
-
+	
 	if ((cc == NULL) || (ec == NULL))
 	{
 		printf("perf: counter alloc failed\n");
 		return 1;
 	}
-
+	
 	perf_begin(ec);
 	perf_count(cc);
 	perf_count(cc);
@@ -62,9 +61,9 @@ test_perf(int argc, char *argv[])
 	perf_print_counter(ec);
 	printf("perf: expect at least two counters\n");
 	perf_print_all(1);
-
+	
 	perf_free(cc);
 	perf_free(ec);
-
+	
 	return OK;
 }

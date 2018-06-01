@@ -64,15 +64,14 @@ int qshell_main(int argc, char *argv[])
 		usage();
 		return 1;
 	}
-
+	
 	std::vector<std::string> argList;
-
+	
 	for (int i = 1; i < argc; i++)
 	{
 		argList.push_back(argv[i]);
 	}
-
-
+	
 	QShell qshell;
 	return qshell.main(argList);
 }

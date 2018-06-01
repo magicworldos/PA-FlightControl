@@ -292,31 +292,30 @@
 
 typedef enum board_reset_e
 {
-	board_reset_normal           = 0,  /* Perform a normal reset */
-	board_reset_extended         = 1,  /* Perform an extend reset as defined by board */
-	board_reset_power_off        = 2,  /* Reset to the boot loader, signaling a power off */
-	board_reset_enter_bootloader = 3   /* Perform a reset to the boot loader */
+	board_reset_normal = 0, /* Perform a normal reset */
+	board_reset_extended = 1, /* Perform an extend reset as defined by board */
+	board_reset_power_off = 2, /* Reset to the boot loader, signaling a power off */
+	board_reset_enter_bootloader = 3 /* Perform a reset to the boot loader */
 } board_reset_e;
 
 /* board power button state notification */
 
 typedef enum board_power_button_state_notification_e
 {
-	PWR_BUTTON_IDEL,                       /* Button went up without meeting shutdown button down time */
-	PWR_BUTTON_DOWN,                       /* Button went Down */
-	PWR_BUTTON_UP,                         /* Button went Up */
-	PWR_BUTTON_REQUEST_SHUT_DOWN,          /* Button went up after meeting shutdown button down time */
-
+	PWR_BUTTON_IDEL, /* Button went up without meeting shutdown button down time */
+	PWR_BUTTON_DOWN, /* Button went Down */
+	PWR_BUTTON_UP, /* Button went Up */
+	PWR_BUTTON_REQUEST_SHUT_DOWN, /* Button went up after meeting shutdown button down time */
+	
 	PWR_BUTTON_RESPONSE_SHUT_DOWN_PENDING, /* Response from call back board code does nothing the
-                                            * expectation is that board_shutdown will be called.
-                                            */
-	PWR_BUTTON_RESPONSE_SHUT_DOWN_NOW,     /* Response from call back board code does shutdown now. */
+	 * expectation is that board_shutdown will be called.
+	 */
+	PWR_BUTTON_RESPONSE_SHUT_DOWN_NOW, /* Response from call back board code does shutdown now. */
 } board_power_button_state_notification_e;
 
 /* board call back signature  */
 
 typedef int (*power_button_state_notification_t)(board_power_button_state_notification_e request);
-
 
 /* UUID
  *
@@ -531,7 +530,8 @@ __EXPORT void board_on_reset(int status);
 #if defined(BOARD_HAS_NO_RESET)
 #  define board_system_reset(status)
 #else
-__EXPORT void board_system_reset(int status) noreturn_function;
+__EXPORT void board_system_reset(int status)
+noreturn_function;
 #endif
 
 /************************************************************************************
@@ -698,9 +698,7 @@ __EXPORT void board_get_uuid32(uuid_uint32_t uuid_words); // DEPRICATED use boar
  *   Zero (OK) is returned on success;
  *
  ************************************************************************************/
-__EXPORT int board_get_uuid32_formated(char *format_buffer, int size,
-				       const char *format,
-				       const char *seperator); // DEPRICATED use board_get_px4_guid_formated
+__EXPORT int board_get_uuid32_formated(char *format_buffer, int size, const char *format, const char *seperator); // DEPRICATED use board_get_px4_guid_formated
 #endif // !defined(BOARD_OVERRIDE_UUID)
 
 #if !defined(BOARD_OVERRIDE_MFGUID)
@@ -867,8 +865,14 @@ int board_register_power_state_notification_cb(power_button_state_notification_t
 int board_shutdown(void);
 
 #else
-static inline int board_register_power_state_notification_cb(power_button_state_notification_t cb) { return 0; }
-static inline int board_shutdown(void) { return -EINVAL; }
+static inline int board_register_power_state_notification_cb(power_button_state_notification_t cb)
+{
+	return 0;
+}
+static inline int board_shutdown(void)
+{
+	return -EINVAL;
+}
 #endif
 
 /************************************************************************************
@@ -890,7 +894,6 @@ __EXPORT bool px4_i2c_bus_external(int bus);
 
 #endif /* BOARD_HAS_SIMPLE_HW_VERSIONING */
 
-
 /************************************************************************************
  * Name: px4_spi_bus_external
  *
@@ -909,6 +912,5 @@ __EXPORT bool px4_spi_bus_external(int bus);
 #endif /* PX4_SPI_BUS_EXT */
 
 #endif /* BOARD_HAS_SIMPLE_HW_VERSIONING */
-
 
 #include "board_internal_common.h"

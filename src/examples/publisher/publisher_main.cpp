@@ -39,17 +39,17 @@
  */
 #include "publisher_example.h"
 
-bool thread_running = false;     /**< Deamon status flag */
+bool thread_running = false; /**< Deamon status flag */
 
 int main(int argc, char **argv)
 {
 	px4::init(argc, argv, "publisher");
-
+	
 	PX4_INFO("starting");
 	PublisherExample p;
 	thread_running = true;
 	p.main();
-
+	
 	PX4_INFO("exiting.");
 	thread_running = false;
 	return 0;

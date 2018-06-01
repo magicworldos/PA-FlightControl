@@ -56,5 +56,4 @@
 #define _PX4FLOWIOCBASE			(0x7700)
 #define __PX4FLOWIOC(_n)		(_IOC(_PX4FLOWIOCBASE, _n))
 
-
 #endif /* _DRV_PX4FLOW_H */

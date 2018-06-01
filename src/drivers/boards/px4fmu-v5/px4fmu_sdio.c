@@ -54,7 +54,6 @@
 
 #ifdef CONFIG_MMCSD
 
-
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -89,13 +88,13 @@ static bool g_sd_inserted = 0xff; /* Impossible value */
 
 #ifdef HAVE_NCD
 static int stm32_ncd_interrupt(int irq, FAR void *context)
-{
+{	
 	bool present;
 
 	present = !stm32_gpioread(GPIO_SDMMC1_NCD);
 
 	if (sdio_dev && present != g_sd_inserted)
-	{
+	{	
 		sdio_mediachange(sdio_dev, present);
 		g_sd_inserted = present;
 	}
@@ -117,7 +116,7 @@ static int stm32_ncd_interrupt(int irq, FAR void *context)
  ****************************************************************************/
 
 int stm32_sdio_initialize(void)
-{
+{	
 	int ret;
 
 #ifdef HAVE_NCD
@@ -133,7 +132,7 @@ int stm32_sdio_initialize(void)
 
 	stm32_gpiosetevent(GPIO_SDMMC1_NCD, true, true, true, stm32_ncd_interrupt);
 #endif
-
+	
 	/* Mount the SDIO-based MMC/SD block driver */
 	/* First, get an instance of the SDIO interface */
 
@@ -142,7 +141,7 @@ int stm32_sdio_initialize(void)
 	sdio_dev = sdio_initialize(SDIO_SLOTNO);
 
 	if (!sdio_dev)
-	{
+	{	
 		PX4_ERR("[boot] Failed to initialize SDIO slot %d\n", SDIO_SLOTNO);
 		return -ENODEV;
 	}
@@ -154,7 +153,7 @@ int stm32_sdio_initialize(void)
 	ret = mmcsd_slotinitialize(SDIO_MINOR, sdio_dev);
 
 	if (ret != OK)
-	{
+	{	
 		PX4_ERR("[boot] Failed to bind SDIO to the MMC/SD driver: %d\n", ret);
 		return ret;
 	}
@@ -173,7 +172,7 @@ int stm32_sdio_initialize(void)
 
 	sdio_mediachange(sdio_dev, true);
 #endif
-
+	
 	return OK;
 }
 

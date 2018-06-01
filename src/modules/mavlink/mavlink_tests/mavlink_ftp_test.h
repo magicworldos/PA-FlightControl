@@ -33,14 +33,13 @@
 
 /// @file mavlink_ftp_test.h
 ///	@author Don Gagne <don@thegagnes.com>
-
 #pragma once
 
 #include <unit_test.h>
 #include "../mavlink_bridge_header.h"
 #include "../mavlink_ftp.h"
 
-class MavlinkFtpTest : public UnitTest
+class MavlinkFtpTest: public UnitTest
 {
 public:
 	MavlinkFtpTest();
@@ -53,11 +52,11 @@ public:
 	/// Worker data for stream handler
 	struct BurstInfo
 	{
-		MavlinkFtpTest		*ftp_test_class;
-		int			burst_state;
-		bool			single_packet_file;
-		uint32_t		file_size;
-		uint8_t		*file_bytes;
+		MavlinkFtpTest *ftp_test_class;
+		int burst_state;
+		bool single_packet_file;
+		uint32_t file_size;
+		uint8_t *file_bytes;
 	};
 
 	static void receive_message_handler_burst(const mavlink_file_transfer_protocol_t *ftp_req, void *worker_data);
@@ -65,10 +64,10 @@ public:
 	static const uint8_t serverSystemId = 50;	///< System ID for server
 	static const uint8_t serverComponentId = 1;	///< Component ID for server
 	static const uint8_t serverChannel = 0;		///< Channel to send to
-
+	
 	static const uint8_t clientSystemId = 1;	///< System ID for client
 	static const uint8_t clientComponentId = 0;	///< Component ID for client
-
+	
 	// We don't want any of these
 	MavlinkFtpTest(const MavlinkFtpTest &);
 	MavlinkFtpTest &operator=(const MavlinkFtpTest &);
@@ -93,22 +92,18 @@ private:
 	bool _removefile_test(void);
 
 	void _receive_message_handler_generic(const mavlink_file_transfer_protocol_t *ftp_req);
-	void _setup_ftp_msg(const MavlinkFTP::PayloadHeader *payload_header, uint8_t size, const uint8_t *data,
-			    mavlink_message_t *msg);
+	void _setup_ftp_msg(const MavlinkFTP::PayloadHeader *payload_header, uint8_t size, const uint8_t *data, mavlink_message_t *msg);
 	bool _decode_message(const mavlink_file_transfer_protocol_t *ftp_msg, const MavlinkFTP::PayloadHeader **payload);
-	bool _send_receive_msg(MavlinkFTP::PayloadHeader	*payload_header,
-			       uint8_t				size,
-			       const uint8_t			*data,
-			       const MavlinkFTP::PayloadHeader	**payload_reply);
+	bool _send_receive_msg(MavlinkFTP::PayloadHeader *payload_header, uint8_t size, const uint8_t *data, const MavlinkFTP::PayloadHeader **payload_reply);
 	void _cleanup_microsd(void);
 
 	/// A single download test case
 	struct DownloadTestCase
 	{
-		const char	*file;
-		const uint16_t	length;
-		bool		singlePacketRead;
-		bool		exactlyFillPacket;
+		const char *file;
+		const uint16_t length;
+		bool singlePacketRead;
+		bool exactlyFillPacket;
 	};
 
 	/// The set of test cases for download testing
@@ -125,8 +120,8 @@ private:
 
 	bool _receive_message_handler_burst(const mavlink_file_transfer_protocol_t *ftp_req, BurstInfo *burst_info);
 
-	MavlinkFTP	*_ftp_server;
-	uint16_t	_expected_seq_number;
+	MavlinkFTP *_ftp_server;
+	uint16_t _expected_seq_number;
 
 	mavlink_file_transfer_protocol_t _reply_msg;
 

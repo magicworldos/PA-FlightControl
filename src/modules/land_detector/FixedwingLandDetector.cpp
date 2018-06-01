@@ -55,10 +55,10 @@ FixedwingLandDetector::FixedwingLandDetector()
 	_paramHandle.maxClimbRate = param_find("LNDFW_VEL_Z_MAX");
 	_paramHandle.maxAirSpeed = param_find("LNDFW_AIRSPD_MAX");
 	_paramHandle.maxIntVelocity = param_find("LNDFW_VELI_MAX");
-
+	
 	// Use Trigger time when transitioning from in-air (false) to landed (true) / ground contact (true).
 	_landed_hysteresis.set_hysteresis_time_from(false, LANDED_TRIGGER_TIME_US);
-
+	
 	_landed_hysteresis.set_hysteresis_time_from(true, FLYING_TRIGGER_TIME_US);
 }
 
@@ -99,50 +99,45 @@ bool FixedwingLandDetector::_get_landed_state()
 	{
 		return true;
 	}
-
+	
 	bool landDetected = false;
-
+	
 	if (hrt_elapsed_time(&_local_pos.timestamp) < 500 * 1000)
 	{
-
+		
 		// horizontal velocity
-		float val = 0.97f * _velocity_xy_filtered + 0.03f * sqrtf(_local_pos.vx * _local_pos.vx + _local_pos.vy *
-				_local_pos.vy);
-
+		float val = 0.97f * _velocity_xy_filtered + 0.03f * sqrtf(_local_pos.vx * _local_pos.vx + _local_pos.vy * _local_pos.vy);
+		
 		if (PX4_ISFINITE(val))
 		{
 			_velocity_xy_filtered = val;
 		}
-
+		
 		// vertical velocity
 		val = 0.99f * _velocity_z_filtered + 0.01f * fabsf(_local_pos.vz);
-
+		
 		if (PX4_ISFINITE(val))
 		{
 			_velocity_z_filtered = val;
 		}
-
+		
 		_airspeed_filtered = 0.95f * _airspeed_filtered + 0.05f * _airspeed.true_airspeed_m_s;
-
+		
 		// a leaking lowpass prevents biases from building up, but
 		// gives a mostly correct response for short impulses
-		const float acc_hor = sqrtf(_sensors.accel_x * _sensors.accel_x +
-					    _sensors.accel_y * _sensors.accel_y);
+		const float acc_hor = sqrtf(_sensors.accel_x * _sensors.accel_x + _sensors.accel_y * _sensors.accel_y);
 		_accel_horz_lp = _accel_horz_lp * 0.8f + acc_hor * 0.18f;
-
+		
 		// crude land detector for fixedwing
-		landDetected = _velocity_xy_filtered < _params.maxVelocity
-			       && _velocity_z_filtered < _params.maxClimbRate
-			       && _airspeed_filtered < _params.maxAirSpeed
-			       && _accel_horz_lp < _params.maxIntVelocity;
-
+		landDetected = _velocity_xy_filtered < _params.maxVelocity && _velocity_z_filtered < _params.maxClimbRate && _airspeed_filtered < _params.maxAirSpeed && _accel_horz_lp < _params.maxIntVelocity;
+		
 	}
 	else
 	{
 		// Control state topic has timed out and we need to assume we're landed.
 		landDetected = true;
 	}
-
+	
 	return landDetected;
 }
 

@@ -49,7 +49,6 @@
 
 typedef const uint8_t uuid_uint8_reorder_t[PX4_CPU_UUID_BYTE_LENGTH];
 
-
 void board_get_uuid(uuid_byte_t uuid_bytes)
 {
 	uuid_uint8_reorder_t reorder = CPU_UUID_BYTE_FORMAT_ORDER;
@@ -58,11 +57,11 @@ void board_get_uuid(uuid_byte_t uuid_bytes)
 		uuid_byte_t b;
 		uuid_uint32_t w;
 	} id;
-
+	
 	/* Copy the serial from the chips non-write memory */
 
 	board_get_uuid32(id.w);
-
+	
 	/* swap endianess */
 
 	for (int i = 0; i < PX4_CPU_UUID_BYTE_LENGTH; i++)
@@ -74,60 +73,58 @@ void board_get_uuid(uuid_byte_t uuid_bytes)
 __EXPORT void board_get_uuid32(uuid_uint32_t uuid_words)
 {
 	uint32_t *chip_uuid = (uint32_t *) STM32_SYSMEM_UID;
-
+	
 	for (unsigned i = 0; i < PX4_CPU_UUID_WORD32_LENGTH; i++)
 	{
 		uuid_words[i] = chip_uuid[i];
 	}
 }
 
-int board_get_uuid32_formated(char *format_buffer, int size,
-			      const char *format,
-			      const char *seperator)
+int board_get_uuid32_formated(char *format_buffer, int size, const char *format, const char *seperator)
 {
 	uuid_uint32_t uuid;
 	board_get_uuid32(uuid);
 	int offset = 0;
 	int sep_size = seperator ? strlen(seperator) : 0;
-
+	
 	for (unsigned i = 0; i < PX4_CPU_UUID_WORD32_LENGTH; i++)
 	{
 		offset += snprintf(&format_buffer[offset], size - offset, format, uuid[i]);
-
+		
 		if (sep_size && i < PX4_CPU_UUID_WORD32_LENGTH - 1)
 		{
 			strcat(&format_buffer[offset], seperator);
 			offset += sep_size;
 		}
 	}
-
+	
 	return 0;
 }
 
 int board_get_mfguid(mfguid_t mfgid)
 {
 	uint32_t *chip_uuid = (uint32_t *) STM32_SYSMEM_UID;
-	uint32_t  *rv = (uint32_t *) &mfgid[0];
-
+	uint32_t *rv = (uint32_t *) &mfgid[0];
+	
 	for (unsigned i = 0; i < PX4_CPU_UUID_WORD32_LENGTH; i++)
 	{
 		*rv++ = SWAP_UINT32(chip_uuid[(PX4_CPU_UUID_WORD32_LENGTH - 1) - i]);
 	}
-
+	
 	return PX4_CPU_MFGUID_BYTE_LENGTH;
 }
 
 int board_get_mfguid_formated(char *format_buffer, int size)
 {
 	mfguid_t mfguid;
-
+	
 	board_get_mfguid(mfguid);
-	int offset  = 0;
-
+	int offset = 0;
+	
 	for (unsigned i = 0; i < PX4_CPU_MFGUID_BYTE_LENGTH; i++)
 	{
 		offset += snprintf(&format_buffer[offset], size - offset, "%02x", mfguid[i]);
 	}
-
+	
 	return offset;
 }

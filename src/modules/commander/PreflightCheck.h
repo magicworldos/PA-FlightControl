@@ -46,30 +46,29 @@
 namespace Preflight
 {
 /**
-* Runs a preflight check on all sensors to see if they are properly calibrated and healthy
-*
-* The function won't fail the test if optional sensors are not found, however,
-* it will fail the test if optional sensors are found but not in working condition.
-*
-* @param mavlink_log_pub
-*   Mavlink output orb handle reference for feedback when a sensor fails
-* @param checkMag
-*   true if the magneteometer should be checked
-* @param checkAcc
-*   true if the accelerometers should be checked
-* @param checkGyro
-*   true if the gyroscopes should be checked
-* @param checkBaro
-*   true if the barometer should be checked
-* @param checkAirspeed
-*   true if the airspeed sensor should be checked
-* @param checkRC
-*   true if the Remote Controller should be checked
-* @param checkGNSS
-*   true if the GNSS receiver should be checked
-**/
-bool preflightCheck(orb_advert_t *mavlink_log_pub, bool checkSensors, bool checkAirspeed, bool checkRC, bool checkGNSS,
-		    bool checkDynamic, bool isVTOL, bool reportFailures, bool prearm, hrt_abstime time_since_boot);
+ * Runs a preflight check on all sensors to see if they are properly calibrated and healthy
+ *
+ * The function won't fail the test if optional sensors are not found, however,
+ * it will fail the test if optional sensors are found but not in working condition.
+ *
+ * @param mavlink_log_pub
+ *   Mavlink output orb handle reference for feedback when a sensor fails
+ * @param checkMag
+ *   true if the magneteometer should be checked
+ * @param checkAcc
+ *   true if the accelerometers should be checked
+ * @param checkGyro
+ *   true if the gyroscopes should be checked
+ * @param checkBaro
+ *   true if the barometer should be checked
+ * @param checkAirspeed
+ *   true if the airspeed sensor should be checked
+ * @param checkRC
+ *   true if the Remote Controller should be checked
+ * @param checkGNSS
+ *   true if the GNSS receiver should be checked
+ **/
+bool preflightCheck(orb_advert_t *mavlink_log_pub, bool checkSensors, bool checkAirspeed, bool checkRC, bool checkGNSS, bool checkDynamic, bool isVTOL, bool reportFailures, bool prearm, hrt_abstime time_since_boot);
 
 static constexpr unsigned max_mandatory_gyro_count = 1;
 static constexpr unsigned max_optional_gyro_count = 3;

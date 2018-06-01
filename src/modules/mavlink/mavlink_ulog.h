@@ -93,34 +93,45 @@ public:
 	/** this is called when we got an vehicle_command_ack from the logger */
 	void start_ack_received();
 
-	float current_data_rate() const { return _current_rate_factor; }
-	float maximum_data_rate() const { return _max_rate_factor; }
-
-	int get_ulog_stream_fd() const { return _ulog_stream_sub; }
+	float current_data_rate() const
+	{
+		return _current_rate_factor;
+	}
+	float maximum_data_rate() const
+	{
+		return _max_rate_factor;
+	}
+	
+	int get_ulog_stream_fd() const
+	{
+		return _ulog_stream_sub;
+	}
 private:
-
+	
 	MavlinkULog(int datarate, float max_rate_factor, uint8_t target_system, uint8_t target_component);
 
 	~MavlinkULog();
 
 	static void lock()
 	{
-		do {}
+		do
+		{
+		}
 		while (px4_sem_wait(&_lock) != 0);
 	}
-
+	
 	static void unlock()
 	{
 		px4_sem_post(&_lock);
 	}
-
+	
 	void publish_ack(uint16_t sequence);
 
 	static px4_sem_t _lock;
 	static bool _init;
 	static MavlinkULog *_instance;
 	static const float _rate_calculation_delta_t; ///< rate update interval
-
+	
 	int _ulog_stream_sub = -1;
 	orb_advert_t _ulog_stream_ack_pub = nullptr;
 	uint16_t _wait_for_ack_sequence;
@@ -137,7 +148,7 @@ private:
 	float _current_rate_factor; ///< currently used rate percentage
 	int _current_num_msgs = 0;  ///< number of messages sent within the current time interval
 	hrt_abstime _next_rate_check; ///< next timestamp at which to update the rate
-
+	
 	/* do not allow copying this class */
 	MavlinkULog(const MavlinkULog &) = delete;
 	MavlinkULog operator=(const MavlinkULog &) = delete;

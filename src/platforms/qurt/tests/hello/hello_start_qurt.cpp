@@ -45,7 +45,7 @@
 #include <string.h>
 #include <sched.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+static int daemon_task; /* Handle of deamon task / thread */
 
 //using namespace px4;
 
@@ -62,48 +62,43 @@ int hello_main(int argc, char *argv[])
 		usage();
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (HelloExample::appState.isRunning())
 		{
 			PX4_DEBUG("already running");
 			/* this is not an error */
 			return 0;
 		}
-
-		daemon_task = px4_task_spawn_cmd("hello",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
-						 16000,
-						 PX4_MAIN,
-						 (char *const *)argv);
-
+		
+		daemon_task = px4_task_spawn_cmd("hello", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 16000, PX4_MAIN, (char * const *) argv);
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		HelloExample::appState.requestExit();
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (HelloExample::appState.isRunning())
 		{
 			PX4_DEBUG("is running");
-
+			
 		}
 		else
 		{
 			PX4_DEBUG("not started");
 		}
-
+		
 		return 0;
 	}
-
+	
 	usage();
 	return 1;
 }

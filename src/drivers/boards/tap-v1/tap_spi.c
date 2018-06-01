@@ -71,7 +71,6 @@ __EXPORT void stm32_spiinitialize(void)
 	stm32_configgpio(GPIO_SPI_SD_SW);
 }
 
-
 __EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
 {
 	/* there can only be one device on this bus, so always select it */

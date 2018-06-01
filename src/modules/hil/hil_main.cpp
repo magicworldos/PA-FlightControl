@@ -45,7 +45,6 @@
 #include <uORB/topics/actuator_armed.h>
 #include <uORB/topics/vehicle_attitude.h>
 
-
 #define roll_p 0.7
 #define pitch_p 0.7
 #define yaw_p 0.25
@@ -81,10 +80,10 @@ public:
 	int start();
 
 private:
-
+	
 	bool _task_should_exit; /**< if true, task_main() should exit */
 	int _control_task; /**< task handle */
-
+	
 	int _sensors_sub;
 
 	int _params_sub; /**< parameter updates subscription */
@@ -92,7 +91,7 @@ private:
 	int _actuatorsSub_1;
 	int _manulSub;
 	int _armed_sub; /**< arming status subscription */
-
+	
 	orb_advert_t _att_pub; /**< vehicle attitude */
 	orb_advert_t _ctrl_state_pub; /**< control state */
 	orb_advert_t _global_pos_pub; /**< global position */
@@ -110,7 +109,7 @@ private:
 	struct actuator_armed_s _armed;
 
 	perf_counter_t _loop_perf; /**< loop performance counter */
-
+	
 	struct
 	{
 		param_t ref_lat;
@@ -119,7 +118,7 @@ private:
 		param_t hil_enabled;
 		param_t hil_en_flag;
 	} _params_handles; /**< handles for interesting parameters */
-
+	
 	struct
 	{
 		int ref_lat; /**< yaw control feed-forward */
@@ -134,17 +133,17 @@ private:
 		double Long = 0;/*!< ¾­¶ÈÖµ*/
 		double Lati = 0;/*!< Î³¶ÈÖµ*/
 		double Alti = 0;/*!< ¸ß¶ÈÖµ*/
-
+		
 		/*ËÙ¶ÈÏà¹Ø*/
 		double XSpeed = 0;/*!< X-ÖáËÙ¶ÈÖµ*/
 		double YSpeed = 0;/*!< Y-ÖáËÙ¶ÈÖµ*/
 		double ZSpeed = 0;/*!< Z-ÖáËÙ¶ÈÖµ*/
-
+		
 		/*¼ÓËÙ¶ÈÏà¹Ø*/
 		double XAcc = 0;/*!< X-Öá¼ÓËÙ¶ÈÖµ*/
 		double YAcc = 0;/*!< Y-Öá¼ÓËÙ¶ÈÖµ*/
 		double ZAcc = 0;/*!< Z-Öá¼ÓËÙ¶ÈÖµ*/
-
+		
 		/*½ÇËÙ¶ÈÏà¹Ø*/
 		double XAng = 0;
 		double YAng = 0;
@@ -159,7 +158,7 @@ private:
 		double Gps_Sate_Num = 0; /*!< GPSËÑÐÇÊý*/
 		double GpsFixState = 0; /*!< GPSËÑÐÇ¶¨Î»Ä£Ê½*/
 		double SenUptFlag = 0; /*¸÷´«¸ÐÆ÷¸üÐÂ±êÖ¾Î»*/
-
+		
 	} gNaviData;
 	float ILSPrePosiX = 0.0f;
 	float ILSPrePosiY = 0.0f;
@@ -174,66 +173,32 @@ private:
 	};
 
 	//¿ØÖÆÁ¿¼Ä´æ
-	float RollCtrlInArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float RollGyroOutArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchCtrlInArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchGyroOutArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawCtrlInArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawGyroOutArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiCtrlInArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiDwOutArray[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollCtrlInArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollGyroOutArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchCtrlInArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchGyroOutArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawCtrlInArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawGyroOutArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiCtrlInArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiDwOutArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	float RollCtrlInArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float RollGyroOutArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchCtrlInArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchGyroOutArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawCtrlInArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawGyroOutArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiCtrlInArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiDwOutArray_F[10] =
-	{
-	    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollCtrlInArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollGyroOutArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchCtrlInArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchGyroOutArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawCtrlInArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawGyroOutArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiCtrlInArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiDwOutArray_F[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	double ref_lat;
 	double ref_lon;
 	double ref_alt;
 
-	float _delta_q_reset[4] =
-	{
-	    0 };
+	float _delta_q_reset[4] = { 0 };
 
 	//float testvar = 0;
-
+	
 	/**
 	 * Update our local parameter cache.
 	 */
@@ -268,7 +233,7 @@ private:
 	void InnerLoopSimulationDataUpdate(float t_In, float *Pre_In, int InOrder);
 
 	double AngleMaxPI_Adj(double t_In);
-
+	
 };
 
 namespace hil
@@ -287,7 +252,7 @@ HilSim::HilSim() :
 		    SuperBlock(NULL, "MC"),
 		    _task_should_exit(false),
 		    _control_task(-1),
-
+		    
 		    /* subscriptions */
 		    //_ctrl_state_sub(-1),
 		    _sensors_sub(-1),
@@ -296,7 +261,7 @@ HilSim::HilSim() :
 		    _actuatorsSub_1(-1),
 		    _manulSub(-1),
 		    _armed_sub(-1),
-
+		    
 		    /* publications */
 		    _att_pub(nullptr),
 		    _ctrl_state_pub(nullptr),
@@ -306,7 +271,7 @@ HilSim::HilSim() :
 		    _airspeed_pub(nullptr),
 		    _hil_status_pub(nullptr),
 		    _mavlink_log_pub(nullptr),
-
+		    
 		    /* performance counters */
 		    _loop_perf(perf_alloc(PC_ELAPSED, "hil"))
 
@@ -317,23 +282,23 @@ HilSim::HilSim() :
 	memset(&_hil_status, 0, sizeof(_hil_status));
 	_hil_status.flag_hil_enabled = false;
 	memset(&_armed, 0, sizeof(_armed));
-
+	
 	ref_lat = 0.0;
 	ref_lon = 0.0;
 	ref_alt = 0.0;
-
+	
 	_params.ref_lat = 0;
 	_params.ref_lon = 0;
 	_params.ref_alt = 0;
 	_params.hil_enabled = 0;
 	//_params.hil_en_flag = 0;
-
+	
 	_params_handles.ref_lat = param_find("HIL_REF_LAT");
 	_params_handles.ref_lon = param_find("HIL_REF_LON");
 	_params_handles.ref_alt = param_find("HIL_REF_ALT");
 	_params_handles.hil_enabled = param_find("HIL_ENABLED");
 	_params_handles.hil_en_flag = param_find("HIL_EN_FLAG");
-
+	
 	parameters_update();
 }
 
@@ -343,15 +308,15 @@ HilSim::~HilSim()
 	{
 		/* task wakes up every 100ms or so at the longest */
 		_task_should_exit = true;
-
+		
 		/* wait for a second for the task to quit at our request */
 		unsigned i = 0;
-
+		
 		do
 		{
 			/* wait 20ms */
 			usleep(20000);
-
+			
 			/* if we have given up, kill it */
 			if (++i > 50)
 			{
@@ -361,33 +326,33 @@ HilSim::~HilSim()
 		}
 		while (_control_task != -1);
 	}
-
+	
 	hil::g_control = nullptr;
 }
 
 int HilSim::parameters_update()
 {
 	updateParams();
-
+	
 	param_get(_params_handles.ref_lat, &_params.ref_lat);
 	param_get(_params_handles.ref_lon, &_params.ref_lon);
 	param_get(_params_handles.ref_alt, &_params.ref_alt);
 	param_get(_params_handles.hil_enabled, &_params.hil_enabled);
 	param_get(_params_handles.hil_en_flag, &_params.hil_en_flag);
-
+	
 	_params.hil_enabled = 1;
 	_params.hil_en_flag = 1;
-
+	
 	return OK;
 }
 
 void HilSim::parameter_update_poll()
 {
 	bool updated;
-
+	
 	/* Check if parameters have changed */
 	orb_check(_params_sub, &updated);
-
+	
 	if (updated)
 	{
 		struct parameter_update_s param_update;
@@ -411,32 +376,32 @@ void HilSim::task_main()
 	_actuatorsSub_1 = orb_subscribe(ORB_ID(actuator_controls_1));
 	_manulSub = orb_subscribe(ORB_ID(manual_control_setpoint));
 	_armed_sub = orb_subscribe(ORB_ID(actuator_armed));
-
+	
 	/* initialize parameters cache */
 	parameters_update();
-
+	
 	// reset
 	int para_reset = 0;
 	param_set(param_find("CBRK_USB_CHK"), &para_reset);
-
+	
 	//int hil_disabled_flag = 0;
 	//param_set(param_find("HIL_EN_FLAG"), &hil_disabled_flag);
-
+	
 	//mavlink_and_console_log_info(_mavlink_fd,"[The-One] HIL thread started");
 	warnx("HIL ok");
-
+	
 	/* wakeup source: vehicle attitude */
 	px4_pollfd_struct_t fds[1];
-
+	
 	//fds[0].fd = _ctrl_state_sub;
 	fds[0].fd = _sensors_sub;
 	fds[0].events = POLLIN;
-
+	
 	while (!_task_should_exit)
 	{
 		/* wait for up to 100ms for data */
 		int pret = px4_poll(&fds[0], (sizeof(fds) / sizeof(fds[0])), 100);
-
+		
 		/* timed out - periodic check for _task_should_exit */
 		if (pret == 0)
 		{
@@ -450,7 +415,7 @@ void HilSim::task_main()
 			usleep(100000);
 			continue;
 		}
-
+		
 		perf_begin(_loop_perf);
 		/* run controller on attitude changes */
 		if (fds[0].revents & POLLIN)
@@ -458,30 +423,30 @@ void HilSim::task_main()
 			static uint64_t last_run = 0;
 			float dt = (hrt_absolute_time() - last_run) / 1000000.0f;
 			last_run = hrt_absolute_time();
-
+			
 			/* guard against too small (< 2ms) and too large (> 20ms) dt's */
 			if (dt < 0.002f)
 			{
 				dt = 0.002f;
-
+				
 			}
 			else if (dt > 0.02f)
 			{
 				dt = 0.02f;
 			}
 			setDt(dt);
-
+			
 			orb_copy(ORB_ID(sensor_combined), _sensors_sub, &_sensors); //T_T
 			parameters_update();
-
+			
 			if (_hil_status.flag_hil_enabled)
 			{
 				/* check for updates in other topics */
 				parameter_update_poll();
-
+				
 				bool updated;
 				orb_check(_armed_sub, &updated);
-
+				
 				if (updated)
 				{
 					orb_copy(ORB_ID(actuator_armed), _armed_sub, &_armed);
@@ -497,29 +462,29 @@ void HilSim::task_main()
 			{
 				_hil_status.timestamp = hrt_absolute_time();
 				_hil_status.flag_hil_enabled = true;
-
+				
 				int hil_disabled = 0;
 				param_set(param_find("HIL_ENABLED"), &hil_disabled); //modified by GCS
-
+				
 				int usb_break_for_arm = 197848;
 				param_set(param_find("CBRK_USB_CHK"), &usb_break_for_arm);
-
+				
 				int hil_enabled_flag = 1;
 				param_set(param_find("HIL_EN_FLAG"), &hil_enabled_flag); // used to control other threads
-
+				
 				param_get(param_find("HIL_EN_FLAG"), &_params.hil_en_flag);
-
+				
 				_hil_status.hil_flag_sd = _hil_status.flag_hil_enabled + _params.hil_en_flag * 2;
-
+				
 				ref_lat = _params.ref_lat * 1e-7 * 3.14159265 / 180.0;
 				ref_lon = _params.ref_lon * 1e-7 * 3.14159265 / 180.0;
 				ref_alt = _params.ref_alt * 1e-3;
-
+				
 				if (_hil_status_pub != nullptr)
 				{
 					/* HIL status */
 					orb_publish(ORB_ID(hil_status), _hil_status_pub, &_hil_status);
-
+					
 				}
 				else
 				{
@@ -528,12 +493,12 @@ void HilSim::task_main()
 				}
 				//mavlink_and_console_log_info(&_mavlink_log_pub, "[The-One] HIL started");
 			}
-
+			
 		}
-
+		
 		perf_end(_loop_perf);
 	}
-
+	
 	_control_task = -1;
 	return;
 }
@@ -541,16 +506,16 @@ void HilSim::task_main()
 int HilSim::start()
 {
 	ASSERT(_control_task == -1);
-
+	
 	/* start the task */
 	_control_task = px4_task_spawn_cmd("hil", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 3500, (px4_main_t) &HilSim::task_main_trampoline, nullptr);
-
+	
 	if (_control_task < 0)
 	{
 		warn("task start failed");
 		return -errno;
 	}
-
+	
 	return OK;
 }
 
@@ -561,24 +526,24 @@ int hil_main(int argc, char *argv[])
 		warnx("usage: hil {start|stop|status}");
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (hil::g_control != nullptr)
 		{
 			warnx("already running");
 			return 1;
 		}
-
+		
 		hil::g_control = new HilSim;
-
+		
 		if (hil::g_control == nullptr)
 		{
 			warnx("alloc failed");
 			return 1;
 		}
-
+		
 		if (OK != hil::g_control->start())
 		{
 			delete hil::g_control;
@@ -586,10 +551,10 @@ int hil_main(int argc, char *argv[])
 			warnx("start failed");
 			return 1;
 		}
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		if (hil::g_control == nullptr)
@@ -597,19 +562,19 @@ int hil_main(int argc, char *argv[])
 			warnx("not running");
 			return 1;
 		}
-
+		
 		delete hil::g_control;
 		hil::g_control = nullptr;
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (hil::g_control)
 		{
 			warnx("running");
 			return 0;
-
+			
 		}
 		else
 		{
@@ -617,14 +582,14 @@ int hil_main(int argc, char *argv[])
 			return 1;
 		}
 	}
-
+	
 	warnx("unrecognized command");
 	return 1;
 }
 
 void HilSim::HIL_Dynamics_Cal(void)
 {
-
+	
 	static hrt_abstime last_time = 0;
 	double dt = (hrt_absolute_time() - last_time) / 1000000.0f;
 	if (dt < 0.02)
@@ -636,43 +601,27 @@ void HilSim::HIL_Dynamics_Cal(void)
 		dt = 0.02;
 		last_time = hrt_absolute_time();
 	}
-
+	
 	//double LatiRef = 0.728157412;  /*\CB\F9\C4\CF\C7\F8\B2ο\BC\B5\E3*/
 	//double LongRef = 2.15488069;
 	double LatiRef = ref_lat; //0.72689248238;
 	double LongRef = ref_lon; //2.1545112196;
 	double AltRef = ref_alt; //100.0;
-
+	
 #if PLANE_TYPE == 1
-
+	
 	//\B6\A8\D2\E5ֱ\C9\FD\BB\FA\B6\AF\C1\A6ѧ\B2ο\BCģ\D0\CD
-	float RollModelNum[10] =
-	{
-	    0, 0.5 * 6 * roll_p, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float RollModelDen[10] =
-	{
-	    -0.5 * 1.8 * roll_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchModelNum[10] =
-	{
-	    0, 0.5 * 6 * pitch_p, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float PitchModelDen[10] =
-	{
-	    -0.5 * 1.8* pitch_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawModelNum[10] =
-	{
-	    0, 0.1 * 6 * yaw_p, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float YawModelDen[10] =
-	{
-	    -0.881911378298176 * 1.1 * yaw_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiModelNum[10] =
-	{
-	    0, 0.1813 * 8 * alt_p, 0, 0, 0, 0, 0, 0, 0, 0 };
-	float AltiModelDen[10] =
-	{
-	    -0.8187 * 0.7* alt_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollModelNum[10] = { 0, 0.5 * 6 * roll_p, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float RollModelDen[10] = { -0.5 * 1.8 * roll_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchModelNum[10] = { 0, 0.5 * 6 * pitch_p, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float PitchModelDen[10] = { -0.5 * 1.8 * pitch_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawModelNum[10] = { 0, 0.1 * 6 * yaw_p, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float YawModelDen[10] = { -0.881911378298176 * 1.1 * yaw_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiModelNum[10] = { 0, 0.1813 * 8 * alt_p, 0, 0, 0, 0, 0, 0, 0, 0 };
+	float AltiModelDen[10] = { -0.8187 * 0.7 * alt_p, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 #endif
 #if PLANE_TYPE == 2
-
+	
 	//\B6\A8\D2\E5\B9̶\A8\D2\ED\B6\AF\C1\A6ѧ\B2ο\BCģ\D0\CD
 	float RollModelNum[10] =
 	{	0,0.03,0,0,0,0,0,0,0,0};
@@ -692,7 +641,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	{	-0.9,0,0,0,0,0,0,0,0,0};
 
 #endif
-
+	
 #if PLANE_TYPE == 3
 	//\C7\E3ת\D0\FD\D2\ED\B6\AF\C1\A6ѧ\B9\B9\BD\A8\A3\AC\B7\D6Ϊֱ\C9\FD\BB\FA\BA͹̶\A8\D2\ED\C1\BD\B2\BF\B7ֶ\E6\C3\E6\BF\D8\D6\C6ģ\D0Ͳ\CE\CA\FD
 	//\B6\A8\D2\E5ֱ\C9\FD\BB\FA\B6\AF\C1\A6ѧ\B2ο\BCģ\D0Ͳ\CE\CA\FD
@@ -730,17 +679,17 @@ void HilSim::HIL_Dynamics_Cal(void)
 	{	-0.9,0,0,0,0,0,0,0,0,0};
 
 #endif
-
+	
 	//static float ThrottleCtrlInArray[10] = {0,0,0,0,0,0,0,0,0,0};
 	//static float ThrottleRpmOutArray[10] = {0,0,0,0,0,0,0,0,0,0};
-
+	
 	double Lati, Long;
 	double p = 0, q = 0, r = 0, phi = 0, theta = 0, pusi = 0, agx = 0, agy = 0, agz = 0, vgx = 0, vgy = 0, vgz = 0, x = 0, y = 0, z = 0;
 	double phi0 = 0, theta0 = 0, pusi0 = 0, vgx0 = 0, vgy0 = 0, vgz0 = 0, x0 = 0, y0 = 0, z0 = 0;
 	//double tCtrlRoll=0;
 	//double tCtrlPitch=0;
 	double vbx = 0, vby = 0, vbz = 0;
-
+	
 #if PLANE_TYPE ==1 || PLANE_TYPE ==2
 	float ulat, ulon, uped, ucol;
 	if (_armed.armed)
@@ -757,15 +706,15 @@ void HilSim::HIL_Dynamics_Cal(void)
 		uped = 0.0f;
 		ucol = 0.0f;
 	}
-
-	warnx("%+.4f %+.4f %+.4f %+.4f", (double)ulat, (double)ulon, (double)uped, (double)ucol);
+	
+	warnx("%+.4f %+.4f %+.4f %+.4f", (double )ulat, (double )ulon, (double )uped, (double )ucol);
 	// ulat = _manul.y;
 	// ulon = -_manul.x;
 	// uped = _manul.r;
 	// ucol = _manul.z;
-
+	
 #endif
-
+	
 #if PLANE_TYPE ==3
 	//\B9̶\A8\D2\ED\BF\D8\D6\C6\C1\BF
 	float ulat_F, ulon_F, uped_F;
@@ -785,7 +734,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	//\D3\CD\C3Ż\F2\C2ݾ\E0\BF\D8\D6\C6\C1\BF
 	float ucol = _actuators.control[3];
 #endif
-
+	
 	phi0 = gNaviData.Roll;
 	theta0 = gNaviData.Pitch;
 	pusi0 = gNaviData.Yaw;
@@ -797,21 +746,21 @@ void HilSim::HIL_Dynamics_Cal(void)
 	y0 = ILSPrePosiY;
 	z0 = ILSPrePosiZ;
 #if PLANE_TYPE == 1
-
+	
 	double dw;
 	//\BC\C6\CB\E3\BD\C7\CB\D9\C2\CA
 	p = -0.00 * vby * fabs(vby) * fabs(phi0) + (double) InnerLoopSimulationModelCal(ulat, RollModelNum, RollCtrlInArray, 2, RollModelDen, RollGyroOutArray, 1);
 	q = 0.00 * vbx * fabs(vbx) * fabs(theta0) + (double) InnerLoopSimulationModelCal(ulon, PitchModelNum, PitchCtrlInArray, 2, PitchModelDen, PitchGyroOutArray, 1);
 	r = -0.0000 * vby * fabs(vby) - 0.0000 * ((double) ucol) + (double) InnerLoopSimulationModelCal(2.0f * uped, YawModelNum, YawCtrlInArray, 2, YawModelDen, YawGyroOutArray, 1);
 	dw = (double) InnerLoopSimulationModelCal(-6.0f * (ucol - 0.5f), AltiModelNum, AltiCtrlInArray, 2, AltiModelDen, AltiDwOutArray, 1);
-
+	
 	phi = phi0 + ((q * sin(phi0) + r * cos(phi0)) * tan(theta0) + p) * dt;
 	theta = theta0 + (q * cos(phi0) - r * sin(phi0)) * dt;
 	pusi = pusi0 + (q * sin(phi0) + r * cos(phi0)) / cos(theta0) * dt;
 	phi = AngleMaxPI_Adj(phi);
 	theta = AngleMaxPI_Adj(theta);
 	pusi = AngleMaxPI_Adj(pusi);
-
+	
 	agx = (sin(phi) * sin(pusi) + cos(phi) * sin(theta) * cos(pusi)) * (dw - 9.8) - 0.01 * vgx0 * fabs(vgx0);
 	agy = (-sin(phi) * cos(pusi) + cos(phi) * sin(theta) * sin(pusi)) * (dw - 9.8) - 0.01 * vgy0 * fabs(vgy0);
 	agz = ((dw) * cos(phi) * cos(theta)) - 0.02 * sqrt(vbx * vbx + vby * vby) - 0.07 * vgz0 * fabs(vgz0);
@@ -828,7 +777,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 
 #endif
 #if PLANE_TYPE == 2
-
+	
 	float Tp, Tq, Tr, Fen;
 	float kp = 0.002f, kq = 0.002f, kr = 0.002f; //\B6\E6Ч\BDǼ\D3\CBٶ\C8\D4\F6\D2\E6ϵ\CA\FD,\CF\E0\B6\D4\D3\DAvb
 	float kws = 1.0f + 0.3f * _actuators.control[4];//\BB\FA\D2\ED\C9\FD\C1\A6\BC\D3\CBٶ\C8ϵ\CA\FD\A3\AC\CF\E0\B6\D4\D3\DAvb_z\A3\AC\B2\BB\BF\BC\C2ǻ\FA\D2\ED\C1\BD\B8\F6\B2\E0\C3\E6\D7\E8\C1\A6, ͬʱ\BF\BC\C2ǽ\F3\D2\EDʡ\C1\A6\D7\F7\D3\C3
@@ -836,7 +785,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	double vbx_l, vby_l, vbz_l;//\B1\BE\CC\E5ˮƽ\CBٶ\C8
 	float abz_w;//\BB\FA\D2\ED\B1\BE\CC\E5z\D6\E1\BC\D3\CBٶ\C8
 	float afbx, afby, afbz;//\BB\FA\CC屾\CC\E5\BC\D3\CBٶ\C8
-
+	
 	HIL_TransformationFromInertialToBody(0.0,0.0,pusi0,vgx0,vgy0,vgz0,&vbx_l,&vby_l,&vbz_l);
 
 	Tp = (double)kp* fabs(vbx) * vbx * (double)ulat;//\BC\C6\CB\E3\CBٶȴ\F8\C0\B4\B5Ķ\E6Ч\D4\F6\D2\E6
@@ -850,7 +799,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	Fen = (double)InnerLoopSimulationModelCal(10.0f * ucol,AltiModelNum,AltiCtrlInArray,2,AltiModelDen,AltiDwOutArray,1);
 
 	if (fabs(theta0 - 3.1415926 / 2.0) < 0.00001)
-	{
+	{	
 		theta0 = 3.1415926 / 2.0 + theta0 / fabs(theta0) * 0.00001;
 	}
 
@@ -878,9 +827,9 @@ void HilSim::HIL_Dynamics_Cal(void)
 	agz = (double)ag_p(2) + 9.8;
 
 #endif
-
+	
 #if PLANE_TYPE == 3
-
+	
 	float Tp, Tq, Tr, Fen, Tilt_angle;
 	float Tp_F, Tq_F, Tr_F; //\B9̶\A8\D2\ED\C8\FD\D6\E1Ť\BE\D8
 	float Tp_H, Tq_H, Tr_H;//ֱ\C9\FD\BB\FA\C8\FD\D6\E1Ť\BE\D8
@@ -891,7 +840,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	double vbx_l, vby_l, vbz_l;//\B1\BE\CC\E5ˮƽ\CBٶ\C8
 	float abz_w;//\BB\FA\D2\ED\B1\BE\CC\E5z\D6\E1\BC\D3\CBٶ\C8
 	float afbx, afby, afbz;//\BB\FA\CC屾\CC\E5\BC\D3\CBٶ\C8
-
+	
 	HIL_TransformationFromInertialToBody(0.0,0.0,pusi0,vgx0,vgy0,vgz0,&vbx_l,&vby_l,&vbz_l);
 
 //\BC\C6\CB㱾\CC\E5\D7\F8\B1\EAϵ\CF¹̶\A8\D2\ED\B6\E6\C3\E6\B2\D9\D7\DDŤ\BEر\EA׼ֵ
@@ -927,7 +876,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	Fen = (double)InnerLoopSimulationModelCal(15.0f * ucol,AltiModelNum_F,AltiCtrlInArray,2,AltiModelDen_F,AltiDwOutArray,1);
 
 	if (fabs(theta0 - 3.1415926 / 2.0) < 0.00001)
-	{
+	{	
 		theta0 = 3.1415926 / 2.0 + theta0 / fabs(theta0) * 0.00001;
 	}
 
@@ -955,21 +904,21 @@ void HilSim::HIL_Dynamics_Cal(void)
 	agz = (double)ag_p(2) + 9.8;
 
 	//   mavlink_log_info(_mavlink_fd, "acc_z = %d, %d",(int)(ag_p(2)*100.0f), (int)(agz * 100) );
-
+	
 #endif
-
+	
 	vgx = vgx0 + agx * dt;
 	vgy = vgy0 + agy * dt;
 	vgz = vgz0 + agz * dt;
-
+	
 	x = (x0 + vgx * dt * 1);
 	y = (y0 + vgy * dt * 1);
 	z = (z0 + vgz * dt * 1);
-
+	
 	//int sim_hil_en = 0;
 	//param_get(param_find("PE_SIM_HIL"), &sim_hil_en);
 	int sim_hil_en = 100;
-
+	
 #if PLANE_TYPE ==1
 	if (z > 0)
 	{
@@ -991,7 +940,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 		ILSPrePosiX = 0.0f;
 		ILSPrePosiY = 0.0f;
 		ILSPrePosiZ = 0.0f;
-
+		
 		for (int i = 0; i < 10; i++)
 		{
 			RollCtrlInArray[i] = 0.0f;
@@ -1004,19 +953,19 @@ void HilSim::HIL_Dynamics_Cal(void)
 			AltiDwOutArray[i] = 0.0f;
 		}
 	}
-
+	
 #endif
 #if PLANE_TYPE==2
 	if(z > 0)
-	{
+	{	
 		p = 0;
 		if (q <0)
-		{
+		{	
 			q = 0;
 		}
 		phi = 0;
 		if (theta < 0)
-		{
+		{	
 			theta = 0;
 		}
 
@@ -1025,7 +974,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 		z = 0;
 
 		for (int i = 0; i < 10; i++)
-		{
+		{	
 			RollCtrlInArray[i] = 0.0f;
 			RollGyroOutArray[i] = 0.0f;
 		}
@@ -1033,7 +982,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 #endif
 #if PLANE_TYPE ==3
 	if(z > 0)
-	{
+	{	
 		p = 0;
 		q = 0;
 		r = 0;
@@ -1054,7 +1003,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 		ILSPrePosiZ = 0.0f;
 
 		for (int i = 0; i < 10; i++)
-		{
+		{	
 			RollCtrlInArray[i] = 0.0f;
 			RollGyroOutArray[i] = 0.0f;
 			PitchCtrlInArray[i] = 0.0f;
@@ -1071,7 +1020,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 
 	}
 #endif
-
+	
 	if (sim_hil_en < 1)
 	{
 		p = 0;
@@ -1110,7 +1059,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 			AltiDwOutArray[i] = 0.0f;
 		}
 	}
-
+	
 	Lati = LatiRef + x / 6378137;
 	Long = LongRef + y / (6378137 * cos(LatiRef));
 	gNaviData.XAng = (float) p;
@@ -1132,35 +1081,31 @@ void HilSim::HIL_Dynamics_Cal(void)
 	ILSPrePosiX = (float) x;
 	ILSPrePosiY = (float) y;
 	ILSPrePosiZ = (float) z;
-
+	
 	//\B6\D4\D3\DA\D7\CB̬\B7\A2\B2\BC\D0\C5Ϣ\B8\B3ֵ
-	float xyz[3] =
-	{
-	    0 };
+	float xyz[3] = { 0 };
 	xyz[0] = gNaviData.Roll;
 	xyz[1] = gNaviData.Pitch;
 	xyz[2] = gNaviData.Yaw;
-	struct quat _qvalue =
-	{
-	    0 };
+	struct quat _qvalue = { 0 };
 	Angle2Q(xyz, _qvalue);
-
+	
 	vehicle_attitude_s _att_hil;
 	_att_hil.timestamp = hrt_absolute_time();
 	_att_hil.rollspeed = gNaviData.XAng;
 	_att_hil.pitchspeed = gNaviData.YAng;
 	_att_hil.yawspeed = gNaviData.ZAng;
-
+	
 	_att_hil.q[0] = _qvalue.w;
 	_att_hil.q[1] = _qvalue.x;
 	_att_hil.q[2] = _qvalue.y;
 	_att_hil.q[3] = _qvalue.z;
-
+	
 	_att_hil.delta_q_reset[0] = _delta_q_reset[0];
 	_att_hil.delta_q_reset[1] = _delta_q_reset[1];
 	_att_hil.delta_q_reset[2] = _delta_q_reset[2];
 	_att_hil.delta_q_reset[3] = _delta_q_reset[3];
-
+	
 	if (_att_pub != nullptr)
 	{
 		/* publish the attitude */
@@ -1175,10 +1120,9 @@ void HilSim::HIL_Dynamics_Cal(void)
 		/* advertise and publish */
 		_att_pub = orb_advertise(ORB_ID(vehicle_attitude), &_att_hil);
 	}
-
+	
 	//\B6\D4local_posi\BD\F8\D0и\B3ֵ
-	vehicle_local_position_s _local_pos_hil
-	{ };
+	vehicle_local_position_s _local_pos_hil { };
 	_local_pos_hil.timestamp = hrt_absolute_time();
 	_local_pos_hil.xy_valid = true;
 	_local_pos_hil.z_valid = true;
@@ -1202,22 +1146,21 @@ void HilSim::HIL_Dynamics_Cal(void)
 	_local_pos_hil.dist_bottom_valid = false;
 	_local_pos_hil.eph = 0.01;
 	_local_pos_hil.epv = 0.01;
-
+	
 	if (_local_pos_pub != nullptr)
 	{
 		/* publish the attitude setpoint */
 		orb_publish(ORB_ID(vehicle_local_position), _local_pos_pub, &_local_pos_hil);
-
+		
 	}
 	else
 	{
 		/* advertise and publish */
 		_local_pos_pub = orb_advertise(ORB_ID(vehicle_local_position), &_local_pos_hil);
 	}
-
+	
 	//\B6\D4global\BD\F8\D0и\B3ֵ
-	vehicle_global_position_s _global_pos_hil
-	{ };
+	vehicle_global_position_s _global_pos_hil { };
 	_global_pos_hil.timestamp = hrt_absolute_time();
 	_global_pos_hil.lat = gNaviData.Lati * 180.0 / 3.1415926;
 	_global_pos_hil.lon = gNaviData.Long * 180.0 / 3.1415926;
@@ -1231,7 +1174,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 	_global_pos_hil.terrain_alt = -z;
 	_global_pos_hil.terrain_alt_valid = false;
 	_global_pos_hil.dead_reckoning = false;
-
+	
 	if (_global_pos_pub != nullptr)
 	{
 		/* publish the global position */
@@ -1242,7 +1185,7 @@ void HilSim::HIL_Dynamics_Cal(void)
 		/* advertise and publish */
 		_global_pos_pub = orb_advertise(ORB_ID(vehicle_global_position), &_global_pos_hil);
 	}
-
+	
 	//\B6\D4\D3\DAGPS\D0\C5Ϣ\B8\B4\D6Ʋ\A2\B7\A2\B2\BC
 	struct vehicle_gps_position_s _gps_hil;
 	_gps_hil.timestamp = hrt_absolute_time();
@@ -1262,13 +1205,13 @@ void HilSim::HIL_Dynamics_Cal(void)
 	_gps_hil.vel_m_s = sqrtf(_gps_hil.vel_n_m_s * _gps_hil.vel_n_m_s + _gps_hil.vel_e_m_s * _gps_hil.vel_e_m_s + _gps_hil.vel_d_m_s * _gps_hil.vel_d_m_s);
 	_gps_hil.cog_rad = gNaviData.Yaw;
 	_gps_hil.vel_ned_valid = true;
-
+	
 //	mavlink_log_info(&_mavlink_log_pub, "GPS : %.7f, %.7f ", _gps_hil.lat, _gps_hil.lon);
-
+	
 	if (_gps_pub != nullptr)
 	{
 		orb_publish(ORB_ID(vehicle_gps_position), _gps_pub, &_gps_hil);
-
+		
 	}
 	else
 	{
@@ -1302,15 +1245,15 @@ void HilSim::HIL_TransformationFromInertialToBody(double Rx, double Ry, double R
 	R11 = cos(Rz) * cos(Ry);
 	R12 = sin(Rz) * cos(Ry);
 	R13 = -sin(Ry);
-
+	
 	R21 = -sin(Rz) * cos(Rx) + cos(Rz) * sin(Ry) * sin(Rx);
 	R22 = cos(Rz) * cos(Rx) + sin(Rz) * sin(Ry) * sin(Rx);
 	R23 = cos(Ry) * sin(Rx);
-
+	
 	R31 = sin(Rz) * sin(Rx) + cos(Rz) * sin(Ry) * cos(Rx);
 	R32 = -cos(Rz) * sin(Rx) + sin(Rz) * sin(Ry) * cos(Rx);
 	R33 = cos(Ry) * cos(Rx);
-
+	
 	/*\B5\BC\BA\BD\B5\BD\B1\BE\CC\E5*/
 	*Bx = R11 * Ix + R12 * Iy + R13 * Iz;
 	*By = R21 * Ix + R22 * Iy + R23 * Iz;
@@ -1332,7 +1275,7 @@ float HilSim::InnerLoopSimulationModelCal(float t_In, float *Para_In, float *Pre
 	}
 	InnerLoopSimulationDataUpdate(tOut, Pre_Out, OutOrder);
 	return tOut;
-
+	
 }
 
 void HilSim::InnerLoopSimulationDataUpdate(float t_In, float *Pre_In, int InOrder)

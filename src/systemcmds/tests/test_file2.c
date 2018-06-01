@@ -55,7 +55,7 @@
 #define FLAG_LSEEK 2
 
 /*
-  return a predictable value for any file offset to allow detection of corruption
+ return a predictable value for any file offset to allow detection of corruption
  */
 static uint8_t get_value(uint32_t ofs)
 {
@@ -70,84 +70,83 @@ static uint8_t get_value(uint32_t ofs)
 
 static void test_corruption(const char *filename, uint32_t write_chunk, uint32_t write_size, uint16_t flags)
 {
-	printf("Testing on %s with write_chunk=%u write_size=%u\n",
-	       filename, (unsigned)write_chunk, (unsigned)write_size);
-
+	printf("Testing on %s with write_chunk=%u write_size=%u\n", filename, (unsigned) write_chunk, (unsigned) write_size);
+	
 	uint32_t ofs = 0;
 	int fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, PX4_O_MODE_666);
-
+	
 	if (fd == -1)
 	{
 		perror(filename);
 		exit(1);
 	}
-
+	
 	// create a file of size write_size, in write_chunk blocks
 	uint8_t counter = 0;
-
+	
 	while (ofs < write_size)
 	{
 		uint8_t buffer[write_chunk];
-
+		
 		for (uint16_t j = 0; j < write_chunk; j++)
 		{
 			buffer[j] = get_value(ofs);
 			ofs++;
 		}
-
-		if (write(fd, buffer, sizeof(buffer)) != (int)sizeof(buffer))
+		
+		if (write(fd, buffer, sizeof(buffer)) != (int) sizeof(buffer))
 		{
 			printf("write failed at offset %u\n", ofs);
 			exit(1);
 		}
-
+		
 		if (flags & FLAG_FSYNC)
 		{
 			fsync(fd);
 		}
-
+		
 		if (counter % 100 == 0)
 		{
 			printf("write ofs=%u\r", ofs);
 		}
-
+		
 		counter++;
 	}
-
+	
 	close(fd);
-
+	
 	printf("write ofs=%u\n", ofs);
-
+	
 	// read and check
 	fd = open(filename, O_RDONLY);
-
+	
 	if (fd == -1)
 	{
 		perror(filename);
 		exit(1);
 	}
-
+	
 	counter = 0;
 	ofs = 0;
-
+	
 	while (ofs < write_size)
 	{
 		uint8_t buffer[write_chunk];
-
+		
 		if (counter % 100 == 0)
 		{
 			printf("read ofs=%u\r", ofs);
 		}
-
+		
 		counter++;
-
-		if (read(fd, buffer, sizeof(buffer)) != (int)sizeof(buffer))
+		
+		if (read(fd, buffer, sizeof(buffer)) != (int) sizeof(buffer))
 		{
 			printf("read failed at offset %u\n", ofs);
 			close(fd);
 			return;
 		}
-
+		
 		for (uint16_t j = 0; j < write_chunk; j++)
 		{
 			if (buffer[j] != get_value(ofs))
@@ -156,16 +155,16 @@ static void test_corruption(const char *filename, uint32_t write_chunk, uint32_t
 				close(fd);
 				return;
 			}
-
+			
 			ofs++;
 		}
-
+		
 		if (flags & FLAG_LSEEK)
 		{
 			lseek(fd, 0, SEEK_CUR);
 		}
 	}
-
+	
 	printf("read ofs=%u\n", ofs);
 	close(fd);
 	unlink(filename);
@@ -186,13 +185,14 @@ int test_file2(int argc, char *argv[])
 {
 	int opt;
 	uint16_t flags = 0;
-	const char *filename = PX4_ROOTFSDIR "/fs/microsd/testfile2.dat";
+	const char *filename = PX4_ROOTFSDIR
+	"/fs/microsd/testfile2.dat";
 	uint32_t write_chunk = 64;
 	uint32_t write_size = 5 * 1024;
-
+	
 	int myoptind = 1;
 	const char *myoptarg = NULL;
-
+	
 	while ((opt = px4_getopt(argc, argv, "c:s:FLh", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (opt)
@@ -200,43 +200,43 @@ int test_file2(int argc, char *argv[])
 			case 'F':
 				flags |= FLAG_FSYNC;
 				break;
-
+				
 			case 'L':
 				flags |= FLAG_LSEEK;
 				break;
-
+				
 			case 's':
 				write_size = strtoul(myoptarg, NULL, 0);
 				break;
-
+				
 			case 'c':
 				write_chunk = strtoul(myoptarg, NULL, 0);
 				break;
-
+				
 			case 'h':
 			default:
 				usage();
 				return 1;
 		}
 	}
-
+	
 	argc -= myoptind;
 	argv += myoptind;
-
+	
 	if (argc > 0)
 	{
 		filename = argv[0];
 	}
-
+	
 	/* check if microSD card is mounted */
 	struct stat buffer;
-
+	
 	if (stat(PX4_ROOTFSDIR "/fs/microsd/", &buffer))
 	{
 		fprintf(stderr, "no microSD card mounted, aborting file test");
 		return 1;
 	}
-
+	
 	test_corruption(filename, write_chunk, write_size, flags);
 	return 0;
 }

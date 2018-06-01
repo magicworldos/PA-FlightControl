@@ -136,13 +136,13 @@ typedef param_t px4_param_t;
 #undef isfinite
 template<typename T>
 inline bool isfinite(T __y)
-{
+{	
 	int __cy = fpclassify(__y);
 	return __cy != FP_INFINITE && __cy != FP_NAN;
 }
 namespace std
-{
-using ::isfinite;
+{	
+	using ::isfinite;
 }
 #endif // __cplusplus
 

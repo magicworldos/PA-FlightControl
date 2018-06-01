@@ -48,10 +48,15 @@ class SubscriberExample
 public:
 	SubscriberExample();
 
-	~SubscriberExample() {}
-
-	void spin() {_n.spin();}
-
+	~SubscriberExample()
+	{
+	}
+	
+	void spin()
+	{
+		_n.spin();
+	}
+	
 protected:
 	px4::NodeHandle _n;
 	px4::ParameterInt _p_sub_interv;
@@ -63,5 +68,5 @@ protected:
 	void rc_channels_callback(const px4_rc_channels &msg);
 	void vehicle_attitude_callback(const px4_vehicle_attitude &msg);
 	void parameter_update_callback(const px4_parameter_update &msg);
-
+	
 };

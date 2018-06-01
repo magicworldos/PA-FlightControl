@@ -56,18 +56,17 @@ namespace DriverFramework
 
 #define HMC5883_SLAVE_ADDRESS		(0x1e)
 
-
-class HMC5883 : public MagSensor
+class HMC5883: public MagSensor
 {
 public:
 	HMC5883(const char *device_path) :
-		MagSensor(device_path, HMC5883_MEASURE_INTERVAL_US),
-		_measurement_requested(false)
+			    MagSensor(device_path, HMC5883_MEASURE_INTERVAL_US),
+			    _measurement_requested(false)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_HMC5883;
 		m_id.dev_id_s.address = HMC5883_SLAVE_ADDRESS;
 	}
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start();
 
@@ -85,9 +84,11 @@ private:
 	int hmc5883_init();
 
 	//struct hmc5883_sensor_calibration 	m_sensor_calibration;
-
+	
 	// we need to request a measurement before we can collect it
 	bool _measurement_requested;
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

@@ -47,7 +47,7 @@ namespace uORB
 class KraitFastRpcChannel;
 }
 
-class uORB::KraitFastRpcChannel : public uORBCommunicator::IChannel
+class uORB::KraitFastRpcChannel: public uORBCommunicator::IChannel
 {
 public:
 	/**
@@ -55,13 +55,14 @@ public:
 	 */
 	static uORB::KraitFastRpcChannel *GetInstance()
 	{
-		if (_InstancePtr == nullptr) {
+		if (_InstancePtr == nullptr)
+		{
 			_InstancePtr = new uORB::KraitFastRpcChannel();
 		}
-
+		
 		return _InstancePtr;
 	}
-
+	
 	/**
 	 * Static method to check if there is an instance.
 	 */
@@ -69,7 +70,7 @@ public:
 	{
 		return (_InstancePtr != nullptr);
 	}
-
+	
 	/**
 	 * @brief Interface to notify the remote entity of a topic being advertised.
 	 *
@@ -113,7 +114,6 @@ public:
 	 */
 	virtual int16_t add_subscription(const char *messageName, int32_t msgRateInHz);
 
-
 	/**
 	 * @brief Interface to notify the remote entity of removal of a subscription
 	 *
@@ -132,11 +132,10 @@ public:
 	 */
 	virtual int16_t register_handler(uORBCommunicator::IChannelRxHandler *handler);
 
-
 	//=========================================================================
 	//     INTERFACES FOR Data messages
 	//=========================================================================
-
+	
 	/**
 	 * @brief Sends the data message over the communication link.
 	 * @param messageName
@@ -153,14 +152,14 @@ public:
 	 */
 	virtual int16_t send_message(const char *messageName, int32_t length, uint8_t *data);
 
-
 	void Start();
 	void Stop();
 
-private: // data members
+private:
+	// data members
 	static uORB::KraitFastRpcChannel *_InstancePtr;
 	uORBCommunicator::IChannelRxHandler *_RxHandler;
-	pthread_t   _RecvThread;
+	pthread_t _RecvThread;
 	bool _ThreadStarted;
 	bool _ThreadShouldExit;
 
@@ -170,7 +169,8 @@ private: // data members
 	static const int32_t _CONTROL_MSG_TYPE_ADVERTISE = 4;
 	static const int32_t _CONTROL_MSG_TYPE_UNADVERTISE = 5;
 
-	struct BulkTransferHeader {
+	struct BulkTransferHeader
+	{
 		uint16_t _MsgType;
 		uint16_t _MsgNameLen;
 		uint16_t _DataLen;
@@ -182,15 +182,16 @@ private: // data members
 	std::map<std::string, hrt_abstime> _AdspSubscriberSampleTimestamp;
 	//hrt_abstime  _SubCacheSampleTimestamp;
 	static const hrt_abstime _SubCacheRefreshRate = 1000000; // 1 second;
-
-private://class members.
+	
+private:
+	//class members.
 	/// constructor.
 	KraitFastRpcChannel();
 
-	static void  *thread_start(void *handler);
+	static void *thread_start(void *handler);
 
 	void fastrpc_recv_thread();
-
+	
 };
 
 #endif /* _uORBKraitFastRpcChannel_hpp_ */

@@ -92,7 +92,7 @@ __EXPORT void led_toggle(int led)
 		if (sam_gpioread(GPIO_LED1))
 		{
 			sam_gpiowrite(GPIO_LED1, false);
-
+			
 		}
 		else
 		{
@@ -107,7 +107,7 @@ __EXPORT void led_toggle(int led)
  ****************************************************************************/
 
 void board_autoled_initialize(void)
-{
+{	
 	led_init();
 }
 
@@ -116,9 +116,9 @@ void board_autoled_initialize(void)
  ****************************************************************************/
 
 void board_autoled_on(int led)
-{
+{	
 	if (led == 1 || led == 3)
-	{
+	{	
 		sam_gpiowrite(GPIO_LED1, false); /* Low illuminates */
 	}
 }
@@ -128,10 +128,10 @@ void board_autoled_on(int led)
  ****************************************************************************/
 
 void board_autoled_off(int led)
-{
+{	
 	if (led == 3)
-	{
-		sam_gpiowrite(GPIO_LED1, true);  /* High extinguishes */
+	{	
+		sam_gpiowrite(GPIO_LED1, true); /* High extinguishes */
 	}
 }
 #endif

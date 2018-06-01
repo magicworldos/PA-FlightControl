@@ -53,16 +53,19 @@ __EXPORT uint64_t get_time_micros();
 /**
  * Returns true if the app/task should continue to run
  */
-inline bool ok() { return ros::ok(); }
+inline bool ok()
+{	return ros::ok();}
 #elif defined(__PX4_NUTTX)
 extern bool task_should_exit;
 /**
  * Returns true if the app/task should continue to run
  */
-__EXPORT inline bool ok() { return !task_should_exit; }
+__EXPORT inline bool ok()
+{	return !task_should_exit;}
 #elif defined(__PX4_QURT)
 // FIXME - usleep not supported by DSPAL
-inline void usleep(uint64_t sleep_interval) { }
+inline void usleep(uint64_t sleep_interval)
+{}
 #else
 /**
  * Linux needs to have globally unique checks for thread/task status
@@ -76,16 +79,22 @@ public:
 	 * Construct the Rate object and set rate
 	 * @param rate_hz rate from which sleep time is calculated in Hz
 	 */
-	explicit Rate(unsigned rate_hz) { sleep_interval = 1e6 / rate_hz; }
-
+	explicit Rate(unsigned rate_hz)
+	{
+		sleep_interval = 1e6 / rate_hz;
+	}
+	
 	/**
 	 * Sleep for 1/rate_hz s
 	 */
-	void sleep() { usleep(sleep_interval); }
-
+	void sleep()
+	{
+		usleep(sleep_interval);
+	}
+	
 private:
 	uint64_t sleep_interval;
-
+	
 };
 
 } // namespace px4

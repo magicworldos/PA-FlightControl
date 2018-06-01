@@ -49,7 +49,7 @@ namespace launchdetection
 {
 
 class __EXPORT LaunchDetector : public control::SuperBlock
-{
+{	
 public:
 	LaunchDetector();
 	~LaunchDetector() override;
@@ -61,7 +61,8 @@ public:
 
 	void update(float accel_x);
 	LaunchDetectionResult getLaunchDetected();
-	bool launchDetectionEnabled() { return launchdetection_on.get() == 1; }
+	bool launchDetectionEnabled()
+	{	return launchdetection_on.get() == 1;}
 
 	/* Returns a maximum pitch in deg. Different launch methods may impose upper pitch limits during launch */
 	float getPitchMax(float pitchMaxDefault);
@@ -73,13 +74,15 @@ private:
 	 * method is checked for further advancing in the state machine
 	 * (e.g. when to power up the motors)
 	 */
-	int activeLaunchDetectionMethodIndex{-1};
+	int activeLaunchDetectionMethodIndex
+	{	-1};
 
 	LaunchMethod *launchMethods[1];
 
 	control::BlockParamInt launchdetection_on;
 };
 
-} // namespace launchdetection
+}
+ // namespace launchdetection
 
 #endif // LAUNCHDETECTOR_H

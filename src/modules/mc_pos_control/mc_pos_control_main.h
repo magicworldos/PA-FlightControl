@@ -69,7 +69,7 @@ public:
 	bool cross_sphere_line(const math::Vector<3> &sphere_c, const float sphere_r, const math::Vector<3> &line_a, const math::Vector<3> &line_b, math::Vector<3> &res);
 
 private:
-
+	
 	/** Time in us that direction change condition has to be true for direction change state */
 	static constexpr uint64_t DIRECTION_CHANGE_TRIGGER_TIME_US = 100000;
 
@@ -92,10 +92,10 @@ private:
 	bool _in_landing = false; /**<true if landing descent (only used in auto) */
 	bool _lnd_reached_ground = false; /**<true if controller assumes the vehicle has reached the ground after landing */
 	bool _triplet_lat_lon_finite = true; /**<true if triplets current is non-finite */
-
+	
 	int _control_task; /**< task handle for task */
 	orb_advert_t _mavlink_log_pub; /**< mavlink log advert */
-
+	
 	int _vehicle_status_sub; /**< vehicle status subscription */
 	int _vehicle_land_detected_sub; /**< vehicle land detected subscription */
 	int _vehicle_attitude_sub; /**< control state subscription */
@@ -106,10 +106,10 @@ private:
 	int _pos_sp_triplet_sub; /**< position setpoint triplet */
 	int _home_pos_sub; /**< home position */
 	int _extctl_sp_sub; /**< home position */
-
+	
 	orb_advert_t _att_sp_pub; /**< attitude setpoint publication */
 	orb_advert_t _local_pos_sp_pub; /**< vehicle local position setpoint publication */
-
+	
 	orb_id_t _attitude_setpoint_id;
 
 	struct vehicle_status_s _vehicle_status; /**< vehicle status */
@@ -156,12 +156,15 @@ private:
 
 	enum manual_stick_input
 	{
-		brake, direction_change, acceleration, deceleration
+		brake,
+		direction_change,
+		acceleration,
+		deceleration
 	};
 
 	manual_stick_input _user_intention_xy; /**< defines what the user intends to do derived from the stick input */
 	manual_stick_input _user_intention_z; /**< defines what the user intends to do derived from the stick input in z direciton */
-
+	
 	struct
 	{
 		param_t thr_min;
@@ -196,7 +199,7 @@ private:
 		param_t rc_flt_smp_rate;
 		param_t rc_flt_cutoff;
 	} _params_handles; /**< handles for interesting parameters */
-
+	
 	struct
 	{
 		float thr_min;
@@ -249,21 +252,21 @@ private:
 	math::Vector<3> _curr_pos_sp; /**< current setpoint of the triplets */
 	math::Vector<3> _prev_pos_sp; /**< previous setpoint of the triples */
 	matrix::Vector2f _stick_input_xy_prev; /**< for manual controlled mode to detect direction change */
-
+	
 	math::Matrix<3, 3> _R; /**< rotation matrix from attitude quaternions */
 	float _yaw; /**< yaw angle (euler) */
 	float _yaw_takeoff; /**< home yaw angle present when vehicle was taking off (euler) */
 	float _man_yaw_offset; /**< current yaw offset in manual mode */
-
+	
 	float _vel_max_xy; /**< equal to vel_max except in auto mode when close to target */
 	float _acceleration_state_dependent_xy; /**< acceleration limit applied in manual mode */
 	float _acceleration_state_dependent_z; /**< acceleration limit applied in manual mode in z */
 	float _manual_jerk_limit_xy; /**< jerk limit in manual mode dependent on stick input */
 	float _manual_jerk_limit_z; /**< jerk limit in manual mode in z */
 	float _z_derivative; /**< velocity in z that agrees with position rate */
-
+	
 	float _takeoff_vel_limit; /**< velocity limit value which gets ramped up */
-
+	
 	// counters for reset events on position and velocity states
 	// they are used to identify a reset event
 	uint8_t _z_reset_counter;

@@ -48,7 +48,8 @@
 #define	_SIG_BIT(sig)	(1 << (_SIG_IDX(sig) & 31))
 #define	_SIG_VALID(sig)	((sig) <= _SIG_MAXSIG && (sig) > 0)
 
-typedef struct __sigset {
+typedef struct __sigset
+{
 	uint32_t __bits[_SIG_WORDS];
 } __sigset_t;
 

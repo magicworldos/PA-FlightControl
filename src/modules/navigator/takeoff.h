@@ -47,7 +47,7 @@
 #include "navigator_mode.h"
 #include "mission_block.h"
 
-class Takeoff : public MissionBlock
+class Takeoff: public MissionBlock
 {
 public:
 	Takeoff(Navigator *navigator, const char *name);

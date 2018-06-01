@@ -44,10 +44,14 @@
 class HRTTest
 {
 public:
-	HRTTest() {}
-
-	~HRTTest() {}
-
+	HRTTest()
+	{
+	}
+	
+	~HRTTest()
+	{
+	}
+	
 	int main();
 
 	static px4::AppState appState; /* track requests to terminate app */

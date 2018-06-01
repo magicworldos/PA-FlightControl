@@ -69,7 +69,7 @@ namespace bst
 
 #pragma pack(push, 1)
 
-template <typename T>
+template<typename T>
 struct BSTPacket
 {
 	uint8_t length;
@@ -117,80 +117,88 @@ struct BSTBattery
 
 #pragma pack(pop)
 
-class BST : public device::I2C
+class BST: public device::I2C
 {
 public:
 	BST(int bus);
 
 	virtual ~BST();
 
-	virtual int		init();
+	virtual int init();
 
-	virtual int		probe();
+	virtual int probe();
 
-	virtual int		info() { return 0; }
-
-	virtual int		ioctl(device::file_t *filp, int cmd, unsigned long arg) { return 0; }
-
-	work_s *work_ptr() { return &_work; }
-
+	virtual int info()
+	{
+		return 0;
+	}
+	
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg)
+	{
+		return 0;
+	}
+	
+	work_s *work_ptr()
+	{
+		return &_work;
+	}
+	
 	void stop();
 
-	static void		start_trampoline(void *arg);
+	static void start_trampoline(void *arg);
 
 private:
-	work_s			_work = {};
-	bool			_should_run = false;
-	unsigned		_interval = 100;
-	int				_gps_sub;
-	int				_attitude_sub;
-	int				_battery_sub;
+	work_s _work = { };
+	bool _should_run = false;
+	unsigned _interval = 100;
+	int _gps_sub;
+	int _attitude_sub;
+	int _battery_sub;
 
-	void			start();
+	void start();
 
-	static void		cycle_trampoline(void *arg);
+	static void cycle_trampoline(void *arg);
 
-	void			cycle();
+	void cycle();
 
-	template <typename T>
-	void			send_packet(BSTPacket<T> &packet)
+	template<typename T>
+	void send_packet(BSTPacket<T> &packet)
 	{
 		packet.length = sizeof(packet) - 1;	// Length
 		packet.crc = crc8(reinterpret_cast<uint8_t *>(&packet.type), sizeof(packet) - 2);
-
+		
 		transfer(reinterpret_cast<uint8_t *>(&packet), sizeof(packet), nullptr, 0);
 	}
-
-	template <typename T_SEND, typename T_RECV>
-	void				send_packet(BSTPacket<T_SEND> &packet_send, BSTPacket<T_RECV> &packet_recv)
+	
+	template<typename T_SEND, typename T_RECV>
+	void send_packet(BSTPacket<T_SEND> &packet_send, BSTPacket<T_RECV> &packet_recv)
 	{
 		packet_send.length = sizeof(packet_send) - 1;	// Length
 		packet_send.crc = crc8(reinterpret_cast<uint8_t *>(&packet_send.type), sizeof(packet_send) - 2);
-		transfer(reinterpret_cast<uint8_t *>(&packet_send), sizeof(packet_send), reinterpret_cast<uint8_t *>(&packet_recv),
-			 sizeof(packet_recv));
+		transfer(reinterpret_cast<uint8_t *>(&packet_send), sizeof(packet_send), reinterpret_cast<uint8_t *>(&packet_recv), sizeof(packet_recv));
 	}
-
-	static uint8_t	crc8(uint8_t *data, size_t len);
+	
+	static uint8_t crc8(uint8_t *data, size_t len);
 
 	//! Byte swap unsigned short
 	uint16_t swap_uint16(uint16_t val)
 	{
 		return (val << 8) | (val >> 8);
 	}
-
+	
 	//! Byte swap short
 	int16_t swap_int16(int16_t val)
 	{
 		return (val << 8) | ((val >> 8) & 0xFF);
 	}
-
+	
 	//! Byte swap unsigned int
 	uint32_t swap_uint32(uint32_t val)
 	{
 		val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
 		return (val << 16) | (val >> 16);
 	}
-
+	
 	//! Byte swap int
 	int32_t swap_int32(int32_t val)
 	{
@@ -202,18 +210,18 @@ private:
 static BST *g_bst = nullptr;
 
 BST::BST(int bus) :
-	I2C("bst", BST_DEVICE_PATH, bus, BST_ADDR
+		    I2C("bst", BST_DEVICE_PATH, bus, BST_ADDR
 #ifdef __PX4_NUTTX
-	    , 100000 /* maximum speed supported */
+		        , 100000 /* maximum speed supported */
 #endif
-	   )
+		        )
 {
 }
 
 BST::~BST()
 {
 	_should_run = false;
-
+	
 	work_cancel(LPWORK, &_work);
 }
 
@@ -221,36 +229,34 @@ int BST::probe()
 {
 	int retries_prev = _retries;
 	_retries = 3;
-
-	BSTPacket<BSTDeviceInfoRequest> dev_info_req = {};
+	
+	BSTPacket<BSTDeviceInfoRequest> dev_info_req = { };
 	dev_info_req.type = 0x0A;
 	dev_info_req.payload.cmd = 0x04;
-	BSTPacket<BSTDeviceInfoReply> dev_info_reply = {};
+	BSTPacket<BSTDeviceInfoReply> dev_info_reply = { };
 	send_packet(dev_info_req, dev_info_reply);
-
+	
 	if (dev_info_reply.type != 0x05)
 	{
 		warnx("no devices found");
 		return -EIO;
 	}
-
+	
 	uint8_t *reply_raw = reinterpret_cast<uint8_t *>(&dev_info_reply);
 	uint8_t crc_calc = crc8(reinterpret_cast<uint8_t *>(&dev_info_reply.type), dev_info_reply.length - 1);
 	uint8_t crc_recv = reply_raw[dev_info_reply.length];
-
+	
 	if (crc_recv != crc_calc)
 	{
-		warnx("CRC error: got %02x, should be %02x", (int)crc_recv, (int)crc_calc);
+		warnx("CRC error: got %02x, should be %02x", (int )crc_recv, (int )crc_calc);
 		return -EIO;
 	}
-
+	
 	dev_info_reply.payload.dev_name[dev_info_reply.payload.dev_name_len] = '\0';
-	warnx("device info: hardware ID: 0x%08X, firmware ID: 0x%04X, device name: %s",
-	      (int)swap_uint32(dev_info_reply.payload.hw_id), (int)swap_uint16(dev_info_reply.payload.fw_id),
-	      dev_info_reply.payload.dev_name);
-
+	warnx("device info: hardware ID: 0x%08X, firmware ID: 0x%04X, device name: %s", (int )swap_uint32(dev_info_reply.payload.hw_id), (int )swap_uint16(dev_info_reply.payload.fw_id), dev_info_reply.payload.dev_name);
+	
 	_retries = retries_prev;
-
+	
 	return OK;
 }
 
@@ -258,14 +264,14 @@ int BST::init()
 {
 	int ret;
 	ret = I2C::init();
-
+	
 	if (ret != OK)
 	{
 		return ret;
 	}
-
+	
 	work_queue(LPWORK, &_work, BST::start_trampoline, g_bst, 0);
-
+	
 	return OK;
 }
 
@@ -277,13 +283,13 @@ void BST::start_trampoline(void *arg)
 void BST::start()
 {
 	_should_run = true;
-
+	
 	_attitude_sub = orb_subscribe(ORB_ID(vehicle_attitude));
 	_gps_sub = orb_subscribe(ORB_ID(vehicle_gps_position));
 	_battery_sub = orb_subscribe(ORB_ID(battery_status));
-
+	
 	set_device_address(0x00);	// General call address
-
+	
 	work_queue(LPWORK, &_work, BST::cycle_trampoline, this, 0);
 }
 
@@ -297,31 +303,31 @@ void BST::cycle()
 	if (_should_run)
 	{
 		bool updated = false;
-
+		
 		orb_check(_attitude_sub, &updated);
-
+		
 		if (updated)
 		{
 			vehicle_attitude_s att;
 			orb_copy(ORB_ID(vehicle_attitude), _attitude_sub, &att);
 			Quatf q(att.q);
 			Eulerf euler(q);
-			BSTPacket<BSTAttitude> bst_att = {};
+			BSTPacket<BSTAttitude> bst_att = { };
 			bst_att.type = 0x1E;
 			bst_att.payload.roll = swap_int32(euler.phi() * 10000);
 			bst_att.payload.pitch = swap_int32(euler.theta() * 10000);
 			bst_att.payload.yaw = swap_int32(euler.psi() * 10000);
 			send_packet(bst_att);
 		}
-
+		
 		updated = false;
 		orb_check(_battery_sub, &updated);
-
+		
 		if (updated)
 		{
 			battery_status_s batt;
 			orb_copy(ORB_ID(battery_status), _battery_sub, &batt);
-			BSTPacket<BSTBattery> bst_batt = {};
+			BSTPacket<BSTBattery> bst_batt = { };
 			bst_batt.type = 0x08;
 			bst_batt.payload.voltage = swap_uint16(batt.voltage_v * 10.0f);
 			bst_batt.payload.current = swap_uint16(batt.current_a * 10.0f);
@@ -331,18 +337,18 @@ void BST::cycle()
 			bst_batt.payload.capacity[2] = static_cast<uint8_t>(discharged);
 			send_packet(bst_batt);
 		}
-
+		
 		updated = false;
 		orb_check(_gps_sub, &updated);
-
+		
 		if (updated)
 		{
 			vehicle_gps_position_s gps;
 			orb_copy(ORB_ID(vehicle_gps_position), _gps_sub, &gps);
-
+			
 			if (gps.fix_type >= 3 && gps.eph < 50.0f)
 			{
-				BSTPacket<BSTGPSPosition> bst_gps = {};
+				BSTPacket<BSTGPSPosition> bst_gps = { };
 				bst_gps.type = 0x02;
 				bst_gps.payload.lat = swap_int32(gps.lat);
 				bst_gps.payload.lon = swap_int32(gps.lon);
@@ -353,7 +359,7 @@ void BST::cycle()
 				send_packet(bst_gps);
 			}
 		}
-
+		
 		work_queue(LPWORK, &_work, BST::cycle_trampoline, this, _interval);
 	}
 }
@@ -361,17 +367,17 @@ void BST::cycle()
 uint8_t BST::crc8(uint8_t *data, size_t len)
 {
 	uint8_t crc = 0x00;
-
+	
 	while (len--)
 	{
 		crc ^= *data++;
-
+		
 		for (int i = 0; i < 8; i++)
 		{
 			crc = crc & 0x80 ? (crc << 1) ^ 0xD5 : crc << 1;
 		}
 	}
-
+	
 	return crc;
 }
 
@@ -386,27 +392,27 @@ int bst_main(int argc, char *argv[])
 	{
 		errx(1, "missing command\n%s", commandline_usage);
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (g_bst)
 		{
 			warnx("already running");
 			exit(0);
 		}
-
+		
 		g_bst = new BST(PX4_I2C_BUS_EXPANSION);
-
+		
 		if (g_bst != nullptr && OK != g_bst->init())
 		{
 			delete g_bst;
 			g_bst = nullptr;
 		}
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		if (!g_bst)
@@ -414,26 +420,26 @@ int bst_main(int argc, char *argv[])
 			warnx("not running");
 			exit(0);
 		}
-
+		
 		delete g_bst;
 		g_bst = nullptr;
 		warnx("stopped");
-
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (g_bst)
 		{
 			warnx("is running");
-
+			
 		}
 		else
 		{
 			warnx("is not running");
 		}
-
+		
 		exit(0);
 	}
 

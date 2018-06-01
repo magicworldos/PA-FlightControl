@@ -43,7 +43,6 @@
 
 #include <drivers/drv_hrt.h>
 
-
 class MavlinkRateLimiter
 {
 private:
@@ -57,6 +56,5 @@ public:
 	void set_interval(unsigned int interval);
 	bool check(hrt_abstime t);
 };
-
 
 #endif /* MAVLINK_RATE_LIMITER_H_ */

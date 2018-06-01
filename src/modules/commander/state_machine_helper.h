@@ -114,61 +114,29 @@ struct status_flags_s
 
 bool is_safe(const struct safety_s *safety, const struct actuator_armed_s *armed);
 
-transition_result_t arming_state_transition(struct vehicle_status_s *status,
-		struct battery_status_s *battery,
-		const struct safety_s *safety,
-		arming_state_t new_arming_state,
-		struct actuator_armed_s *armed,
-		bool fRunPreArmChecks,
-		orb_advert_t *mavlink_log_pub,        ///< uORB handle for mavlink log
-		status_flags_s *status_flags,
-		float avionics_power_rail_voltage,
-		uint8_t arm_requirements,
-		hrt_abstime time_since_boot);
+transition_result_t arming_state_transition(struct vehicle_status_s *status, struct battery_status_s *battery, const struct safety_s *safety, arming_state_t new_arming_state, struct actuator_armed_s *armed, bool fRunPreArmChecks, orb_advert_t *mavlink_log_pub,        ///< uORB handle for mavlink log
+status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_requirements, hrt_abstime time_since_boot);
 
 transition_result_t
-main_state_transition(struct vehicle_status_s *status, main_state_t new_main_state, uint8_t &main_state_prev,
-		      status_flags_s *status_flags, struct commander_state_s *internal_state);
+main_state_transition(struct vehicle_status_s *status, main_state_t new_main_state, uint8_t &main_state_prev, status_flags_s *status_flags, struct commander_state_s *internal_state);
 
-transition_result_t hil_state_transition(hil_state_t new_state, orb_advert_t status_pub,
-		struct vehicle_status_s *current_status, orb_advert_t *mavlink_log_pub);
+transition_result_t hil_state_transition(hil_state_t new_state, orb_advert_t status_pub, struct vehicle_status_s *current_status, orb_advert_t *mavlink_log_pub);
 
-void enable_failsafe(struct vehicle_status_s *status, bool old_failsafe,
-		     orb_advert_t *mavlink_log_pub, const char *reason);
+void enable_failsafe(struct vehicle_status_s *status, bool old_failsafe, orb_advert_t *mavlink_log_pub, const char *reason);
 
-bool set_nav_state(struct vehicle_status_s *status,
-		   struct actuator_armed_s *armed,
-		   struct commander_state_s *internal_state,
-		   orb_advert_t *mavlink_log_pub,
-		   const link_loss_actions_t data_link_loss_act,
-		   const bool mission_finished,
-		   const bool stay_in_failsafe,
-		   status_flags_s *status_flags,
-		   bool landed,
-		   const link_loss_actions_t rc_loss_act,
-		   const int offb_loss_act,
-		   const int offb_loss_rc_act,
-		   const int posctl_nav_loss_act);
+bool set_nav_state(struct vehicle_status_s *status, struct actuator_armed_s *armed, struct commander_state_s *internal_state, orb_advert_t *mavlink_log_pub, const link_loss_actions_t data_link_loss_act, const bool mission_finished, const bool stay_in_failsafe, status_flags_s *status_flags, bool landed, const link_loss_actions_t rc_loss_act, const int offb_loss_act, const int offb_loss_rc_act, const int posctl_nav_loss_act);
 
 /*
  * Checks the validty of position data aaainst the requirements of the current navigation
  * mode and switches mode if position data required is not available.
  */
-bool check_invalid_pos_nav_state(struct vehicle_status_s *status,
-				 bool old_failsafe,
-				 orb_advert_t *mavlink_log_pub,
-				 status_flags_s *status_flags,
-				 const bool use_rc, // true if a mode using RC control can be used as a fallback
-				 const bool using_global_pos); // true when the current mode requires a global position estimate
+bool check_invalid_pos_nav_state(struct vehicle_status_s *status, bool old_failsafe, orb_advert_t *mavlink_log_pub, status_flags_s *status_flags, const bool use_rc, // true if a mode using RC control can be used as a fallback
+const bool using_global_pos); // true when the current mode requires a global position estimate
 
-void set_rc_loss_nav_state(vehicle_status_s *status, actuator_armed_s *armed, status_flags_s *status_flags,
-			   commander_state_s *internal_state, const link_loss_actions_t link_loss_act);
+void set_rc_loss_nav_state(vehicle_status_s *status, actuator_armed_s *armed, status_flags_s *status_flags, commander_state_s *internal_state, const link_loss_actions_t link_loss_act);
 
-void set_data_link_loss_nav_state(vehicle_status_s *status, actuator_armed_s *armed, status_flags_s *status_flags,
-				  commander_state_s *internal_state, const link_loss_actions_t link_loss_act);
+void set_data_link_loss_nav_state(vehicle_status_s *status, actuator_armed_s *armed, status_flags_s *status_flags, commander_state_s *internal_state, const link_loss_actions_t link_loss_act);
 
-int prearm_check(struct vehicle_status_s *status, orb_advert_t *mavlink_log_pub, bool prearm,
-		 bool force_report, status_flags_s *status_flags, battery_status_s *battery,
-		 uint8_t arm_requirements, hrt_abstime time_since_boot);
+int prearm_check(struct vehicle_status_s *status, orb_advert_t *mavlink_log_pub, bool prearm, bool force_report, status_flags_s *status_flags, battery_status_s *battery, uint8_t arm_requirements, hrt_abstime time_since_boot);
 
 #endif /* STATE_MACHINE_HELPER_H_ */

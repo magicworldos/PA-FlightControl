@@ -84,9 +84,9 @@ __EXPORT void stm32_usbinitialize(void)
 #ifdef CONFIG_STM32_OTGFS
 	px4_arch_configgpio(GPIO_OTGFS_VBUS);
 	/* XXX We only support device mode
-	px4_arch_configgpio(GPIO_OTGFS_PWRON);
-	px4_arch_configgpio(GPIO_OTGFS_OVER);
-	*/
+	 px4_arch_configgpio(GPIO_OTGFS_PWRON);
+	 px4_arch_configgpio(GPIO_OTGFS_OVER);
+	 */
 #endif
 }
 

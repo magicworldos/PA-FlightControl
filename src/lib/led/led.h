@@ -44,7 +44,6 @@
 #include <drivers/drv_hrt.h>
 #include <drivers/drv_led.h>
 
-
 struct LedControlDataSingle
 {
 	uint8_t color; ///< one of led_control_s::COLOR_*
@@ -55,7 +54,6 @@ struct LedControlData
 	LedControlDataSingle leds[BOARD_MAX_LEDS];
 };
 
-
 /**
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
@@ -65,7 +63,7 @@ class LedController
 public:
 	LedController() = default;
 	~LedController() = default;
-
+	
 	/**
 	 * initialize. Call this once before using the object
 	 * @param led_control_sub uorb subscription for led_control
@@ -76,8 +74,11 @@ public:
 	/**
 	 * check if already initialized
 	 */
-	bool is_init() const { return _led_control_sub >= 0; }
-
+	bool is_init() const
+	{
+		return _led_control_sub >= 0;
+	}
+	
 	/**
 	 * get maxium time between two consecutive calls to update() in us.
 	 */
@@ -85,7 +86,7 @@ public:
 	{
 		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
-
+	
 	/**
 	 * Update and retrieve the Led state. It will do the orb_copy() and needs to be called at least every
 	 * maximum_update_interval(). In addition a caller might poll on the led_control_sub
@@ -96,18 +97,21 @@ public:
 
 	static const int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
 	static const int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
-
+	
 	static const int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
-									(on-to-off and off-to-on) in us */
+	 (on-to-off and off-to-on) in us */
 	static const int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
-									(on-to-off and off-to-on) in us */
+	 (on-to-off and off-to-on) in us */
 	static const int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
-									(on-to-off and off-to-on) in us */
-
-	int led_control_subscription() const { return _led_control_sub; }
-
+	 (on-to-off and off-to-on) in us */
+	
+	int led_control_subscription() const
+	{
+		return _led_control_sub;
+	}
+	
 private:
-
+	
 	/** set control_data based on current Led states */
 	inline void get_control_data(LedControlData &control_data);
 
@@ -116,7 +120,7 @@ private:
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
 		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
 		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
-									This limits the number of complete blink cycles to 64 (if not infinite) */
+		 This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
 	struct NextState
@@ -132,14 +136,20 @@ private:
 			mode = led_control.mode;
 			num_blinks = led_control.num_blinks;
 			priority = led_control.priority;
-
+			
 			if (priority > led_control_s::MAX_PRIORITY)
 			{
 				priority = led_control_s::MAX_PRIORITY;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		void reset()
+		{
+			priority = led_control_s::MAX_PRIORITY + 1;
+		}
+		bool is_valid() const
+		{
+			return priority != led_control_s::MAX_PRIORITY + 1;
+		}
 	};
 
 	struct PerLedData
@@ -150,46 +160,45 @@ private:
 
 		void set(const led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
+			int next_priority = (int) led_control.priority;
 			priority[next_priority].color = led_control.color;
 			priority[next_priority].mode = led_control.mode;
-
+			
 			// initialise the flash counter
 			if (led_control.mode == led_control_s::MODE_FLASH)
 			{
 				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
-
+				
 			}
 			else
 			{
 				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
 			}
-
+			
 			if (priority[next_priority].blink_times_left == 0)
 			{
 				// handle infinite case
 				priority[next_priority].blink_times_left = 254;
 			}
-
-
+			
 		}
-
+		
 		void apply_next_state()
 		{
-			int next_priority = (int)next_state.priority;
+			int next_priority = (int) next_state.priority;
 			priority[next_priority].color = next_state.color;
 			priority[next_priority].mode = next_state.mode;
-
+			
 			if (next_state.mode == led_control_s::MODE_FLASH)
 			{
 				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
-
+				
 			}
 			else
 			{
 				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
 			}
-
+			
 			if (priority[next_priority].blink_times_left == 0)
 			{
 				// handle infinite case
@@ -199,7 +208,7 @@ private:
 	};
 
 	PerLedData _states[BOARD_MAX_LEDS]; ///< keep current LED states
-
+	
 	int _led_control_sub = -1; ///< uorb subscription
 	hrt_abstime _last_update_call;
 	bool _force_update = true; ///< force an orb_copy in the beginning

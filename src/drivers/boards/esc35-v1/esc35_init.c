@@ -86,7 +86,6 @@ __BEGIN_DECLS
 extern void led_off(int led);
 __END_DECLS
 
-
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
@@ -117,13 +116,12 @@ __EXPORT void stm32_boardinitialize(void)
 	/* configure LEDs */
 
 	board_autoled_initialize();
-
+	
 #if defined(CONFIG_STM32_SPI1) || defined(CONFIG_STM32_SPI2) || \
     defined(CONFIG_STM32_SPI3)
 	board_spiinitialize();
 #endif
 }
-
 
 __EXPORT void board_initialize(void)
 {
@@ -131,7 +129,7 @@ __EXPORT void board_initialize(void)
 
 static void hrt_calls_this(void)
 {
-
+	
 }
 
 /****************************************************************************
@@ -162,9 +160,9 @@ static void hrt_calls_this(void)
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	int result = OK;
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -172,45 +170,42 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)hrt_calls_this,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) hrt_calls_this,
+	NULL);
+	
 #if defined(FLASH_BASED_PARAMS)
-	static sector_descriptor_t  sector_map[] =
-	{
-		{1, 2 * 1024, 0x08004000},
-		{2, 2 * 1024, 0x08004800},
-		{3, 2 * 1024, 0x08005000},
-		{4, 2 * 1024, 0x08005800},
-		{5, 2 * 1024, 0x08006000},
-		{6, 2 * 1024, 0x08006800},
-		{7, 2 * 1024, 0x08007000},
-		{8, 2 * 1024, 0x08007800},
-		{0, 0, 0},
+	static sector_descriptor_t sector_map[] =
+	{	
+		{	1, 2 * 1024, 0x08004000},
+		{	2, 2 * 1024, 0x08004800},
+		{	3, 2 * 1024, 0x08005000},
+		{	4, 2 * 1024, 0x08005800},
+		{	5, 2 * 1024, 0x08006000},
+		{	6, 2 * 1024, 0x08006800},
+		{	7, 2 * 1024, 0x08007000},
+		{	8, 2 * 1024, 0x08007800},
+		{	0, 0, 0},
 	};
 	static uint8_t param_buffer[PARAMETER_BUFFER_SIZE];
 
@@ -218,7 +213,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #endif
 	return result;
 }
-
 
 __EXPORT void board_crashdump(uintptr_t currentsp, FAR void *tcb, FAR const uint8_t *filename, int lineno)
 {

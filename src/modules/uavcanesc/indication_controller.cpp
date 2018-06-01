@@ -46,25 +46,22 @@ void cb_light_command(const uavcan::ReceivedDataStructure<uavcan::equipment::ind
 	uavcan::uint32_t red = 0;
 	uavcan::uint32_t green = 0;
 	uavcan::uint32_t blue = 0;
-
+	
 	for (auto &cmd : msg.commands)
 	{
 		if (cmd.light_id == self_light_index)
 		{
 			using uavcan::equipment::indication::RGB565;
-
-			red = uavcan::uint32_t(float(cmd.color.red) *
-					       (255.0F / float(RGB565::FieldTypes::red::max())) + 0.5F);
-
-			green = uavcan::uint32_t(float(cmd.color.green) *
-						 (255.0F / float(RGB565::FieldTypes::green::max())) + 0.5F);
-
-			blue = uavcan::uint32_t(float(cmd.color.blue) *
-						(255.0F / float(RGB565::FieldTypes::blue::max())) + 0.5F);
-
-			red   = uavcan::min<uavcan::uint32_t>(red, 0xFFU);
+			
+			red = uavcan::uint32_t(float(cmd.color.red) * (255.0F / float(RGB565::FieldTypes::red::max())) + 0.5F);
+			
+			green = uavcan::uint32_t(float(cmd.color.green) * (255.0F / float(RGB565::FieldTypes::green::max())) + 0.5F);
+			
+			blue = uavcan::uint32_t(float(cmd.color.blue) * (255.0F / float(RGB565::FieldTypes::blue::max())) + 0.5F);
+			
+			red = uavcan::min<uavcan::uint32_t>(red, 0xFFU);
 			green = uavcan::min<uavcan::uint32_t>(green, 0xFFU);
-			blue  = uavcan::min<uavcan::uint32_t>(blue, 0xFFU);
+			blue = uavcan::min<uavcan::uint32_t>(blue, 0xFFU);
 		}
 	}
 }
@@ -73,17 +70,17 @@ void cb_light_command(const uavcan::ReceivedDataStructure<uavcan::equipment::ind
 int init_indication_controller(uavcan::INode &node)
 {
 	static uavcan::Subscriber<uavcan::equipment::indication::LightsCommand> sub_light(node);
-
+	
 	self_light_index = 0;
-
+	
 	int res = 0;
-
+	
 	res = sub_light.start(cb_light_command);
-
+	
 	if (res != 0)
 	{
 		return res;
 	}
-
+	
 	return 0;
 }

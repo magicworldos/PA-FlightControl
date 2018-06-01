@@ -95,7 +95,7 @@ __BEGIN_DECLS
 /* LEDs
  *
  * A single LED is available driven by PC8.
- */
+*/
 
 #define GPIO_LED1     (GPIO_OUTPUT | GPIO_CFG_DEFAULT | GPIO_OUTPUT_SET | \
 		       GPIO_PORT_PIOC | GPIO_PIN8)
@@ -151,8 +151,6 @@ __BEGIN_DECLS
 #define GPIO_VBUSON (GPIO_OUTPUT | GPIO_CFG_DEFAULT | GPIO_OUTPUT_SET | \
 		     GPIO_PORT_PIOC | GPIO_PIN16)
 
-
-
 /* External interrupts */
 //todo:DBS fix all these
 #define GPIO_EXTI_GYRO_DRDY		(GPIO_INPUT | GPIO_CFG_DEFAULT | GPIO_CFG_DEGLITCH | \
@@ -207,7 +205,6 @@ __BEGIN_DECLS
 #define PX4_SPIDEV_BARO		3
 #define PX4_SPIDEV_MPU		4
 
-
 /* I2C busses */
 #define PX4_I2C_BUS_EXPANSION	PX4_BUS_NUMBER_TO_PX4(0)
 /* No Onboard Sensors #define PX4_I2C_BUS_ONBOARD		0 */
@@ -223,7 +220,6 @@ __BEGIN_DECLS
 
 /* Define the follwoing to output the clock on J500-1 */
 //#define GPIO_PCK1			(GPIO_PERIPHB | GPIO_CFG_DEFAULT | GPIO_PORT_PIOA | GPIO_PIN17)
-
 
 /*
  * ADC channels
@@ -243,7 +239,6 @@ __BEGIN_DECLS
  * GPIO0-3 are the PWM servo outputs.
  */
 
-
 /* User GPIOs
  *
  * GPIO0-3 are the PWM servo outputs.
@@ -260,7 +255,6 @@ __BEGIN_DECLS
 #define GPIO_GPIO1_OUTPUT	(GPIO_OUTPUT | GPIO_CFG_DEFAULT | GPIO_OUTPUT_SET | GPIO_PORT_PIOC | GPIO_PIN26)
 #define GPIO_GPIO2_OUTPUT	(GPIO_OUTPUT | GPIO_CFG_DEFAULT | GPIO_OUTPUT_SET | GPIO_PORT_PIOA | GPIO_PIN2)
 #define GPIO_GPIO3_OUTPUT	(GPIO_OUTPUT | GPIO_CFG_DEFAULT | GPIO_OUTPUT_SET | GPIO_PORT_PIOA | GPIO_PIN24)
-
 
 /* Tone alarm output */
 #define TONE_ALARM_CHANNEL	5	/* channel TC 1 Chan 5 */
@@ -314,12 +308,12 @@ __BEGIN_DECLS
  * provides the true logic GPIO BOARD_ADC_xxxx macros.
  */
 /*
-#define BOARD_ADC_USB_CONNECTED board_read_VBUS_state()
-#define BOARD_ADC_BRICK_VALID   (1)
-#define BOARD_ADC_SERVO_VALID   (1)
-#define BOARD_ADC_PERIPH_5V_OC  (0)
-#define BOARD_ADC_HIPOWER_5V_OC (0)
-*/
+ #define BOARD_ADC_USB_CONNECTED board_read_VBUS_state()
+ #define BOARD_ADC_BRICK_VALID   (1)
+ #define BOARD_ADC_SERVO_VALID   (1)
+ #define BOARD_ADC_PERIPH_5V_OC  (0)
+ #define BOARD_ADC_HIPOWER_5V_OC (0)
+ */
 
 #define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
 

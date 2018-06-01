@@ -36,7 +36,6 @@
 #include <stdint.h>
 #include "uORBCommon.hpp"
 
-
 #ifdef __PX4_NUTTX
 #include <string.h>
 #include <stdlib.h>
@@ -59,11 +58,10 @@ class Manager;
 /**
  * Per-object device instance.
  */
-class uORB::DeviceNode : public device::CDev
+class uORB::DeviceNode: public device::CDev
 {
 public:
-	DeviceNode(const struct orb_metadata *meta, const char *name, const char *path,
-		   int priority, unsigned int queue_size = 1);
+	DeviceNode(const struct orb_metadata *meta, const char *name, const char *path, int priority, unsigned int queue_size = 1);
 	~DeviceNode();
 
 	/**
@@ -75,7 +73,7 @@ public:
 	/**
 	 * Method to close a subscriber for this topic.
 	 */
-	virtual int   close(device::file_t *filp);
+	virtual int close(device::file_t *filp);
 
 	/**
 	 * reads data from a subscriber node to the buffer provided.
@@ -88,7 +86,7 @@ public:
 	 * @return
 	 *   ssize_t the number of bytes read.
 	 */
-	virtual ssize_t   read(device::file_t *filp, char *buffer, size_t buflen);
+	virtual ssize_t read(device::file_t *filp, char *buffer, size_t buflen);
 
 	/**
 	 * writes the published data to the internal buffer to be read by
@@ -102,23 +100,23 @@ public:
 	 * @return ssize_t
 	 *   The number of bytes that are written
 	 */
-	virtual ssize_t   write(device::file_t *filp, const char *buffer, size_t buflen);
+	virtual ssize_t write(device::file_t *filp, const char *buffer, size_t buflen);
 
 	/**
 	 * IOCTL control for the subscriber.
 	 */
-	virtual int   ioctl(device::file_t *filp, int cmd, unsigned long arg);
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg);
 
 	/**
 	 * Method to publish a data to this node.
 	 */
-	static ssize_t    publish(const orb_metadata *meta, orb_advert_t handle, const void *data);
+	static ssize_t publish(const orb_metadata *meta, orb_advert_t handle, const void *data);
 
-	static int        unadvertise(orb_advert_t handle);
+	static int unadvertise(orb_advert_t handle);
 
 	static int16_t topic_advertised(const orb_metadata *meta, int priority);
 	//static int16_t topic_unadvertised(const orb_metadata *meta, int priority);
-
+	
 	/**
 	 * processes a request for add subscription from remote
 	 * @param rateInHz
@@ -140,12 +138,12 @@ public:
 	int16_t process_received_message(int32_t length, uint8_t *data);
 
 	/**
-	  * Add the subscriber to the node's list of subscriber.  If there is
-	  * remote proxy to which this subscription needs to be sent, it will
-	  * done via uORBCommunicator::IChannel interface.
-	  * @param sd
-	  *   the subscriber to be added.
-	  */
+	 * Add the subscriber to the node's list of subscriber.  If there is
+	 * remote proxy to which this subscription needs to be sent, it will
+	 * done via uORBCommunicator::IChannel interface.
+	 * @param sd
+	 *   the subscriber to be added.
+	 */
 	void add_internal_subscriber();
 
 	/**
@@ -179,72 +177,107 @@ public:
 	 */
 	bool print_statistics(bool reset);
 
-	unsigned int get_queue_size() const { return _queue_size; }
-	int16_t subscriber_count() const { return _subscriber_count; }
-	uint32_t lost_message_count() const { return _lost_messages; }
-	unsigned int published_message_count() const { return _generation; }
-	const struct orb_metadata *get_meta() const { return _meta; }
-
+	unsigned int get_queue_size() const
+	{
+		return _queue_size;
+	}
+	int16_t subscriber_count() const
+	{
+		return _subscriber_count;
+	}
+	uint32_t lost_message_count() const
+	{
+		return _lost_messages;
+	}
+	unsigned int published_message_count() const
+	{
+		return _generation;
+	}
+	const struct orb_metadata *get_meta() const
+	{
+		return _meta;
+	}
+	
 protected:
 	virtual pollevent_t poll_state(device::file_t *filp);
 	virtual void poll_notify_one(px4_pollfd_struct_t *fds, pollevent_t events);
 
 private:
-	struct UpdateIntervalData {
-		unsigned  interval; /**< if nonzero minimum interval between updates */
-		struct hrt_call update_call;  /**< deferred wakeup call if update_period is nonzero */
+	struct UpdateIntervalData
+	{
+		unsigned interval; /**< if nonzero minimum interval between updates */
+		struct hrt_call update_call; /**< deferred wakeup call if update_period is nonzero */
 #ifndef __PX4_NUTTX
 		uint64_t last_update; /**< time at which the last update was provided, used when update_interval is nonzero */
 #endif
 	};
-	struct SubscriberData {
-		~SubscriberData() { if (update_interval) { delete (update_interval); } }
-
-		unsigned  generation; /**< last generation the subscriber has seen */
-		int   flags; /**< lowest 8 bits: priority of publisher, 9. bit: update_reported bit */
+	struct SubscriberData
+	{
+		~SubscriberData()
+		{
+			if (update_interval)
+			{
+				delete (update_interval);
+			}
+		}
+		
+		unsigned generation; /**< last generation the subscriber has seen */
+		int flags; /**< lowest 8 bits: priority of publisher, 9. bit: update_reported bit */
 		UpdateIntervalData *update_interval; /**< if null, no update interval */
-
-		int priority() const { return flags & 0xff; }
-		void set_priority(uint8_t prio) { flags = (flags & ~0xff) | prio; }
-
-		bool update_reported() const { return flags & (1 << 8); }
-		void set_update_reported(bool update_reported_flag) { flags = (flags & ~(1 << 8)) | (((int)update_reported_flag) << 8); }
+		
+		int priority() const
+		{
+			return flags & 0xff;
+		}
+		void set_priority(uint8_t prio)
+		{
+			flags = (flags & ~0xff) | prio;
+		}
+		
+		bool update_reported() const
+		{
+			return flags & (1 << 8);
+		}
+		void set_update_reported(bool update_reported_flag)
+		{
+			flags = (flags & ~(1 << 8)) | (((int) update_reported_flag) << 8);
+		}
 	};
 
 	const struct orb_metadata *_meta; /**< object metadata information */
-	uint8_t     *_data;   /**< allocated object buffer */
-	hrt_abstime   _last_update; /**< time the object was last updated */
-	volatile unsigned   _generation;  /**< object generation count */
-	const uint8_t   _priority;  /**< priority of the topic */
-	bool _published;  /**< has ever data been published */
+	uint8_t *_data; /**< allocated object buffer */
+	hrt_abstime _last_update; /**< time the object was last updated */
+	volatile unsigned _generation; /**< object generation count */
+	const uint8_t _priority; /**< priority of the topic */
+	bool _published; /**< has ever data been published */
 	uint8_t _queue_size; /**< maximum number of elements in the queue */
 	int16_t _subscriber_count;
 
-	inline static SubscriberData    *filp_to_sd(device::file_t *filp);
+	inline static SubscriberData *filp_to_sd(device::file_t *filp);
 
 #ifdef __PX4_NUTTX
-	pid_t     _publisher; /**< if nonzero, current publisher. Only used inside the advertise call.
-					We allow one publisher to have an open file descriptor at the same time. */
+	pid_t _publisher; /**< if nonzero, current publisher. Only used inside the advertise call.
+	 We allow one publisher to have an open file descriptor at the same time. */
 #else
-	px4_task_t     _publisher; /**< if nonzero, current publisher. Only used inside the advertise call.
-					We allow one publisher to have an open file descriptor at the same time. */
+	px4_task_t _publisher; /**< if nonzero, current publisher. Only used inside the advertise call.
+	 We allow one publisher to have an open file descriptor at the same time. */
 #endif
-
+	
 	//statistics
 	uint32_t _lost_messages = 0; ///< nr of lost messages for all subscribers. If two subscribers lose the same
 	///message, it is counted as two.
-
+	
 	/**
 	 * Perform a deferred update for a rate-limited subscriber.
 	 */
-	void      update_deferred();
+	void update_deferred();
 
 	/**
 	 * Bridge from hrt_call to update_deferred
 	 *
 	 * void *arg    ORBDevNode pointer for which the deferred update is performed.
 	 */
-	static void   update_deferred_trampoline(void *arg);
+	static void update_deferred_trampoline(void *arg);
 
 	/**
 	 * Check whether a topic appears updated to a subscriber.
@@ -254,8 +287,7 @@ private:
 	 * @param sd    The subscriber for whom to check.
 	 * @return    True if the topic should appear updated to the subscriber
 	 */
-	bool      appears_updated(SubscriberData *sd);
-
+	bool appears_updated(SubscriberData *sd);
 
 	// disable copy and assignment operators
 	DeviceNode(const DeviceNode &);
@@ -268,10 +300,10 @@ private:
  * Used primarily to create new objects via the ORBIOCCREATE
  * ioctl.
  */
-class uORB::DeviceMaster : public device::CDev
+class uORB::DeviceMaster: public device::CDev
 {
 public:
-	virtual int   ioctl(device::file_t *filp, int cmd, unsigned long arg);
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg);
 
 	/**
 	 * Public interface for getDeviceNodeLocked(). Takes care of synchronization.
@@ -299,7 +331,8 @@ private:
 	DeviceMaster(Flavor f);
 	virtual ~DeviceMaster();
 
-	struct DeviceNodeStatisticsData {
+	struct DeviceNodeStatisticsData
+	{
 		DeviceNode *node;
 		uint8_t instance;
 		uint32_t last_lost_msg_count;
@@ -308,8 +341,7 @@ private:
 		unsigned int pub_msg_delta;
 		DeviceNodeStatisticsData *next = nullptr;
 	};
-	void addNewDeviceNodes(DeviceNodeStatisticsData **first_node, int &num_topics, size_t &max_topic_name_length,
-			       char **topic_filter, int num_filters);
+	void addNewDeviceNodes(DeviceNodeStatisticsData **first_node, int &num_topics, size_t &max_topic_name_length, char **topic_filter, int num_filters);
 
 	friend class uORB::Manager;
 
@@ -327,5 +359,5 @@ private:
 #else
 	std::map<std::string, uORB::DeviceNode *> _node_map;
 #endif
-	hrt_abstime       _last_statistics_output;
+	hrt_abstime _last_statistics_output;
 };

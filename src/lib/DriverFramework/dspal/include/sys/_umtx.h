@@ -33,43 +33,49 @@
 #include <sys/_types.h>
 #include <sys/_timespec.h>
 
-struct umutex {
-	volatile __lwpid_t	m_owner;	/* Owner of the mutex */
-	__uint32_t		m_flags;	/* Flags of the mutex */
-	__uint32_t		m_ceilings[2];	/* Priority protect ceiling */
-	__uint32_t		m_spare[4];
+struct umutex
+{
+	volatile __lwpid_t m_owner; /* Owner of the mutex */
+	__uint32_t m_flags; /* Flags of the mutex */
+	__uint32_t m_ceilings[2]; /* Priority protect ceiling */
+	__uint32_t m_spare[4];
 };
 
-struct ucond {
-	volatile __uint32_t	c_has_waiters;	/* Has waiters in kernel */
-	__uint32_t		c_flags;	/* Flags of the condition variable */
-	__uint32_t              c_clockid;	/* Clock id */
-	__uint32_t              c_spare[1];	/* Spare space */
+struct ucond
+{
+	volatile __uint32_t c_has_waiters; /* Has waiters in kernel */
+	__uint32_t c_flags; /* Flags of the condition variable */
+	__uint32_t c_clockid; /* Clock id */
+	__uint32_t c_spare[1]; /* Spare space */
 };
 
-struct urwlock {
-	volatile __int32_t	rw_state;
-	__uint32_t		rw_flags;
-	__uint32_t		rw_blocked_readers;
-	__uint32_t		rw_blocked_writers;
-	__uint32_t		rw_spare[4];
+struct urwlock
+{
+	volatile __int32_t rw_state;
+	__uint32_t rw_flags;
+	__uint32_t rw_blocked_readers;
+	__uint32_t rw_blocked_writers;
+	__uint32_t rw_spare[4];
 };
 
-struct _usem {
-	volatile __uint32_t	_has_waiters;
-	volatile __uint32_t	_count;
-	__uint32_t		_flags;
+struct _usem
+{
+	volatile __uint32_t _has_waiters;
+	volatile __uint32_t _count;
+	__uint32_t _flags;
 };
 
-struct _usem2 {
-	volatile __uint32_t	_count;		/* Waiters flag in high bit. */
-	__uint32_t		_flags;
+struct _usem2
+{
+	volatile __uint32_t _count; /* Waiters flag in high bit. */
+	__uint32_t _flags;
 };
 
-struct _umtx_time {
-	struct timespec		_timeout;
-	__uint32_t		_flags;
-	__uint32_t		_clockid;
+struct _umtx_time
+{
+	struct timespec _timeout;
+	__uint32_t _flags;
+	__uint32_t _clockid;
 };
 
 #endif /* !_SYS__UMTX_H_ */

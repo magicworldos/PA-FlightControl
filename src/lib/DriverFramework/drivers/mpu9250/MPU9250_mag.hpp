@@ -78,7 +78,8 @@ class MPU9250;
 // 16bit mode: 0.15uTesla/LSB, 100 uTesla == 1 Gauss
 #define MAG_RAW_TO_GAUSS 	 (0.15f / 100.0f)
 
-enum mag_sample_rate_e {
+enum mag_sample_rate_e
+{
 	MPU9250_MAG_SAMPLE_RATE_8HZ = 0,
 	MPU9250_MAG_SAMPLE_RATE_100HZ = 1,
 	NUM_MPU9250_MAG_SAMPLE_RATES
@@ -88,10 +89,12 @@ class MPU9250_mag
 {
 public:
 	MPU9250_mag(MPU9250 &imu, enum mag_sample_rate_e sample_rate) :
-		_mag_initialized(false), _sample_rate(sample_rate), _imu(imu)
+			    _mag_initialized(false),
+			    _sample_rate(sample_rate),
+			    _imu(imu)
 	{
 	}
-
+	
 	// @brief
 	// Called to initialize the magnetometer connection via the
 	// internal I2C bus of the sensor.  The gyro and accelerometer

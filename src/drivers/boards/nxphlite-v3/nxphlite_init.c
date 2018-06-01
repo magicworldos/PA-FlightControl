@@ -141,7 +141,7 @@ void board_on_reset(int status)
 
 	const uint32_t gpio[] = PX4_GPIO_PWM_INIT_LIST;
 	board_gpio_init(gpio, arraySize(gpio));
-
+	
 	if (status >= 0)
 	{
 		up_mdelay(6);
@@ -177,26 +177,26 @@ int board_read_VBUS_state(void)
 
 __EXPORT void board_rc_input(bool invert_on)
 {
-
+	
 	irqstate_t irqstate = px4_enter_critical_section();
-
-	uint8_t s2 =  getreg8(KINETIS_UART_S2_OFFSET + RC_UXART_BASE);
-	uint8_t c3 =  getreg8(KINETIS_UART_C3_OFFSET + RC_UXART_BASE);
-
+	
+	uint8_t s2 = getreg8(KINETIS_UART_S2_OFFSET + RC_UXART_BASE);
+	uint8_t c3 = getreg8(KINETIS_UART_C3_OFFSET + RC_UXART_BASE);
+	
 	/* {R|T}XINV bit fields can written any time */
 
 	if (invert_on)
 	{
 		s2 |= (UART_S2_RXINV);
 		c3 |= (UART_C3_TXINV);
-
+		
 	}
 	else
 	{
 		s2 &= ~(UART_S2_RXINV);
 		c3 &= ~(UART_C3_TXINV);
 	}
-
+	
 	putreg8(s2, KINETIS_UART_S2_OFFSET + RC_UXART_BASE);
 	putreg8(c3, KINETIS_UART_C3_OFFSET + RC_UXART_BASE);
 
@@ -216,7 +216,7 @@ __EXPORT void board_peripheral_reset(int ms)
 	/* wait for the peripheral rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 
 	/* switch the peripheral rail back on */
@@ -232,23 +232,22 @@ __EXPORT void board_peripheral_reset(int ms)
  *
  ************************************************************************************/
 
-__EXPORT void
-kinetis_boardinitialize(void)
+__EXPORT void kinetis_boardinitialize(void)
 {
 	board_on_reset(-1); /* Reset PWM first thing */
-
+	
 	/* configure LEDs */
 	board_autoled_initialize();
-
+	
 	const uint32_t gpio[] = PX4_GPIO_INIT_LIST;
 	board_gpio_init(gpio, arraySize(gpio));
-
+	
 	nxphlite_timer_initialize();
-
+	
 	/* Power on Spektrum */
 
 	VDD_3V3_SPEKTRUM_POWER_EN(true);
-
+	
 }
 
 //FIXME: Stubs  -----v
@@ -261,9 +260,9 @@ int up_rtc_getdatetime(FAR struct tm *tp)
 	tp->tm_mday = 30;
 	tp->tm_mon = 10;
 	tp->tm_year = 116;
-	tp->tm_wday = 1;    /* Day of the week (0-6) */
-	tp->tm_yday = 0;    /* Day of the year (0-365) */
-	tp->tm_isdst = 0;   /* Non-0 if daylight savings time is in effect */
+	tp->tm_wday = 1; /* Day of the week (0-6) */
+	tp->tm_yday = 0; /* Day of the year (0-365) */
+	tp->tm_isdst = 0; /* Non-0 if daylight savings time is in effect */
 	return 0;
 }
 
@@ -272,7 +271,6 @@ static void kinetis_serial_dma_poll(void)
 	// todo:Stubbed
 }
 //FIXME: Stubs  -----v
-
 
 /****************************************************************************
  * Name: board_app_initialize
@@ -301,18 +299,18 @@ static void kinetis_serial_dma_poll(void)
 
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
-
+	
 	VDD_3V3_SD_CARD_EN(true);
 	VDD_3V3_SENSORS_EN(true);
-
+	
 	/* configure SPI interfaces */
 
 	nxphlite_spidev_initialize();
-
+	
 	VDD_ETH_EN(true);
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -320,47 +318,44 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	param_init();
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	/* configure the DMA allocator */
 
 	if (board_dma_alloc_init() < 0)
 	{
 		message("DMA alloc FAILED");
 	}
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)kinetis_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) kinetis_serial_dma_poll,
+	NULL);
+	
 #if defined(CONFIG_KINETIS_BBSRAM)
-
+	
 	/* NB. the use of the console requires the hrt running
 	 * to poll the DMA
 	 */
@@ -372,7 +367,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	stm32_bbsraminitialize(BBSRAM_PATH, filesizes);
 
 #if defined(CONFIG_KINETIS_SAVE_CRASHDUMP)
-
+	
 	/* Panic Logging in Battery Backed Up Files */
 
 	/*
@@ -395,10 +390,10 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int hadCrash = hardfault_check_status("boot");
 
 	if (hadCrash == OK)
-	{
+	{	
 
-		message("[boot] There is a hard fault logged. Hold down the SPACE BAR," \
-			" while booting to halt the system!\n");
+		message("[boot] There is a hard fault logged. Hold down the SPACE BAR,"
+				" while booting to halt the system!\n");
 
 		/* Yes. So add one to the boot count - this will be reset after a successful
 		 * commit to SD
@@ -412,7 +407,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		ioctl(fileno(stdin), FIONREAD, (unsigned long)((uintptr_t) &bytesWaiting));
 
 		if (reboots > 2 || bytesWaiting != 0)
-		{
+		{	
 
 			/* Since we can not commit the fault dump to disk. Display it
 			 * to the console.
@@ -421,9 +416,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 
 			message("[boot] There were %d reboots with Hard fault that were not committed to disk - System halted %s\n",
-				reboots,
-				(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
-
+					reboots,
+					(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
 
 			/* For those of you with a debugger set a break point on up_assert and
 			 * then set dbgContinue = 1 and go.
@@ -435,100 +429,99 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			int c = '>';
 
 			while (!dbgContinue)
-			{
+			{	
 
 				switch (c)
-				{
+				{	
 
 					case EOF:
-
 
 					case '\n':
 					case '\r':
 					case ' ':
-						continue;
+					continue;
 
 					default:
 
-						putchar(c);
-						putchar('\n');
+					putchar(c);
+					putchar('\n');
 
-						switch (c)
-						{
+					switch (c)
+					{	
 
-							case 'D':
-							case 'd':
-								hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
-								break;
-
-							case 'C':
-							case 'c':
-								hardfault_rearm("boot");
-								hardfault_increment_reboot("boot", true);
-								break;
-
-							case 'B':
-							case 'b':
-								dbgContinue = true;
-								break;
-
-							default:
-								break;
-						} // Inner Switch
-
-						message("\nEnter B - Continue booting\n" \
-							"Enter C - Clear the fault log\n" \
-							"Enter D - Dump fault log\n\n?>");
-						fflush(stdout);
-
-						if (!dbgContinue)
-						{
-							c = getchar();
-						}
-
+						case 'D':
+						case 'd':
+						hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 						break;
+
+						case 'C':
+						case 'c':
+						hardfault_rearm("boot");
+						hardfault_increment_reboot("boot", true);
+						break;
+
+						case 'B':
+						case 'b':
+						dbgContinue = true;
+						break;
+
+						default:
+						break;
+					} // Inner Switch
+					
+					message("\nEnter B - Continue booting\n"
+							"Enter C - Clear the fault log\n"
+							"Enter D - Dump fault log\n\n?>");
+					fflush(stdout);
+
+					if (!dbgContinue)
+					{	
+						c = getchar();
+					}
+
+					break;
 
 				} // outer switch
 			} // for
-
+			
 		} // inner if
 	} // outer if
-
+	
 #endif // CONFIG_KINETIS_SAVE_CRASHDUMP
 #endif // CONFIG_KINETIS_BBSRAM
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_RED);
 	led_off(LED_GREEN);
 	led_off(LED_BLUE);
-
+	
 	int ret = nxphlite_sdhc_initialize();
-
+	
 	if (ret != OK)
 	{
 		board_autoled_on(LED_RED);
 		return ret;
 	}
-
+	
 #ifdef HAVE_AUTOMOUNTER
 	/* Initialize the auto-mounter */
 
 	nxphlite_automount_initialize();
 #endif
-
+	
 	/* Configure SPI-based devices */
 
 #ifdef CONFIG_SPI
 	ret = nxphlite_spi_bus_initialize();
 
 	if (ret != OK)
-	{
+	{	
 		board_autoled_on(LED_RED);
 		return ret;
 	}
 
 #endif
-
+	
 	return OK;
 }

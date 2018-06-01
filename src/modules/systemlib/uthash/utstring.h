@@ -1,25 +1,25 @@
 /*
-Copyright (c) 2008-2012, Troy D. Hanson   http://uthash.sourceforge.net
-All rights reserved.
+ Copyright (c) 2008-2012, Troy D. Hanson   http://uthash.sourceforge.net
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 /* a dynamic string implementation using macros
  * see http://uthash.sourceforge.net/utstring
@@ -130,16 +130,22 @@ _UNUSED_ static void utstring_printf_va(UT_string *s, const char *fmt, va_list a
 #endif
 		n = vsnprintf(&s->d[s->i], s->n - s->i, fmt, cp);
 		va_end(cp);
-
-		if ((n > -1) && (n < (int)(s->n - s->i)))
+		
+		if ((n > -1) && (n < (int) (s->n - s->i)))
 		{
 			s->i += n;
 			return;
 		}
-
+		
 		/* Else try again with more space. */
-		if (n > -1) { utstring_reserve(s, n + 1); } /* exact */
-		else { utstring_reserve(s, (s->n) * 2); } /* 2x */
+		if (n > -1)
+		{
+			utstring_reserve(s, n + 1);
+		} /* exact */
+		else
+		{
+			utstring_reserve(s, (s->n) * 2);
+		} /* 2x */
 	}
 }
 _UNUSED_ static void utstring_printf(UT_string *s, const char *fmt, ...)

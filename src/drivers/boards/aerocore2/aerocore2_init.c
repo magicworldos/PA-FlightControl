@@ -126,15 +126,15 @@ __EXPORT void board_peripheral_reset(int ms)
 	bool last = stm32_gpioread(GPIO_SPEKTRUM_PWR_EN);
 	/* Keep Spektum on to discharge rail*/
 	stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, 1);
-
+	
 	/* wait for the peripheral rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 	/* switch the peripheral rail back on */
 	stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, last);
-
+	
 }
 
 /************************************************************************************
@@ -147,25 +147,24 @@ __EXPORT void board_peripheral_reset(int ms)
  *
  ************************************************************************************/
 
-__EXPORT void
-stm32_boardinitialize(void)
+__EXPORT void stm32_boardinitialize(void)
 {
 	/* configure ADC pins */
 
-	stm32_configgpio(GPIO_ADC1_IN10);	/* used by battery sense */
-	stm32_configgpio(GPIO_ADC1_IN11);	/* J1 breakout */
-	stm32_configgpio(GPIO_ADC1_IN12);	/* J1 breakout */
-	stm32_configgpio(GPIO_ADC1_IN13);	/* J1 breakout */
-
+	stm32_configgpio(GPIO_ADC1_IN10); /* used by battery sense */
+	stm32_configgpio(GPIO_ADC1_IN11); /* J1 breakout */
+	stm32_configgpio(GPIO_ADC1_IN12); /* J1 breakout */
+	stm32_configgpio(GPIO_ADC1_IN13); /* J1 breakout */
+	
 	/* configure the power mux sense input */
 	stm32_configgpio(GPIO_POWER_MUX_SENSE);
-
+	
 	/* configure spektrum power controller gpio */
 	stm32_configgpio(GPIO_SPEKTRUM_PWR_EN);
-
+	
 	/* configure SPI interfaces */
 	stm32_spiinitialize();
-
+	
 	/* configure LEDs */
 	board_autoled_initialize();
 }
@@ -201,7 +200,7 @@ static struct spi_dev_s *spi4;
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -209,60 +208,56 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #       if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #               error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #       endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* configure the DMA allocator */
 
 	if (board_dma_alloc_init() < 0)
 	{
 		message("DMA alloc FAILED");
 	}
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_AMBER);
-
+	
 	/* Configure SPI-based devices */
 
 	spi3 = px4_spibus_initialize(3);
-
+	
 	if (!spi3)
 	{
-		message("[boot] FAILED to initialize SPI port 3\n");
-		board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port 3\n"); board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 	/* Default SPI3 to 1MHz and de-assert the known chip selects. */
 	SPI_SETFREQUENCY(spi3, 10000000);
 	SPI_SETBITS(spi3, 8);
@@ -271,18 +266,17 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SELECT(spi3, PX4_SPIDEV_ACCEL_MAG, false);
 	SPI_SELECT(spi3, PX4_SPIDEV_BARO, false);
 	up_udelay(20);
-
+	
 	/* Get the SPI port for the FRAM */
 
 	spi4 = px4_spibus_initialize(4);
-
+	
 	if (!spi4)
 	{
-		message("[boot] FAILED to initialize SPI port 4\n");
-		board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port 4\n"); board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 	/* Default SPI4 to 37.5 MHz (40 MHz rounded to nearest valid divider, F4 max)
 	 * and de-assert the known chip selects. */
 
@@ -291,6 +285,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SETBITS(spi4, 8);
 	SPI_SETMODE(spi4, SPIDEV_MODE3);
 	SPI_SELECT(spi4, SPIDEV_FLASH(0), false);
-
+	
 	return OK;
 }

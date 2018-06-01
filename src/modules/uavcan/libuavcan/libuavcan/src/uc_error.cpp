@@ -20,11 +20,11 @@ namespace uavcan
 void handleFatalError(const char* msg)
 {
 #if UAVCAN_EXCEPTIONS
-    throw std::runtime_error(msg);
+	throw std::runtime_error(msg);
 #else
-    (void)msg;
-    UAVCAN_ASSERT(0);
-    std::abort();
+	(void)msg;
+	UAVCAN_ASSERT(0);
+	std::abort();
 #endif
 }
 

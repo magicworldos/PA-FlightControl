@@ -49,8 +49,7 @@ void HAP_debug(const char *msg, int level, const char *filename, int line);
 
 #ifndef qurt_log_defined
 #define qurt_log_defined
-static __inline void qurt_log(int level, const char *file, int line,
-			      const char *format, ...)
+static __inline void qurt_log(int level, const char *file, int line, const char *format, ...)
 {
 	char buf[256];
 	va_list args;

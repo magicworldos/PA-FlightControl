@@ -73,65 +73,70 @@
  * A UAVCAN Server Sub node.
  */
 class __EXPORT UavcanServers
-{
+{	
 	static constexpr unsigned NumIfaces = 1;  // UAVCAN_STM32_NUM_IFACES
+	
+	static constexpr unsigned StackSize = 6000;
+	static constexpr unsigned Priority = 120;
 
-	static constexpr unsigned StackSize  = 6000;
-	static constexpr unsigned Priority  =  120;
+	static constexpr unsigned VirtualIfaceBlockAllocationQuota = 80;
 
-	static constexpr unsigned VirtualIfaceBlockAllocationQuota =  80;
-
-	static constexpr float BeepFrequencyGenericIndication       = 1000.0F;
-	static constexpr float BeepFrequencySuccess                 = 2000.0F;
-	static constexpr float BeepFrequencyError                   = 100.0F;
+	static constexpr float BeepFrequencyGenericIndication = 1000.0F;
+	static constexpr float BeepFrequencySuccess = 2000.0F;
+	static constexpr float BeepFrequencyError = 100.0F;
 
 public:
 	UavcanServers(uavcan::INode &main_node);
 
-	virtual		~UavcanServers();
+	virtual ~UavcanServers();
 
-	static int      start(uavcan::INode &main_node);
-	static int      stop();
+	static int start(uavcan::INode &main_node);
+	static int stop();
 
-	uavcan::SubNode<> &get_node() { return _subnode; }
+	uavcan::SubNode<> &get_node()
+	{	return _subnode;}
 
-	static UavcanServers *instance() { return _instance; }
+	static UavcanServers *instance()
+	{	return _instance;}
 
 	/*
 	 *  Set the main node's pointer to to the injector
 	 *  This is a work around as main_node.getDispatcher().remeveRxFrameListener();
 	 *  would require a dynamic cast and rtti is not enabled.
 	 */
-	void attachITxQueueInjector(ITxQueueInjector **injector) {*injector = &_vdriver;}
+	void attachITxQueueInjector(ITxQueueInjector **injector)
+	{	*injector = &_vdriver;}
 
-	void requestCheckAllNodesFirmwareAndUpdate() { _check_fw = true; }
+	void requestCheckAllNodesFirmwareAndUpdate()
+	{	_check_fw = true;}
 
-	bool guessIfAllDynamicNodesAreAllocated() { return _server_instance.guessIfAllDynamicNodesAreAllocated(); }
+	bool guessIfAllDynamicNodesAreAllocated()
+	{	return _server_instance.guessIfAllDynamicNodesAreAllocated();}
 
 private:
-	pthread_t         _subnode_thread;
-	pthread_mutex_t   _subnode_mutex;
-	volatile bool     _subnode_thread_should_exit = false;
+	pthread_t _subnode_thread;
+	pthread_mutex_t _subnode_mutex;
+	volatile bool _subnode_thread_should_exit = false;
 
-	int		init();
+	int init();
 
-	pthread_addr_t	run(pthread_addr_t);
+	pthread_addr_t run(pthread_addr_t);
 
-	static UavcanServers	*_instance;            ///< singleton pointer
-
+	static UavcanServers *_instance;            ///< singleton pointer
+	
 	VirtualCanDriver _vdriver;
 
-	uavcan::SubNode<>  _subnode;
-	uavcan::INode      &_main_node;
+	uavcan::SubNode<> _subnode;
+	uavcan::INode &_main_node;
 
 	uavcan_posix::dynamic_node_id_server::FileEventTracer _tracer;
 	uavcan_posix::dynamic_node_id_server::FileStorageBackend _storage_backend;
 	uavcan_posix::FirmwareVersionChecker _fw_version_checker;
-	uavcan::dynamic_node_id_server::CentralizedServer _server_instance;  ///< server singleton pointer
-	uavcan_posix::BasicFileServerBackend  _fileserver_backend;
-	uavcan::NodeInfoRetriever   _node_info_retriever;
-	uavcan::FirmwareUpdateTrigger   _fw_upgrade_trigger;
-	uavcan::BasicFileServer         _fw_server;
+	uavcan::dynamic_node_id_server::CentralizedServer _server_instance;///< server singleton pointer
+	uavcan_posix::BasicFileServerBackend _fileserver_backend;
+	uavcan::NodeInfoRetriever _node_info_retriever;
+	uavcan::FirmwareUpdateTrigger _fw_upgrade_trigger;
+	uavcan::BasicFileServer _fw_server;
 
 	/*
 	 * The MAVLink parameter bridge needs to know the maximum parameter index
@@ -144,7 +149,8 @@ private:
 	 *
 	 * The node's UAVCAN ID is used as the index into the _param_counts array.
 	 */
-	uint8_t _param_counts[128] = {};
+	uint8_t _param_counts[128] =
+	{};
 	bool _count_in_progress = false;
 	uint8_t _count_index = 0;
 
@@ -154,7 +160,8 @@ private:
 	bool _param_list_all_nodes = false;
 	uint8_t _param_list_node_id = 1;
 
-	uint32_t _param_dirty_bitmap[4] = {};
+	uint32_t _param_dirty_bitmap[4] =
+	{};
 	uint8_t _param_save_opcode = 0;
 
 	bool _cmd_in_progress = false;
@@ -164,12 +171,12 @@ private:
 	orb_advert_t _command_ack_pub = nullptr;
 
 	typedef uavcan::MethodBinder<UavcanServers *,
-		void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &)> GetSetCallback;
+	void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &)> GetSetCallback;
 	typedef uavcan::MethodBinder<UavcanServers *,
-		void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &)>
-		ExecuteOpcodeCallback;
+	void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &)>
+	ExecuteOpcodeCallback;
 	typedef uavcan::MethodBinder<UavcanServers *,
-		void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::RestartNode> &)> RestartNodeCallback;
+	void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::RestartNode> &)> RestartNodeCallback;
 	void cb_getset(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &result);
 	void cb_count(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &result);
 	void cb_opcode(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &result);
@@ -183,9 +190,12 @@ private:
 
 	uint8_t get_next_active_node_id(uint8_t base);
 	uint8_t get_next_dirty_node_id(uint8_t base);
-	void set_node_params_dirty(uint8_t node_id) { _param_dirty_bitmap[node_id >> 5] |= 1 << (node_id & 31); }
-	void clear_node_params_dirty(uint8_t node_id) { _param_dirty_bitmap[node_id >> 5] &= ~(1 << (node_id & 31)); }
-	bool are_node_params_dirty(uint8_t node_id) const { return bool((_param_dirty_bitmap[node_id >> 5] >> (node_id & 31)) & 1); }
+	void set_node_params_dirty(uint8_t node_id)
+	{	_param_dirty_bitmap[node_id >> 5] |= 1 << (node_id & 31);}
+	void clear_node_params_dirty(uint8_t node_id)
+	{	_param_dirty_bitmap[node_id >> 5] &= ~(1 << (node_id & 31));}
+	bool are_node_params_dirty(uint8_t node_id) const
+	{	return bool((_param_dirty_bitmap[node_id >> 5] >> (node_id & 31)) & 1);}
 
 	void beep(float frequency);
 
@@ -199,11 +209,11 @@ private:
 	uint8_t _esc_count = 0;
 
 	typedef uavcan::MethodBinder<UavcanServers *,
-		void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::enumeration::Begin> &)>
-		EnumerationBeginCallback;
+	void (UavcanServers::*)(const uavcan::ServiceCallResult<uavcan::protocol::enumeration::Begin> &)>
+	EnumerationBeginCallback;
 	typedef uavcan::MethodBinder<UavcanServers *,
-		void (UavcanServers::*)(const uavcan::ReceivedDataStructure<uavcan::protocol::enumeration::Indication>&)>
-		EnumerationIndicationCallback;
+	void (UavcanServers::*)(const uavcan::ReceivedDataStructure<uavcan::protocol::enumeration::Indication>&)>
+	EnumerationIndicationCallback;
 	void cb_enumeration_begin(const uavcan::ServiceCallResult<uavcan::protocol::enumeration::Begin> &result);
 	void cb_enumeration_indication(const uavcan::ReceivedDataStructure<uavcan::protocol::enumeration::Indication> &msg);
 	void cb_enumeration_getset(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &result);

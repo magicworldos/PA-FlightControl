@@ -638,7 +638,6 @@ PARAM_DEFINE_FLOAT(EKF2_RNG_GATE, 5.0f);
  */
 PARAM_DEFINE_FLOAT(EKF2_MIN_RNG, 0.1f);
 
-
 /**
  * Measurement noise for vision position observations used when the vision system does not supply error estimates
  *
@@ -854,7 +853,7 @@ PARAM_DEFINE_FLOAT(EKF2_OF_POS_Y, 0.0f);
 PARAM_DEFINE_FLOAT(EKF2_OF_POS_Z, 0.0f);
 
 /**
-* X position of VI sensor focal point in body frame
+ * X position of VI sensor focal point in body frame
  *
  * @group EKF2
  * @unit m
@@ -881,24 +880,24 @@ PARAM_DEFINE_FLOAT(EKF2_EV_POS_Y, 0.0f);
 PARAM_DEFINE_FLOAT(EKF2_EV_POS_Z, 0.0f);
 
 /**
-* Airspeed fusion threshold. A value of zero will deactivate airspeed fusion. Any other positive
-* value will determine the minimum airspeed which will still be fused.
-*
-* @group EKF2
-* @min 0.0
-* @unit m/s
-* @decimal 1
-*/
+ * Airspeed fusion threshold. A value of zero will deactivate airspeed fusion. Any other positive
+ * value will determine the minimum airspeed which will still be fused.
+ *
+ * @group EKF2
+ * @min 0.0
+ * @unit m/s
+ * @decimal 1
+ */
 PARAM_DEFINE_FLOAT(EKF2_ARSP_THR, 0.0f);
 
 /**
-* Boolean determining if synthetic sideslip measurements should fused.
-*
-* A value of 1 indicates that fusion is active
-*
-* @group EKF2
-* @boolean
-*/
+ * Boolean determining if synthetic sideslip measurements should fused.
+ *
+ * A value of 1 indicates that fusion is active
+ *
+ * @group EKF2
+ * @boolean
+ */
 PARAM_DEFINE_INT32(EKF2_FUSE_BETA, 0);
 
 /**

@@ -49,8 +49,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
-
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -101,11 +99,10 @@ __EXPORT extern const flash_file_token_t parameters_token;
  */
 typedef struct sector_descriptor_t
 {
-	uint8_t       page;
-	uint32_t      size;
-	uint32_t      address;
+	uint8_t page;
+	uint32_t size;
+	uint32_t address;
 } sector_descriptor_t;
-
 
 /****************************************************************************
  * Name: parameter_flashfs_init
@@ -217,7 +214,6 @@ __EXPORT int parameter_flashfs_erase(void);
  ****************************************************************************/
 
 __EXPORT int parameter_flashfs_alloc(flash_file_token_t ft, uint8_t **buffer, size_t *buf_size);
-
 
 /****************************************************************************
  * Name: parameter_flashfs_free

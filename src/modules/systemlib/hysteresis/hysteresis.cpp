@@ -40,13 +40,10 @@
 #include <px4_log.h>
 #include "systemlib/hysteresis/hysteresis.h"
 
-
 namespace systemlib
 {
 
-
-void
-Hysteresis::set_state_and_update(const bool new_state)
+void Hysteresis::set_state_and_update(const bool new_state)
 {
 	if (new_state != _state)
 	{
@@ -55,25 +52,22 @@ Hysteresis::set_state_and_update(const bool new_state)
 			_requested_state = new_state;
 			_last_time_to_change_state = hrt_absolute_time();
 		}
-
+		
 	}
 	else
 	{
 		_requested_state = _state;
 	}
-
+	
 	update();
 }
 
-void
-Hysteresis::update()
+void Hysteresis::update()
 {
 	if (_requested_state != _state)
 	{
-
-		if (hrt_elapsed_time(&_last_time_to_change_state) >= (_state ?
-				_hysteresis_time_from_true_us :
-				_hysteresis_time_from_false_us))
+		
+		if (hrt_elapsed_time(&_last_time_to_change_state) >= (_state ? _hysteresis_time_from_true_us : _hysteresis_time_from_false_us))
 		{
 			_state = _requested_state;
 		}

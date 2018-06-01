@@ -51,7 +51,7 @@ namespace control
 class Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+class BlockParamBase: public ListNode<BlockParamBase *>
 {
 public:
 	/**
@@ -61,12 +61,15 @@ public:
 	 */
 	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
 	virtual ~BlockParamBase() = default;
-
+	
 	virtual bool update() = 0;
-	const char *getName() { return param_name(_handle); }
-
+	const char *getName()
+	{
+		return param_name(_handle);
+	}
+	
 protected:
-	param_t _handle{PARAM_INVALID};
+	param_t _handle { PARAM_INVALID };
 };
 
 // Parameters that are tied to blocks for updating and naming.
@@ -95,10 +98,10 @@ public:
 
 	void set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	bool update() override { return (param_get(_handle, &_val) == PX4_OK);}
 
 protected:
-	T _val;
+T _val;
 };
 
 typedef BlockParam<float> BlockParamFloat;

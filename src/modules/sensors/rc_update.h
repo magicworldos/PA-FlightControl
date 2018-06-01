@@ -87,20 +87,20 @@ public:
 	/**
 	 * Gather and publish RC input data.
 	 */
-	void		rc_poll(const ParameterHandles &parameter_handles);
+	void rc_poll(const ParameterHandles &parameter_handles);
 
 private:
-
+	
 	/**
 	 * Get and limit value for specified RC function. Returns NAN if not mapped.
 	 */
-	float		get_rc_value(uint8_t func, float min_value, float max_value);
+	float get_rc_value(uint8_t func, float min_value, float max_value);
 
 	/**
 	 * Get switch position for specified function.
 	 */
-	switch_pos_t	get_rc_sw3pos_position(uint8_t func, float on_th, bool on_inv, float mid_th, bool mid_inv);
-	switch_pos_t	get_rc_sw2pos_position(uint8_t func, float on_th, bool on_inv);
+	switch_pos_t get_rc_sw3pos_position(uint8_t func, float on_th, bool on_inv, float mid_th, bool mid_inv);
+	switch_pos_t get_rc_sw2pos_position(uint8_t func, float on_th, bool on_inv);
 
 	/**
 	 * Update parameters from RC channels if the functionality is activated and the
@@ -110,19 +110,18 @@ private:
 	 */
 	void set_params_from_rc(const ParameterHandles &parameter_handles);
 
-
-	int		_rc_sub = -1;			/**< raw rc channels data subscription */
-	int		_rc_parameter_map_sub = -1;		/**< rc parameter map subscription */
-
-	orb_advert_t	_rc_pub = nullptr;		/**< raw r/c control topic */
-	orb_advert_t	_manual_control_pub = nullptr;	/**< manual control signal topic */
-	orb_advert_t	_actuator_group_3_pub = nullptr;/**< manual control as actuator topic */
-
-	struct rc_channels_s _rc;			/**< r/c channel data */
-
+	int _rc_sub = -1; /**< raw rc channels data subscription */
+	int _rc_parameter_map_sub = -1; /**< rc parameter map subscription */
+	
+	orb_advert_t _rc_pub = nullptr; /**< raw r/c control topic */
+	orb_advert_t _manual_control_pub = nullptr; /**< manual control signal topic */
+	orb_advert_t _actuator_group_3_pub = nullptr;/**< manual control as actuator topic */
+	
+	struct rc_channels_s _rc; /**< r/c channel data */
+	
 	struct rc_parameter_map_s _rc_parameter_map;
-	float _param_rc_values[rc_parameter_map_s::RC_PARAM_MAP_NCHAN];	/**< parameter values for RC control */
-
+	float _param_rc_values[rc_parameter_map_s::RC_PARAM_MAP_NCHAN]; /**< parameter values for RC control */
+	
 	const Parameters &_parameters;
 
 	hrt_abstime _last_rc_to_param_map_time = 0;
@@ -131,9 +130,7 @@ private:
 	math::LowPassFilter2p _filter_pitch; /** we want smooth setpoints as inputs to the controllers */
 	math::LowPassFilter2p _filter_yaw;
 	math::LowPassFilter2p _filter_throttle;
-
+	
 };
-
-
 
 } /* namespace sensors */

@@ -88,38 +88,24 @@
 
 void lpc43_softreset(void)
 {
-  irqstate_t flags;
+	irqstate_t flags;
+	
+	/* Disable interrupts */
 
-  /* Disable interrupts */
+	flags = enter_critical_section();
+	
+	/* Reset all of the peripherals that we can (safely) */
 
-  flags = enter_critical_section();
+	putreg32((RGU_CTRL0_LCD_RST | RGU_CTRL0_USB0_RST | RGU_CTRL0_USB1_RST | RGU_CTRL0_DMA_RST | RGU_CTRL0_SDIO_RST | RGU_CTRL0_ETHERNET_RST | RGU_CTRL0_GPIO_RST), LPC43_RGU_CTRL0);
+	putreg32((RGU_CTRL1_TIMER0_RST | RGU_CTRL1_TIMER1_RST | RGU_CTRL1_TIMER2_RST | RGU_CTRL1_TIMER3_RST | RGU_CTRL1_RITIMER_RST | RGU_CTRL1_SCT_RST | RGU_CTRL1_MCPWM_RST | RGU_CTRL1_QEI_RST | RGU_CTRL1_ADC0_RST | RGU_CTRL1_ADC1_RST | RGU_CTRL1_USART0_RST | RGU_CTRL1_UART1_RST | RGU_CTRL1_USART2_RST | RGU_CTRL1_USART3_RST | RGU_CTRL1_I2C0_RST | RGU_CTRL1_I2C1_RST | RGU_CTRL1_SSP0_RST | RGU_CTRL1_SSP1_RST | RGU_CTRL1_I2S_RST | RGU_CTRL1_CAN1_RST | RGU_CTRL1_CAN0_RST | RGU_CTRL1_M0APP_RST), LPC43_RGU_CTRL1);
+	
+	/* A delay seems to be necessary somewhere around here */
 
-  /* Reset all of the peripherals that we can (safely) */
+	up_mdelay(20);
+	
+	/* Clear all pending interrupts */
 
-  putreg32((RGU_CTRL0_LCD_RST     | RGU_CTRL0_USB0_RST     |
-            RGU_CTRL0_USB1_RST    | RGU_CTRL0_DMA_RST      |
-            RGU_CTRL0_SDIO_RST    | RGU_CTRL0_ETHERNET_RST |
-            RGU_CTRL0_GPIO_RST), LPC43_RGU_CTRL0);
-  putreg32((RGU_CTRL1_TIMER0_RST  | RGU_CTRL1_TIMER1_RST   |
-            RGU_CTRL1_TIMER2_RST  | RGU_CTRL1_TIMER3_RST   |
-            RGU_CTRL1_RITIMER_RST | RGU_CTRL1_SCT_RST      |
-            RGU_CTRL1_MCPWM_RST   | RGU_CTRL1_QEI_RST      |
-            RGU_CTRL1_ADC0_RST    | RGU_CTRL1_ADC1_RST     |
-            RGU_CTRL1_USART0_RST  | RGU_CTRL1_UART1_RST    |
-            RGU_CTRL1_USART2_RST  | RGU_CTRL1_USART3_RST   |
-            RGU_CTRL1_I2C0_RST    | RGU_CTRL1_I2C1_RST     |
-            RGU_CTRL1_SSP0_RST    | RGU_CTRL1_SSP1_RST     |
-            RGU_CTRL1_I2S_RST     | RGU_CTRL1_CAN1_RST     |
-            RGU_CTRL1_CAN0_RST    | RGU_CTRL1_M0APP_RST),
-            LPC43_RGU_CTRL1);
-
-  /* A delay seems to be necessary somewhere around here */
-
-  up_mdelay(20);
-
-  /* Clear all pending interrupts */
-
-  putreg32(0xffffffff, NVIC_IRQ0_31_CLRPEND);
-  putreg32(0xffffffff, NVIC_IRQ32_63_CLRPEND);
-  leave_critical_section(flags);
+	putreg32(0xffffffff, NVIC_IRQ0_31_CLRPEND);
+	putreg32(0xffffffff, NVIC_IRQ32_63_CLRPEND);
+	leave_critical_section(flags);
 }

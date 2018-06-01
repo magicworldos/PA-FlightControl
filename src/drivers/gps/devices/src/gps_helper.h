@@ -47,7 +47,8 @@
 #define GPS_READ_BUFFER_SIZE 250
 #endif
 
-enum class GPSCallbackType {
+enum class GPSCallbackType
+{
 	/**
 	 * Read data from device. This is a blocking operation with a timeout.
 	 * data1: points to a buffer to be written to. The first sizeof(int) bytes contain the
@@ -57,7 +58,7 @@ enum class GPSCallbackType {
 	 *         the timeout happens).
 	 */
 	readDeviceData = 0,
-
+	
 	/**
 	 * Write data to device
 	 * data1: data to be written
@@ -65,7 +66,7 @@ enum class GPSCallbackType {
 	 * return: num written bytes
 	 */
 	writeDeviceData,
-
+	
 	/**
 	 * set Baudrate
 	 * data1: ignored
@@ -73,7 +74,7 @@ enum class GPSCallbackType {
 	 * return: 0 on success
 	 */
 	setBaudrate,
-
+	
 	/**
 	 * Got an RTCM message from the device.
 	 * data1: pointer to the message
@@ -81,7 +82,7 @@ enum class GPSCallbackType {
 	 * return: ignored
 	 */
 	gotRTCMMessage,
-
+	
 	/**
 	 * message about current survey-in status
 	 * data1: points to a SurveyInStatus struct
@@ -89,7 +90,7 @@ enum class GPSCallbackType {
 	 * return: ignored
 	 */
 	surveyInStatus,
-
+	
 	/**
 	 * can be used to set the current clock accurately
 	 * data1: pointer to a timespec struct
@@ -105,11 +106,11 @@ enum class GPSCallbackType {
  */
 typedef int (*GPSCallbackPtr)(GPSCallbackType type, void *data1, int data2, void *user);
 
-
-struct SurveyInStatus {
-	uint32_t mean_accuracy;       /**< [mm] */
-	uint32_t duration;            /**< [s] */
-	uint8_t flags;                /**< bit 0: valid, bit 1: active */
+struct SurveyInStatus
+{
+	uint32_t mean_accuracy; /**< [mm] */
+	uint32_t duration; /**< [s] */
+	uint8_t flags; /**< bit 0: valid, bit 1: active */
 };
 
 // TODO: this number seems wrong
@@ -118,20 +119,21 @@ struct SurveyInStatus {
 class GPSHelper
 {
 public:
-	enum class OutputMode {
+	enum class OutputMode
+	{
 		GPS = 0,    ///< normal GPS output
 		RTCM        ///< request RTCM output. This is used for (fixed position) base stations
 	};
 
-	enum class Interface {
+	enum class Interface
+	{
 		UART = 0,
 		SPI
 	};
 
-
 	GPSHelper(GPSCallbackPtr callback, void *callback_user);
 	virtual ~GPSHelper() = default;
-
+	
 	/**
 	 * configure the device
 	 * @param baud will be set to the baudrate (output parameter)
@@ -148,8 +150,14 @@ public:
 	 */
 	virtual int receive(unsigned timeout) = 0;
 
-	float getPositionUpdateRate() { return _rate_lat_lon; }
-	float getVelocityUpdateRate() { return _rate_vel; }
+	float getPositionUpdateRate()
+	{
+		return _rate_lat_lon;
+	}
+	float getVelocityUpdateRate()
+	{
+		return _rate_vel;
+	}
 	void resetUpdateRates();
 	void storeUpdateRates();
 
@@ -158,11 +166,13 @@ public:
 	 * It will be called automatically after configuring.
 	 * @return 0 on success, <0 on error
 	 */
-	virtual int restartSurveyIn() { return 0; }
-
-
+	virtual int restartSurveyIn()
+	{
+		return 0;
+	}
+	
 protected:
-
+	
 	/**
 	 * read from device
 	 * @param buf: pointer to read buffer
@@ -174,10 +184,10 @@ protected:
 	 */
 	int read(uint8_t *buf, int buf_length, int timeout)
 	{
-		*((int *)buf) = timeout;
+		*((int *) buf) = timeout;
 		return _callback(GPSCallbackType::readDeviceData, buf, buf_length, _callback_user);
 	}
-
+	
 	/**
 	 * write to the device
 	 * @param buf
@@ -186,9 +196,9 @@ protected:
 	 */
 	int write(const void *buf, int buf_length)
 	{
-		return _callback(GPSCallbackType::writeDeviceData, (void *)buf, buf_length, _callback_user);
+		return _callback(GPSCallbackType::writeDeviceData, (void *) buf, buf_length, _callback_user);
 	}
-
+	
 	/**
 	 * set the Baudrate
 	 * @param baudrate
@@ -198,31 +208,31 @@ protected:
 	{
 		return _callback(GPSCallbackType::setBaudrate, nullptr, baudrate, _callback_user);
 	}
-
+	
 	void surveyInStatus(SurveyInStatus &status)
 	{
 		_callback(GPSCallbackType::surveyInStatus, &status, 0, _callback_user);
 	}
-
+	
 	/** got an RTCM message from the device */
 	void gotRTCMMessage(uint8_t *buf, int buf_length)
 	{
 		_callback(GPSCallbackType::gotRTCMMessage, buf, buf_length, _callback_user);
 	}
-
+	
 	void setClock(timespec &t)
 	{
 		_callback(GPSCallbackType::setClock, &t, 0, _callback_user);
 	}
+	
+	GPSCallbackPtr _callback { nullptr };
+	void *_callback_user { };
 
-	GPSCallbackPtr _callback{nullptr};
-	void *_callback_user{};
+	uint8_t _rate_count_lat_lon { };
+	uint8_t _rate_count_vel { };
 
-	uint8_t _rate_count_lat_lon{};
-	uint8_t _rate_count_vel{};
+	float _rate_lat_lon { 0.0f };
+	float _rate_vel { 0.0f };
 
-	float _rate_lat_lon{0.0f};
-	float _rate_vel{0.0f};
-
-	uint64_t _interval_rate_start{0};
+	uint64_t _interval_rate_start { 0 };
 };

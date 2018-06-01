@@ -107,7 +107,7 @@
  ****************************************************************************/
 
 void board_autoled_initialize(void)
-{
+{	
 	kinetis_pinconfig(GPIO_LED_R);
 	kinetis_pinconfig(GPIO_LED_G);
 	kinetis_pinconfig(GPIO_LED_B);
@@ -118,30 +118,30 @@ void board_autoled_initialize(void)
  ****************************************************************************/
 
 void board_autoled_on(int led)
-{
+{	
 	if (led != LED_NOCHANGE)
-	{
-		bool redoff   = true;
+	{	
+		bool redoff = true;
 		bool greenoff = true;
-		bool blueoff  = true;
+		bool blueoff = true;
 
 		switch (led)
-		{
+		{	
 			default:
 			case LED_OFF_OFF_OFF:
-				break;
+			break;
 
 			case LED_OFF_OFF_ON:
-				blueoff = false;
-				break;
+			blueoff = false;
+			break;
 
 			case LED_OFF_ON_OFF:
-				greenoff = false;
-				break;
+			greenoff = false;
+			break;
 
 			case LED_ON_OFF_OFF:
-				redoff = false;
-				break;
+			redoff = false;
+			break;
 		}
 
 		kinetis_gpiowrite(GPIO_LED_R, redoff);
@@ -155,9 +155,9 @@ void board_autoled_on(int led)
  ****************************************************************************/
 
 void board_autoled_off(int led)
-{
+{	
 	if (led == LED_ON_OFF_OFF)
-	{
+	{	
 		kinetis_gpiowrite(GPIO_LED_R, true);
 		kinetis_gpiowrite(GPIO_LED_G, true);
 		kinetis_gpiowrite(GPIO_LED_B, true);

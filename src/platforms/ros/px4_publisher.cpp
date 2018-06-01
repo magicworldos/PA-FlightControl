@@ -38,4 +38,3 @@
  */
 #include <px4_publisher.h>
 
-

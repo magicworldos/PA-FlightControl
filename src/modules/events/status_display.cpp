@@ -45,8 +45,8 @@
 
 using namespace status;
 
-StatusDisplay::StatusDisplay(const events::SubscriberHandler &subscriber_handler)
-	: _subscriber_handler(subscriber_handler)
+StatusDisplay::StatusDisplay(const events::SubscriberHandler &subscriber_handler) :
+		    _subscriber_handler(subscriber_handler)
 {
 	// set the base color
 	_led_control.priority = 0;
@@ -54,7 +54,7 @@ StatusDisplay::StatusDisplay(const events::SubscriberHandler &subscriber_handler
 	_led_control.color = led_control_s::COLOR_CYAN;
 	_led_control.mode = led_control_s::MODE_ON;
 	publish();
-
+	
 	_led_control.priority = 1;
 	_led_control.num_blinks = 0;	// infinite blinking
 }
@@ -62,31 +62,31 @@ StatusDisplay::StatusDisplay(const events::SubscriberHandler &subscriber_handler
 bool StatusDisplay::check_for_updates()
 {
 	bool got_updates = false;
-
+	
 	if (_subscriber_handler.battery_status_updated())
 	{
 		orb_copy(ORB_ID(battery_status), _subscriber_handler.get_battery_status_sub(), &_battery_status);
 		got_updates = true;
 	}
-
+	
 	if (_subscriber_handler.cpuload_updated())
 	{
 		orb_copy(ORB_ID(cpuload), _subscriber_handler.get_cpuload_sub(), &_cpu_load);
 		got_updates = true;
 	}
-
+	
 	if (_subscriber_handler.vehicle_status_flags_updated())
 	{
 		orb_copy(ORB_ID(vehicle_status_flags), _subscriber_handler.get_vehicle_status_flags_sub(), &_vehicle_status_flags);
 		got_updates = true;
 	}
-
+	
 	if (_subscriber_handler.vehicle_status_updated())
 	{
 		orb_copy(ORB_ID(vehicle_status), _subscriber_handler.get_vehicle_status_sub(), &_vehicle_status);
 		got_updates = true;
 	}
-
+	
 	return got_updates;
 }
 
@@ -96,21 +96,21 @@ void StatusDisplay::process()
 	{
 		return;
 	}
-
+	
 	set_leds();
 }
 
 void StatusDisplay::publish()
 {
 	_led_control.timestamp = hrt_absolute_time();
-
+	
 	if (_led_control_pub != nullptr)
 	{
 		orb_publish(ORB_ID(led_control), _led_control_pub, &_led_control);
-
+		
 	}
 	else
 	{
-		_led_control_pub =  orb_advertise_queue(ORB_ID(led_control), &_led_control, LED_UORB_QUEUE_LENGTH);
+		_led_control_pub = orb_advertise_queue(ORB_ID(led_control), &_led_control, LED_UORB_QUEUE_LENGTH);
 	}
 }

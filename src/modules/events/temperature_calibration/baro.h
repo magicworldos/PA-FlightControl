@@ -38,8 +38,7 @@
 
 #define POLYFIT_ORDER			5
 
-
-class TemperatureCalibrationBaro : public TemperatureCalibrationCommon<1, POLYFIT_ORDER>
+class TemperatureCalibrationBaro: public TemperatureCalibrationCommon<1, POLYFIT_ORDER>
 {
 public:
 	TemperatureCalibrationBaro(float min_temperature_rise, float min_start_temperature, float max_start_temperature);
@@ -56,7 +55,7 @@ public:
 	void reset_calibration();
 
 private:
-
+	
 	virtual int update_sensor_instance(PerSensorData &data, int sensor_sub);
 
 	inline int finish_sensor_instance(PerSensorData &data, int sensor_index);

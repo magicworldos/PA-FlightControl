@@ -58,7 +58,6 @@
 #include <drivers/drv_gpio.h>
 #include <modules/px4iofirmware/protocol.h>
 
-
 #define CYCLE_RATE_HZ  5
 
 #define PIN_NAME "AUX OUT 1"
@@ -110,13 +109,12 @@ struct gpio_led_s
 	int counter;
 };
 
-
 static struct gpio_led_s *gpio_led_data;
 static volatile enum
 {
-	Stopped =  0,
-	Running =  1,
-	Falied  =  2,
+	Stopped = 0,
+	Running = 1,
+	Falied = 2,
 	Stopping = 3
 } gpio_led_state = Stopped;
 
@@ -132,9 +130,9 @@ static void print_usage(const char *reason)
 	{
 		PX4_WARN("%s\n", reason);
 	}
-
+	
 	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
+			R"DESCR_STR(
 ### Description
 This module is responsible for drving a single LED on one of the FMU AUX pins.
 
@@ -161,54 +159,71 @@ To drive an LED connected AUX5 pin.
 
 int gpio_led_main(int argc, char *argv[])
 {
-	if (argc < 2) {
+	if (argc < 2)
+	{
 		print_usage(NULL);
 		exit(1);
-	} else {
-
-		if (!strcmp(argv[1], "start")) {
-			if (gpio_led_state != Stopped) {
+	}
+	else
+	{
+		
+		if (!strcmp(argv[1], "start"))
+		{
+			if (gpio_led_state != Stopped)
+			{
 				PX4_WARN("already running");
 				exit(1);
 			}
-
+			
 			/* by default GPIO_SERVO_1 on FMUv2 */
 			int pin = 1;
-
+			
 			/* pin name to display */
 			char pin_name[sizeof(PIN_NAME) + 2] = PIN_NAME;
-
-			if (argc > 2) {
-				if (!strcmp(argv[2], "-p")) {
-
+			
+			if (argc > 2)
+			{
+				if (!strcmp(argv[2], "-p"))
+				{
+					
 					unsigned int n = strtoul(argv[3], NULL, 10);
-
-					if (n >= GPIO_MIN_SERVO_PIN && n <= GPIO_MAX_SERVO_PIN) {
+					
+					if (n >= GPIO_MIN_SERVO_PIN && n <= GPIO_MAX_SERVO_PIN)
+					{
 						pin = 1 << (n - 1);
 						snprintf(pin_name, sizeof(pin_name), "AUX OUT %d", n);
-					} else {
+					}
+					else
+					{
 						PX4_ERR("unsupported pin: %s (valid values are %d-%d)", argv[3], GPIO_MIN_SERVO_PIN, GPIO_MAX_SERVO_PIN);
 						exit(1);
 					}
-
+					
 				}
 			}
-
+			
 			gpio_led_data = malloc(sizeof(struct gpio_led_s));
-			if (gpio_led_data == NULL) {
+			if (gpio_led_data == NULL)
+			{
 				PX4_ERR("failed to allocate memory!");
 				exit(1);
-			} else {
+			}
+			else
+			{
 				memset(gpio_led_data, 0, sizeof(struct gpio_led_s));
 				gpio_led_data->pin = pin;
 				int ret = work_queue(LPWORK, &(gpio_led_data->work), gpio_led_start, gpio_led_data, 0);
-
-				if (ret != 0) {
+				
+				if (ret != 0)
+				{
 					PX4_ERR("failed to queue work: %d", ret);
 					goto out;
-				} else {
-					usleep(1000000/CYCLE_RATE_HZ);
-					if (gpio_led_state != Running) {
+				}
+				else
+				{
+					usleep(1000000 / CYCLE_RATE_HZ);
+					if (gpio_led_state != Running)
+					{
 						gpio_led_state = Stopped;
 						goto out;
 					}
@@ -216,68 +231,77 @@ int gpio_led_main(int argc, char *argv[])
 					exit(0);
 				}
 			}
-
-		} else if (!strcmp(argv[1], "stop")) {
-			if (gpio_led_state == Running) {
+			
+		}
+		else if (!strcmp(argv[1], "stop"))
+		{
+			if (gpio_led_state == Running)
+			{
 				gpio_led_state = Stopping;
-				while(gpio_led_state != Stopped) {
-					usleep(1000000/CYCLE_RATE_HZ);
+				while (gpio_led_state != Stopped)
+				{
+					usleep(1000000 / CYCLE_RATE_HZ);
 				}
 				PX4_INFO("stopped");
-				free (gpio_led_data);
+				free(gpio_led_data);
 				gpio_led_data = NULL;
 				exit(0);
-			} else {
+			}
+			else
+			{
 				PX4_WARN("not running");
 				exit(1);
 			}
-
-		} else {
+			
+		}
+		else
+		{
 			print_usage("unrecognized command");
 			exit(1);
 		}
 	}
-out:
-	free (gpio_led_data);
+	out: free(gpio_led_data);
 	gpio_led_data = NULL;
 	exit(1);
 }
 
 void gpio_led_start(FAR void *arg)
 {
-	FAR struct gpio_led_s *priv = (FAR struct gpio_led_s *)arg;
-
+	FAR struct gpio_led_s *priv = (FAR struct gpio_led_s *) arg;
+	
 	char *gpio_dev = PX4FMU_DEVICE_PATH;
-
+	
 	/* open GPIO device */
 	priv->gpio_fd = open(gpio_dev, 0);
-
-	if (priv->gpio_fd < 0) {
+	
+	if (priv->gpio_fd < 0)
+	{
 		PX4_ERR("gpio_led: GPIO device \"%s\" open fail\n", gpio_dev);
 		gpio_led_state = Falied;
 		return;
 	}
-
+	
 	/* configure GPIO pin */
 
 	ioctl(priv->gpio_fd, GPIO_SET_OUTPUT, priv->pin);
 
 	/* initialize vehicle status structure */
 	memset(&priv->vehicle_status, 0, sizeof(priv->vehicle_status));
-
+	
 	/* initialize battery status structure */
 	memset(&priv->battery_status, 0, sizeof(priv->battery_status));
-
+	
 	/* subscribe to vehicle status topic */
 	priv->vehicle_status_sub = orb_subscribe(ORB_ID(vehicle_status));
-
+	
 	/* subscribe to battery status topic */
 	priv->battery_status_sub = orb_subscribe(ORB_ID(battery_status));
-
+	
 	/* add worker to queue */
 	int ret = work_queue(LPWORK, &priv->work, gpio_led_cycle, priv, 0);
-
-	if (ret != 0) {
+	
+	if (ret != 0)
+	{
 		PX4_ERR("gpio_led: failed to queue work: %d\n", ret);
 		close(priv->gpio_fd);
 		gpio_led_state = Falied;
@@ -288,75 +312,94 @@ void gpio_led_start(FAR void *arg)
 
 void gpio_led_cycle(FAR void *arg)
 {
-	FAR struct gpio_led_s *priv = (FAR struct gpio_led_s *)arg;
-
+	FAR struct gpio_led_s *priv = (FAR struct gpio_led_s *) arg;
+	
 	/* check for vehicle status updates*/
 	bool updated;
 	orb_check(priv->vehicle_status_sub, &updated);
-
-	if (updated) {
+	
+	if (updated)
+	{
 		orb_copy(ORB_ID(vehicle_status), priv->vehicle_status_sub, &priv->vehicle_status);
 	}
-
+	
 	orb_check(priv->battery_status_sub, &updated);
-
-	if (updated) {
+	
+	if (updated)
+	{
 		orb_copy(ORB_ID(battery_status), priv->battery_status_sub, &priv->battery_status);
 	}
-
+	
 	/* select pattern for current vehiclestatus */
 	int pattern = 0;
-
-	if (priv->vehicle_status.arming_state == ARMING_STATE_ARMED_ERROR) {
+	
+	if (priv->vehicle_status.arming_state == ARMING_STATE_ARMED_ERROR)
+	{
 		pattern = 0x2A;	// *_*_*_ fast blink (armed, error)
-
-	} else if (priv->vehicle_status.arming_state == ARMING_STATE_ARMED) {
-		if (priv->battery_status.warning == BATTERY_WARNING_NONE
-		    && !priv->vehicle_status.failsafe) {
+		
+	}
+	else if (priv->vehicle_status.arming_state == ARMING_STATE_ARMED)
+	{
+		if (priv->battery_status.warning == BATTERY_WARNING_NONE && !priv->vehicle_status.failsafe)
+		{
 			pattern = 0x3f;	// ****** solid (armed)
-
-		} else {
+			
+		}
+		else
+		{
 			pattern = 0x3e;	// *****_ slow blink (armed, battery low or failsafe)
 		}
-
-	} else if (priv->vehicle_status.arming_state == ARMING_STATE_STANDBY) {
-		pattern = 0x38;	// ***___ slow blink (disarmed, ready)
-
-	} else if (priv->vehicle_status.arming_state == ARMING_STATE_STANDBY_ERROR) {
-		pattern = 0x28;	// *_*___ slow double blink (disarmed, error)
-
+		
 	}
-
+	else if (priv->vehicle_status.arming_state == ARMING_STATE_STANDBY)
+	{
+		pattern = 0x38;	// ***___ slow blink (disarmed, ready)
+		
+	}
+	else if (priv->vehicle_status.arming_state == ARMING_STATE_STANDBY_ERROR)
+	{
+		pattern = 0x28;	// *_*___ slow double blink (disarmed, error)
+		
+	}
+	
 	/* blink pattern */
 	bool led_state_new = (pattern & (1 << priv->counter)) != 0;
-
-	if (led_state_new != priv->led_state) {
+	
+	if (led_state_new != priv->led_state)
+	{
 		priv->led_state = led_state_new;
+		
+		if (led_state_new)
+		{
+		ioctl(priv->gpio_fd, GPIO_SET, priv->pin);
 
-		if (led_state_new) {
-			ioctl(priv->gpio_fd, GPIO_SET, priv->pin);
-
-		} else {
-			ioctl(priv->gpio_fd, GPIO_CLEAR, priv->pin);
-		}
 	}
+	else
+	{
+	ioctl(priv->gpio_fd, GPIO_CLEAR, priv->pin);
+}
+}
 
-	priv->counter++;
+priv->counter++;
 
-	if (priv->counter > 5) {
-		priv->counter = 0;
-	}
+if (priv->counter > 5)
+{
+priv->counter = 0;
+}
 
-	/* repeat cycle at 5 Hz */
-	if (gpio_led_state == Running) {
-		work_queue(LPWORK, &priv->work, gpio_led_cycle, priv, USEC2TICK(1000000/CYCLE_RATE_HZ));
+/* repeat cycle at 5 Hz */
+if (gpio_led_state == Running)
+{
+work_queue(LPWORK, &priv->work, gpio_led_cycle, priv, USEC2TICK(1000000/CYCLE_RATE_HZ));
 
-	} else {
-		/* switch off LED on stop */
-		ioctl(priv->gpio_fd, GPIO_CLEAR, priv->pin);
-		orb_unsubscribe(priv->vehicle_status_sub);
-		orb_unsubscribe(priv->battery_status_sub);
-		close(priv->gpio_fd);
-		gpio_led_state = Stopped;
-	}
+}
+else
+{
+/* switch off LED on stop */
+ioctl(priv->gpio_fd, GPIO_CLEAR, priv->pin);
+orb_unsubscribe(priv->vehicle_status_sub);
+orb_unsubscribe(priv->battery_status_sub);
+close(priv->gpio_fd);
+gpio_led_state = Stopped;
+}
 }

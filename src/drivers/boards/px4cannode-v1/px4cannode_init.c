@@ -82,7 +82,6 @@ __BEGIN_DECLS
 extern void led_off(int led);
 __END_DECLS
 
-
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
@@ -121,7 +120,6 @@ __EXPORT void stm32_boardinitialize(void)
 #endif
 }
 
-
 __EXPORT void board_initialize(void)
 {
 }
@@ -151,13 +149,12 @@ __EXPORT void board_initialize(void)
  *
  ****************************************************************************/
 
-
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	int result = OK;
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -165,32 +162,29 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
+	
 	return result;
 }

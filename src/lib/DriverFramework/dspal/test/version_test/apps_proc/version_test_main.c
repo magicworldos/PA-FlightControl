@@ -30,10 +30,8 @@
  *
  ****************************************************************************/
 
-
 // dspal_version.h cannot be included here because it would cause the build
 // to pick up all the DSP specific types. Instead use --include dspal_version.h
-
 #include "stdbool.h"
 #include "adspmsgd.h"
 #include "rpcmem.h"
@@ -47,7 +45,7 @@
  * @return
  * 0 ------ Version information retrieved
  * 1 ------ An error occured
-*/
+ */
 
 int main()
 {
@@ -55,42 +53,43 @@ int main()
 	const int heap_id = 22; 	// FIXME - no idea how these are allocated
 	const int fastrpc_flags = 0;
 	const int buf_size = DSPAL_MAX_LEN_VERSION_INFO_STR * 3;
-
+	
 	rpcmem_init();
-
-        char *versionBuffer = (char *) rpcmem_alloc(heap_id, fastrpc_flags, buf_size);
-
-        int ret = (versionBuffer != NULL) ? true : false;
-
-        if (!ret) {
-                LOG_ERR("%s rpcmem_alloc failed! for version string buffer");
-                rpcmem_free(versionBuffer);
-                return 1;
-        }
-
+	
+	char *versionBuffer = (char *) rpcmem_alloc(heap_id, fastrpc_flags, buf_size);
+	
+	int ret = (versionBuffer != NULL) ? true : false;
+	
+	if (!ret)
+	{
+		LOG_ERR("%s rpcmem_alloc failed! for version string buffer");
+		rpcmem_free(versionBuffer);
+		return 1;
+	}
+	
 	char *version_string = &versionBuffer[0];
 	char *build_date_string = &versionBuffer[DSPAL_MAX_LEN_VERSION_INFO_STR];
-	char *build_time_string = &versionBuffer[DSPAL_MAX_LEN_VERSION_INFO_STR*2];
-
-	status = version_test_get_version_info(
-		version_string, DSPAL_MAX_LEN_VERSION_INFO_STR,
-		build_date_string, DSPAL_MAX_LEN_VERSION_INFO_STR,
-		build_time_string, DSPAL_MAX_LEN_VERSION_INFO_STR);
-
-	if (status != 0) {
+	char *build_time_string = &versionBuffer[DSPAL_MAX_LEN_VERSION_INFO_STR * 2];
+	
+	status = version_test_get_version_info(version_string, DSPAL_MAX_LEN_VERSION_INFO_STR, build_date_string, DSPAL_MAX_LEN_VERSION_INFO_STR, build_time_string, DSPAL_MAX_LEN_VERSION_INFO_STR);
+	
+	if (status != 0)
+	{
 		LOG_INFO("Failed to get DSP image version information.");
 	}
-	else {
+	else
+	{
 		LOG_INFO("version: %s", version_string);
 		LOG_INFO("build date: %s", build_date_string);
 		LOG_INFO("build time: %s", build_time_string);
 	}
-
-	if (versionBuffer != NULL) {
-                rpcmem_free(versionBuffer);
-                versionBuffer = 0;
-        }
-
+	
+	if (versionBuffer != NULL)
+	{
+		rpcmem_free(versionBuffer);
+		versionBuffer = 0;
+	}
+	
 	return status;
 }
 

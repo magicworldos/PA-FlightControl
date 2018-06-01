@@ -45,21 +45,32 @@ uavcan::UtcDuration getPrevUtcAdjustment();
 /**
  * Adapter for uavcan::ISystemClock.
  */
-class SystemClock : public uavcan::ISystemClock, uavcan::Noncopyable
+class SystemClock: public uavcan::ISystemClock, uavcan::Noncopyable
 {
-    static SystemClock self;
+	static SystemClock self;
 
-    SystemClock() { }
-
-    uavcan::MonotonicTime getMonotonic()     const override { return clock::getMonotonic(); }
-    uavcan::UtcTime getUtc()                 const override { return clock::getUtc(); }
-    void adjustUtc(uavcan::UtcDuration adjustment) override { clock::adjustUtc(adjustment); }
-
+	SystemClock()
+	{
+	}
+	
+	uavcan::MonotonicTime getMonotonic() const override
+	{
+		return clock::getMonotonic();
+	}
+	uavcan::UtcTime getUtc() const override
+	{
+		return clock::getUtc();
+	}
+	void adjustUtc(uavcan::UtcDuration adjustment) override
+	{
+		clock::adjustUtc(adjustment);
+	}
+	
 public:
-    /**
-     * Calls clock::init() as needed.
-     */
-    static SystemClock& instance();
+	/**
+	 * Calls clock::init() as needed.
+	 */
+	static SystemClock& instance();
 };
 
 }

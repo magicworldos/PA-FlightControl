@@ -1,25 +1,25 @@
 /*
-Copyright (c) 2008-2012, Troy D. Hanson   http://uthash.sourceforge.net
-All rights reserved.
+ Copyright (c) 2008-2012, Troy D. Hanson   http://uthash.sourceforge.net
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 /* a dynamic array implementation using macros
  * see http://uthash.sourceforge.net/utarray
@@ -55,8 +55,8 @@ typedef struct
 typedef struct
 {
 	unsigned i, n; /* i: index of next available slot, n: num slots */
-	UT_icd icd;  /* initializer, copy and destructor functions */
-	char *d;     /* n slots of size icd->sz*/
+	UT_icd icd; /* initializer, copy and destructor functions */
+	char *d; /* n slots of size icd->sz*/
 } UT_array;
 
 #define utarray_init(a,_icd) do {                                             \
@@ -221,17 +221,19 @@ typedef struct
 /* last we pre-define a few icd for common utarrays of ints and strings */
 static void utarray_str_cpy(void *dst, const void *src)
 {
-	char **_src = (char **)src, **_dst = (char **)dst;
+	char **_src = (char **) src, **_dst = (char **) dst;
 	*_dst = (*_src == NULL) ? NULL : strdup(*_src);
 }
 static void utarray_str_dtor(void *elt)
 {
-	char **eltc = (char **)elt;
-	if (*eltc) { free(*eltc); }
+	char **eltc = (char **) elt;
+	if (*eltc)
+	{
+		free(*eltc);
+	}
 }
-static const UT_icd ut_str_icd _UNUSED_ = {sizeof(char *), NULL, utarray_str_cpy, utarray_str_dtor};
-static const UT_icd ut_int_icd _UNUSED_ = {sizeof(int), NULL, NULL, NULL};
-static const UT_icd ut_ptr_icd _UNUSED_ = {sizeof(void *), NULL, NULL, NULL};
-
+static const UT_icd ut_str_icd _UNUSED_ = { sizeof(char *), NULL, utarray_str_cpy, utarray_str_dtor };
+static const UT_icd ut_int_icd _UNUSED_ = { sizeof(int), NULL, NULL, NULL };
+static const UT_icd ut_ptr_icd _UNUSED_ = { sizeof(void *), NULL, NULL, NULL };
 
 #endif /* UTARRAY_H */

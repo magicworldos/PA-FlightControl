@@ -64,7 +64,8 @@
  * BUILD_TIME_STRING=[hh:mm:ss]. May be left NULL.
  * e.g.: BUILD_TIME_STRING=[23:59:01]
  */
-struct dspal_version_info {
+struct dspal_version_info
+{
 	char version_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 	char build_date[DSPAL_MAX_LEN_VERSION_INFO_STR];
 	char build_time[DSPAL_MAX_LEN_VERSION_INFO_STR];

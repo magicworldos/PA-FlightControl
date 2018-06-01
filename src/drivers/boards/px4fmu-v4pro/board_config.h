@@ -73,7 +73,6 @@
 //{0,                      GPIO_SPEKTRUM_PWR_EN,     0},	Owned Spektum driver input to auto pilot
 //{0,                      GPIO_8266_PD,            0},	Owned by the 8266 driver
 //{0,                      GPIO_8266_RST,           0},	Owned by the 8266 driver
-
 /* PX4FMU GPIOs ***********************************************************************************/
 /* LEDs */
 
@@ -108,7 +107,6 @@
 #define GPIO_AUX_CS4            (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTF|GPIO_PIN14)
 #define GPIO_AUX_CS5            (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTF|GPIO_PIN15)
 
-
 /* External Chip selects on Connectors ahead PAD3 */
 
 #define GPIO_SPI5_CS            (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTF|GPIO_PIN6)
@@ -119,7 +117,6 @@
 #define GPIO_DRDY_MPU9250       (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTD|GPIO_PIN15)
 #define GPIO_DRDY_LIS3MDL       (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTE|GPIO_PIN12)
 #define GPIO_DRDY_ICM_2060X   (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTC|GPIO_PIN14)
-
 
 /*
  *  Define the ability to shut off off the sensor signals
@@ -137,7 +134,6 @@
 #define GPIO_DRDY_OFF_MPU9250       _PIN_OFF(GPIO_DRDY_MPU9250)
 #define GPIO_DRDY_OFF_LIS3MDL       _PIN_OFF(GPIO_DRDY_LIS3MDL)
 #define GPIO_DRDY_OFF_ICM_2060X   _PIN_OFF(GPIO_DRDY_ICM_2060X)
-
 
 /* SPI1 off */
 
@@ -188,7 +184,6 @@
  * These are the channel numbers of the ADCs of the microcontroller that can be used by the Px4 Firmware in the adc driver
  */
 // ADC defines to be used in sensors.cpp to read from a particular channel
-
 #define ADC_BATTERY1_VOLTAGE_CHANNEL	2   // PA2
 #define ADC_BATTERY1_CURRENT_CHANNEL	3   // PA3
 #define ADC_5V_RAIL_SENSE				4   // PA4
@@ -365,8 +360,6 @@
 #define GPIO_5V_HIPOWER_OC     (1<<11) /**< PF3  - !GPIO_VDD_5V_RC_OC */
 #define GPIO_5V_PERIPH_OC      (1<<12) /**< PE10 - !GPIO_VDD_5V_PERIPH_OC */
 
-
-
 /* This board provides a DMA pool and APIs */
 
 #define BOARD_DMA_ALLOC_POOL_SIZE 5120
@@ -402,7 +395,6 @@ void board_spi_reset(int ms);
 extern void stm32_usbinitialize(void);
 
 extern void board_peripheral_reset(int ms);
-
 
 /****************************************************************************
  * Name: nsh_archinitialize

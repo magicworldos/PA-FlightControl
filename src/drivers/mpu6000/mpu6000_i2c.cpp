@@ -64,69 +64,68 @@
 device::Device *MPU6000_I2C_interface(int bus, int device_type, bool external_bus);
 
 class MPU6000_I2C : public device::I2C
-{
+{	
 public:
 	MPU6000_I2C(int bus, int device_type);
 	virtual ~MPU6000_I2C();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
 
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 protected:
-	virtual int	probe();
+	virtual int probe();
 
 private:
 	int _device_type;
 
 };
 
-
 device::Device *
 MPU6000_I2C_interface(int bus, int device_type, bool external_bus)
-{
+{	
 	return new MPU6000_I2C(bus, device_type);
 }
 
 MPU6000_I2C::MPU6000_I2C(int bus, int device_type) :
-	I2C("MPU6000_I2C", nullptr, bus, PX4_I2C_MPU6050_ADDR, 400000),
-	_device_type(device_type)
-{
-	_device_id.devid_s.devtype =  DRV_ACC_DEVTYPE_MPU6000;
+I2C("MPU6000_I2C", nullptr, bus, PX4_I2C_MPU6050_ADDR, 400000),
+_device_type(device_type)
+{	
+	_device_id.devid_s.devtype = DRV_ACC_DEVTYPE_MPU6000;
 }
 
 MPU6000_I2C::~MPU6000_I2C()
-{
+{	
 }
 
 int
 MPU6000_I2C::init()
-{
+{	
 	/* this will call probe() */
 	return I2C::init();
 }
 
 int
 MPU6000_I2C::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 
 		case ACCELIOCGEXTERNAL:
-			return external();
+		return external();
 
 		case DEVIOCGDEVICEID:
-			return CDev::ioctl(nullptr, operation, arg);
+		return CDev::ioctl(nullptr, operation, arg);
 
 		case MPUIOCGIS_I2C:
-			return 1;
+		return 1;
 
 		default:
-			ret = -EINVAL;
+		ret = -EINVAL;
 	}
 
 	return ret;
@@ -134,11 +133,11 @@ MPU6000_I2C::ioctl(unsigned operation, unsigned &arg)
 
 int
 MPU6000_I2C::write(unsigned reg_speed, void *data, unsigned count)
-{
+{	
 	uint8_t cmd[MPU_MAX_WRITE_BUFFER_SIZE];
 
 	if (sizeof(cmd) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 
@@ -149,7 +148,7 @@ MPU6000_I2C::write(unsigned reg_speed, void *data, unsigned count)
 
 int
 MPU6000_I2C::read(unsigned reg_speed, void *data, unsigned count)
-{
+{	
 	/* We want to avoid copying the data of MPUReport: So if the caller
 	 * supplies a buffer not MPUReport in size, it is assume to be a reg or
 	 * reg 16 read
@@ -162,10 +161,9 @@ MPU6000_I2C::read(unsigned reg_speed, void *data, unsigned count)
 	return ret == OK ? count : ret;
 }
 
-
 int
 MPU6000_I2C::probe()
-{
+{	
 	uint8_t whoami = 0;
 	uint8_t expected = _device_type == 6000 ? MPU_WHOAMI_6000 : ICM_WHOAMI_20608;
 	return (read(MPUREG_WHOAMI, &whoami, 1) > 0 && (whoami == expected)) ? 0 : -EIO;

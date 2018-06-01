@@ -65,7 +65,7 @@
 
 __EXPORT int user_start(int argc, char *argv[]);
 
-struct sys_state_s 	system_state;
+struct sys_state_s system_state;
 
 static struct hrt_call serial_dma_call;
 
@@ -96,14 +96,13 @@ static void update_mem_usage(void);
 /*
  * add a debug message to be printed on the console
  */
-void
-isr_debug(uint8_t level, const char *fmt, ...)
+void isr_debug(uint8_t level, const char *fmt, ...)
 {
 	if (level > r_page_setup[PX4IO_P_SETUP_SET_DEBUG])
 	{
 		return;
 	}
-
+	
 	va_list ap;
 	va_start(ap, fmt);
 	vsnprintf(msg[msg_next_in], sizeof(msg[0]), fmt, ap);
@@ -115,17 +114,19 @@ isr_debug(uint8_t level, const char *fmt, ...)
 /*
  * show all pending debug messages
  */
-static void
-show_debug_messages(void)
+static void show_debug_messages(void)
 {
 	if (msg_counter != last_msg_counter)
 	{
 		uint32_t n = msg_counter - last_msg_counter;
-
-		if (n > NUM_MSG) { n = NUM_MSG; }
-
+		
+		if (n > NUM_MSG)
+		{
+			n = NUM_MSG;
+		}
+		
 		last_msg_counter = msg_counter;
-
+		
 		while (n--)
 		{
 			debug("%s", msg[msg_next_out]);
@@ -137,12 +138,11 @@ show_debug_messages(void)
 /*
  * Get the memory usage at 2 Hz while not armed
  */
-static void
-update_mem_usage(void)
+static void update_mem_usage(void)
 {
-	if (/* IO armed */ (r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
-			   /* and FMU is armed */ && (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED))
-	{
+	if (/* IO armed */(r_status_flags& PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
+	/* and FMU is armed */&& (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED))
+	{	
 		return;
 	}
 
@@ -150,28 +150,26 @@ update_mem_usage(void)
 	uint64_t now = hrt_absolute_time();
 
 	if (now - last_mem_time > (500 * 1000))
-	{
+	{	
 		struct mallinfo minfo = mallinfo();
 		r_page_status[PX4IO_P_STATUS_FREEMEM] = minfo.fordblks;
 		last_mem_time = now;
 	}
 }
 
-static void
-heartbeat_blink(void)
+static void heartbeat_blink(void)
 {
 	static bool heartbeat = false;
 	LED_BLUE(heartbeat = !heartbeat);
 }
 
-static void
-ring_blink(void)
+static void ring_blink(void)
 {
 #ifdef GPIO_LED4
-
-	if (/* IO armed */ (r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
-			   /* and FMU is armed */ && (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED))
-	{
+	
+	if (/* IO armed */(r_status_flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF)
+			/* and FMU is armed */&& (r_setup_arming & PX4IO_P_SETUP_ARMING_FMU_ARMED))
+	{	
 		LED_RING(1);
 		return;
 	}
@@ -186,7 +184,7 @@ ring_blink(void)
 	static unsigned on_counter = 0;
 
 	if (brightness_counter < max_brightness)
-	{
+	{	
 
 		bool on = ((on_counter * 100) / brightness_counter + 1) <= ((brightness * 100) / max_brightness + 1);
 
@@ -198,28 +196,28 @@ ring_blink(void)
 		brightness_counter++;
 
 		if (on)
-		{
+		{	
 			on_counter++;
 		}
 
 	}
 	else
-	{
+	{	
 
 		if (counter >= 62)
-		{
+		{	
 			counter = 0;
 		}
 
 		int n;
 
 		if (counter < 32)
-		{
+		{	
 			n = counter;
 
 		}
 		else
-		{
+		{	
 			n = 62 - counter;
 		}
 
@@ -235,7 +233,7 @@ ring_blink(void)
 static uint64_t reboot_time;
 
 /**
-   schedule a reboot in time_delta_usec microseconds
+ schedule a reboot in time_delta_usec microseconds
  */
 void schedule_reboot(uint32_t time_delta_usec)
 {
@@ -243,7 +241,7 @@ void schedule_reboot(uint32_t time_delta_usec)
 }
 
 /**
-   check for a scheduled reboot
+ check for a scheduled reboot
  */
 static void check_reboot(void)
 {
@@ -253,32 +251,30 @@ static void check_reboot(void)
 	}
 }
 
-static void
-calculate_fw_crc(void)
+static void calculate_fw_crc(void)
 {
 #define APP_SIZE_MAX 0xf000
 #define APP_LOAD_ADDRESS 0x08001000
 	// compute CRC of the current firmware
 	uint32_t sum = 0;
-
+	
 	for (unsigned p = 0; p < APP_SIZE_MAX; p += 4)
 	{
-		uint32_t bytes = *(uint32_t *)(p + APP_LOAD_ADDRESS);
-		sum = crc32part((uint8_t *)&bytes, sizeof(bytes), sum);
+		uint32_t bytes = *(uint32_t *) (p + APP_LOAD_ADDRESS);
+		sum = crc32part((uint8_t *) &bytes, sizeof(bytes), sum);
 	}
-
-	r_page_setup[PX4IO_P_SETUP_CRC]   = sum & 0xFFFF;
+	
+	r_page_setup[PX4IO_P_SETUP_CRC] = sum & 0xFFFF;
 	r_page_setup[PX4IO_P_SETUP_CRC + 1] = sum >> 16;
 }
 
-int
-user_start(int argc, char *argv[])
+int user_start(int argc, char *argv[])
 {
 	/* configure the first 8 PWM outputs (i.e. all of them) */
 	up_pwm_servo_init(0xff);
-
+	
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -286,20 +282,20 @@ user_start(int argc, char *argv[])
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* reset all to zero */
 	memset(&system_state, 0, sizeof(system_state));
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	/* calculate our fw CRC so FMU can decide if we need to update */
 	calculate_fw_crc();
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
@@ -307,10 +303,10 @@ user_start(int argc, char *argv[])
 #ifdef CONFIG_ARCH_DMA
 	hrt_call_every(&serial_dma_call, 1000, 1000, (hrt_callout)stm32_serial_dma_poll, NULL);
 #endif
-
+	
 	/* print some startup info */
 	syslog(LOG_INFO, "\nPX4IO: starting\n");
-
+	
 	/* default all the LEDs to off while we start */
 	LED_AMBER(false);
 	LED_BLUE(false);
@@ -318,45 +314,45 @@ user_start(int argc, char *argv[])
 #ifdef GPIO_LED4
 	LED_RING(false);
 #endif
-
+	
 	/* turn on servo power (if supported) */
 #ifdef POWER_SERVO
 	POWER_SERVO(true);
 #endif
-
+	
 	/* turn off S.Bus out (if supported) */
 #ifdef ENABLE_SBUS_OUT
 	ENABLE_SBUS_OUT(false);
 #endif
-
+	
 	/* start the safety switch handler */
 	safety_init();
-
+	
 	/* initialise the control inputs */
 	controls_init();
-
+	
 	/* set up the ADC */
 	adc_init();
-
+	
 	/* start the FMU interface */
 	interface_init();
-
+	
 	/* add a performance counter for mixing */
 	perf_counter_t mixer_perf = perf_alloc(PC_ELAPSED, "mix");
-
+	
 	/* add a performance counter for controls */
 	perf_counter_t controls_perf = perf_alloc(PC_ELAPSED, "controls");
-
+	
 	/* and one for measuring the loop rate */
 	perf_counter_t loop_perf = perf_alloc(PC_INTERVAL, "loop");
-
+	
 	struct mallinfo minfo = mallinfo();
 	r_page_status[PX4IO_P_STATUS_FREEMEM] = minfo.mxordblk;
 	syslog(LOG_INFO, "MEM: free %u, largest %u\n", minfo.mxordblk, minfo.fordblks);
-
+	
 	/* initialize PWM limit lib */
 	pwm_limit_init(&pwm_limit);
-
+	
 	/*
 	 *    P O L I C E    L I G H T S
 	 *
@@ -372,34 +368,34 @@ user_start(int argc, char *argv[])
 	 */
 	if (minfo.mxordblk < 600)
 	{
-
+		
 		syslog(LOG_ERR, "ERR: not enough MEM");
 		bool phase = false;
-
+		
 		while (true)
 		{
-
+			
 			if (phase)
 			{
 				LED_AMBER(true);
 				LED_BLUE(false);
-
+				
 			}
 			else
 			{
 				LED_AMBER(false);
 				LED_BLUE(true);
 			}
-
+			
 			up_udelay(250000);
-
+			
 			phase = !phase;
 		}
 	}
-
+	
 	/* Start the failsafe led init */
 	failsafe_led_init();
-
+	
 	/*
 	 * Run everything in a tight loop.
 	 */
@@ -407,52 +403,52 @@ user_start(int argc, char *argv[])
 	uint64_t last_debug_time = 0;
 	uint64_t last_heartbeat_time = 0;
 	uint64_t last_loop_time = 0;
-
+	
 	for (;;)
 	{
 		dt = (hrt_absolute_time() - last_loop_time) / 1000000.0f;
 		last_loop_time = hrt_absolute_time();
-
+		
 		if (dt < 0.0001f)
 		{
 			dt = 0.0001f;
-
+			
 		}
 		else if (dt > 0.02f)
 		{
 			dt = 0.02f;
 		}
-
+		
 		/* track the rate at which the loop is running */
 		perf_count(loop_perf);
-
+		
 		/* kick the mixer */
 		perf_begin(mixer_perf);
 		mixer_tick();
 		perf_end(mixer_perf);
-
+		
 		/* kick the control inputs */
 		perf_begin(controls_perf);
 		controls_tick();
 		perf_end(controls_perf);
-
+		
 		/* some boards such as Pixhawk 2.1 made
-		   the unfortunate choice to combine the blue led channel with
-		   the IMU heater. We need a software hack to fix the hardware hack
-		   by allowing to disable the LED / heater.
+		 the unfortunate choice to combine the blue led channel with
+		 the IMU heater. We need a software hack to fix the hardware hack
+		 by allowing to disable the LED / heater.
 		 */
 		if (r_page_setup[PX4IO_P_SETUP_THERMAL] == PX4IO_THERMAL_IGNORE)
 		{
 			/*
-			  blink blue LED at 4Hz in normal operation. When in
-			  override blink 4x faster so the user can clearly see
-			  that override is happening. This helps when
-			  pre-flight testing the override system
+			 blink blue LED at 4Hz in normal operation. When in
+			 override blink 4x faster so the user can clearly see
+			 that override is happening. This helps when
+			 pre-flight testing the override system
 			 */
 			uint32_t heartbeat_period_us = 250 * 1000UL;
-
-			if (r_status_flags & PX4IO_P_STATUS_FLAGS_OVERRIDE)
-			{
+			
+			if (r_status_flags& PX4IO_P_STATUS_FLAGS_OVERRIDE)
+			{	
 				heartbeat_period_us /= 4;
 			}
 
@@ -461,41 +457,39 @@ user_start(int argc, char *argv[])
 				last_heartbeat_time = hrt_absolute_time();
 				heartbeat_blink();
 			}
-
+			
 		}
 		else if (r_page_setup[PX4IO_P_SETUP_THERMAL] < PX4IO_THERMAL_FULL)
 		{
 			/* switch resistive heater off */
 			LED_BLUE(false);
-
+			
 		}
 		else
 		{
 			/* switch resistive heater hard on */
 			LED_BLUE(true);
 		}
-
+		
 		update_mem_usage();
-
+		
 		ring_blink();
-
+		
 		check_reboot();
-
+		
 		/* check for debug activity (default: none) */
 		show_debug_messages();
-
+		
 		/* post debug state at ~1Hz - this is via an auxiliary serial port
 		 * DEFAULTS TO OFF!
 		 */
 		if (hrt_absolute_time() - last_debug_time > (1000 * 1000))
 		{
-
-			isr_debug(1, "d:%u s=0x%x a=0x%x f=0x%x m=%u",
-				  (unsigned)r_page_setup[PX4IO_P_SETUP_SET_DEBUG],
-				  (unsigned)r_status_flags,
-				  (unsigned)r_setup_arming,
-				  (unsigned)r_setup_features,
-				  (unsigned)mallinfo().mxordblk);
+			
+			isr_debug(1, "d:%u s=0x%x a=0x%x f=0x%x m=%u", (unsigned) r_page_setup[PX4IO_P_SETUP_SET_DEBUG], (unsigned) r_status_flags,
+			(unsigned)r_setup_arming,
+			(unsigned)r_setup_features,
+			(unsigned)mallinfo().mxordblk);
 			last_debug_time = hrt_absolute_time();
 		}
 	}

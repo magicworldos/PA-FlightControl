@@ -46,10 +46,14 @@
 class MuorbTestExample
 {
 public:
-	MuorbTestExample() {}
-
-	~MuorbTestExample() {}
-
+	MuorbTestExample()
+	{
+	}
+	
+	~MuorbTestExample()
+	{
+	}
+	
 	int main();
 
 	static px4::AppState appState; /* track requests to terminate app */
@@ -57,6 +61,6 @@ private:
 	int DefaultTest();
 	int PingPongTest();
 	struct esc_status_s m_esc_status;
-	struct vehicle_command_s m_vc = {};
-
+	struct vehicle_command_s m_vc = { };
+	
 };

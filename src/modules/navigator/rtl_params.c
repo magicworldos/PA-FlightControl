@@ -57,7 +57,6 @@
  */
 PARAM_DEFINE_FLOAT(RTL_RETURN_ALT, 3.0);
 
-
 /**
  * RTL loiter altitude
  *

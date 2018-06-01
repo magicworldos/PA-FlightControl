@@ -37,7 +37,6 @@
 #include <mathlib/math/filter/LowPassFilter2p.hpp>
 #include <lib/conversion/rotation.h>
 
-
 #define BMM150_DEVICE_PATH_MAG              "/dev/bmm150_i2c_int"
 
 #define BMM150_DEVICE_PATH_MAG_EXT          "/dev/bmm150_i2c_ext"
@@ -83,7 +82,6 @@
 #define BMM150_PRESETMODE_HIGHACCURACY        3
 #define BMM150_PRESETMODE_ENHANCED            4
 
-
 /* Data rate value definitions */
 #define BMM150_DATA_RATE_10HZ                0x00
 #define BMM150_DATA_RATE_02HZ                0x08
@@ -99,11 +97,9 @@
 #define BMM150_ADV_ST_NEG                    0x80
 #define BMM150_ADV_ST_POS                    0xC0
 
-
 /* Interrupt settings and axes enable bits definitions */
 #define BMM150_CHANNEL_X_ENABLE              0x08
 #define BMM150_CHANNEL_Y_ENABLE              0x10
-
 
 /*Overflow Definitions */
 /* compensated output value returned if sensor had overflow */
@@ -112,7 +108,6 @@
 #define BMM150_OVERFLOW_OUTPUT_FLOAT         0.0f
 #define BMM150_FLIP_OVERFLOW_ADCVAL          -4096
 #define BMM150_HALL_OVERFLOW_ADCVAL          -16384
-
 
 /* Preset modes - Repetitions-XY Rates */
 #define BMM150_LOWPOWER_REPXY                 1
@@ -131,7 +126,6 @@
 #define BMM150_REGULAR_DR                    BMM150_DATA_RATE_30HZ
 #define BMM150_HIGHACCURACY_DR               BMM150_DATA_RATE_20HZ
 #define BMM150_ENHANCED_DR                   BMM150_DATA_RATE_10HZ
-
 
 /* Power modes value definitions */
 #define BMM150_NORMAL_MODE                   0x00
@@ -168,7 +162,6 @@
 #define BMM150_DIG_XY2                      0x70
 #define BMM150_DIG_XY1                      0x71
 
-
 /* Mask definitions for power mode */
 #define BMM150_POWER_MASK                   0x06
 
@@ -183,105 +176,102 @@
 /* This value is set based on Max output data rate value */
 #define BMM150_CONVERSION_INTERVAL          (1000000 / 100) /* microseconds */
 
-
-
-struct bmm150_data {
+struct bmm150_data
+{
 	int16_t x;
 	int16_t y;
 	int16_t z;
 };
 
-
-class BMM150 : public device::I2C
+class BMM150: public device::I2C
 {
 public:
 	BMM150(int bus, const char *path, enum Rotation rotation);
 	virtual ~BMM150();
 
-	virtual int             init();
-	virtual ssize_t       read(struct file *filp, char *buffer, size_t buflen);
-	virtual int       ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual int init();
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
 	/**
 	 * Stop automatic measurement.
 	 */
-	void            stop();
+	void stop();
 
 	/**
-	  * Diagnostics - print some basic information about the driver.
-	  */
-	void            print_info();
+	 * Diagnostics - print some basic information about the driver.
+	 */
+	void print_info();
 
-	void        print_registers();
+	void print_registers();
 
 protected:
-	virtual int       probe();
+	virtual int probe();
 
 private:
-	work_s            _work{};
+	work_s _work { };
 
 	bool _running;
 
 	/* altitude conversion calibration */
-	unsigned        _call_interval;
+	unsigned _call_interval;
 
+	mag_report _report { };
+	ringbuffer::RingBuffer *_reports;
 
-	mag_report _report {};
-	ringbuffer::RingBuffer  *_reports;
+	bool _collect_phase;
 
-	bool            _collect_phase;
+	struct mag_calibration_s _scale;
+	float _range_scale;
 
-	struct mag_calibration_s    _scale;
-	float           _range_scale;
-
-	orb_advert_t        _topic;
-	int         _orb_class_instance;
-	int         _class_instance;
-	uint8_t     _power;
-	uint8_t     _output_data_rate;
-	bool        _calibrated;        /**< the calibration is valid */
-
+	orb_advert_t _topic;
+	int _orb_class_instance;
+	int _class_instance;
+	uint8_t _power;
+	uint8_t _output_data_rate;
+	bool _calibrated; /**< the calibration is valid */
+	
 	int8_t dig_x1;/**< trim x1 data */
 	int8_t dig_y1;/**< trim y1 data */
-
+	
 	int8_t dig_x2;/**< trim x2 data */
 	int8_t dig_y2;/**< trim y2 data */
-
+	
 	uint16_t dig_z1;/**< trim z1 data */
 	int16_t dig_z2;/**< trim z2 data */
 	int16_t dig_z3;/**< trim z3 data */
 	int16_t dig_z4;/**< trim z4 data */
-
+	
 	uint8_t dig_xy1;/**< trim xy1 data */
 	int8_t dig_xy2;/**< trim xy2 data */
-
+	
 	uint16_t dig_xyz1;/**< trim xyz1 data */
+	
+	perf_counter_t _sample_perf;
+	perf_counter_t _bad_transfers;
+	perf_counter_t _good_transfers;
+	perf_counter_t _measure_perf;
+	perf_counter_t _comms_errors;
+	perf_counter_t _duplicates;
 
-	perf_counter_t      _sample_perf;
-	perf_counter_t      _bad_transfers;
-	perf_counter_t      _good_transfers;
-	perf_counter_t      _measure_perf;
-	perf_counter_t      _comms_errors;
-	perf_counter_t      _duplicates;
+	enum Rotation _rotation;
+	bool _got_duplicate;
 
-	enum Rotation       _rotation;
-	bool            _got_duplicate;
-
-	mag_report   _last_report {};          /**< used for info() */
-
-	int             init_trim_registers(void);
+	mag_report _last_report { }; /**< used for info() */
+	
+	int init_trim_registers(void);
 
 	/**
 	 * Start automatic measurement.
 	 */
-	void            start();
+	void start();
 
-	int     measure(); //start measure
-	int     collect(); //get results and publish
-
-	static void     cycle_trampoline(void *arg);
-	void            cycle(); //main execution
-
+	int measure(); //start measure
+	int collect(); //get results and publish
+	
+	static void cycle_trampoline(void *arg);
+	void cycle(); //main execution
+	
 	/**
 	 * Read the specified number of bytes from BMM150.
 	 *
@@ -290,19 +280,19 @@ private:
 	 * @param len       Number of bytes to read
 	 * @return          OK if the transfer was successful, -errno otherwise.
 	 */
-	int             get_data(uint8_t reg, uint8_t *data, unsigned len);
+	int get_data(uint8_t reg, uint8_t *data, unsigned len);
 
 	/**
 	 * Resets the chip.
 	 */
-	int             reset();
+	int reset();
 
 	/**
 	 * Measurement self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int             self_test();
+	int self_test();
 
 	/**
 	 * Read a register from the BMM150
@@ -310,7 +300,7 @@ private:
 	 * @param reg     The register to read.
 	 * @return        The value that was read.
 	 */
-	uint8_t         read_reg(uint8_t reg);
+	uint8_t read_reg(uint8_t reg);
 
 	/**
 	 * Write a register in the BMM150
@@ -319,7 +309,7 @@ private:
 	 * @param value     The new value to write.
 	 * @return          OK if the transfer was successful, -errno otherwise.
 	 */
-	int             write_reg(uint8_t reg, uint8_t value);
+	int write_reg(uint8_t reg, uint8_t value);
 
 	/**
 	 * Modify a register in the BMM150
@@ -330,41 +320,38 @@ private:
 	 * @param clearbits Bits in the register to clear.
 	 * @param setbits   Bits in the register to set.
 	 */
-	void            modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
+	void modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
 
 	/*
-	  set the power mode of BMM150.
-	*/
-	int             set_power_mode(uint8_t power);
-
-	/*
-	  Set the data rate of BMM150.
-	*/
-	int             set_data_rate(uint8_t data_rate);
-
-	/*
-	  Set the XY-repetitions
+	 set the power mode of BMM150.
 	 */
-	int             set_rep_xy(uint8_t rep_xy);
+	int set_power_mode(uint8_t power);
 
 	/*
-	  Set the Z- repetitions number
+	 Set the data rate of BMM150.
 	 */
-	int             set_rep_z(uint8_t rep_z);
+	int set_data_rate(uint8_t data_rate);
 
 	/*
-	   Set the preset modes for BMM150 sensor.The preset mode setting is
-	   depend on Data Rate, XY and Z repetitions
+	 Set the XY-repetitions
 	 */
-	int             set_presetmode(uint8_t presetmode);
+	int set_rep_xy(uint8_t rep_xy);
 
+	/*
+	 Set the Z- repetitions number
+	 */
+	int set_rep_z(uint8_t rep_z);
+
+	/*
+	 Set the preset modes for BMM150 sensor.The preset mode setting is
+	 depend on Data Rate, XY and Z repetitions
+	 */
+	int set_presetmode(uint8_t presetmode);
 
 	/* do not allow to copy this class due to pointer data members */
 	BMM150(const BMM150 &);
 	BMM150 operator=(const BMM150 &);
-
+	
 };
-
-
 
 #endif /* BMM150_HPP_ */

@@ -43,9 +43,7 @@
 #include <stdio.h>
 #include <systemlib/perf_counter.h>
 
-
-
-perf_counter_t	perf_alloc(enum perf_counter_type type, const char *name)
+perf_counter_t perf_alloc(enum perf_counter_type type, const char *name)
 {
 	return NULL;
 }
@@ -57,7 +55,7 @@ perf_counter_t	perf_alloc(enum perf_counter_type type, const char *name)
  */
 void perf_free(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -67,9 +65,9 @@ void perf_free(perf_counter_t handle)
  *
  * @param handle		The handle returned from perf_alloc.
  */
-void		perf_count(perf_counter_t handle)
+void perf_count(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -79,9 +77,9 @@ void		perf_count(perf_counter_t handle)
  *
  * @param handle		The handle returned from perf_alloc.
  */
-void		perf_begin(perf_counter_t handle)
+void perf_begin(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -93,9 +91,9 @@ void		perf_begin(perf_counter_t handle)
  *
  * @param handle		The handle returned from perf_alloc.
  */
-void		perf_end(perf_counter_t handle)
+void perf_end(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -106,9 +104,9 @@ void		perf_end(perf_counter_t handle)
  *
  * @param handle		The handle returned from perf_alloc.
  */
-void		perf_cancel(perf_counter_t handle)
+void perf_cancel(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -118,9 +116,9 @@ void		perf_cancel(perf_counter_t handle)
  *
  * @param handle		The handle returned from perf_alloc.
  */
-void		perf_reset(perf_counter_t handle)
+void perf_reset(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -128,9 +126,9 @@ void		perf_reset(perf_counter_t handle)
  *
  * @param handle		The counter to print.
  */
-void		perf_print_counter(perf_counter_t handle)
+void perf_print_counter(perf_counter_t handle)
 {
-
+	
 }
 
 /**
@@ -139,19 +137,19 @@ void		perf_print_counter(perf_counter_t handle)
  * @param fd			File descriptor to print to - e.g. 0 for stdout
  * @param handle		The counter to print.
  */
-void		perf_print_counter_fd(int fd, perf_counter_t handle)
+void perf_print_counter_fd(int fd, perf_counter_t handle)
 {
-
+	
 }
 
-int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
+int perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 {
 	return 0;
 }
 
-void	perf_iterate_all(perf_callback cb, void *user)
+void perf_iterate_all(perf_callback cb, void *user)
 {
-
+	
 }
 
 /**
@@ -159,17 +157,17 @@ void	perf_iterate_all(perf_callback cb, void *user)
  *
  * @param fd			File descriptor to print to - e.g. 0 for stdout
  */
-void		perf_print_all(int fd)
+void perf_print_all(int fd)
 {
-
+	
 }
 
 /**
  * Reset all of the performance counters.
  */
-void		perf_reset_all(void)
+void perf_reset_all(void)
 {
-
+	
 }
 
 /**
@@ -178,7 +176,7 @@ void		perf_reset_all(void)
  * @param handle		The counter returned from perf_alloc.
  * @return			event_count
  */
-uint64_t	perf_event_count(perf_counter_t handle)
+uint64_t perf_event_count(perf_counter_t handle)
 {
 	return 0;
 }

@@ -32,13 +32,13 @@
  ****************************************************************************/
 
 /**
-* @file vtol_type.h
-*
-* @author Roman Bapst 		<bapstroman@gmail.com>
-* @author Sander Smeets		<sander@droneslab.com>
-* @author Andreas Antener	<andreas@uaventure.com>
-*
-*/
+ * @file vtol_type.h
+ *
+ * @author Roman Bapst 		<bapstroman@gmail.com>
+ * @author Sander Smeets		<sander@droneslab.com>
+ * @author Andreas Antener	<andreas@uaventure.com>
+ *
+ */
 
 #ifndef VTOL_TYPE_H
 #define VTOL_TYPE_H
@@ -85,11 +85,11 @@ class VtolAttitudeControl;
 class VtolType
 {
 public:
-
+	
 	VtolType(VtolAttitudeControl *att_controller);
 	VtolType(const VtolType &) = delete;
 	VtolType &operator=(const VtolType &) = delete;
-
+	
 	virtual ~VtolType();
 
 	/**
@@ -121,8 +121,10 @@ public:
 	 * Special handling opportunity for the time right after transition to FW
 	 * before TECS is running.
 	 */
-	virtual void waiting_on_tecs() {}
-
+	virtual void waiting_on_tecs()
+	{
+	}
+	
 	/**
 	 * Checks for fixed-wing failsafe condition and issues abort request if needed.
 	 */
@@ -136,51 +138,54 @@ public:
 	void set_idle_mc();
 	void set_idle_fw();
 
-	mode get_mode() {return _vtol_mode;}
-
+	mode get_mode()
+	{
+		return _vtol_mode;
+	}
+	
 	virtual void parameters_update() = 0;
 
 protected:
 	VtolAttitudeControl *_attc;
 	mode _vtol_mode;
 
-	struct vehicle_attitude_s		*_v_att;				//vehicle attitude
-	struct vehicle_attitude_setpoint_s	*_v_att_sp;			//vehicle attitude setpoint
+	struct vehicle_attitude_s *_v_att;				//vehicle attitude
+	struct vehicle_attitude_setpoint_s *_v_att_sp;			//vehicle attitude setpoint
 	struct vehicle_attitude_setpoint_s *_mc_virtual_att_sp;	// virtual mc attitude setpoint
 	struct vehicle_attitude_setpoint_s *_fw_virtual_att_sp;	// virtual fw attitude setpoint
-	struct vehicle_control_mode_s		*_v_control_mode;	//vehicle control mode
-	struct vtol_vehicle_status_s 		*_vtol_vehicle_status;
-	struct actuator_controls_s			*_actuators_out_0;			//actuator controls going to the mc mixer
-	struct actuator_controls_s			*_actuators_out_1;			//actuator controls going to the fw mixer (used for elevons)
-	struct actuator_controls_s			*_actuators_mc_in;			//actuator controls from mc_att_control
-	struct actuator_controls_s			*_actuators_fw_in;			//actuator controls from fw_att_control
-	struct vehicle_local_position_s			*_local_pos;
-	struct vehicle_local_position_setpoint_s	*_local_pos_sp;
-	struct airspeed_s 				*_airspeed;					// airspeed
-	struct tecs_status_s				*_tecs_status;
-	struct vehicle_land_detected_s			*_land_detected;
+	struct vehicle_control_mode_s *_v_control_mode;	//vehicle control mode
+	struct vtol_vehicle_status_s *_vtol_vehicle_status;
+	struct actuator_controls_s *_actuators_out_0;			//actuator controls going to the mc mixer
+	struct actuator_controls_s *_actuators_out_1;			//actuator controls going to the fw mixer (used for elevons)
+	struct actuator_controls_s *_actuators_mc_in;			//actuator controls from mc_att_control
+	struct actuator_controls_s *_actuators_fw_in;			//actuator controls from fw_att_control
+	struct vehicle_local_position_s *_local_pos;
+	struct vehicle_local_position_setpoint_s *_local_pos_sp;
+	struct airspeed_s *_airspeed;					// airspeed
+	struct tecs_status_s *_tecs_status;
+	struct vehicle_land_detected_s *_land_detected;
 
-	struct Params 					*_params;
+	struct Params *_params;
 
 	bool flag_idle_mc = true;		//false = "idle is set for fixed wing mode"; true = "idle is set for multicopter mode"
-
+	
 	bool _pusher_active = false;
 	float _mc_roll_weight = 1.0f;	// weight for multicopter attitude controller roll output
 	float _mc_pitch_weight = 1.0f;	// weight for multicopter attitude controller pitch output
 	float _mc_yaw_weight = 1.0f;	// weight for multicopter attitude controller yaw output
 	float _mc_throttle_weight = 1.0f;	// weight for multicopter throttle command. Used to avoid
-
+	
 	// motors spinning up or cutting too fast when doing transitions.
 	float _thrust_transition = 0.0f;	// thrust value applied during a front transition (tailsitter & tiltrotor only)
-
+	
 	float _ra_hrate = 0.0f;			// rolling average on height rate for quadchute condition
 	float _ra_hrate_sp = 0.0f;		// rolling average on height rate setpoint for quadchute condition
-
+	
 	bool _flag_was_in_trans_mode = false;	// true if mode has just switched to transition
 	hrt_abstime _trans_finished_ts = 0;
 	bool _tecs_running = false;
 	hrt_abstime _tecs_running_ts = 0;
-
+	
 };
 
 #endif

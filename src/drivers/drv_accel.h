@@ -57,12 +57,12 @@
 /** accel scaling factors; Vout = Vscale * (Vin + Voffset) */
 struct accel_calibration_s
 {
-	float	x_offset;
-	float	x_scale;
-	float	y_offset;
-	float	y_scale;
-	float	z_offset;
-	float	z_scale;
+	float x_offset;
+	float x_scale;
+	float y_offset;
+	float y_scale;
+	float z_offset;
+	float z_scale;
 };
 /*
  * ioctl() definitions
@@ -73,7 +73,6 @@ struct accel_calibration_s
 
 #define _ACCELIOCBASE		(0x2100)
 #define _ACCELIOC(_n)		(_PX4_IOC(_ACCELIOCBASE, _n))
-
 
 /** set the accel internal sample rate to at least (arg) Hz */
 #define ACCELIOCSSAMPLERATE	_ACCELIOC(0)

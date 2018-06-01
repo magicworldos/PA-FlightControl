@@ -127,17 +127,19 @@
  */
 
 /* mutex type */
-enum pthread_mutextype {
-	PTHREAD_MUTEX_ERRORCHECK = 0, 	/* Default POSIX mutex */
-	PTHREAD_MUTEX_NORMAL = 1, 	/* No error checking */
-	PTHREAD_MUTEX_RECURSIVE = 2, 	/* Recursive mutex */
-	PTHREAD_MUTEX_ADAPTIVE_NP = 4, 	/* Adaptive mutex, spins briefly before blocking on lock */
+enum pthread_mutextype
+{
+	PTHREAD_MUTEX_ERRORCHECK = 0, /* Default POSIX mutex */
+	PTHREAD_MUTEX_NORMAL = 1, /* No error checking */
+	PTHREAD_MUTEX_RECURSIVE = 2, /* Recursive mutex */
+	PTHREAD_MUTEX_ADAPTIVE_NP = 4, /* Adaptive mutex, spins briefly before blocking on lock */
 	PTHREAD_MUTEX_TYPE_MAX
 };
 
 #define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_RECURSIVE
 
-struct _pthread_cleanup_info {
+struct _pthread_cleanup_info
+{
 	uintptr_t pthread_cleanup_pad[8];
 };
 
@@ -169,8 +171,7 @@ int pthread_getattr_np(pthread_t thread, pthread_attr_t *restrict attr);
  * POSIX compliant function prototype definitions:
  */
 
-int pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *),
-		   void *);
+int pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *), void *);
 void pthread_exit(void *);
 int pthread_join(pthread_t, void **);
 pthread_t pthread_self(void);

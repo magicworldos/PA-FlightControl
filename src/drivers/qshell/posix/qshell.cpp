@@ -51,43 +51,42 @@ px4::AppState QShell::appState;
 int QShell::main(std::vector<std::string> argList)
 {
 	appState.setRunning(true);
-
+	
 	std::string cmd;
-
+	
 	for (size_t i = 0; i < argList.size(); i++)
 	{
 		cmd += argList[i];
-
+		
 		if (i < argList.size() - 1)
 		{
 			cmd += " ";
 		}
 	}
-
+	
 	if (cmd.size() > m_qshell_req.MAX_STRLEN)
 	{
-		PX4_ERR("The provided command exceeds the maximum length of characters: %d > %d", (int) cmd.size(),
-			(int) m_qshell_req.MAX_STRLEN);
+		PX4_ERR("The provided command exceeds the maximum length of characters: %d > %d", (int ) cmd.size(), (int ) m_qshell_req.MAX_STRLEN);
 		return -1;
 	}
-
+	
 	PX4_DEBUG("Requesting %s", cmd.c_str());
-
-	orb_advert_t pub_id_qshell_req = orb_advertise(ORB_ID(qshell_req), & m_qshell_req);
-
+	
+	orb_advert_t pub_id_qshell_req = orb_advertise(ORB_ID(qshell_req), &m_qshell_req);
+	
 	m_qshell_req.strlen = cmd.size();
-
+	
 	for (size_t i = 0; i < cmd.size(); i++)
 	{
 		m_qshell_req.string[i] = (int) cmd[i];
 	}
-
+	
 	if (orb_publish(ORB_ID(qshell_req), pub_id_qshell_req, &m_qshell_req) == PX4_ERROR)
 	{
 		PX4_ERR("Error publishing the qshell_req message");
 		return -1;
 	}
-
+	
 	appState.setRunning(false);
 	return 0;
 }

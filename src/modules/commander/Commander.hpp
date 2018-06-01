@@ -60,15 +60,15 @@ using control::BlockParamInt;
 using uORB::Publication;
 using uORB::Subscription;
 
-class Commander : public control::SuperBlock, public ModuleBase<Commander>
+class Commander: public control::SuperBlock, public ModuleBase<Commander>
 {
 public:
 	Commander() :
-		SuperBlock(nullptr, "COM")
+			    SuperBlock(nullptr, "COM")
 	{
 		updateParams();
 	}
-
+	
 	/** @see ModuleBase */
 	static int task_spawn(int argc, char *argv[]);
 
@@ -87,16 +87,11 @@ public:
 	void enable_hil();
 
 private:
+	
+	bool handle_command(vehicle_status_s *status, const safety_s *safety, vehicle_command_s *cmd, actuator_armed_s *armed, home_position_s *home, vehicle_global_position_s *global_pos, vehicle_local_position_s *local_pos, vehicle_attitude_s *attitude, orb_advert_t *home_pub, orb_advert_t *command_ack_pub, bool *changed);
 
-	bool handle_command(vehicle_status_s *status, const safety_s *safety, vehicle_command_s *cmd,
-			    actuator_armed_s *armed, home_position_s *home, vehicle_global_position_s *global_pos,
-			    vehicle_local_position_s *local_pos, vehicle_attitude_s *attitude, orb_advert_t *home_pub,
-			    orb_advert_t *command_ack_pub, bool *changed);
-
-	bool set_home_position(orb_advert_t &homePub, home_position_s &home,
-				const vehicle_local_position_s &localPosition, const vehicle_global_position_s &globalPosition,
-				const vehicle_attitude_s &attitude, bool set_alt_only_to_lpos_ref);
-
+	bool set_home_position(orb_advert_t &homePub, home_position_s &home, const vehicle_local_position_s &localPosition, const vehicle_global_position_s &globalPosition, const vehicle_attitude_s &attitude, bool set_alt_only_to_lpos_ref);
+	
 };
 
 #endif /* COMMANDER_HPP_ */

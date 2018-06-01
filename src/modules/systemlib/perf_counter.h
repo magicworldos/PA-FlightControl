@@ -47,13 +47,13 @@
  */
 enum perf_counter_type
 {
-	PC_COUNT,		/**< count the number of times an event occurs */
-	PC_ELAPSED,		/**< measure the time elapsed performing an event */
-	PC_INTERVAL		/**< measure the interval between instances of an event */
+	PC_COUNT, /**< count the number of times an event occurs */
+	PC_ELAPSED, /**< measure the time elapsed performing an event */
+	PC_INTERVAL /**< measure the interval between instances of an event */
 };
 
 struct perf_ctr_header;
-typedef struct perf_ctr_header	*perf_counter_t;
+typedef struct perf_ctr_header *perf_counter_t;
 
 __BEGIN_DECLS
 
@@ -66,7 +66,7 @@ __BEGIN_DECLS
  *				could not be allocated.
  */
 #ifndef perf_alloc	// perf_alloc might be defined to be NULL in src/modules/px4iofirmware/px4io.h
-__EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const char *name);
+__EXPORT extern perf_counter_t perf_alloc(enum perf_counter_type type, const char *name);
 #endif
 
 /**
@@ -77,14 +77,14 @@ __EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const cha
  * @return			Handle for the counter, or NULL if a counter
  *				could not be allocated.
  */
-__EXPORT extern perf_counter_t	perf_alloc_once(enum perf_counter_type type, const char *name);
+__EXPORT extern perf_counter_t perf_alloc_once(enum perf_counter_type type, const char *name);
 
 /**
  * Free a counter.
  *
  * @param handle		The performance counter's handle.
  */
-__EXPORT extern void		perf_free(perf_counter_t handle);
+__EXPORT extern void perf_free(perf_counter_t handle);
 
 /**
  * Count a performance event.
@@ -93,7 +93,7 @@ __EXPORT extern void		perf_free(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_count(perf_counter_t handle);
+__EXPORT extern void perf_count(perf_counter_t handle);
 
 /**
  * Begin a performance event.
@@ -102,7 +102,7 @@ __EXPORT extern void		perf_count(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_begin(perf_counter_t handle);
+__EXPORT extern void perf_begin(perf_counter_t handle);
 
 /**
  * End a performance event.
@@ -113,7 +113,7 @@ __EXPORT extern void		perf_begin(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_end(perf_counter_t handle);
+__EXPORT extern void perf_end(perf_counter_t handle);
 
 /**
  * Register a measurement
@@ -125,7 +125,7 @@ __EXPORT extern void		perf_end(perf_counter_t handle);
  * @param handle		The handle returned from perf_alloc.
  * @param elapsed		The time elapsed. Negative values lead to incrementing the overrun counter.
  */
-__EXPORT extern void		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
+__EXPORT extern void perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
 
 /**
  * Set a counter
@@ -135,7 +135,7 @@ __EXPORT extern void		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
  * @param handle		The handle returned from perf_alloc.
  * @param count			The counter value to be set.
  */
-__EXPORT extern void		perf_set_count(perf_counter_t handle, uint64_t count);
+__EXPORT extern void perf_set_count(perf_counter_t handle, uint64_t count);
 
 /**
  * Cancel a performance event.
@@ -145,7 +145,7 @@ __EXPORT extern void		perf_set_count(perf_counter_t handle, uint64_t count);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_cancel(perf_counter_t handle);
+__EXPORT extern void perf_cancel(perf_counter_t handle);
 
 /**
  * Reset a performance counter.
@@ -154,14 +154,14 @@ __EXPORT extern void		perf_cancel(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_reset(perf_counter_t handle);
+__EXPORT extern void perf_reset(perf_counter_t handle);
 
 /**
  * Print one performance counter to stdout
  *
  * @param handle		The counter to print.
  */
-__EXPORT extern void		perf_print_counter(perf_counter_t handle);
+__EXPORT extern void perf_print_counter(perf_counter_t handle);
 
 /**
  * Print one performance counter to a fd.
@@ -169,7 +169,7 @@ __EXPORT extern void		perf_print_counter(perf_counter_t handle);
  * @param fd			File descriptor to print to - e.g. 0 for stdout
  * @param handle		The counter to print.
  */
-__EXPORT extern void		perf_print_counter_fd(int fd, perf_counter_t handle);
+__EXPORT extern void perf_print_counter_fd(int fd, perf_counter_t handle);
 
 /**
  * Print one performance counter to a buffer.
@@ -179,15 +179,14 @@ __EXPORT extern void		perf_print_counter_fd(int fd, perf_counter_t handle);
  * @param handle			The counter to print.
  * @param return			number of bytes written
  */
-__EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
+__EXPORT extern int perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
 
 /**
  * Print all of the performance counters.
  *
  * @param fd			File descriptor to print to - e.g. 0 for stdout
  */
-__EXPORT extern void		perf_print_all(int fd);
-
+__EXPORT extern void perf_print_all(int fd);
 
 typedef void (*perf_callback)(perf_counter_t handle, void *user);
 
@@ -201,19 +200,19 @@ typedef void (*perf_callback)(perf_counter_t handle, void *user);
  * @param cb callback method
  * @param user custom argument for the callback
  */
-__EXPORT extern void	perf_iterate_all(perf_callback cb, void *user);
+__EXPORT extern void perf_iterate_all(perf_callback cb, void *user);
 
 /**
  * Print hrt latency counters.
  *
  * @param fd			File descriptor to print to - e.g. 0 for stdout
  */
-__EXPORT extern void		perf_print_latency(int fd);
+__EXPORT extern void perf_print_latency(int fd);
 
 /**
  * Reset all of the performance counters.
  */
-__EXPORT extern void		perf_reset_all(void);
+__EXPORT extern void perf_reset_all(void);
 
 /**
  * Return current event_count
@@ -221,7 +220,7 @@ __EXPORT extern void		perf_reset_all(void);
  * @param handle		The counter returned from perf_alloc.
  * @return			event_count
  */
-__EXPORT extern uint64_t	perf_event_count(perf_counter_t handle);
+__EXPORT extern uint64_t perf_event_count(perf_counter_t handle);
 
 __END_DECLS
 

@@ -54,7 +54,7 @@
 #include "navigator.h"
 
 Land::Land(Navigator *navigator, const char *name) :
-	MissionBlock(navigator, name)
+		    MissionBlock(navigator, name)
 {
 }
 
@@ -62,52 +62,47 @@ Land::~Land()
 {
 }
 
-void
-Land::on_inactive()
+void Land::on_inactive()
 {
 }
 
-void
-Land::on_activation()
+void Land::on_activation()
 {
 	/* set current mission item to Land */
 	set_land_item(&_mission_item, true);
 	_navigator->get_mission_result()->finished = false;
 	_navigator->set_mission_result_updated();
 	reset_mission_item_reached();
-
+	
 	/* convert mission item to current setpoint */
 	struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
 	pos_sp_triplet->previous.valid = false;
 	mission_apply_limitation(_mission_item);
 	mission_item_to_position_setpoint(_mission_item, &pos_sp_triplet->current);
 	pos_sp_triplet->next.valid = false;
-
+	
 	_navigator->set_can_loiter_at_sp(false);
-
+	
 	_navigator->set_position_setpoint_triplet_updated();
 }
 
-void
-Land::on_active()
+void Land::on_active()
 {
 	/* for VTOL update landing location during back transition */
-	if (_navigator->get_vstatus()->is_vtol &&
-			_navigator->get_vstatus()->in_transition_mode)
+	if (_navigator->get_vstatus()->is_vtol && _navigator->get_vstatus()->in_transition_mode)
 	{
 		struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
 		pos_sp_triplet->current.lat = _navigator->get_global_position()->lat;
 		pos_sp_triplet->current.lon = _navigator->get_global_position()->lon;
 		_navigator->set_position_setpoint_triplet_updated();
 	}
-
-
+	
 	if (is_mission_item_reached() && !_navigator->get_mission_result()->finished)
 	{
 		_navigator->get_mission_result()->finished = true;
 		_navigator->set_mission_result_updated();
 		set_idle_item(&_mission_item);
-
+		
 		struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
 		mission_item_to_position_setpoint(_mission_item, &pos_sp_triplet->current);
 		_navigator->set_position_setpoint_triplet_updated();

@@ -68,9 +68,10 @@
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-    void boardInit(void);
+void boardInit(void);
 #ifdef __cplusplus
 }
 #endif

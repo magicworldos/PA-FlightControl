@@ -611,7 +611,6 @@ PARAM_DEFINE_FLOAT(MPC_ACC_AUTO_Z, 5.0f);
  */
 PARAM_DEFINE_FLOAT(MPC_ACC_MANU_XY, 10.0f);
 
-
 /**
  * Maximum horizontal acceleration for manual mode
  *

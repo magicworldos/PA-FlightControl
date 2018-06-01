@@ -33,7 +33,8 @@
 #define __SYSCTL_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup SYSCTL_11XX CHIP: LPC11xx System Control block driver
@@ -44,79 +45,129 @@ extern "C" {
 /**
  * @brief LPC11XX System Control block structure
  */
-typedef struct {			/*!< SYSCTL Structure */
-	__IO uint32_t  SYSMEMREMAP;		/*!< System Memory remap register */
-	__IO uint32_t  PRESETCTRL;		/*!< Peripheral reset Control register */
-	__IO uint32_t  SYSPLLCTRL;		/*!< System PLL control register */
-	__I  uint32_t  SYSPLLSTAT;		/*!< System PLL status register */
-	__IO uint32_t  USBPLLCTRL;		/*!< USB PLL control register, LPC11UXX only*/
-	__I  uint32_t  USBPLLSTAT;		/*!< USB PLL status register, LPC11UXX only */
-	__I  uint32_t  RESERVED1[2];
-	__IO uint32_t  SYSOSCCTRL;		/*!< System Oscillator control register */
-	__IO uint32_t  WDTOSCCTRL;		/*!< Watchdog Oscillator control register */
-	__IO uint32_t  IRCCTRL;			/*!< IRC control register, not on LPC11UXX and LPC11EXX */
-	__IO uint32_t  LFOSCCTRL;		/*!< LF oscillator control, LPC11AXX only */
-	__IO uint32_t  SYSRSTSTAT;		/*!< System Reset Status register           */
-	__I  uint32_t  RESERVED2[3];
-	__IO uint32_t  SYSPLLCLKSEL;	/*!< System PLL clock source select register */
-	__IO uint32_t  SYSPLLCLKUEN;	/*!< System PLL clock source update enable register*/
-	__IO uint32_t  USBPLLCLKSEL;	/*!< USB PLL clock source select register, LPC11UXX only */
-	__IO uint32_t  USBPLLCLKUEN;	/*!< USB PLL clock source update enable register, LPC11UXX only */
-	__I  uint32_t  RESERVED3[8];
-	__IO uint32_t  MAINCLKSEL;	/*!< Main clock source select register		*/
-	__IO uint32_t  MAINCLKUEN;	/*!< Main clock source update enable register	*/
-	__IO uint32_t  SYSAHBCLKDIV;	/*!< System Clock divider register */
-	__I  uint32_t  RESERVED4;
-	__IO uint32_t  SYSAHBCLKCTRL;	/*!< System clock control register */
-	__I  uint32_t  RESERVED5[4];
-	__IO uint32_t  SSP0CLKDIV;	/*!< SSP0 clock divider register   */
-	__IO uint32_t  USARTCLKDIV;	/*!< UART clock divider register   */
-	__IO uint32_t  SSP1CLKDIV;	/*!< SSP1 clock divider register, not on CHIP_LPC110X, CHIP_LPC11XXLV */
-	__I  uint32_t  RESERVED6[8];
-	__IO uint32_t  USBCLKSEL;	/*!< USB clock source select register, LPC11UXX only */
-	__IO uint32_t  USBCLKUEN;	/*!< USB clock source update enable register, LPC11UXX only */
-	__IO uint32_t  USBCLKDIV;	/*!< USB clock source divider register, LPC11UXX only */
-	__I  uint32_t  RESERVED7;
-	__IO uint32_t  WDTCLKSEL;	/*!< WDT clock source select register, some parts only */
-	__IO uint32_t  WDTCLKUEN;	/*!< WDT clock source update enable register, some parts only */
-	__IO uint32_t  WDTCLKDIV;	/*!< WDT clock divider register, some parts only */
-	__I  uint32_t  RESERVED8;
-	__IO uint32_t  CLKOUTSEL;	/*!< Clock out source select register, not on LPC1102/04 */
-	__IO uint32_t  CLKOUTUEN;	/*!< Clock out source update enable register, not on LPC1102/04 */
-	__IO uint32_t  CLKOUTDIV;	/*!< Clock out divider register, not on LPC1102/04 */
-	__I  uint32_t  RESERVED9[5];
-	__I  uint32_t  PIOPORCAP[2];/*!< POR captured PIO status registers, index 1 on LPC1102/04 */
-	__I  uint32_t  RESERVED10[18];
-	__IO uint32_t  BODCTRL;		/*!< Brown Out Detect register */
-	__IO uint32_t  SYSTCKCAL;	/*!< System tick counter calibration register */
-	__I  uint32_t  RESERVED11[6];
-	__IO uint32_t  IRQLATENCY;	/*!< IRQ delay register, on LPC11UXX and LPC11EXX only */
-	__IO uint32_t  NMISRC;		/*!< NMI source control register,some parts only */
-	__IO uint32_t  PINTSEL[8];	/*!< GPIO pin interrupt select register 0-7, not on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
-	__IO uint32_t  USBCLKCTRL;	/*!< USB clock control register, LPC11UXX only */
-	__I  uint32_t  USBCLKST;	/*!< USB clock status register, LPC11UXX only */
-	__I  uint32_t  RESERVED12[24];
-	__IO uint32_t  STARTAPRP0;	/*!< Start loigc 0 interrupt wake up enable register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
-	__IO uint32_t  STARTERP0;	/*!< Start loigc signal enable register 0, not on LPC11AXX */
-	__IO uint32_t  STARTRSRP0CLR;	/*!< Start loigc reset register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
-	__IO uint32_t  STARTSRP0;		/*!< Start loigc status register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
-	__I  uint32_t  RESERVED13;
-	__IO uint32_t  STARTERP1;	/*!< Start logic 1 interrupt wake up enable register 1, on LPC11UXX and LPC11EXX only */
-	__I  uint32_t  RESERVED14[6];
-	__IO uint32_t  PDSLEEPCFG;	/*!< Power down states in deep sleep mode register, not on LPC11AXX */
-	__IO uint32_t  PDWAKECFG;	/*!< Power down states in wake up from deep sleep register, not on LPC11AXX */
-	__IO uint32_t  PDRUNCFG;	/*!< Power configuration register*/
-	__I  uint32_t  RESERVED15[110];
-	__I  uint32_t  DEVICEID;	/*!< Device ID register */
+typedef struct
+{ /*!< SYSCTL Structure */
+	__IO
+	uint32_t SYSMEMREMAP; /*!< System Memory remap register */
+	__IO
+	uint32_t PRESETCTRL; /*!< Peripheral reset Control register */
+	__IO
+	uint32_t SYSPLLCTRL; /*!< System PLL control register */
+	__I
+	uint32_t SYSPLLSTAT; /*!< System PLL status register */
+	__IO
+	uint32_t USBPLLCTRL; /*!< USB PLL control register, LPC11UXX only*/
+	__I
+	uint32_t USBPLLSTAT; /*!< USB PLL status register, LPC11UXX only */
+	__I
+	uint32_t RESERVED1[2];__IO
+	uint32_t SYSOSCCTRL; /*!< System Oscillator control register */
+	__IO
+	uint32_t WDTOSCCTRL; /*!< Watchdog Oscillator control register */
+	__IO
+	uint32_t IRCCTRL; /*!< IRC control register, not on LPC11UXX and LPC11EXX */
+	__IO
+	uint32_t LFOSCCTRL; /*!< LF oscillator control, LPC11AXX only */
+	__IO
+	uint32_t SYSRSTSTAT; /*!< System Reset Status register           */
+	__I
+	uint32_t RESERVED2[3];__IO
+	uint32_t SYSPLLCLKSEL; /*!< System PLL clock source select register */
+	__IO
+	uint32_t SYSPLLCLKUEN; /*!< System PLL clock source update enable register*/
+	__IO
+	uint32_t USBPLLCLKSEL; /*!< USB PLL clock source select register, LPC11UXX only */
+	__IO
+	uint32_t USBPLLCLKUEN; /*!< USB PLL clock source update enable register, LPC11UXX only */
+	__I
+	uint32_t RESERVED3[8];__IO
+	uint32_t MAINCLKSEL; /*!< Main clock source select register		*/
+	__IO
+	uint32_t MAINCLKUEN; /*!< Main clock source update enable register	*/
+	__IO
+	uint32_t SYSAHBCLKDIV; /*!< System Clock divider register */
+	__I
+	uint32_t RESERVED4;__IO
+	uint32_t SYSAHBCLKCTRL; /*!< System clock control register */
+	__I
+	uint32_t RESERVED5[4];__IO
+	uint32_t SSP0CLKDIV; /*!< SSP0 clock divider register   */
+	__IO
+	uint32_t USARTCLKDIV; /*!< UART clock divider register   */
+	__IO
+	uint32_t SSP1CLKDIV; /*!< SSP1 clock divider register, not on CHIP_LPC110X, CHIP_LPC11XXLV */
+	__I
+	uint32_t RESERVED6[8];__IO
+	uint32_t USBCLKSEL; /*!< USB clock source select register, LPC11UXX only */
+	__IO
+	uint32_t USBCLKUEN; /*!< USB clock source update enable register, LPC11UXX only */
+	__IO
+	uint32_t USBCLKDIV; /*!< USB clock source divider register, LPC11UXX only */
+	__I
+	uint32_t RESERVED7;__IO
+	uint32_t WDTCLKSEL; /*!< WDT clock source select register, some parts only */
+	__IO
+	uint32_t WDTCLKUEN; /*!< WDT clock source update enable register, some parts only */
+	__IO
+	uint32_t WDTCLKDIV; /*!< WDT clock divider register, some parts only */
+	__I
+	uint32_t RESERVED8;__IO
+	uint32_t CLKOUTSEL; /*!< Clock out source select register, not on LPC1102/04 */
+	__IO
+	uint32_t CLKOUTUEN; /*!< Clock out source update enable register, not on LPC1102/04 */
+	__IO
+	uint32_t CLKOUTDIV; /*!< Clock out divider register, not on LPC1102/04 */
+	__I
+	uint32_t RESERVED9[5];__I
+	uint32_t PIOPORCAP[2];/*!< POR captured PIO status registers, index 1 on LPC1102/04 */
+	__I
+	uint32_t RESERVED10[18];__IO
+	uint32_t BODCTRL; /*!< Brown Out Detect register */
+	__IO
+	uint32_t SYSTCKCAL; /*!< System tick counter calibration register */
+	__I
+	uint32_t RESERVED11[6];__IO
+	uint32_t IRQLATENCY; /*!< IRQ delay register, on LPC11UXX and LPC11EXX only */
+	__IO
+	uint32_t NMISRC; /*!< NMI source control register,some parts only */
+	__IO
+	uint32_t PINTSEL[8]; /*!< GPIO pin interrupt select register 0-7, not on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
+	__IO
+	uint32_t USBCLKCTRL; /*!< USB clock control register, LPC11UXX only */
+	__I
+	uint32_t USBCLKST; /*!< USB clock status register, LPC11UXX only */
+	__I
+	uint32_t RESERVED12[24];__IO
+	uint32_t STARTAPRP0; /*!< Start loigc 0 interrupt wake up enable register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
+	__IO
+	uint32_t STARTERP0; /*!< Start loigc signal enable register 0, not on LPC11AXX */
+	__IO
+	uint32_t STARTRSRP0CLR; /*!< Start loigc reset register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
+	__IO
+	uint32_t STARTSRP0; /*!< Start loigc status register 0, on CHIP_LPC110X, CHIP_LPC11XXLV, CHIP_LPC11CXX */
+	__I
+	uint32_t RESERVED13;__IO
+	uint32_t STARTERP1; /*!< Start logic 1 interrupt wake up enable register 1, on LPC11UXX and LPC11EXX only */
+	__I
+	uint32_t RESERVED14[6];__IO
+	uint32_t PDSLEEPCFG; /*!< Power down states in deep sleep mode register, not on LPC11AXX */
+	__IO
+	uint32_t PDWAKECFG; /*!< Power down states in wake up from deep sleep register, not on LPC11AXX */
+	__IO
+	uint32_t PDRUNCFG; /*!< Power configuration register*/
+	__I
+	uint32_t RESERVED15[110];__I
+	uint32_t DEVICEID; /*!< Device ID register */
 } LPC_SYSCTL_T;
 
 /**
  * System memory remap modes used to remap interrupt vectors
  */
-typedef enum CHIP_SYSCTL_BOOT_MODE_REMAP {
-	REMAP_BOOT_LOADER_MODE,	/*!< Interrupt vectors are re-mapped to Boot ROM */
-	REMAP_USER_RAM_MODE,	/*!< Interrupt vectors are re-mapped to Static RAM */
-	REMAP_USER_FLASH_MODE	/*!< Interrupt vectors are not re-mapped and reside in Flash */
+typedef enum CHIP_SYSCTL_BOOT_MODE_REMAP
+{
+	REMAP_BOOT_LOADER_MODE, /*!< Interrupt vectors are re-mapped to Boot ROM */
+	REMAP_USER_RAM_MODE, /*!< Interrupt vectors are re-mapped to Static RAM */
+	REMAP_USER_FLASH_MODE /*!< Interrupt vectors are not re-mapped and reside in Flash */
 } CHIP_SYSCTL_BOOT_MODE_REMAP_T;
 
 /**
@@ -132,20 +183,21 @@ STATIC INLINE void Chip_SYSCTL_Map(CHIP_SYSCTL_BOOT_MODE_REMAP_T remap)
 /**
  * Peripheral reset identifiers, not available on all devices
  */
-typedef enum {
-	RESET_SSP0,			/*!< SSP0 reset control */
-	RESET_I2C0,			/*!< I2C0 reset control */
-	RESET_SSP1,			/*!< SSP1 reset control */
+typedef enum
+{
+	RESET_SSP0, /*!< SSP0 reset control */
+	RESET_I2C0, /*!< I2C0 reset control */
+	RESET_SSP1, /*!< SSP1 reset control */
 #if !defined(CHIP_LPC1125)
-	RESET_CAN0,			/*!< CAN0 reset control */
-	RESET_UART0,		/*!< UART0 reset control */
-	RESET_TIMER0_16,	/*!< 16-bit Timer 0 reset control */
-	RESET_TIMER1_16,	/*!< 16-bit Timer 1 reset control */
-	RESET_TIMER0_32,	/*!< 32-bit Timer 0 reset control */
-	RESET_TIMER1_32,	/*!< 32-bit Timer 1 reset control */
-	RESET_ACMP,			/*!< Analog comparator reset control */
-	RESET_DAC0,			/*!< DAC reset control */
-	RESET_ADC0			/*!< ADC reset control */
+	RESET_CAN0, /*!< CAN0 reset control */
+	RESET_UART0, /*!< UART0 reset control */
+	RESET_TIMER0_16, /*!< 16-bit Timer 0 reset control */
+	RESET_TIMER1_16, /*!< 16-bit Timer 1 reset control */
+	RESET_TIMER0_32, /*!< 32-bit Timer 0 reset control */
+	RESET_TIMER1_32, /*!< 32-bit Timer 1 reset control */
+	RESET_ACMP, /*!< Analog comparator reset control */
+	RESET_DAC0, /*!< DAC reset control */
+	RESET_ADC0 /*!< ADC reset control */
 #endif
 } CHIP_SYSCTL_PERIPH_RESET_T;
 
@@ -231,11 +283,12 @@ STATIC INLINE uint32_t Chip_SYSCTL_GetPORPIOStatus(int index)
 /**
  * Brown-out detector reset level
  */
-typedef enum CHIP_SYSCTL_BODRSTLVL {
+typedef enum CHIP_SYSCTL_BODRSTLVL
+{
 #if defined(CHIP_LPC11CXX) || defined(CHIP_LPC11EXX) || defined(CHIP_LPC11UXX) || defined(CHIP_LPC11XXLV) || defined(CHIP_LPC1125)
-	SYSCTL_BODRSTLVL_1_46V,	/*!< Brown-out reset at 1.46v */
+	SYSCTL_BODRSTLVL_1_46V, /*!< Brown-out reset at 1.46v */
 #else
-	SYSCTL_BODRSTLVL_RESERVED1,	/*!< Only possible value for LPC11A/02/XXLV */
+	SYSCTL_BODRSTLVL_RESERVED1, /*!< Only possible value for LPC11A/02/XXLV */
 #endif
 #if defined(CHIP_LPC11XXLV)
 	SYSCTL_BODRSTLVL_RESERVED1,
@@ -243,24 +296,25 @@ typedef enum CHIP_SYSCTL_BODRSTLVL {
 	SYSCTL_BODRSTLVL_RESERVED3,
 #elif defined(CHIP_LPC11AXX)
 	SYSCTL_BODRSTLVL_RESERVED2,
-	SYSCTL_BODRSTLVL_2_52V,	/*!< Brown-out reset at 2.52v */
-	SYSCTL_BODRSTLVL_2_80V,	/*!< Brown-out reset at 2.80v */
+	SYSCTL_BODRSTLVL_2_52V, /*!< Brown-out reset at 2.52v */
+	SYSCTL_BODRSTLVL_2_80V, /*!< Brown-out reset at 2.80v */
 #else
-	SYSCTL_BODRSTLVL_2_06V,	/*!< Brown-out reset at 2.06v */
-	SYSCTL_BODRSTLVL_2_35V,	/*!< Brown-out reset at 2.35v */
-	SYSCTL_BODRSTLVL_2_63V,	/*!< Brown-out reset at 2.63v */
+	SYSCTL_BODRSTLVL_2_06V, /*!< Brown-out reset at 2.06v */
+	SYSCTL_BODRSTLVL_2_35V, /*!< Brown-out reset at 2.35v */
+	SYSCTL_BODRSTLVL_2_63V, /*!< Brown-out reset at 2.63v */
 #endif
 } CHIP_SYSCTL_BODRSTLVL_T;
 
 /**
  * Brown-out detector interrupt level
  */
-typedef enum CHIP_SYSCTL_BODRINTVAL {
+typedef enum CHIP_SYSCTL_BODRINTVAL
+{
 	SYSCTL_BODINTVAL_RESERVED1,
 #if defined(CHIP_LPC110X) || defined(CHIP_LPC11CXX) || defined(CHIP_LPC11EXX) || defined(CHIP_LPC11UXX) || defined(CHIP_LPC1125)
-	SYSCTL_BODINTVAL_2_22V,	/*!< Brown-out interrupt at 2.22v */
-	SYSCTL_BODINTVAL_2_52V,	/*!< Brown-out interrupt at 2.52v */
-	SYSCTL_BODINTVAL_2_80V,	/*!< Brown-out interrupt at 2.8v */
+SYSCTL_BODINTVAL_2_22V, /*!< Brown-out interrupt at 2.22v */
+SYSCTL_BODINTVAL_2_52V, /*!< Brown-out interrupt at 2.52v */
+SYSCTL_BODINTVAL_2_80V, /*!< Brown-out interrupt at 2.8v */
 #endif
 } CHIP_SYSCTL_BODRINTVAL_T;
 
@@ -272,10 +326,9 @@ typedef enum CHIP_SYSCTL_BODRINTVAL {
  * @note	Brown-out detection reset will be disabled upon exiting this function.
  * Use Chip_SYSCTL_EnableBODReset() to re-enable.
  */
-STATIC INLINE void Chip_SYSCTL_SetBODLevels(CHIP_SYSCTL_BODRSTLVL_T rstlvl,
-											CHIP_SYSCTL_BODRINTVAL_T intlvl)
+STATIC INLINE void Chip_SYSCTL_SetBODLevels(CHIP_SYSCTL_BODRSTLVL_T rstlvl, CHIP_SYSCTL_BODRINTVAL_T intlvl)
 {
-	LPC_SYSCTL->BODCTRL = ((uint32_t) rstlvl) | (((uint32_t) intlvl) << 2);
+LPC_SYSCTL->BODCTRL = ((uint32_t) rstlvl) | (((uint32_t) intlvl) << 2);
 }
 
 #if defined(CHIP_LPC11AXX)
@@ -285,7 +338,7 @@ STATIC INLINE void Chip_SYSCTL_SetBODLevels(CHIP_SYSCTL_BODRSTLVL_T rstlvl,
  */
 STATIC INLINE bool Chip_SYSCTL_GetBODIntStatus(void)
 {
-	return (bool) ((LPC_SYSCTL->BODCTRL & (1 << 6)) != 0);
+return (bool) ((LPC_SYSCTL->BODCTRL & (1 << 6)) != 0);
 }
 
 #else
@@ -295,7 +348,7 @@ STATIC INLINE bool Chip_SYSCTL_GetBODIntStatus(void)
  */
 STATIC INLINE void Chip_SYSCTL_EnableBODReset(void)
 {
-	LPC_SYSCTL->BODCTRL |= (1 << 4);
+LPC_SYSCTL->BODCTRL |= (1 << 4);
 }
 
 /**
@@ -304,7 +357,7 @@ STATIC INLINE void Chip_SYSCTL_EnableBODReset(void)
  */
 STATIC INLINE void Chip_SYSCTL_DisableBODReset(void)
 {
-	LPC_SYSCTL->BODCTRL &= ~(1 << 4);
+LPC_SYSCTL->BODCTRL &= ~(1 << 4);
 }
 
 #endif
@@ -316,7 +369,7 @@ STATIC INLINE void Chip_SYSCTL_DisableBODReset(void)
  */
 STATIC INLINE void Chip_SYSCTL_SetSYSTCKCAL(uint32_t sysCalVal)
 {
-	LPC_SYSCTL->SYSTCKCAL = sysCalVal;
+LPC_SYSCTL->SYSTCKCAL = sysCalVal;
 }
 
 #if defined(CHIP_LPC11EXX) || defined(CHIP_LPC11UXX) || defined(CHIP_LPC1125)
@@ -329,7 +382,7 @@ STATIC INLINE void Chip_SYSCTL_SetSYSTCKCAL(uint32_t sysCalVal)
  */
 STATIC INLINE void Chip_SYSCTL_SetIRQLatency(uint32_t latency)
 {
-	LPC_SYSCTL->IRQLATENCY = latency;
+LPC_SYSCTL->IRQLATENCY = latency;
 }
 
 /**
@@ -338,7 +391,7 @@ STATIC INLINE void Chip_SYSCTL_SetIRQLatency(uint32_t latency)
  */
 STATIC INLINE uint32_t Chip_SYSCTL_GetIRQLatency(void)
 {
-	return LPC_SYSCTL->IRQLATENCY;
+return LPC_SYSCTL->IRQLATENCY;
 }
 
 #endif
@@ -353,7 +406,7 @@ STATIC INLINE uint32_t Chip_SYSCTL_GetIRQLatency(void)
  */
 STATIC INLINE void Chip_SYSCTL_SetNMISource(uint32_t intsrc)
 {
-	LPC_SYSCTL->NMISRC = intsrc;
+LPC_SYSCTL->NMISRC = intsrc;
 }
 
 /**
@@ -362,7 +415,7 @@ STATIC INLINE void Chip_SYSCTL_SetNMISource(uint32_t intsrc)
  */
 STATIC INLINE void Chip_SYSCTL_EnableNMISource(void)
 {
-	LPC_SYSCTL->NMISRC |= SYSCTL_NMISRC_ENABLE;
+LPC_SYSCTL->NMISRC |= SYSCTL_NMISRC_ENABLE;
 }
 
 /**
@@ -371,7 +424,7 @@ STATIC INLINE void Chip_SYSCTL_EnableNMISource(void)
  */
 STATIC INLINE void Chip_SYSCTL_DisableNMISource(void)
 {
-	LPC_SYSCTL->NMISRC &= ~(SYSCTL_NMISRC_ENABLE);
+LPC_SYSCTL->NMISRC &= ~(SYSCTL_NMISRC_ENABLE);
 }
 
 #endif
@@ -386,7 +439,7 @@ STATIC INLINE void Chip_SYSCTL_DisableNMISource(void)
  */
 STATIC INLINE void Chip_SYSCTL_SetPinInterrupt(uint32_t intno, uint8_t port, uint8_t pin)
 {
-	LPC_SYSCTL->PINTSEL[intno] = (uint32_t) ((port << 5) | pin);
+LPC_SYSCTL->PINTSEL[intno] = (uint32_t) ((port << 5) | pin);
 }
 
 #elif defined(CHIP_LPC11EXX) || defined(CHIP_LPC11UXX)
@@ -399,7 +452,7 @@ STATIC INLINE void Chip_SYSCTL_SetPinInterrupt(uint32_t intno, uint8_t port, uin
  */
 STATIC INLINE void Chip_SYSCTL_SetPinInterrupt(uint32_t intno, uint8_t port, uint8_t pin)
 {
-	LPC_SYSCTL->PINTSEL[intno] = (uint32_t) (port * 24 + pin);
+LPC_SYSCTL->PINTSEL[intno] = (uint32_t) (port * 24 + pin);
 }
 
 #endif
@@ -414,7 +467,7 @@ STATIC INLINE void Chip_SYSCTL_SetPinInterrupt(uint32_t intno, uint8_t port, uin
  */
 STATIC INLINE void Chip_SYSCTL_SetUSBCLKCTRL(uint32_t ap_clk, uint32_t pol_clk)
 {
-	LPC_SYSCTL->USBCLKCTRL = ap_clk | (pol_clk << 1);
+LPC_SYSCTL->USBCLKCTRL = ap_clk | (pol_clk << 1);
 }
 
 /**
@@ -423,7 +476,7 @@ STATIC INLINE void Chip_SYSCTL_SetUSBCLKCTRL(uint32_t ap_clk, uint32_t pol_clk)
  */
 STATIC INLINE bool Chip_SYSCTL_GetUSBCLKStatus(void)
 {
-	return (bool) ((LPC_SYSCTL->USBCLKST & 0x1) != 0);
+return (bool) ((LPC_SYSCTL->USBCLKST & 0x1) != 0);
 }
 
 #endif
@@ -438,12 +491,14 @@ STATIC INLINE bool Chip_SYSCTL_GetUSBCLKStatus(void)
  */
 STATIC INLINE void Chip_SYSCTL_SetStartPin(uint32_t pin, uint32_t edge)
 {
-	if (edge) {
-		LPC_SYSCTL->STARTAPRP0 |= (1 << pin);
-	}
-	else {
-		LPC_SYSCTL->STARTAPRP0 &= ~(1 << pin);
-	}
+if (edge)
+{	
+	LPC_SYSCTL->STARTAPRP0 |= (1 << pin);
+}
+else
+{	
+	LPC_SYSCTL->STARTAPRP0 &= ~(1 << pin);
+}
 }
 
 /**
@@ -454,7 +509,7 @@ STATIC INLINE void Chip_SYSCTL_SetStartPin(uint32_t pin, uint32_t edge)
  */
 STATIC INLINE void Chip_SYSCTL_EnableStartPin(uint32_t pin)
 {
-	LPC_SYSCTL->STARTERP0 |= (1 << pin);
+LPC_SYSCTL->STARTERP0 |= (1 << pin);
 }
 
 /**
@@ -465,7 +520,7 @@ STATIC INLINE void Chip_SYSCTL_EnableStartPin(uint32_t pin)
  */
 STATIC INLINE void Chip_SYSCTL_DisableStartPin(uint32_t pin)
 {
-	LPC_SYSCTL->STARTERP0 &= ~(1 << pin);
+LPC_SYSCTL->STARTERP0 &= ~(1 << pin);
 }
 
 /**
@@ -476,7 +531,7 @@ STATIC INLINE void Chip_SYSCTL_DisableStartPin(uint32_t pin)
  */
 STATIC INLINE void Chip_SYSCTL_ResetStartPin(uint32_t pin)
 {
-	LPC_SYSCTL->STARTRSRP0CLR = (1 << pin);
+LPC_SYSCTL->STARTRSRP0CLR = (1 << pin);
 }
 
 /**
@@ -487,7 +542,7 @@ STATIC INLINE void Chip_SYSCTL_ResetStartPin(uint32_t pin)
  */
 STATIC INLINE bool Chip_SYSCTL_GetStartPinStatus(uint32_t pin)
 {
-	return (bool) ((LPC_SYSCTL->STARTSRP0 & (1 << pin)) != 0);
+return (bool) ((LPC_SYSCTL->STARTSRP0 & (1 << pin)) != 0);
 }
 
 #endif
@@ -501,7 +556,7 @@ STATIC INLINE bool Chip_SYSCTL_GetStartPinStatus(uint32_t pin)
  */
 STATIC INLINE void Chip_SYSCTL_EnablePINTWakeup(uint32_t pin)
 {
-	LPC_SYSCTL->STARTERP0 |= (1 << pin);
+LPC_SYSCTL->STARTERP0 |= (1 << pin);
 }
 
 /**
@@ -512,7 +567,7 @@ STATIC INLINE void Chip_SYSCTL_EnablePINTWakeup(uint32_t pin)
  */
 STATIC INLINE void Chip_SYSCTL_DisablePINTWakeup(uint32_t pin)
 {
-	LPC_SYSCTL->STARTERP0 &= ~(1 << pin);
+LPC_SYSCTL->STARTERP0 &= ~(1 << pin);
 }
 
 /**
@@ -531,7 +586,7 @@ STATIC INLINE void Chip_SYSCTL_DisablePINTWakeup(uint32_t pin)
  */
 STATIC INLINE void Chip_SYSCTL_EnablePeriphWakeup(uint32_t periphmask)
 {
-	LPC_SYSCTL->STARTERP1 |= periphmask;
+LPC_SYSCTL->STARTERP1 |= periphmask;
 }
 
 /**
@@ -541,7 +596,7 @@ STATIC INLINE void Chip_SYSCTL_EnablePeriphWakeup(uint32_t periphmask)
  */
 STATIC INLINE void Chip_SYSCTL_DisablePeriphWakeup(uint32_t periphmask)
 {
-	LPC_SYSCTL->STARTERP1 &= ~periphmask;
+LPC_SYSCTL->STARTERP1 &= ~periphmask;
 }
 
 #endif
@@ -576,7 +631,7 @@ void Chip_SYSCTL_SetDeepSleepPD(uint32_t sleepmask);
  */
 STATIC INLINE uint32_t Chip_SYSCTL_GetDeepSleepPD(void)
 {
-	return LPC_SYSCTL->PDSLEEPCFG;
+return LPC_SYSCTL->PDSLEEPCFG;
 }
 
 /**
@@ -614,7 +669,7 @@ void Chip_SYSCTL_SetWakeup(uint32_t wakeupmask);
  */
 STATIC INLINE uint32_t Chip_SYSCTL_GetWakeup(void)
 {
-	return LPC_SYSCTL->PDWAKECFG;
+return LPC_SYSCTL->PDWAKECFG;
 }
 
 #endif
@@ -664,7 +719,7 @@ void Chip_SYSCTL_PowerUp(uint32_t powerupmask);
  */
 STATIC INLINE uint32_t Chip_SYSCTL_GetPowerStates(void)
 {
-	return LPC_SYSCTL->PDRUNCFG;
+return LPC_SYSCTL->PDRUNCFG;
 }
 
 /**
@@ -673,7 +728,7 @@ STATIC INLINE uint32_t Chip_SYSCTL_GetPowerStates(void)
  */
 STATIC INLINE uint32_t Chip_SYSCTL_GetDeviceID(void)
 {
-	return LPC_SYSCTL->DEVICEID;
+return LPC_SYSCTL->DEVICEID;
 }
 
 /**

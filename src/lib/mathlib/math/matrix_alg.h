@@ -38,7 +38,6 @@
  * Matrix algebra on raw arrays
  */
 
-
 #pragma once
 
 #include <inttypes.h>

@@ -36,7 +36,7 @@
 
 using namespace DriverFramework;
 
-class MPU9250Tester : public MPU9250
+class MPU9250Tester: public MPU9250
 {
 public:
 	using MPU9250::MPU9250;
@@ -52,17 +52,18 @@ private:
 int MPU9250Tester::getSensorData(struct imu_sensor_data &out_data, bool is_new_data_required)
 {
 	int ret = -1;
-
+	
 	m_synchronize.lock();
-
-	if (is_new_data_required) {
+	
+	if (is_new_data_required)
+	{
 		m_synchronize.waitOnSignal(0);
 	}
-
+	
 	out_data = m_sensor_data_copy;
 	m_synchronize.unlock();
 	ret = 0;
-
+	
 	return ret;
 }
 
@@ -72,7 +73,7 @@ int MPU9250Tester::_publish(struct imu_sensor_data &data)
 	m_sensor_data_copy = data;
 	m_synchronize.signal();
 	m_synchronize.unlock();
-
+	
 	return 0;
 }
 
@@ -82,8 +83,11 @@ public:
 	static const int TEST_PASS = 0;
 	static const int TEST_FAIL = 1;
 
-	ImuTester() : m_sensor(IMU_DEVICE_PATH, true) {}
-
+	ImuTester() :
+			    m_sensor(IMU_DEVICE_PATH, true)
+	{
+	}
+	
 	static void readSensorCallback(void *arg);
 
 	int run(unsigned int num_read_attempts);
@@ -92,68 +96,78 @@ private:
 	void readSensor();
 	void wait();
 
-	MPU9250Tester		m_sensor;
-	uint32_t	m_read_attempts = 0;
-	uint32_t	m_read_counter = 0;
+	MPU9250Tester m_sensor;
+	uint32_t m_read_attempts = 0;
+	uint32_t m_read_counter = 0;
 
-	int		m_pass;
-	bool		m_done = false;
+	int m_pass;
+	bool m_done = false;
 };
 
 int ImuTester::run(unsigned int num_read_attempts)
 {
 	// Default is fail unless pass critera met
 	m_pass = TEST_FAIL;
-
+	
 	// Register the driver
 	int ret = m_sensor.init();
-
+	
 	// Open the IMU sensor
 	DevHandle h;
 	DevMgr::getHandle(IMU_DEVICE_PATH, h);
-
-	if (!h.isValid()) {
-		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)",
-			    IMU_DEVICE_PATH, h.getError());
+	
+	if (!h.isValid())
+	{
+		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)", IMU_DEVICE_PATH, h.getError());
 		m_done = true;
-
-	} else {
+		
+	}
+	else
+	{
 		m_done = false;
 	}
-
-	while (!m_done) {
+	
+	while (!m_done)
+	{
 		++m_read_attempts;
-
+		
 		struct imu_sensor_data data;
-
+		
 		ret = m_sensor.getSensorData(data, true);
-
-		if (ret == 0) {
+		
+		if (ret == 0)
+		{
 			uint32_t count = data.read_counter;
 			DF_LOG_INFO("count: %d", count);
-
-			if (m_read_counter != count) {
+			
+			if (m_read_counter != count)
+			{
 				m_read_counter = count;
 				printImuValues(data);
 			}
-
-		} else {
+			
+		}
+		else
+		{
 			DF_LOG_INFO("error: unable to read the IMU sensor device.");
 		}
-
-		if (m_read_counter >= num_read_attempts) {
+		
+		if (m_read_counter >= num_read_attempts)
+		{
 			// Done test - PASSED
 			m_pass = TEST_PASS;
 			m_done = true;
-
-		} else if (m_read_attempts > num_read_attempts) {
+			
+		}
+		else if (m_read_attempts > num_read_attempts)
+		{
 			DF_LOG_INFO("error: unable to read the IMU sensor device.");
 			m_done = true;
 		}
 	}
-
+	
 	DevMgr::releaseHandle(h);
-
+	
 	DF_LOG_INFO("Closing IMU sensor");
 	m_sensor.stop();
 	return m_pass;
@@ -163,18 +177,19 @@ extern int do_test(unsigned int num_read_attempts);
 int do_test(unsigned int num_read_attempts)
 {
 	int ret = Framework::initialize();
-
-	if (ret < 0) {
+	
+	if (ret < 0)
+	{
 		return ret;
 	}
-
+	
 	ImuTester pt;
-
+	
 	DF_LOG_INFO("Run it");
 	ret = pt.run(num_read_attempts);
-
+	
 	Framework::shutdown();
-
+	
 	DF_LOG_INFO("Test %s", (ret == ImuTester::TEST_PASS) ? "PASSED" : "FAILED");
 	return ret;
 }

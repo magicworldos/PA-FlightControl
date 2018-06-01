@@ -117,37 +117,37 @@
 #endif
 
 class ADC : public device::CDev
-{
+{	
 public:
 	ADC(uint32_t channels);
 	~ADC();
 
-	virtual int		init();
+	virtual int init();
 
-	virtual int		ioctl(file *filp, int cmd, unsigned long arg);
-	virtual ssize_t		read(file *filp, char *buffer, size_t len);
+	virtual int ioctl(file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(file *filp, char *buffer, size_t len);
 
 protected:
-	virtual int		open_first(struct file *filp);
-	virtual int		close_last(struct file *filp);
+	virtual int open_first(struct file *filp);
+	virtual int close_last(struct file *filp);
 
 private:
-	static const hrt_abstime _tickrate = 10000;	/**< 100Hz base rate */
+	static const hrt_abstime _tickrate = 10000; /**< 100Hz base rate */
 
-	hrt_call		_call;
-	perf_counter_t		_sample_perf;
+	hrt_call _call;
+	perf_counter_t _sample_perf;
 
-	unsigned		_channel_count;
-	px4_adc_msg_t		*_samples;		/**< sample buffer */
+	unsigned _channel_count;
+	px4_adc_msg_t *_samples; /**< sample buffer */
 
-	orb_advert_t		_to_system_power;
-	orb_advert_t		_to_adc_report;
+	orb_advert_t _to_system_power;
+	orb_advert_t _to_adc_report;
 
 	/** work trampoline */
-	static void		_tick_trampoline(void *arg);
+	static void _tick_trampoline(void *arg);
 
 	/** worker function */
-	void			_tick();
+	void _tick();
 
 	/**
 	 * Sample a single channel and return the measured value.
@@ -156,7 +156,7 @@ private:
 	 * @return			The sampled value, or 0xffff if
 	 *				sampling failed.
 	 */
-	uint16_t		_sample(unsigned channel);
+	uint16_t _sample(unsigned channel);
 
 	// update system_power ORB topic, only on FMUv2
 	void update_system_power(hrt_abstime now);
@@ -165,27 +165,27 @@ private:
 };
 
 ADC::ADC(uint32_t channels) :
-	CDev("adc", ADC0_DEVICE_PATH),
-	_sample_perf(perf_alloc(PC_ELAPSED, "adc_samples")),
-	_channel_count(0),
-	_samples(nullptr),
-	_to_system_power(nullptr),
-	_to_adc_report(nullptr)
-{
+CDev("adc", ADC0_DEVICE_PATH),
+_sample_perf(perf_alloc(PC_ELAPSED, "adc_samples")),
+_channel_count(0),
+_samples(nullptr),
+_to_system_power(nullptr),
+_to_adc_report(nullptr)
+{	
 	/* always enable the temperature sensor */
 	channels |= 1 << 16;
 
 	/* allocate the sample array */
 	for (unsigned i = 0; i < 32; i++)
-	{
+	{	
 		if (channels & (1 << i))
-		{
+		{	
 			_channel_count++;
 		}
 	}
 
 	if (_channel_count > PX4_MAX_ADC_CHANNELS)
-	{
+	{	
 		PX4_ERR("PX4_MAX_ADC_CHANNELS is too small:is %d needed:%d", PX4_MAX_ADC_CHANNELS, _channel_count);
 	}
 
@@ -193,13 +193,13 @@ ADC::ADC(uint32_t channels) :
 
 	/* prefill the channel numbers in the sample array */
 	if (_samples != nullptr)
-	{
+	{	
 		unsigned index = 0;
 
 		for (unsigned i = 0; i < 32; i++)
-		{
+		{	
 			if (channels & (1 << i))
-			{
+			{	
 				_samples[index].am_channel = i;
 				_samples[index].am_data = 0;
 				index++;
@@ -209,19 +209,19 @@ ADC::ADC(uint32_t channels) :
 }
 
 ADC::~ADC()
-{
+{	
 	if (_samples != nullptr)
-	{
+	{	
 		delete _samples;
 	}
 }
 
 int board_adc_init()
-{
+{	
 	static bool once = false;
 
 	if (!once)
-	{
+	{	
 
 		once = true;
 
@@ -231,12 +231,12 @@ int board_adc_init()
 		usleep(100);
 
 		if (rCR2 & ADC_CR2_CAL)
-		{
+		{	
 			return -1;
 		}
 
 #endif
-
+		
 		/* arbitrarily configure all channels for 55 cycle sample time */
 		rSMPR1 = 0b00000011011011011011011011011011;
 		rSMPR2 = 0b00011011011011011011011011011011;
@@ -247,10 +247,10 @@ int board_adc_init()
 		/* enable the temperature sensor / Vrefint channel if supported*/
 		rCR2 =
 #ifdef ADC_CR2_TSVREFE
-			/* enable the temperature sensor in CR2 */
-			ADC_CR2_TSVREFE |
+		/* enable the temperature sensor in CR2 */
+		ADC_CR2_TSVREFE |
 #endif
-			0;
+		0;
 
 		/* Soc have CCR */
 #ifdef STM32_ADC_CCR
@@ -261,11 +261,11 @@ int board_adc_init()
 		rCCR = ADC_CCR_ADCPRE_DIV;
 #  endif
 #endif
-
+		
 		/* configure for a single-channel sequence */
 		rSQR1 = 0;
 		rSQR2 = 0;
-		rSQR3 = 0;	/* will be updated with the channel each tick */
+		rSQR3 = 0; /* will be updated with the channel each tick */
 
 		/* power-cycle the ADC and turn it on */
 		rCR2 &= ~ADC_CR2_ADON;
@@ -280,25 +280,25 @@ int board_adc_init()
 		rCR2 |= ADC_CR2_SWSTART;
 
 		while (!(rSR & ADC_SR_EOC))
-		{
+		{	
 
 			/* don't wait for more than 500us, since that means something broke - should reset here if we see this */
 			if ((hrt_absolute_time() - now) > 500)
-			{
+			{	
 				return -1;
 			}
 		}
 	} // once
-
+	
 	return OK;
 }
 int
 ADC::init()
-{
+{	
 	int rv = board_adc_init();
 
 	if (rv < 0)
-	{
+	{	
 		DEVICE_LOG("sample timeout");
 		return rv;
 	}
@@ -309,17 +309,17 @@ ADC::init()
 
 int
 ADC::ioctl(file *filp, int cmd, unsigned long arg)
-{
+{	
 	return -ENOTTY;
 }
 
 ssize_t
 ADC::read(file *filp, char *buffer, size_t len)
-{
+{	
 	const size_t maxsize = sizeof(px4_adc_msg_t) * _channel_count;
 
 	if (len > maxsize)
-	{
+	{	
 		len = maxsize;
 	}
 
@@ -333,7 +333,7 @@ ADC::read(file *filp, char *buffer, size_t len)
 
 int
 ADC::open_first(struct file *filp)
-{
+{	
 	/* get fresh data */
 	_tick();
 
@@ -345,25 +345,25 @@ ADC::open_first(struct file *filp)
 
 int
 ADC::close_last(struct file *filp)
-{
+{	
 	hrt_cancel(&_call);
 	return 0;
 }
 
 void
 ADC::_tick_trampoline(void *arg)
-{
+{	
 	(reinterpret_cast<ADC *>(arg))->_tick();
 }
 
 void
 ADC::_tick()
-{
+{	
 	hrt_abstime now = hrt_absolute_time();
 
 	/* scan the channel set and sample each */
 	for (unsigned i = 0; i < _channel_count; i++)
-	{
+	{	
 		_samples[i].am_data = _sample(_samples[i].am_channel);
 	}
 
@@ -373,19 +373,20 @@ ADC::_tick()
 
 void
 ADC::update_adc_report(hrt_abstime now)
-{
-	adc_report_s adc = {};
+{	
+	adc_report_s adc =
+	{};
 	adc.timestamp = now;
 
 	unsigned max_num = _channel_count;
 
 	if (max_num > (sizeof(adc.channel_id) / sizeof(adc.channel_id[0])))
-	{
+	{	
 		max_num = (sizeof(adc.channel_id) / sizeof(adc.channel_id[0]));
 	}
 
 	for (unsigned i = 0; i < max_num; i++)
-	{
+	{	
 		adc.channel_id[i] = _samples[i].am_channel;
 		adc.channel_value[i] = _samples[i].am_data * 3.3f / 4096.0f;
 	}
@@ -396,9 +397,10 @@ ADC::update_adc_report(hrt_abstime now)
 
 void
 ADC::update_system_power(hrt_abstime now)
-{
+{	
 #if defined (BOARD_ADC_USB_CONNECTED)
-	system_power_s system_power = {};
+	system_power_s system_power =
+	{};
 	system_power.timestamp = now;
 
 	system_power.voltage5V_v = 0;
@@ -411,13 +413,13 @@ ADC::update_system_power(hrt_abstime now)
 #  if defined(ADC_SCALED_V5_SENSE) && defined(ADC_SCALED_V3V3_SENSORS_SENSE)
 	cnt++;
 #  endif
-
+	
 	for (unsigned i = 0; i < _channel_count; i++)
-	{
+	{	
 #  if defined(ADC_SCALED_V5_SENSE)
-
+		
 		if (_samples[i].am_channel == ADC_SCALED_V5_SENSE)
-		{
+		{	
 			// it is 2:1 scaled
 			system_power.voltage5V_v = _samples[i].am_data * (ADC_V5_V_FULL_SCALE / 4096);
 			cnt--;
@@ -426,9 +428,9 @@ ADC::update_system_power(hrt_abstime now)
 		else
 #  endif
 #  if defined(ADC_SCALED_V3V3_SENSORS_SENSE)
-		{
+		{	
 			if (_samples[i].am_channel == ADC_SCALED_V3V3_SENSORS_SENSE)
-			{
+			{	
 				// it is 2:1 scaled
 				system_power.voltage3V3_v = _samples[i].am_data * (ADC_3V3_SCALE * (3.3f / 4096.0f));
 				system_power.v3v3_valid = 1;
@@ -437,9 +439,9 @@ ADC::update_system_power(hrt_abstime now)
 		}
 
 #  endif
-
+		
 		if (cnt == 0)
-		{
+		{	
 			break;
 		}
 	}
@@ -449,40 +451,39 @@ ADC::update_system_power(hrt_abstime now)
 	 */
 	// these are not ADC related, but it is convenient to
 	// publish these to the same topic
-
 	system_power.usb_connected = BOARD_ADC_USB_CONNECTED;
 	/* If provided used the Valid signal from HW*/
 #if defined(BOARD_ADC_USB_VALID)
 	system_power.usb_valid = BOARD_ADC_USB_VALID;
 #else
 	/* If not provided then use connected */
-	system_power.usb_valid  = system_power.usb_connected;
+	system_power.usb_valid = system_power.usb_connected;
 #endif
-
+	
 	/* The valid signals (HW dependent) are associated with each brick */
 
-	bool  valid_chan[BOARD_NUMBER_BRICKS] = BOARD_BRICK_VALID_LIST;
+	bool valid_chan[BOARD_NUMBER_BRICKS] = BOARD_BRICK_VALID_LIST;
 	system_power.brick_valid = 0;
 
 	for (int b = 0; b < BOARD_NUMBER_BRICKS; b++)
-	{
-		system_power.brick_valid |=  valid_chan[b] ? 1 << b : 0;
+	{	
+		system_power.brick_valid |= valid_chan[b] ? 1 << b : 0;
 	}
 
-	system_power.servo_valid   = BOARD_ADC_SERVO_VALID;
+	system_power.servo_valid = BOARD_ADC_SERVO_VALID;
 
 	// OC pins are active low
-	system_power.periph_5V_OC  = BOARD_ADC_PERIPH_5V_OC;
+	system_power.periph_5V_OC = BOARD_ADC_PERIPH_5V_OC;
 	system_power.hipower_5V_OC = BOARD_ADC_HIPOWER_5V_OC;
 
 	/* lazily publish */
 	if (_to_system_power != nullptr)
-	{
+	{	
 		orb_publish(ORB_ID(system_power), _to_system_power, &system_power);
 
 	}
 	else
-	{
+	{	
 		_to_system_power = orb_advertise(ORB_ID(system_power), &system_power);
 	}
 
@@ -490,11 +491,11 @@ ADC::update_system_power(hrt_abstime now)
 }
 
 uint16_t board_adc_sample(unsigned channel)
-{
+{	
 	/* clear any previous EOC */
 
 	if (rSR & ADC_SR_EOC)
-	{
+	{	
 		rSR &= ~ADC_SR_EOC;
 	}
 
@@ -506,11 +507,11 @@ uint16_t board_adc_sample(unsigned channel)
 	hrt_abstime now = hrt_absolute_time();
 
 	while (!(rSR & ADC_SR_EOC))
-	{
+	{	
 
 		/* don't wait for more than 50us, since that means something broke - should reset here if we see this */
 		if ((hrt_absolute_time() - now) > 50)
-		{
+		{	
 			return 0xffff;
 		}
 	}
@@ -522,12 +523,12 @@ uint16_t board_adc_sample(unsigned channel)
 
 uint16_t
 ADC::_sample(unsigned channel)
-{
+{	
 	perf_begin(_sample_perf);
 	uint16_t result = board_adc_sample(channel);
 
 	if (result == 0xffff)
-	{
+	{	
 		DEVICE_LOG("sample timeout");
 	}
 
@@ -541,69 +542,69 @@ ADC::_sample(unsigned channel)
 extern "C" __EXPORT int adc_main(int argc, char *argv[]);
 
 namespace
-{
-ADC	*g_adc;
+{	
+	ADC *g_adc;
 
-void
-test(void)
-{
+	void
+	test(void)
+	{	
 
-	int fd = open(ADC0_DEVICE_PATH, O_RDONLY);
+		int fd = open(ADC0_DEVICE_PATH, O_RDONLY);
 
-	if (fd < 0)
-	{
-		err(1, "can't open ADC device");
-	}
-
-	for (unsigned i = 0; i < 50; i++)
-	{
-		px4_adc_msg_t data[PX4_MAX_ADC_CHANNELS];
-		ssize_t count = read(fd, data, sizeof(data));
-
-		if (count < 0)
-		{
-			errx(1, "read error");
+		if (fd < 0)
+		{	
+			err(1, "can't open ADC device");
 		}
 
-		unsigned channels = count / sizeof(data[0]);
+		for (unsigned i = 0; i < 50; i++)
+		{	
+			px4_adc_msg_t data[PX4_MAX_ADC_CHANNELS];
+			ssize_t count = read(fd, data, sizeof(data));
 
-		for (unsigned j = 0; j < channels; j++)
-		{
-			printf("%d: %u  ", data[j].am_channel, data[j].am_data);
+			if (count < 0)
+			{	
+				errx(1, "read error");
+			}
+
+			unsigned channels = count / sizeof(data[0]);
+
+			for (unsigned j = 0; j < channels; j++)
+			{	
+				printf("%d: %u  ", data[j].am_channel, data[j].am_data);
+			}
+
+			printf("\n");
+			usleep(500000);
 		}
 
-		printf("\n");
-		usleep(500000);
+		exit(0);
 	}
-
-	exit(0);
-}
 }
 
 int
 adc_main(int argc, char *argv[])
-{
+{	
 	if (g_adc == nullptr)
-	{
+	{	
 		/* XXX this hardcodes the default channel set for the board in board_config.h - should be configurable */
 		g_adc = new ADC(ADC_CHANNELS);
 
 		if (g_adc == nullptr)
-		{
+		{	
 			errx(1, "couldn't allocate the ADC driver");
 		}
 
 		if (g_adc->init() != OK)
-		{
+		{	
 			delete g_adc;
 			errx(1, "ADC init failed");
 		}
 	}
 
 	if (argc > 1)
-	{
+	{	
 		if (!strcmp(argv[1], "test"))
-		{
+		{	
 			test();
 		}
 	}

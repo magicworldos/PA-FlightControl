@@ -83,9 +83,9 @@
 /* This structure holds static information unique to one SDHC peripheral */
 
 struct nxphlite_sdhc_state_s
-{
-	struct sdio_dev_s *sdhc;    /* R/W device handle */
-	bool inserted;              /* TRUE: card is inserted */
+{	
+	struct sdio_dev_s *sdhc; /* R/W device handle */
+	bool inserted; /* TRUE: card is inserted */
 };
 
 /****************************************************************************
@@ -105,7 +105,7 @@ static struct nxphlite_sdhc_state_s g_sdhc;
  ****************************************************************************/
 
 static void nxphlite_mediachange(struct nxphlite_sdhc_state_s *sdhc)
-{
+{	
 	bool inserted;
 
 	/* Get the current value of the card detect pin.  This pin is pulled up on
@@ -118,8 +118,8 @@ static void nxphlite_mediachange(struct nxphlite_sdhc_state_s *sdhc)
 	/* Has the pin changed state? */
 
 	if (inserted != sdhc->inserted)
-	{
-		mcinfo("Media change: %d->%d\n",  sdhc->inserted, inserted);
+	{	
+		mcinfo("Media change: %d->%d\n", sdhc->inserted, inserted);
 
 		/* Yes.. perform the appropriate action (this might need some debounce). */
 
@@ -139,7 +139,7 @@ static void nxphlite_mediachange(struct nxphlite_sdhc_state_s *sdhc)
  ****************************************************************************/
 
 static int nxphlite_cdinterrupt(int irq, FAR void *context, FAR void *args)
-{
+{	
 	/* All of the work is done by nxphlite_mediachange() */
 
 	nxphlite_mediachange((struct nxphlite_sdhc_state_s *) args);
@@ -159,9 +159,9 @@ static int nxphlite_cdinterrupt(int irq, FAR void *context, FAR void *args)
  ****************************************************************************/
 
 int nxphlite_sdhc_initialize(void)
-{
+{	
 	int ret;
-	struct nxphlite_sdhc_state_s   *sdhc = &g_sdhc;
+	struct nxphlite_sdhc_state_s *sdhc = &g_sdhc;
 	/* Configure GPIO pins */
 
 	VDD_3V3_SD_CARD_EN(true);
@@ -182,7 +182,7 @@ int nxphlite_sdhc_initialize(void)
 	sdhc->sdhc = sdhc_initialize(CONFIG_NSH_MMCSDSLOTNO);
 
 	if (!sdhc->sdhc)
-	{
+	{	
 		mcerr("ERROR: Failed to initialize SDHC slot %d\n", CONFIG_NSH_MMCSDSLOTNO);
 		return -ENODEV;
 	}
@@ -194,7 +194,7 @@ int nxphlite_sdhc_initialize(void)
 	ret = mmcsd_slotinitialize(CONFIG_NSH_MMCSDMINOR, sdhc->sdhc);
 
 	if (ret != OK)
-	{
+	{	
 		syslog(LOG_ERR, "ERROR: Failed to bind SDHC to the MMC/SD driver: %d\n", ret);
 		return ret;
 	}
@@ -221,7 +221,7 @@ int nxphlite_sdhc_initialize(void)
 
 #ifdef HAVE_AUTOMOUNTER
 bool nxphlite_cardinserted(void)
-{
+{	
 	bool inserted;
 
 	/* Get the current value of the card detect pin.  This pin is pulled up on
@@ -244,7 +244,7 @@ bool nxphlite_cardinserted(void)
 
 #ifdef HAVE_AUTOMOUNTER
 bool nxphlite_writeprotected(void)
-{
+{	
 	/* There are no write protect pins */
 
 	return false;

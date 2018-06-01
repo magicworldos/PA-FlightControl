@@ -52,9 +52,7 @@
 #include "hrt_work.h"
 #include "px4_log.h"
 
-
 //extern pthread_t _shell_task_id;
-
 
 __BEGIN_DECLS
 extern uint64_t get_ticks_per_us();
@@ -67,7 +65,7 @@ unsigned int sleep(unsigned int sec)
 	{
 		usleep(1000000);
 	}
-
+	
 	return 0;
 }
 
@@ -76,8 +74,8 @@ extern void init_params();
 
 #if 0
 void qurt_log(const char *fmt, ...)
-{
-	va_list	args;
+{	
+	va_list args;
 	va_start(args, fmt);
 	printf(fmt, args);
 	printf("n");
@@ -91,7 +89,6 @@ __END_DECLS
 
 extern struct wqueue_s gwork[NWORKERS];
 
-
 namespace px4
 {
 
@@ -101,15 +98,15 @@ void init_once(void)
 {
 	// Required for QuRT
 	//_posix_init();
-
+	
 	//	_shell_task_id = pthread_self();
 	//	PX4_INFO("Shell id is %lu", _shell_task_id);
-
+	
 	work_queues_init();
 	hrt_work_queue_init();
 	hrt_init();
 	param_init();
-
+	
 	/* Shared memory param sync*/
 	init_params();
 }
@@ -122,25 +119,21 @@ void init(int argc, char *argv[], const char *app_name)
 }
 
 /** Retrieve from the data manager store */
-ssize_t
-dm_read(
-	dm_item_t item,                 /* The item type to retrieve */
-	unsigned index,                 /* The index of the item */
-	void *buffer,                   /* Pointer to caller data buffer */
-	size_t buflen                   /* Length in bytes of data to retrieve */
+ssize_t dm_read(dm_item_t item, /* The item type to retrieve */
+unsigned index, /* The index of the item */
+void *buffer, /* Pointer to caller data buffer */
+size_t buflen /* Length in bytes of data to retrieve */
 )
 {
 	return 0;
 }
 
 /** write to the data manager store */
-ssize_t
-dm_write(
-	dm_item_t  item,                /* The item type to store */
-	unsigned index,                 /* The index of the item */
-	dm_persitence_t persistence,    /* The persistence level of this item */
-	const void *buffer,             /* Pointer to caller data buffer */
-	size_t buflen                   /* Length in bytes of data to retrieve */
+ssize_t dm_write(dm_item_t item, /* The item type to store */
+unsigned index, /* The index of the item */
+dm_persitence_t persistence, /* The persistence level of this item */
+const void *buffer, /* Pointer to caller data buffer */
+size_t buflen /* Length in bytes of data to retrieve */
 )
 {
 	return 0;
@@ -149,12 +142,12 @@ dm_write(
 size_t strnlen(const char *s, size_t maxlen)
 {
 	size_t i = 0;
-
+	
 	while (s[i] != '\0' && i < maxlen)
 	{
 		++i;
 	}
-
+	
 	return i;
 }
 

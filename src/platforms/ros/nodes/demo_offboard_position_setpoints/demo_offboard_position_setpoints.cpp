@@ -37,7 +37,7 @@
  * Demo for sending offboard position setpoints to mavros to show offboard position control in SITL
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #include "demo_offboard_position_setpoints.h"
 
@@ -45,21 +45,20 @@
 #include <geometry_msgs/PoseStamped.h>
 
 DemoOffboardPositionSetpoints::DemoOffboardPositionSetpoints() :
-	_n(),
-	_local_position_sp_pub(_n.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 1))
+		    _n(),
+		    _local_position_sp_pub(_n.advertise < geometry_msgs::PoseStamped > ("mavros/setpoint_position/local", 1))
 {
 }
-
 
 int DemoOffboardPositionSetpoints::main()
 {
 	px4::Rate loop_rate(10);
-
+	
 	while (ros::ok())
 	{
 		loop_rate.sleep();
 		ros::spinOnce();
-
+		
 		/* Publish example offboard position setpoint */
 		geometry_msgs::PoseStamped pose;
 		pose.pose.position.x = 0;
@@ -67,7 +66,7 @@ int DemoOffboardPositionSetpoints::main()
 		pose.pose.position.z = 1;
 		_local_position_sp_pub.publish(pose);
 	}
-
+	
 	return 0;
 }
 

@@ -35,7 +35,8 @@
 extern int doTest();
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define LOG_MSG(...) qurt_log(0, __FILE__, __LINE__, __VA_ARGS__)
@@ -60,6 +61,6 @@ static __inline void qurt_log(int level, const char *file, int line, const char 
 int32 df_testapp_do_test()
 {
 	LOG_MSG("Starting df_testapp");
-
+	
 	return doTest();
 }

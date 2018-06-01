@@ -82,7 +82,7 @@ __EXPORT void stm32_spiinitialize(void)
 	stm32_configgpio(GPIO_DRDY_LIS3MDL);
 	stm32_configgpio(GPIO_DRDY_ICM_2060X);
 #endif
-
+	
 #ifdef CONFIG_STM32_SPI2
 	stm32_configgpio(GPIO_SPI_CS_FRAM);
 #endif
@@ -92,7 +92,7 @@ __EXPORT void stm32_spiinitialize(void)
 #ifdef CONFIG_STM32_SPI6
 	stm32_configgpio(GPIO_SPI6_CS);
 #endif
-
+	
 }
 
 __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
@@ -101,14 +101,14 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 
 	switch (devid)
 	{
-
+		
 		case PX4_SPIDEV_ICM:
 
-		/* Intended fallthrough */
+			/* Intended fallthrough */
 
 		case PX4_SPIDEV_ICM_20602:
 
-		/* Intended fallthrough */
+			/* Intended fallthrough */
 
 		case PX4_SPIDEV_ICM_20608:
 
@@ -119,7 +119,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			stm32_gpiowrite(GPIO_SPI_CS_ICM_2060X, !selected);
 			stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, 1);
 			break;
-
+			
 		case PX4_SPIDEV_BARO:
 			/* Making sure the other peripherals are not selected */
 			stm32_gpiowrite(GPIO_SPI_CS_MPU9250, 1);
@@ -128,7 +128,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			stm32_gpiowrite(GPIO_SPI_CS_ICM_2060X, 1);
 			stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, 1);
 			break;
-
+			
 		case PX4_SPIDEV_LIS:
 			/* Making sure the other peripherals are not selected */
 			stm32_gpiowrite(GPIO_SPI_CS_MPU9250, 1);
@@ -137,7 +137,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			stm32_gpiowrite(GPIO_SPI_CS_ICM_2060X, 1);
 			stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, 1);
 			break;
-
+			
 		case PX4_SPIDEV_MPU:
 			/* Making sure the other peripherals are not selected */
 			stm32_gpiowrite(GPIO_SPI_CS_MPU9250, !selected);
@@ -146,7 +146,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			stm32_gpiowrite(GPIO_SPI_CS_ICM_2060X, 1);
 			stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, 1);
 			break;
-
+			
 		case PX4_SPIDEV_EEPROM:
 			/* Making sure the other peripherals are not selected */
 			stm32_gpiowrite(GPIO_SPI_CS_MPU9250, 1);
@@ -155,7 +155,7 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool s
 			stm32_gpiowrite(GPIO_SPI_CS_ICM_2060X, 1);
 			stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, !selected);
 			break;
-
+			
 		default:
 			break;
 	}
@@ -166,15 +166,14 @@ __EXPORT uint8_t stm32_spi1status(FAR struct spi_dev_s *dev, uint32_t devid)
 	return SPI_STATUS_PRESENT;
 }
 
-
 #ifdef CONFIG_STM32_SPI2
 __EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	stm32_gpiowrite(GPIO_SPI_CS_FRAM, !selected);
 }
 
 __EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	/* FRAM is always present */
 	return SPI_STATUS_PRESENT;
 }
@@ -190,13 +189,13 @@ __EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, uint32_t devid)
 
 #ifdef CONFIG_STM32_SPI5
 __EXPORT void stm32_spi5select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	stm32_gpiowrite(GPIO_SPI5_CS, !selected);
 
 }
 
 __EXPORT uint8_t stm32_spi5status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 #endif
@@ -211,13 +210,13 @@ __EXPORT uint8_t stm32_spi5status(FAR struct spi_dev_s *dev, uint32_t devid)
 
 #ifdef CONFIG_STM32_SPI6
 __EXPORT void stm32_spi6select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
-{
+{	
 	stm32_gpiowrite(GPIO_SPI6_CS, !selected);
 
 }
 
 __EXPORT uint8_t stm32_spi6status(FAR struct spi_dev_s *dev, uint32_t devid)
-{
+{	
 	return SPI_STATUS_PRESENT;
 }
 #endif
@@ -230,45 +229,45 @@ __EXPORT void board_spi_reset(int ms)
 	stm32_configgpio(GPIO_SPI_CS_OFF_MS5611);
 	stm32_configgpio(GPIO_SPI_CS_OFF_ICM_2060X);
 	stm32_configgpio(GPIO_SPI_CS_TEMPCAL_EEPROM);
-
+	
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_MPU9250, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_LIS3MDL, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_MS5611, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_ICM_2060X, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_TEMPCAL_EEPROM, 0);
-
+	
 	stm32_configgpio(GPIO_SPI1_SCK_OFF);
 	stm32_configgpio(GPIO_SPI1_MISO_OFF);
 	stm32_configgpio(GPIO_SPI1_MOSI_OFF);
-
+	
 	stm32_gpiowrite(GPIO_SPI1_SCK_OFF, 0);
 	stm32_gpiowrite(GPIO_SPI1_MISO_OFF, 0);
 	stm32_gpiowrite(GPIO_SPI1_MOSI_OFF, 0);
-
+	
 	stm32_configgpio(GPIO_DRDY_OFF_MPU9250);
 	stm32_configgpio(GPIO_DRDY_OFF_LIS3MDL);
 	stm32_configgpio(GPIO_DRDY_OFF_ICM_2060X);
-
+	
 	stm32_gpiowrite(GPIO_DRDY_OFF_MPU9250, 0);
 	stm32_gpiowrite(GPIO_DRDY_OFF_LIS3MDL, 0);
 	stm32_gpiowrite(GPIO_DRDY_OFF_ICM_2060X, 0);
-
+	
 	/* set the sensor rail off */
 	stm32_configgpio(GPIO_VDD_3V3_SENSORS_EN);
 	stm32_gpiowrite(GPIO_VDD_3V3_SENSORS_EN, 0);
-
+	
 	/* wait for the sensor rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 
 	/* switch the sensor rail back on */
 	stm32_gpiowrite(GPIO_VDD_3V3_SENSORS_EN, 1);
-
+	
 	/* wait a bit before starting SPI, different times didn't influence results */
 	usleep(100);
-
+	
 	/* reconfigure the SPI pins */
 #ifdef CONFIG_STM32_SPI1
 	stm32_configgpio(GPIO_SPI_CS_MPU9250);
@@ -287,5 +286,5 @@ __EXPORT void board_spi_reset(int ms)
 	stm32_configgpio(GPIO_DRDY_ICM_2060X);
 
 #endif
-
+	
 }

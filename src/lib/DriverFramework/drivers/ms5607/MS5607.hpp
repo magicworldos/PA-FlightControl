@@ -39,16 +39,18 @@
 namespace DriverFramework
 {
 
-class MS5607 : public MS5611
+class MS5607: public MS5611
 {
 public:
 	using MS5611::MS5611;
 	virtual ~MS5607() = default;
-
+	
 private:
 	// Returns temperature in DegC, resolution is 0.01 DegC
 	// Output value of “5123” equals 51.23 DegC
 	int32_t convertTemperature(int32_t adc_temperature);
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

@@ -53,18 +53,21 @@
 
 #include "sensor_bridge.hpp"
 
-class UavcanGnssBridge : public IUavcanSensorBridge
+class UavcanGnssBridge: public IUavcanSensorBridge
 {
 	static constexpr unsigned ORB_TO_UAVCAN_FREQUENCY_HZ = 10;
 
 public:
-	static const char *const NAME;
+	static const char * const NAME;
 
 	UavcanGnssBridge(uavcan::INode &node);
 	~UavcanGnssBridge();
 
-	const char *get_name() const override { return NAME; }
-
+	const char *get_name() const override
+	{
+		return NAME;
+	}
+	
 	int init() override;
 
 	unsigned get_num_redundant_channels() const override;
@@ -78,26 +81,16 @@ private:
 	void gnss_fix_sub_cb(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix> &msg);
 	void gnss_fix2_sub_cb(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix2> &msg);
 
-	template <typename FixType>
-	void process_fixx(const uavcan::ReceivedDataStructure<FixType> &msg,
-			  const float (&pos_cov)[9],
-			  const float (&vel_cov)[9],
-			  const bool valid_pos_cov,
-			  const bool valid_vel_cov);
+	template<typename FixType>
+	void process_fixx(const uavcan::ReceivedDataStructure<FixType> &msg, const float (&pos_cov)[9], const float (&vel_cov)[9], const bool valid_pos_cov, const bool valid_vel_cov);
 
 	void broadcast_from_orb(const uavcan::TimerEvent &);
 
-	typedef uavcan::MethodBinder < UavcanGnssBridge *,
-		void (UavcanGnssBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix> &) >
-		FixCbBinder;
+	typedef uavcan::MethodBinder<UavcanGnssBridge *, void (UavcanGnssBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix> &)> FixCbBinder;
 
-	typedef uavcan::MethodBinder < UavcanGnssBridge *,
-		void (UavcanGnssBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix2> &) >
-		Fix2CbBinder;
+	typedef uavcan::MethodBinder<UavcanGnssBridge *, void (UavcanGnssBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::gnss::Fix2> &)> Fix2CbBinder;
 
-	typedef uavcan::MethodBinder<UavcanGnssBridge *,
-		void (UavcanGnssBridge::*)(const uavcan::TimerEvent &)>
-		TimerCbBinder;
+	typedef uavcan::MethodBinder<UavcanGnssBridge *, void (UavcanGnssBridge::*)(const uavcan::TimerEvent &)> TimerCbBinder;
 
 	uavcan::INode &_node;
 	uavcan::Subscriber<uavcan::equipment::gnss::Fix, FixCbBinder> _sub_fix;
@@ -109,8 +102,8 @@ private:
 	bool _old_fix_subscriber_active = true;
 
 	orb_advert_t _report_pub;                ///< uORB pub for gnss position
-
+	
 	int _orb_sub_gnss = -1;                  ///< uORB sub for gnss position, used for bridging uORB --> UAVCAN
-
+	
 	bool _system_clock_set = false; ///< Have we set the system clock at least once from GNSS data?
 };

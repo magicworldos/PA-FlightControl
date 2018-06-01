@@ -39,7 +39,6 @@
  * @author Nate Weibley <nate.weibley@prioria.com>
  */
 
-
 #include <px4_config.h>
 #include <systemlib/param/param.h>
 

@@ -45,13 +45,19 @@ int display_test_results(int result, const char *label)
 
 const char *get_result_string(int result)
 {
-
+	
 	const char *result_str = "* FAIL";
-
-	if (result == TEST_PASS) { result_str = "  PASS"; }
-
-	if (result == TEST_SKIP) { result_str = "- SKIP"; }
-
+	
+	if (result == TEST_PASS)
+	{
+		result_str = "  PASS";
+	}
+	
+	if (result == TEST_SKIP)
+	{
+		result_str = "- SKIP";
+	}
+	
 	return result_str;
 }
 

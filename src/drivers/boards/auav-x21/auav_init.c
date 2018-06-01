@@ -133,11 +133,11 @@ __EXPORT void board_peripheral_reset(int ms)
 	/* set the peripheral rails off */
 	stm32_configgpio(GPIO_VDD_5V_PERIPH_EN);
 	stm32_gpiowrite(GPIO_VDD_5V_PERIPH_EN, 1);
-
+	
 	/* wait for the peripheral rail to reach GND */
 	usleep(ms * 1000);
 	warnx("reset done, %d ms", ms);
-
+	
 	/* re-enable power */
 
 	/* switch the peripheral rail back on */
@@ -154,28 +154,27 @@ __EXPORT void board_peripheral_reset(int ms)
  *
  ************************************************************************************/
 
-__EXPORT void
-stm32_boardinitialize(void)
+__EXPORT void stm32_boardinitialize(void)
 {
 	/* configure LEDs */
 
 	board_autoled_initialize();
-
+	
 	/* configure ADC pins */
 
-	px4_arch_configgpio(GPIO_ADC1_IN2);	/* BATT_VOLTAGE_SENS */
-	px4_arch_configgpio(GPIO_ADC1_IN3);	/* BATT_CURRENT_SENS */
-	px4_arch_configgpio(GPIO_ADC1_IN4);	/* VDD_5V_SENS */
-	px4_arch_configgpio(GPIO_ADC1_IN13);	/* FMU_AUX_ADC_1 */
-	px4_arch_configgpio(GPIO_ADC1_IN14);	/* FMU_AUX_ADC_2 */
-	px4_arch_configgpio(GPIO_ADC1_IN15);	/* PRESSURE_SENS */
-
+	px4_arch_configgpio(GPIO_ADC1_IN2); /* BATT_VOLTAGE_SENS */
+	px4_arch_configgpio(GPIO_ADC1_IN3); /* BATT_CURRENT_SENS */
+	px4_arch_configgpio(GPIO_ADC1_IN4); /* VDD_5V_SENS */
+	px4_arch_configgpio(GPIO_ADC1_IN13); /* FMU_AUX_ADC_1 */
+	px4_arch_configgpio(GPIO_ADC1_IN14); /* FMU_AUX_ADC_2 */
+	px4_arch_configgpio(GPIO_ADC1_IN15); /* PRESSURE_SENS */
+	
 	/* configure power supply control/sense pins */
 	px4_arch_configgpio(GPIO_VDD_5V_PERIPH_EN);
 	px4_arch_configgpio(GPIO_VDD_3V3_SENSORS_EN);
 	px4_arch_configgpio(GPIO_VDD_BRICK_VALID);
 	px4_arch_configgpio(GPIO_VDD_5V_PERIPH_OC);
-
+	
 	/* configure the GPIO pins to outputs and keep them low */
 	px4_arch_configgpio(GPIO_GPIO0_OUTPUT);
 	px4_arch_configgpio(GPIO_GPIO1_OUTPUT);
@@ -183,15 +182,15 @@ stm32_boardinitialize(void)
 	px4_arch_configgpio(GPIO_GPIO3_OUTPUT);
 	px4_arch_configgpio(GPIO_GPIO4_OUTPUT);
 	px4_arch_configgpio(GPIO_GPIO5_OUTPUT);
-
+	
 	/* configure SPI interfaces */
 
 	stm32_spiinitialize();
-
+	
 	/* configure USB interface */
 
 	stm32_usbinitialize();
-
+	
 }
 
 /****************************************************************************
@@ -219,7 +218,6 @@ stm32_boardinitialize(void)
  *
  ****************************************************************************/
 
-
 static struct spi_dev_s *spi1;
 static struct spi_dev_s *spi2;
 static struct sdio_dev_s *sdio;
@@ -227,7 +225,7 @@ static struct sdio_dev_s *sdio;
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -235,49 +233,46 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* configure the DMA allocator */
 
 	if (board_dma_alloc_init() < 0)
 	{
 		message("DMA alloc FAILED");
 	}
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
-
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
+	
 #if defined(CONFIG_STM32_BBSRAM)
-
+	
 	if (hardfault_check_status)
-	{
+	{	
 		/* NB. the use of the console requires the hrt running
 		 * to poll the DMA
 		 */
@@ -289,7 +284,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		stm32_bbsraminitialize(BBSRAM_PATH, filesizes);
 
 #if defined(CONFIG_STM32_SAVE_CRASHDUMP)
-
+		
 		/* Panic Logging in Battery Backed Up Files */
 
 		/*
@@ -312,10 +307,10 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		int hadCrash = hardfault_check_status("boot");
 
 		if (hadCrash == OK)
-		{
+		{	
 
-			message("[boot] There is a hard fault logged. Hold down the SPACE BAR," \
-				" while booting to halt the system!\n");
+			message("[boot] There is a hard fault logged. Hold down the SPACE BAR,"
+					" while booting to halt the system!\n");
 
 			/* Yes. So add one to the boot count - this will be reset after a successful
 			 * commit to SD
@@ -329,7 +324,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			ioctl(fileno(stdin), FIONREAD, (unsigned long)((uintptr_t) &bytesWaiting));
 
 			if (reboots > 2 || bytesWaiting != 0)
-			{
+			{	
 
 				/* Since we can not commit the fault dump to disk. Display it
 				 * to the console.
@@ -338,9 +333,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 				hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 
 				message("[boot] There were %d reboots with Hard fault that were not committed to disk - System halted %s\n",
-					reboots,
-					(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
-
+						reboots,
+						(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
 
 				/* For those of you with a debugger set a break point on up_assert and
 				 * then set dbgContinue = 1 and go.
@@ -352,84 +346,82 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 				int c = '>';
 
 				while (!dbgContinue)
-				{
+				{	
 
 					switch (c)
-					{
+					{	
 
 						case EOF:
-
 
 						case '\n':
 						case '\r':
 						case ' ':
-							continue;
+						continue;
 
 						default:
 
-							putchar(c);
-							putchar('\n');
+						putchar(c);
+						putchar('\n');
 
-							switch (c)
-							{
+						switch (c)
+						{	
 
-								case 'D':
-								case 'd':
-									hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
-									break;
-
-								case 'C':
-								case 'c':
-									hardfault_rearm("boot");
-									hardfault_increment_reboot("boot", true);
-									break;
-
-								case 'B':
-								case 'b':
-									dbgContinue = true;
-									break;
-
-								default:
-									break;
-							} // Inner Switch
-
-							message("\nEnter B - Continue booting\n" \
-								"Enter C - Clear the fault log\n" \
-								"Enter D - Dump fault log\n\n?>");
-							fflush(stdout);
-
-							if (!dbgContinue)
-							{
-								c = getchar();
-							}
-
+							case 'D':
+							case 'd':
+							hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 							break;
+
+							case 'C':
+							case 'c':
+							hardfault_rearm("boot");
+							hardfault_increment_reboot("boot", true);
+							break;
+
+							case 'B':
+							case 'b':
+							dbgContinue = true;
+							break;
+
+							default:
+							break;
+						} // Inner Switch
+						
+						message("\nEnter B - Continue booting\n"
+								"Enter C - Clear the fault log\n"
+								"Enter D - Dump fault log\n\n?>");
+						fflush(stdout);
+
+						if (!dbgContinue)
+						{	
+							c = getchar();
+						}
+
+						break;
 
 					} // outer switch
 				} // for
-
+				
 			} // inner if
 		} // outer if
 	} // hardfault_check_status
-
+	
 #endif // CONFIG_STM32_SAVE_CRASHDUMP
 #endif // CONFIG_STM32_BBSRAM
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_AMBER);
-
+	
 	/* Configure SPI-based devices */
 
 	spi1 = px4_spibus_initialize(1);
-
+	
 	if (!spi1)
 	{
-		message("[boot] FAILED to initialize SPI port 1\n");
-		board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port 1\n"); board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 	/* Default SPI1 to 1MHz and de-assert the known chip selects. */
 	SPI_SETFREQUENCY(spi1, 10000000);
 	SPI_SETBITS(spi1, 8);
@@ -438,18 +430,17 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SELECT(spi1, PX4_SPIDEV_BARO, false);
 	SPI_SELECT(spi1, PX4_SPIDEV_MPU, false);
 	up_udelay(20);
-
+	
 	/* Get the SPI port for the FRAM */
 
 	spi2 = px4_spibus_initialize(2);
-
+	
 	if (!spi2)
 	{
-		message("[boot] FAILED to initialize SPI port 2\n");
-		board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port 2\n"); board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
-
+	
 	/* Default SPI2 to 37.5 MHz (40 MHz rounded to nearest valid divider, F4 max)
 	 * and de-assert the known chip selects. */
 
@@ -458,17 +449,16 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	SPI_SETBITS(spi2, 8);
 	SPI_SETMODE(spi2, SPIDEV_MODE3);
 	SPI_SELECT(spi2, SPIDEV_FLASH(0), false);
-
-
+	
 #ifdef CONFIG_MMCSD
 	/* First, get an instance of the SDIO interface */
 
 	sdio = sdio_initialize(CONFIG_NSH_MMCSDSLOTNO);
 
 	if (!sdio)
-	{
+	{	
 		message("[boot] Failed to initialize SDIO slot %d\n",
-			CONFIG_NSH_MMCSDSLOTNO);
+				CONFIG_NSH_MMCSDSLOTNO);
 		return -ENODEV;
 	}
 
@@ -476,7 +466,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int ret = mmcsd_slotinitialize(CONFIG_NSH_MMCSDMINOR, sdio);
 
 	if (ret != OK)
-	{
+	{	
 		message("[boot] Failed to bind SDIO to the MMC/SD driver: %d\n", ret);
 		return ret;
 	}
@@ -485,6 +475,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	sdio_mediachange(sdio, true);
 
 #endif
-
+	
 	return OK;
 }

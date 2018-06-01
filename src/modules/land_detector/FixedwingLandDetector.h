@@ -65,7 +65,7 @@ protected:
 	float _get_max_altitude() override;
 
 private:
-
+	
 	/** Time in us that landing conditions have to hold before triggering a land. */
 	static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2000000;
 	static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0;
@@ -76,7 +76,7 @@ private:
 		param_t maxClimbRate;
 		param_t maxAirSpeed;
 		param_t maxIntVelocity;
-	} _paramHandle{};
+	} _paramHandle { };
 
 	struct
 	{
@@ -84,20 +84,20 @@ private:
 		float maxClimbRate;
 		float maxAirSpeed;
 		float maxIntVelocity;
-	} _params{};
+	} _params { };
 
-	int _airspeedSub{-1};
-	int _sensor_bias_sub{-1};
-	int _local_pos_sub{-1};
+	int _airspeedSub { -1 };
+	int _sensor_bias_sub { -1 };
+	int _local_pos_sub { -1 };
 
-	airspeed_s _airspeed{};
-	sensor_bias_s _sensors{};
-	vehicle_local_position_s _local_pos{};
+	airspeed_s _airspeed { };
+	sensor_bias_s _sensors { };
+	vehicle_local_position_s _local_pos { };
 
-	float _velocity_xy_filtered{0.0f};
-	float _velocity_z_filtered{0.0f};
-	float _airspeed_filtered{0.0f};
-	float _accel_horz_lp{0.0f};
+	float _velocity_xy_filtered { 0.0f };
+	float _velocity_z_filtered { 0.0f };
+	float _airspeed_filtered { 0.0f };
+	float _accel_horz_lp { 0.0f };
 };
 
 } // namespace land_detector

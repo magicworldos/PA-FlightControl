@@ -1,4 +1,3 @@
-
 /****************************************************************************
  *
  *   Copyright (C) 2015 Mark Charlebois. All rights reserved.
@@ -48,16 +47,16 @@ px4::AppState HelloExample::appState;
 int HelloExample::main()
 {
 	appState.setRunning(true);
-
+	
 	int i = 0;
-
+	
 	while (!appState.exitRequested() && i < 5)
 	{
 		sleep(2);
-
+		
 		printf("  Doing work...\n");
 		++i;
 	}
-
+	
 	return 0;
 }

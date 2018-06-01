@@ -39,7 +39,8 @@
 namespace DriverFramework
 {
 
-struct ms5611_sensor_calibration {
+struct ms5611_sensor_calibration
+{
 	uint16_t factory_setup;
 	uint16_t c1_pressure_sens;
 	uint16_t c2_pressure_offset;
@@ -50,7 +51,8 @@ struct ms5611_sensor_calibration {
 	uint16_t serial_and_crc;
 };
 
-struct ms5611_sensor_measurement {
+struct ms5611_sensor_measurement
+{
 	int32_t temperature_cc; // Temperature with 0.01 DegC resolution 2356 = 23.56 DegC
 	int64_t off; // Offset at actual temperature
 	int64_t sens; // Sensitivity at actual temperature
@@ -81,21 +83,21 @@ struct ms5611_sensor_measurement {
 #error "MS5611_MEASURE_INTERVAL_US Must >= MS5611_CONVERSION_INTERVAL_US * 2"
 #endif
 
-class MS5611 : public BaroSensor
+class MS5611: public BaroSensor
 {
 public:
 	MS5611(const char *device_path) :
-		BaroSensor(device_path, MS5611_MEASURE_INTERVAL_US / 2),
-		m_temperature_from_sensor(0),
-		m_pressure_from_sensor(0),
-		m_measure_phase(0)
+			    BaroSensor(device_path, MS5611_MEASURE_INTERVAL_US / 2),
+			    m_temperature_from_sensor(0),
+			    m_pressure_from_sensor(0),
+			    m_measure_phase(0)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_MS5611;
 		m_id.dev_id_s.address = MS5611_SLAVE_ADDRESS;
 	}
-
+	
 	virtual ~MS5611() = default;
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start() override;
 
@@ -130,7 +132,7 @@ protected:
 	// Send reset to device
 	int reset();
 
-	struct ms5611_sensor_calibration	m_sensor_calibration;
+	struct ms5611_sensor_calibration m_sensor_calibration;
 	struct ms5611_sensor_measurement m_raw_sensor_convertion;
 
 	uint32_t m_temperature_from_sensor;
@@ -139,4 +141,6 @@ protected:
 	int m_measure_phase;
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

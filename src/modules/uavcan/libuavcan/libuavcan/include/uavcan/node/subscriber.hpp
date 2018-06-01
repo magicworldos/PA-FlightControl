@@ -35,68 +35,67 @@ namespace uavcan
  *                          In C++03 mode this type defaults to a plain function pointer; use binder to
  *                          call member functions as callbacks.
  */
-template <typename DataType_,
+template<typename DataType_,
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-          typename Callback_ = std::function<void (const ReceivedDataStructure<DataType_>&)>
+        typename Callback_ = std::function<void (const ReceivedDataStructure<DataType_>&)>
 #else
-          typename Callback_ = void (*)(const ReceivedDataStructure<DataType_>&)
+        typename Callback_ = void (*)(const ReceivedDataStructure<DataType_>&)
 #endif
-          >
-class UAVCAN_EXPORT Subscriber
-    : public GenericSubscriber<DataType_, DataType_, TransferListener>
+>
+class UAVCAN_EXPORT Subscriber: public GenericSubscriber<DataType_, DataType_, TransferListener>
 {
 public:
-    typedef Callback_ Callback;
+	typedef Callback_ Callback;
 
 private:
-    typedef GenericSubscriber<DataType_, DataType_, TransferListener> BaseType;
+	typedef GenericSubscriber<DataType_, DataType_, TransferListener> BaseType;
 
-    Callback callback_;
+	Callback callback_;
 
-    virtual void handleReceivedDataStruct(ReceivedDataStructure<DataType_>& msg)
-    {
-        if (coerceOrFallback<bool>(callback_, true))
-        {
-            callback_(msg);
-        }
-        else
-        {
-            handleFatalError("Sub clbk");
-        }
-    }
-
+	virtual void handleReceivedDataStruct(ReceivedDataStructure<DataType_>& msg)
+	{
+		if (coerceOrFallback<bool>(callback_, true))
+		{
+			callback_(msg);
+		}
+		else
+		{
+			handleFatalError("Sub clbk");
+		}
+	}
+	
 public:
-    typedef DataType_ DataType;
+	typedef DataType_ DataType;
 
-    explicit Subscriber(INode& node)
-        : BaseType(node)
-        , callback_()
-    {
-        StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindMessage>::check();
-    }
-
-    /**
-     * Begin receiving messages.
-     * Each message will be passed to the application via the callback.
-     * Returns negative error code.
-     */
-    int start(const Callback& callback)
-    {
-        stop();
-
-        if (!coerceOrFallback<bool>(callback, true))
-        {
-            UAVCAN_TRACE("Subscriber", "Invalid callback");
-            return -ErrInvalidParam;
-        }
-        callback_ = callback;
-
-        return BaseType::startAsMessageListener();
-    }
-
-    using BaseType::allowAnonymousTransfers;
-    using BaseType::stop;
-    using BaseType::getFailureCount;
+	explicit Subscriber(INode& node) :
+			    BaseType(node),
+			    callback_()
+	{
+		StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindMessage>::check();
+	}
+	
+	/**
+	 * Begin receiving messages.
+	 * Each message will be passed to the application via the callback.
+	 * Returns negative error code.
+	 */
+	int start(const Callback& callback)
+	{
+		stop();
+		
+		if (!coerceOrFallback<bool>(callback, true))
+		{
+			UAVCAN_TRACE("Subscriber", "Invalid callback");
+			return -ErrInvalidParam;
+		}
+		callback_ = callback;
+		
+		return BaseType::startAsMessageListener();
+	}
+	
+	using BaseType::allowAnonymousTransfers;
+	using BaseType::stop;
+	using BaseType::getFailureCount;
 };
 
 }

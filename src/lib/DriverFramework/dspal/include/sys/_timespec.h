@@ -37,13 +37,14 @@
 #include <sys/_types.h>
 
 #ifndef _TIME_T
-typedef	__time_t	time_t;
+typedef __time_t time_t;
 #define	_TIME_T
 #endif
 
-struct timespec {
-	time_t	tv_sec;		/* seconds */
-	long	tv_nsec;	/* and nanoseconds */
+struct timespec
+{
+	time_t tv_sec; /* seconds */
+	long tv_nsec; /* and nanoseconds */
 };
 
 #endif /* !_SYS__TIMESPEC_H_ */

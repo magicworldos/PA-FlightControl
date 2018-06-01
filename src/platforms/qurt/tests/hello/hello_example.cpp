@@ -48,15 +48,15 @@ px4::AppState HelloExample::appState;
 int HelloExample::main()
 {
 	appState.setRunning(true);
-
+	
 	int i = 0;
-
+	
 	while (!appState.exitRequested() && i < 5)
 	{
-
+		
 		PX4_DEBUG("  Doing work...");
 		++i;
 	}
-
+	
 	return 0;
 }

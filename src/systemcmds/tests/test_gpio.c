@@ -47,11 +47,9 @@
 #include <fcntl.h>
 #include <errno.h>
 
-
 #include "tests_main.h"
 
 #include <drivers/drv_gpio.h>
-
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -77,7 +75,6 @@
  * Private Functions
  ****************************************************************************/
 
-
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -88,14 +85,14 @@
 
 int test_gpio(int argc, char *argv[])
 {
-	int		ret = 0;
-
+	int ret = 0;
+	
 #if defined(BOARD_USES_PX4IO)
-
+	
 	int fd = px4_open(PX4IO_DEVICE_PATH, 0);
 
 	if (fd < 0)
-	{
+	{	
 		PX4_ERR("GPIO: open fail");
 		return ERROR;
 	}
@@ -103,9 +100,7 @@ int test_gpio(int argc, char *argv[])
 	/* set all GPIOs to default state */
 	px4_ioctl(fd, GPIO_RESET, ~0);
 
-
 	/* XXX need to add some GPIO waving stuff here */
-
 
 	/* Go back to default */
 	px4_ioctl(fd, GPIO_RESET, ~0);
@@ -114,7 +109,6 @@ int test_gpio(int argc, char *argv[])
 	PX4_INFO("GPIO test successful.");
 
 #endif
-
-
+	
 	return ret;
 }

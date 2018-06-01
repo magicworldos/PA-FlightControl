@@ -60,23 +60,29 @@ namespace control
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
 class __EXPORT BlockHighPass : public Block
-{
+{	
 public:
 // methods
 	BlockHighPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_u(0),
-		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+	Block(parent, name),
+	_u(0),
+	_y(0),
+	_fCut(this, "")// only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() {}
+	virtual ~BlockHighPass()
+	{}
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
+	float getU()
+	{	return _u;}
+	float getY()
+	{	return _y;}
+	float getFCut()
+	{	return _fCut.get();}
+	void setU(float u)
+	{	_u = u;}
+	void setY(float y)
+	{	_y = y;}
 protected:
 // attributes
 	float _u; /**< previous input */
@@ -84,4 +90,5 @@ protected:
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 
-} // namespace control
+}
+ // namespace control

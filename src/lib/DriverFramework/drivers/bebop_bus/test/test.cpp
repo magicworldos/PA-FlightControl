@@ -34,23 +34,25 @@
 #include "DriverFramework.hpp"
 #include "BebopBus.hpp"
 
-
 using namespace DriverFramework;
 
-class BebopBusTester : public BebopBus
+class BebopBusTester: public BebopBus
 {
 public:
 	static const int TEST_PASS = 0;
 	static const int TEST_FAIL = 1;
 
-	BebopBusTester() : BebopBus(BEBOP_BUS_DEVICE_PATH) {}
-
+	BebopBusTester() :
+			    BebopBus(BEBOP_BUS_DEVICE_PATH)
+	{
+	}
+	
 	int run();
 
 private:
-
-	int		m_pass;
-	bool	m_done = false;
+	
+	int m_pass;
+	bool m_done = false;
 
 	int print_observation();
 	int test_gpios();
@@ -60,12 +62,13 @@ private:
 
 int BebopBusTester::print_observation()
 {
-	struct bebop_bus_observation data = {0};
-
-	if (_get_observation_data(&data) != 0) {
+	struct bebop_bus_observation data = { 0 };
+	
+	if (_get_observation_data(&data) != 0)
+	{
 		return -1;
 	}
-
+	
 	DF_LOG_INFO("Observation data:");
 	DF_LOG_INFO("  RPM Front-Left: %d", data.rpm_front_left);
 	DF_LOG_INFO("      Front-Right: %d", data.rpm_front_right);
@@ -76,7 +79,7 @@ int BebopBusTester::print_observation()
 	DF_LOG_INFO("  Motors in fault: %X", data.motors_in_fault);
 	DF_LOG_INFO("  Errno: %d", data.error);
 	DF_LOG_INFO("  Temperature: %d \n", data.temperatur_c);
-
+	
 	return 0;
 }
 
@@ -85,35 +88,38 @@ int BebopBusTester::run()
 	DF_LOG_INFO("Entering: run");
 	// Default is fail unless pass critera met
 	m_pass = TEST_PASS;
-
+	
 	// Register the driver
 	int ret = init();
-
-	if (ret) {
+	
+	if (ret)
+	{
 		DF_LOG_ERR("Driver init failed");
 		return ret;
 	}
-
+	
 	// Open the mag sensor
 	DevHandle h;
 	DevMgr::getHandle(BEBOP_BUS_DEVICE_PATH, h);
-
-	if (!h.isValid()) {
-		DF_LOG_ERR("Unable to obtain a valid handle for the receiver at: %s (%d)",
-			   BEBOP_BUS_DEVICE_PATH, h.getError());
+	
+	if (!h.isValid())
+	{
+		DF_LOG_ERR("Unable to obtain a valid handle for the receiver at: %s (%d)", BEBOP_BUS_DEVICE_PATH, h.getError());
 		m_done = true;
-
-	} else {
+		
+	}
+	else
+	{
 		m_done = false;
 	}
-
+	
 	m_pass += test_gpios();
 	usleep(1000000);
 	m_pass += test_sound();
 	usleep(1000000);
 	m_pass += test_motors();
 	usleep(1000000);
-
+	
 	DF_LOG_INFO("Closing Bebop bus\n");
 	stop();
 	return m_pass > 0;
@@ -122,168 +128,194 @@ int BebopBusTester::run()
 int BebopBusTester::test_motors()
 {
 	int pass = TEST_PASS;
-
-	if (print_observation() != 0) {
+	
+	if (print_observation() != 0)
+	{
 		pass += TEST_FAIL;
 	}
-
+	
 	DF_LOG_INFO("Start Motors");
-
-	if (_start_motors() != 0) {
+	
+	if (_start_motors() != 0)
+	{
 		DF_LOG_ERR("Start Motors: Failed");
 		pass += TEST_FAIL;
 	}
-
-	if (print_observation() != 0) {
+	
+	if (print_observation() != 0)
+	{
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-	float test_speeds[] = {0.0, 0.25, 0.5, 1.0, 0.5, 0.0};
-	float speeds[4] = {0};
-
-	for (size_t i = 0; i < (sizeof(test_speeds) / sizeof(float)); ++i) {
-		for (size_t j = 0; j < (sizeof(speeds) / sizeof(float)); ++j) {
+	float test_speeds[] = { 0.0, 0.25, 0.5, 1.0, 0.5, 0.0 };
+	float speeds[4] = { 0 };
+	
+	for (size_t i = 0; i < (sizeof(test_speeds) / sizeof(float)); ++i)
+	{
+		for (size_t j = 0; j < (sizeof(speeds) / sizeof(float)); ++j)
+		{
 			speeds[j] = test_speeds[i];
 		}
-
+		
 		_set_esc_speed(speeds);
 		usleep(500000);
-
-		if (print_observation() != 0) {
+		
+		if (print_observation() != 0)
+		{
 			pass += TEST_FAIL;
 		}
-
+		
 		usleep(50000);
 	}
-
-	if (print_observation() != 0) {
+	
+	if (print_observation() != 0)
+	{
 		pass += TEST_FAIL;
 	}
-
+	
 	DF_LOG_INFO("Stop Motors");
-
-	if (_stop_motors() != 0) {
+	
+	if (_stop_motors() != 0)
+	{
 		DF_LOG_ERR("Stop Motors: Failed");
 		pass += TEST_FAIL;
 	}
-
-	if (print_observation() != 0) {
+	
+	if (print_observation() != 0)
+	{
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2500000);
-
-	if (print_observation() != 0) {
+	
+	if (print_observation() != 0)
+	{
 		pass += TEST_FAIL;
 	}
-
-	if (pass == 0) {
+	
+	if (pass == 0)
+	{
 		DF_LOG_INFO("Motor Test: Passed\n");
-
-	} else {
+		
+	}
+	else
+	{
 		DF_LOG_INFO("Motor Test: Failed\n");
 	}
-
+	
 	return pass > 0;
 }
 
 int BebopBusTester::test_gpios()
 {
 	int pass = TEST_PASS;
-
+	
 	DF_LOG_INFO("Red LEDs");
-
-	if (_toggle_gpio(RED) != 0) {
+	
+	if (_toggle_gpio(RED) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
+	
 	DF_LOG_INFO("Green LEDs");
-
-	if (_toggle_gpio(GREEN) != 0) {
+	
+	if (_toggle_gpio(GREEN) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
+	
 	DF_LOG_INFO("Reset LEDs");
-
-	if (_toggle_gpio(RESET) != 0) {
+	
+	if (_toggle_gpio(RESET) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
-	if (pass == 0) {
+	
+	if (pass == 0)
+	{
 		DF_LOG_INFO("GPIO Test: Passed\n");
-
-	} else {
+		
+	}
+	else
+	{
 		DF_LOG_INFO("GPIO Test: Failed\n");
 	}
-
+	
 	return pass > 0;
 }
 
 int BebopBusTester::test_sound()
 {
 	int pass = TEST_PASS;
-
+	
 	DF_LOG_INFO("Play SHORT sound");
-
-	if (_play_sound(SHORT) != 0) {
+	
+	if (_play_sound(SHORT) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
+	
 	DF_LOG_INFO("Play Boot sound");
-
-	if (_play_sound(BOOT) != 0) {
+	
+	if (_play_sound(BOOT) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
+	
 	DF_LOG_INFO("Play Be-Bop-Ah-Lula sound");
-
-	if (_play_sound(MELODY) != 0) {
+	
+	if (_play_sound(MELODY) != 0)
+	{
 		DF_LOG_ERR("Failed");
 		pass += TEST_FAIL;
 	}
-
+	
 	usleep(2000000);
-
-	if (pass == 0) {
+	
+	if (pass == 0)
+	{
 		DF_LOG_INFO("Sound Test: Passed\n");
-
-	} else {
+		
+	}
+	else
+	{
 		DF_LOG_INFO("Sound Test: Failed\n");
 	}
-
+	
 	return pass > 0;
 }
 
 int do_test()
 {
 	int ret = Framework::initialize();
-
-	if (ret < 0) {
+	
+	if (ret < 0)
+	{
 		return ret;
 	}
-
+	
 	BebopBusTester pt;
-
+	
 	ret = pt.run();
-
+	
 	Framework::shutdown();
-
+	
 	DF_LOG_INFO("Test %s", (ret == BebopBusTester::TEST_PASS) ? "PASSED" : "FAILED");
 	return ret;
 }

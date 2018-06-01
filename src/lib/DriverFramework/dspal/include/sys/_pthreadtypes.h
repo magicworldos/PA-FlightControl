@@ -66,11 +66,12 @@ struct pthread_cond_attr;
 struct pthread_once;
 struct pthread_barrierattr;
 
-typedef struct pthread_once        pthread_once_t;
+typedef struct pthread_once pthread_once_t;
 
-struct pthread_once {
-	int      state;
-	pthread_mutex_t   mutex;
+struct pthread_once
+{
+	int state;
+	pthread_mutex_t mutex;
 };
 
 /*
@@ -79,7 +80,7 @@ struct pthread_once {
  * Note that P1003.1c reserves the prefixes pthread_ and PTHREAD_ for
  * use in header symbols.
  */
-typedef void	*pthread_addr_t;
-typedef void	*(*pthread_startroutine_t)(void *);
+typedef void *pthread_addr_t;
+typedef void *(*pthread_startroutine_t)(void *);
 
 #endif /* ! _SYS__PTHREADTYPES_H_ */

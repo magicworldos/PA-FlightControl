@@ -85,7 +85,7 @@ public:
 	~Navigator();
 	Navigator(const Navigator &) = delete;
 	Navigator operator=(const Navigator &) = delete;
-
+	
 	/**
 	 * Start the navigator task.
 	 *
@@ -142,7 +142,7 @@ public:
 	{
 		_mission_result_updated = true;
 	}
-
+	
 	/**
 	 * Getters
 	 */
@@ -190,12 +190,12 @@ public:
 	{
 		return &_vstatus;
 	}
-
+	
 	const vehicle_roi_s &get_vroi()
 	{
 		return _vroi;
 	}
-
+	
 	bool home_alt_valid()
 	{
 		return (_home_pos.timestamp > 0 && _home_pos.valid_alt);
@@ -204,7 +204,7 @@ public:
 	{
 		return (_home_pos.timestamp > 0 && _home_pos.valid_alt && _home_pos.valid_hpos);
 	}
-
+	
 	int get_onboard_mission_sub()
 	{
 		return _onboard_mission_sub;
@@ -213,12 +213,12 @@ public:
 	{
 		return _offboard_mission_sub;
 	}
-
+	
 	Geofence &get_geofence()
 	{
 		return _geofence;
 	}
-
+	
 	bool get_can_loiter_at_sp()
 	{
 		return _can_loiter_at_sp;
@@ -227,7 +227,7 @@ public:
 	{
 		return _param_loiter_radius.get();
 	}
-
+	
 	/**
 	 * Returns the default acceptance radius defined by the parameter
 	 */
@@ -291,7 +291,7 @@ public:
 	{
 		_mission_throttle = throttle;
 	}
-
+	
 	/**
 	 * Get the acceptance radius given the mission item preset radius
 	 *
@@ -305,12 +305,12 @@ public:
 	{
 		return &_mavlink_log_pub;
 	}
-
+	
 	void increment_mission_instance_count()
 	{
 		_mission_result.instance_count++;
 	}
-
+	
 	void set_mission_failure(const char *reason);
 
 	// MISSION
@@ -326,13 +326,13 @@ public:
 	{
 		return _mission.land_start();
 	}
-
+	
 	// RTL
 	bool mission_landing_required()
 	{
 		return _rtl.mission_landing_required();
 	}
-
+	
 	bool abort_landing();
 
 	// Param access
@@ -344,12 +344,12 @@ public:
 	{
 		return _vstatus.is_vtol && !_vstatus.is_rotary_wing && _param_force_vtol.get();
 	}
-
+	
 private:
-
+	
 	bool _task_should_exit { false }; /**< if true, sensor task should exit */
 	int _navigator_task { -1 }; /**< task handle for sensor task */
-
+	
 	int _fw_pos_ctrl_status_sub { -1 }; /**< notification of vehicle capabilities updates */
 	int _global_pos_sub { -1 }; /**< global position subscription */
 	int _gps_pos_sub { -1 }; /**< gps position subscription */
@@ -364,7 +364,7 @@ private:
 	int _traffic_sub { -1 }; /**< traffic subscription */
 	int _vehicle_command_sub { -1 }; /**< vehicle commands (onboard and offboard) */
 	int _vstatus_sub { -1 }; /**< vehicle status subscription */
-
+	
 	orb_advert_t _geofence_result_pub { nullptr };
 	orb_advert_t _mavlink_log_pub { nullptr }; /**< the uORB advert to send messages over mavlink */
 	orb_advert_t _mission_result_pub { nullptr };
@@ -384,24 +384,24 @@ private:
 	vehicle_local_position_s _local_pos { }; /**< local vehicle position */
 	vehicle_local_position_setpoint_s _local_pos_sp { }; /**< local vehicle position setpoint */
 	vehicle_status_s _vstatus { }; /**< vehicle status */
-
+	
 	// Publications
 	geofence_result_s _geofence_result { };
 	position_setpoint_triplet_s _pos_sp_triplet { }; /**< triplet of position setpoints */
 	position_setpoint_triplet_s _reposition_triplet { }; /**< triplet for non-mission direct position command */
 	position_setpoint_triplet_s _takeoff_triplet { }; /**< triplet for non-mission direct takeoff command */
 	vehicle_roi_s _vroi { }; /**< vehicle ROI */
-
+	
 	perf_counter_t _loop_perf; /**< loop performance counter */
-
+	
 	Geofence _geofence; /**< class that handles the geofence */
 	bool _geofence_violation_warning_sent { false }; /**< prevents spaming to mavlink */
-
+	
 	bool _can_loiter_at_sp { false }; /**< flags if current position SP can be used to loiter */
 	bool _pos_sp_triplet_updated { false }; /**< flags if position SP triplet needs to be published */
 	bool _pos_sp_triplet_published_invalid_once { false }; /**< flags if position SP triplet has been published once to UORB */
 	bool _mission_result_updated { false }; /**< flags if mission result has seen an update */
-
+	
 	NavigatorMode *_navigation_mode { nullptr }; /**< abstract pointer to current navigation mode class */
 	Mission _mission; /**< class that handles the missions */
 	Loiter _loiter; /**< class that handles loiter */
@@ -415,7 +415,7 @@ private:
 	FollowTarget _follow_target;
 
 	NavigatorMode *_navigation_mode_array[NAVIGATOR_MODE_ARRAY_SIZE]; /**< array of navigation modes */
-
+	
 	// navigator parameters
 	control::BlockParamFloat _param_loiter_radius; /**< loiter radius for fixedwing */
 	control::BlockParamFloat _param_acceptance_radius; /**< acceptance for takeoff */
@@ -423,7 +423,7 @@ private:
 	control::BlockParamFloat _param_mc_alt_acceptance_radius; /**< acceptance radius for multicopter altitude */
 	control::BlockParamInt _param_force_vtol; /**< acceptance radius for multicopter altitude */
 	control::BlockParamInt _param_traffic_avoidance_mode; /**< avoiding other aircraft is enabled */
-
+	
 	// non-navigator parameters
 	control::BlockParamFloat _param_loiter_min_alt;
 

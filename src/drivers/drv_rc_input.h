@@ -84,7 +84,7 @@
  * Input signal type, value is a control position from zero to 100
  * percent.
  */
-typedef uint16_t		rc_input_t;
+typedef uint16_t rc_input_t;
 
 #define _RC_INPUT_BASE		0x2b00
 

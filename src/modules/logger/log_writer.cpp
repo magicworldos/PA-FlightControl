@@ -38,23 +38,23 @@ namespace px4
 namespace logger
 {
 
-LogWriter::LogWriter(Backend configured_backend, size_t file_buffer_size, unsigned int queue_size)
-	: _backend(configured_backend)
+LogWriter::LogWriter(Backend configured_backend, size_t file_buffer_size, unsigned int queue_size) :
+		    _backend(configured_backend)
 {
 	if (configured_backend & BackendFile)
 	{
 		_log_writer_file_for_write = _log_writer_file = new LogWriterFile(file_buffer_size);
-
+		
 		if (!_log_writer_file)
 		{
 			PX4_ERR("LogWriterFile allocation failed");
 		}
 	}
-
+	
 	if (configured_backend & BackendMavlink)
 	{
 		_log_writer_mavlink_for_write = _log_writer_mavlink = new LogWriterMavlink(queue_size);
-
+		
 		if (!_log_writer_mavlink)
 		{
 			PX4_ERR("LogWriterMavlink allocation failed");
@@ -71,16 +71,16 @@ bool LogWriter::init()
 			PX4_ERR("alloc failed");
 			return false;
 		}
-
+		
 		int ret = _log_writer_file->thread_start();
-
+		
 		if (ret)
 		{
 			PX4_ERR("failed to create writer thread (%i)", ret);
 			return false;
 		}
 	}
-
+	
 	if (_log_writer_mavlink)
 	{
 		if (!_log_writer_mavlink->init())
@@ -89,7 +89,7 @@ bool LogWriter::init()
 			return false;
 		}
 	}
-
+	
 	return true;
 }
 
@@ -99,7 +99,7 @@ LogWriter::~LogWriter()
 	{
 		delete (_log_writer_file);
 	}
-
+	
 	if (_log_writer_mavlink)
 	{
 		delete (_log_writer_mavlink);
@@ -109,17 +109,17 @@ LogWriter::~LogWriter()
 bool LogWriter::is_started() const
 {
 	bool ret = false;
-
+	
 	if (_log_writer_file)
 	{
 		ret = _log_writer_file->is_started();
 	}
-
+	
 	if (_log_writer_mavlink)
 	{
 		ret = ret || _log_writer_mavlink->is_started();
 	}
-
+	
 	return ret;
 }
 
@@ -129,12 +129,12 @@ bool LogWriter::is_started(Backend query_backend) const
 	{
 		return _log_writer_file->is_started();
 	}
-
+	
 	if (query_backend == BackendMavlink && _log_writer_mavlink)
 	{
 		return _log_writer_mavlink->is_started();
 	}
-
+	
 	return false;
 }
 
@@ -181,23 +181,23 @@ void LogWriter::thread_stop()
 int LogWriter::write_message(void *ptr, size_t size, uint64_t dropout_start)
 {
 	int ret_file = 0, ret_mavlink = 0;
-
+	
 	if (_log_writer_file_for_write)
 	{
 		ret_file = _log_writer_file_for_write->write_message(ptr, size, dropout_start);
 	}
-
+	
 	if (_log_writer_mavlink_for_write)
 	{
 		ret_mavlink = _log_writer_mavlink_for_write->write_message(ptr, size);
 	}
-
+	
 	// file backend errors takes precedence
 	if (ret_file != 0)
 	{
 		return ret_file;
 	}
-
+	
 	return ret_mavlink;
 }
 
@@ -206,17 +206,17 @@ void LogWriter::select_write_backend(Backend sel_backend)
 	if (sel_backend & BackendFile)
 	{
 		_log_writer_file_for_write = _log_writer_file;
-
+		
 	}
 	else
 	{
 		_log_writer_file_for_write = nullptr;
 	}
-
+	
 	if (sel_backend & BackendMavlink)
 	{
 		_log_writer_mavlink_for_write = _log_writer_mavlink;
-
+		
 	}
 	else
 	{

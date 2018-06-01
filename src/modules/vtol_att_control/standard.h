@@ -32,16 +32,16 @@
  ****************************************************************************/
 
 /**
-* @file standard.h
-* VTOL with fixed multirotor motor configurations (such as quad) and a pusher
-* (or puller aka tractor) motor for forward flight.
-*
-* @author Simon Wilks 		<simon@uaventure.com>
-* @author Roman Bapst 		<bapstroman@gmail.com>
-* @author Andreas Antener	<andreas@uaventure.com>
-* @author Sander Smeets 	<sander@droneslab.com>
-*
-*/
+ * @file standard.h
+ * VTOL with fixed multirotor motor configurations (such as quad) and a pusher
+ * (or puller aka tractor) motor for forward flight.
+ *
+ * @author Simon Wilks 		<simon@uaventure.com>
+ * @author Roman Bapst 		<bapstroman@gmail.com>
+ * @author Andreas Antener	<andreas@uaventure.com>
+ * @author Sander Smeets 	<sander@droneslab.com>
+ *
+ */
 
 #ifndef STANDARD_H
 #define STANDARD_H
@@ -49,11 +49,11 @@
 #include <systemlib/param/param.h>
 #include <drivers/drv_hrt.h>
 
-class Standard : public VtolType
+class Standard: public VtolType
 {
-
+	
 public:
-
+	
 	Standard(VtolAttitudeControl *_att_controller);
 	~Standard();
 
@@ -65,7 +65,7 @@ public:
 	virtual void waiting_on_tecs();
 
 private:
-
+	
 	struct
 	{
 		float front_trans_dur;

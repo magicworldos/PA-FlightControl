@@ -51,13 +51,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-
 #include <px4_log.h>
 #include <systemlib/systemlib.h>
 
-
-void
-px4_systemreset(bool to_bootloader)
+void px4_systemreset(bool to_bootloader)
 {
 	board_set_bootload_mode(to_bootloader ? board_reset_enter_bootloader : board_reset_normal);
 	board_system_reset(to_bootloader ? 1 : 0);
@@ -68,36 +65,36 @@ px4_systemreset(bool to_bootloader)
 #endif
 }
 
-int px4_task_spawn_cmd(const char *name, int scheduler, int priority, int stack_size, main_t entry, char *const argv[])
+int px4_task_spawn_cmd(const char *name, int scheduler, int priority, int stack_size, main_t entry, char * const argv[])
 {
 	int pid;
-
+	
 	sched_lock();
-
+	
 	/* None of the modules access the environment variables (via getenv() for instance), so delete them
 	 * all. They are only used within the startup script, and NuttX automatically exports them to the children
 	 * tasks.
 	 * This frees up a considerable amount of RAM.
 	 */
 	clearenv();
-
+	
 	/* create the task */
 	pid = task_create(name, priority, stack_size, entry, argv);
-
+	
 	if (pid > 0)
 	{
-
+		
 		/* configure the scheduler */
 		struct sched_param param;
-
+		
 		param.sched_priority = priority;
 		sched_setscheduler(pid, scheduler, &param);
-
+		
 		/* XXX do any other private task accounting here before the task starts */
 	}
-
+	
 	sched_unlock();
-
+	
 	return pid;
 }
 
@@ -109,7 +106,7 @@ int px4_task_delete(int pid)
 const char *px4_get_taskname(void)
 {
 #if CONFIG_TASK_NAME_SIZE > 0
-	FAR struct tcb_s	*thisproc = sched_self();
+	FAR struct tcb_s *thisproc = sched_self();
 
 	return thisproc->name;
 #else

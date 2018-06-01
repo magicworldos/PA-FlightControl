@@ -12,7 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 
-class AutoDeclinationTest : public UnitTest
+class AutoDeclinationTest: public UnitTest
 {
 public:
 	virtual bool run_tests();
@@ -29,14 +29,14 @@ bool AutoDeclinationTest::autodeclination_check()
 	ut_assert("declination differs more than 0.1 degrees", get_mag_declination(-90.0, -180.0) - 47.0f < 0.1f);
 	ut_assert("declination differs more than 0.1 degrees", get_mag_declination(90.0, -180.0) - 3.0f < 0.1f);
 	ut_assert("declination differs more than 0.1 degrees", get_mag_declination(90.0, 180.0) - 3.0f < 0.1f);
-
+	
 	return true;
 }
 
 bool AutoDeclinationTest::run_tests()
 {
 	ut_run_test(autodeclination_check);
-
+	
 	return (_tests_failed == 0);
 }
 

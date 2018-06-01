@@ -61,18 +61,18 @@ namespace px4
 {
 #if defined(__PX4_ROS)
 class NodeHandle :
-	private ros::NodeHandle
-{
+private ros::NodeHandle
+{	
 public:
 	NodeHandle(AppState &a) :
-		ros::NodeHandle(),
-		_subs(),
-		_pubs(),
-		_appState(a)
+	ros::NodeHandle(),
+	_subs(),
+	_pubs(),
+	_appState(a)
 	{}
 
 	~NodeHandle()
-	{
+	{	
 		_subs.clear();
 		_pubs.clear();
 	};
@@ -84,7 +84,7 @@ public:
 	 */
 	template<typename T>
 	Subscriber<T> *subscribe(void(*fp)(const T &), unsigned interval)
-	{
+	{	
 		SubscriberBase *sub = new SubscriberROS<T>((ros::NodeHandle *)this, std::bind(fp, std::placeholders::_1));
 		_subs.push_back(sub);
 		return (Subscriber<T> *)sub;
@@ -97,7 +97,7 @@ public:
 	 */
 	template<typename T, typename C>
 	Subscriber<T> *subscribe(void(C::*fp)(const T &), C *obj, unsigned interval)
-	{
+	{	
 		SubscriberBase *sub = new SubscriberROS<T>((ros::NodeHandle *)this, std::bind(fp, obj, std::placeholders::_1));
 		_subs.push_back(sub);
 		return (Subscriber<T> *)sub;
@@ -108,7 +108,7 @@ public:
 	 */
 	template<typename T>
 	Subscriber<T> *subscribe(unsigned interval)
-	{
+	{	
 		SubscriberBase *sub = new SubscriberROS<T>((ros::NodeHandle *)this);
 		_subs.push_back(sub);
 		return (Subscriber<T> *)sub;
@@ -119,8 +119,8 @@ public:
 	 */
 	template<typename T>
 	Publisher<T> *advertise()
-	{
-		PublisherROS<T> *pub =  new PublisherROS<T>((ros::NodeHandle *)this);
+	{	
+		PublisherROS<T> *pub = new PublisherROS<T>((ros::NodeHandle *)this);
 		_pubs.push_back((PublisherBase *)pub);
 		return (Publisher<T> *)pub;
 	}
@@ -128,42 +128,43 @@ public:
 	/**
 	 * Calls all callback waiting to be called
 	 */
-	void spinOnce() { ros::spinOnce(); }
+	void spinOnce()
+	{	ros::spinOnce();}
 
 	/**
 	 * Keeps calling callbacks for incoming messages, returns when module is terminated
 	 */
-	void spin() { ros::spin(); }
-
+	void spin()
+	{	ros::spin();}
 
 protected:
-	std::list<SubscriberBase *> _subs;				/**< Subcriptions of node */
-	std::list<PublisherBase *> _pubs;				/**< Publications of node */
+	std::list<SubscriberBase *> _subs; /**< Subcriptions of node */
+	std::list<PublisherBase *> _pubs; /**< Publications of node */
 
-	AppState	&_appState;
+	AppState &_appState;
 
 };
 #else //Building for NuttX
 class __EXPORT NodeHandle
-{
+{	
 public:
 	NodeHandle(AppState &a) :
-		_subs(),
-		_pubs(),
-		_sub_min_interval(nullptr),
-		_appState(a)
+	_subs(),
+	_pubs(),
+	_sub_min_interval(nullptr),
+	_appState(a)
 	{}
 
 	~NodeHandle()
-	{
+	{	
 		/* Empty subscriptions list */
 		SubscriberNode *sub = _subs.getHead();
 		int count = 0;
 
 		while (sub != nullptr)
-		{
+		{	
 			if (count++ > kMaxSubscriptions)
-			{
+			{	
 				PX4_WARN("exceeded max subscriptions");
 				break;
 			}
@@ -178,9 +179,9 @@ public:
 		count = 0;
 
 		while (pub != nullptr)
-		{
+		{	
 			if (count++ > kMaxPublications)
-			{
+			{	
 				PX4_WARN("exceeded max publications");
 				break;
 			}
@@ -198,8 +199,8 @@ public:
 	 */
 
 	template<typename T>
-	Subscriber<T> *subscribe(void(*fp)(const T &),  unsigned interval)
-	{
+	Subscriber<T> *subscribe(void(*fp)(const T &), unsigned interval)
+	{	
 		(void)interval;
 		SubscriberUORBCallback<T> *sub_px4 = new SubscriberUORBCallback<T>(interval, std::bind(fp, std::placeholders::_1));
 		update_sub_min_interval(interval, sub_px4);
@@ -214,7 +215,7 @@ public:
 	 */
 	template<typename T, typename C>
 	Subscriber<T> *subscribe(void(C::*fp)(const T &), C *obj, unsigned interval)
-	{
+	{	
 		(void)interval;
 		SubscriberUORBCallback<T> *sub_px4 = new SubscriberUORBCallback<T>(interval, std::bind(fp, obj, std::placeholders::_1));
 		update_sub_min_interval(interval, sub_px4);
@@ -229,7 +230,7 @@ public:
 
 	template<typename T>
 	Subscriber<T> *subscribe(unsigned interval)
-	{
+	{	
 		(void)interval;
 		SubscriberUORB<T> *sub_px4 = new SubscriberUORB<T>(interval);
 		update_sub_min_interval(interval, sub_px4);
@@ -242,7 +243,7 @@ public:
 	 */
 	template<typename T>
 	Publisher<T> *advertise()
-	{
+	{	
 		PublisherUORB<T> *pub = new PublisherUORB<T>();
 		_pubs.add(pub);
 		return (Publisher<T> *)pub;
@@ -252,15 +253,15 @@ public:
 	 * Calls all callback waiting to be called
 	 */
 	void spinOnce()
-	{
+	{	
 		/* Loop through subscriptions, call callback for updated subscriptions */
 		SubscriberNode *sub = _subs.getHead();
 		int count = 0;
 
 		while (sub != nullptr)
-		{
+		{	
 			if (count++ > kMaxSubscriptions)
-			{
+			{	
 				PX4_WARN("exceeded max subscriptions");
 				break;
 			}
@@ -274,14 +275,14 @@ public:
 	 * Keeps calling callbacks for incoming messages, returns when module is terminated
 	 */
 	void spin()
-	{
+	{	
 		while (!_appState.exitRequested())
-		{
+		{	
 			const int timeout_ms = 100;
 
 			/* Only continue in the loop if the nodehandle has subscriptions */
 			if (_sub_min_interval == nullptr)
-			{
+			{	
 				usleep(timeout_ms * 1000);
 				continue;
 			}
@@ -297,21 +298,21 @@ public:
 protected:
 	static const uint16_t kMaxSubscriptions = 100;
 	static const uint16_t kMaxPublications = 100;
-	List<SubscriberNode *> _subs;		/**< Subcriptions of node */
-	List<PublisherNode *> _pubs;		/**< Publications of node */
-	SubscriberNode *_sub_min_interval;	/**< Points to the sub with the smallest interval
-							  of all Subscriptions in _subs*/
+	List<SubscriberNode *> _subs; /**< Subcriptions of node */
+	List<PublisherNode *> _pubs; /**< Publications of node */
+	SubscriberNode *_sub_min_interval; /**< Points to the sub with the smallest interval
+	 of all Subscriptions in _subs*/
 
-	AppState	&_appState;
+	AppState &_appState;
 
 	/**
 	 * Check if this is the smallest interval so far and update _sub_min_interval
 	 */
 	template<typename T>
 	void update_sub_min_interval(unsigned interval, SubscriberUORB<T> *sub)
-	{
+	{	
 		if (_sub_min_interval == nullptr || _sub_min_interval->get_interval() > interval)
-		{
+		{	
 			_sub_min_interval = sub;
 		}
 	}

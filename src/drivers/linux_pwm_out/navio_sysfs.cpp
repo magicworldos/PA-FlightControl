@@ -39,20 +39,20 @@
 
 using namespace linux_pwm_out;
 
-NavioSysfsPWMOut::NavioSysfsPWMOut(const char *device, int max_num_outputs)
-	: _device(device)
+NavioSysfsPWMOut::NavioSysfsPWMOut(const char *device, int max_num_outputs) :
+		    _device(device)
 {
 	if (max_num_outputs > MAX_NUM_PWM)
 	{
 		PX4_WARN("number of outputs too large. Setting to %i", MAX_NUM_PWM);
 		max_num_outputs = MAX_NUM_PWM;
 	}
-
+	
 	for (int i = 0; i < MAX_NUM_PWM; ++i)
 	{
 		_pwm_fd[i] = -1;
 	}
-
+	
 	_pwm_num = max_num_outputs;
 }
 
@@ -71,75 +71,75 @@ int NavioSysfsPWMOut::init()
 {
 	int i;
 	char path[128];
-
+	
 	for (i = 0; i < _pwm_num; ++i)
 	{
 		::snprintf(path, sizeof(path), "%s/export", _device);
-
+		
 		if (pwm_write_sysfs(path, i) < 0)
 		{
 			PX4_ERR("PWM export failed");
 		}
 	}
-
+	
 	for (i = 0; i < _pwm_num; ++i)
 	{
 		::snprintf(path, sizeof(path), "%s/pwm%u/enable", _device, i);
-
+		
 		if (pwm_write_sysfs(path, 1) < 0)
 		{
 			PX4_ERR("PWM enable failed");
 		}
 	}
-
+	
 	for (i = 0; i < _pwm_num; ++i)
 	{
 		::snprintf(path, sizeof(path), "%s/pwm%u/period", _device, i);
-
-		if (pwm_write_sysfs(path, (int)1e9 / FREQUENCY_PWM))
+		
+		if (pwm_write_sysfs(path, (int) 1e9 / FREQUENCY_PWM))
 		{
 			PX4_ERR("PWM period failed");
 		}
 	}
-
+	
 	for (i = 0; i < _pwm_num; ++i)
 	{
 		::snprintf(path, sizeof(path), "%s/pwm%u/duty_cycle", _device, i);
 		_pwm_fd[i] = ::open(path, O_WRONLY | O_CLOEXEC);
-
+		
 		if (_pwm_fd[i] == -1)
 		{
 			PX4_ERR("PWM: Failed to open duty_cycle.");
 			return -errno;
 		}
 	}
-
+	
 	return 0;
 }
 
 int NavioSysfsPWMOut::send_output_pwm(const uint16_t *pwm, int num_outputs)
 {
 	char data[16];
-
+	
 	if (num_outputs > _pwm_num)
 	{
 		num_outputs = _pwm_num;
 	}
-
+	
 	int ret = 0;
-
+	
 	//convert this to duty_cycle in ns
 	for (int i = 0; i < num_outputs; ++i)
 	{
 		int n = ::snprintf(data, sizeof(data), "%u", pwm[i] * 1000);
 		int write_ret = ::write(_pwm_fd[i], data, n);
-
+		
 		if (n != write_ret)
 		{
 			ret = -1;
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -148,21 +148,21 @@ int NavioSysfsPWMOut::pwm_write_sysfs(char *path, int value)
 	int fd = ::open(path, O_WRONLY | O_CLOEXEC);
 	int n;
 	char data[16];
-
+	
 	if (fd == -1)
 	{
 		return -errno;
 	}
-
+	
 	n = ::snprintf(data, sizeof(data), "%u", value);
-
+	
 	if (n > 0)
 	{
 		n = ::write(fd, data, n);	// This n is not used, but to avoid a compiler error.
 	}
-
+	
 	::close(fd);
-
+	
 	return 0;
 }
 

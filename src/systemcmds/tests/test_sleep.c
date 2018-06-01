@@ -56,13 +56,13 @@ int test_sleep(int argc, char *argv[])
 	unsigned int nsleeps = 20;
 	printf("\t %d 100ms sleeps\n", nsleeps);
 	fflush(stdout);
-
+	
 	for (unsigned int i = 0; i < nsleeps; i++)
 	{
 		usleep(100000);
 	}
-
+	
 	printf("\t Sleep test successful.\n");
-
+	
 	return OK;
 }

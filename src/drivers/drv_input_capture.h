@@ -56,8 +56,7 @@ __BEGIN_DECLS
 #define INPUT_CAPTURE_BASE_DEVICE_PATH "/dev/capture"
 #define INPUT_CAPTURE0_DEVICE_PATH	"/dev/capture0"
 
-typedef void (*capture_callback_t)(void *context, uint32_t chan_index,
-				   hrt_abstime edge_time, uint32_t edge_state, uint32_t overflow);
+typedef void (*capture_callback_t)(void *context, uint32_t chan_index, hrt_abstime edge_time, uint32_t edge_state, uint32_t overflow);
 
 /**
  * Maximum number of PWM input channels supported by the device.
@@ -71,26 +70,26 @@ typedef uint16_t capture_t;
 
 typedef enum input_capture_edge
 {
-	Disabled 	= 	0,
-	Rising 	 	=   1,
-	Falling		=   2,
-	Both		=   3
+	Disabled = 0,
+	Rising = 1,
+	Falling = 2,
+	Both = 3
 } input_capture_edge;
 
 typedef struct input_capture_element_t
 {
-	hrt_abstime			time_stamp;
-	input_capture_edge	edge;
-	bool				overrun;
+	hrt_abstime time_stamp;
+	input_capture_edge edge;
+	bool overrun;
 } input_capture_element_t;
 
 typedef struct input_capture_stats_t
 {
-	uint32_t 		   chan_in_edges_out;
-	uint32_t 		   overflows;
-	uint32_t		   last_edge;
-	hrt_abstime		   last_time;
-	uint16_t		   latnecy;
+	uint32_t chan_in_edges_out;
+	uint32_t overflows;
+	uint32_t last_edge;
+	hrt_abstime last_time;
+	uint16_t latnecy;
 } input_capture_stats_t;
 
 /**
@@ -101,12 +100,12 @@ typedef struct input_capture_stats_t
  */
 typedef struct input_capture_config_t
 {
-	uint8_t 		channel;
+	uint8_t channel;
 	capture_filter_t filter;
 	input_capture_edge edge;
 	capture_callback_t callback;
-	void			   *context;
-
+	void *context;
+	
 } input_capture_config_t;
 
 /*
@@ -179,14 +178,13 @@ typedef struct input_capture_config_t
  *
  */
 
-__EXPORT int up_input_capture_set(unsigned channel, input_capture_edge edge, capture_filter_t filter,
-				  capture_callback_t callback, void *context);
+__EXPORT int up_input_capture_set(unsigned channel, input_capture_edge edge, capture_filter_t filter, capture_callback_t callback, void *context);
 
 __EXPORT int up_input_capture_get_filter(unsigned channel, capture_filter_t *filter);
-__EXPORT int up_input_capture_set_filter(unsigned channel,  capture_filter_t filter);
+__EXPORT int up_input_capture_set_filter(unsigned channel, capture_filter_t filter);
 
-__EXPORT int up_input_capture_get_trigger(unsigned channel,  input_capture_edge *edge);
-__EXPORT int up_input_capture_set_trigger(unsigned channel,  input_capture_edge edge);
+__EXPORT int up_input_capture_get_trigger(unsigned channel, input_capture_edge *edge);
+__EXPORT int up_input_capture_set_trigger(unsigned channel, input_capture_edge edge);
 __EXPORT int up_input_capture_get_callback(unsigned channel, capture_callback_t *callback, void **context);
 __EXPORT int up_input_capture_set_callback(unsigned channel, capture_callback_t callback, void *context);
 __EXPORT int up_input_capture_get_stats(unsigned channel, input_capture_stats_t *stats, bool clear);

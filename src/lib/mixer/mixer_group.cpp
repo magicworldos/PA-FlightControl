@@ -59,8 +59,8 @@
 //#define debug(fmt, args...)	syslog(fmt "\n", ##args)
 
 MixerGroup::MixerGroup(ControlCallback control_cb, uintptr_t cb_handle) :
-	Mixer(control_cb, cb_handle),
-	_first(nullptr)
+		    Mixer(control_cb, cb_handle),
+		    _first(nullptr)
 {
 }
 
@@ -69,31 +69,29 @@ MixerGroup::~MixerGroup()
 	reset();
 }
 
-void
-MixerGroup::add_mixer(Mixer *mixer)
+void MixerGroup::add_mixer(Mixer *mixer)
 {
 	Mixer **mpp;
-
+	
 	mpp = &_first;
-
+	
 	while (*mpp != nullptr)
 	{
 		mpp = &((*mpp)->_next);
 	}
-
+	
 	*mpp = mixer;
 	mixer->_next = nullptr;
 }
 
-void
-MixerGroup::reset()
+void MixerGroup::reset()
 {
 	Mixer *mixer;
 	Mixer *next = _first;
-
+	
 	/* flag mixer as invalid */
 	_first = nullptr;
-
+	
 	/* discard sub-mixers */
 	while (next != nullptr)
 	{
@@ -104,18 +102,17 @@ MixerGroup::reset()
 	}
 }
 
-unsigned
-MixerGroup::mix(float *outputs, unsigned space)
+unsigned MixerGroup::mix(float *outputs, unsigned space)
 {
-	Mixer	*mixer = _first;
+	Mixer *mixer = _first;
 	unsigned index = 0;
-
+	
 	while ((mixer != nullptr) && (index < space))
 	{
 		index += mixer->mix(outputs + index, space - index);
 		mixer = mixer->_next;
 	}
-
+	
 	return index;
 }
 
@@ -125,78 +122,79 @@ MixerGroup::mix(float *outputs, unsigned space)
  * The only other existing implementation is MultirotorMixer, which ignores the trim value
  * and returns _rotor_count.
  */
-unsigned
-MixerGroup::set_trims(int16_t *values, unsigned n)
+unsigned MixerGroup::set_trims(int16_t *values, unsigned n)
 {
-	Mixer	*mixer = _first;
+	Mixer *mixer = _first;
 	unsigned index = 0;
-
+	
 	while ((mixer != nullptr) && (index < n))
 	{
 		/* convert from integer to float */
-		float offset = (float)values[index] / 10000;
-
+		float offset = (float) values[index] / 10000;
+		
 		/* to be safe, clamp offset to range of [-100, 100] usec */
-		if (offset < -0.2f) { offset = -0.2f; }
-
-		if (offset >  0.2f) { offset =  0.2f; }
-
+		if (offset < -0.2f)
+		{
+			offset = -0.2f;
+		}
+		
+		if (offset > 0.2f)
+		{
+			offset = 0.2f;
+		}
+		
 		debug("set trim: %d, offset: %5.3f", values[index], (double)offset);
 		index += mixer->set_trim(offset);
 		mixer = mixer->_next;
 	}
-
+	
 	return index;
 }
 
-void
-MixerGroup::set_thrust_factor(float val)
+void MixerGroup::set_thrust_factor(float val)
 {
-	Mixer	*mixer = _first;
-
+	Mixer *mixer = _first;
+	
 	while (mixer != nullptr)
 	{
 		mixer->set_thrust_factor(val);
 		mixer = mixer->_next;
 	}
-
+	
 }
 
-uint16_t
-MixerGroup::get_saturation_status()
+uint16_t MixerGroup::get_saturation_status()
 {
-	Mixer	*mixer = _first;
+	Mixer *mixer = _first;
 	uint16_t sat = 0;
-
+	
 	while (mixer != nullptr)
 	{
 		sat |= mixer->get_saturation_status();
 		mixer = mixer->_next;
 	}
-
+	
 	return sat;
 }
 
-unsigned
-MixerGroup::count()
+unsigned MixerGroup::count()
 {
-	Mixer	*mixer = _first;
+	Mixer *mixer = _first;
 	unsigned index = 0;
-
+	
 	while (mixer != nullptr)
 	{
 		mixer = mixer->_next;
 		index++;
 	}
-
+	
 	return index;
 }
 
-void
-MixerGroup::groups_required(uint32_t &groups)
+void MixerGroup::groups_required(uint32_t &groups)
 {
-	Mixer	*mixer = _first;
-
+	Mixer *mixer = _first;
+	
 	while (mixer != nullptr)
 	{
 		mixer->groups_required(groups);
@@ -204,12 +202,11 @@ MixerGroup::groups_required(uint32_t &groups)
 	}
 }
 
-int
-MixerGroup::load_from_buf(const char *buf, unsigned &buflen)
+int MixerGroup::load_from_buf(const char *buf, unsigned &buflen)
 {
 	int ret = -1;
 	const char *end = buf + buflen;
-
+	
 	/*
 	 * Loop until either we have emptied the buffer, or we have failed to
 	 * allocate something when we expected to.
@@ -219,7 +216,7 @@ MixerGroup::load_from_buf(const char *buf, unsigned &buflen)
 		Mixer *m = nullptr;
 		const char *p = end - buflen;
 		unsigned resid = buflen;
-
+		
 		/*
 		 * Use the next character as a hint to decide which mixer class to construct.
 		 */
@@ -228,43 +225,43 @@ MixerGroup::load_from_buf(const char *buf, unsigned &buflen)
 			case 'Z':
 				m = NullMixer::from_text(p, resid);
 				break;
-
+				
 			case 'M':
 				m = SimpleMixer::from_text(_control_cb, _cb_handle, p, resid);
 				break;
-
+				
 			case 'R':
 				m = MultirotorMixer::from_text(_control_cb, _cb_handle, p, resid);
 				break;
-
+				
 			case 'H':
 				m = HelicopterMixer::from_text(_control_cb, _cb_handle, p, resid);
 				break;
-
+				
 			default:
 				/* it's probably junk or whitespace, skip a byte and retry */
 				buflen--;
 				continue;
 		}
-
+		
 		/*
 		 * If we constructed something, add it to the group.
 		 */
 		if (m != nullptr)
 		{
 			add_mixer(m);
-
+			
 			/* we constructed something */
 			ret = 0;
-
+			
 			/* only adjust buflen if parsing was successful */
 			buflen = resid;
 			debug("SUCCESS - buflen: %d", buflen);
-
+			
 		}
 		else
 		{
-
+			
 			/*
 			 * There is data in the buffer that we expected to parse, but it didn't,
 			 * so give up for now.
@@ -272,15 +269,15 @@ MixerGroup::load_from_buf(const char *buf, unsigned &buflen)
 			break;
 		}
 	}
-
+	
 	/* nothing more in the buffer for us now */
 	return ret;
 }
 
 void MixerGroup::set_max_delta_out_once(float delta_out_max)
 {
-	Mixer	*mixer = _first;
-
+	Mixer *mixer = _first;
+	
 	while (mixer != nullptr)
 	{
 		mixer->set_max_delta_out_once(delta_out_max);

@@ -54,9 +54,9 @@
 
 #include "BlockLocalPositionEstimator.hpp"
 
-static volatile bool thread_should_exit = false;     /**< Deamon exit flag */
-static volatile bool thread_running = false;     /**< Deamon status flag */
-static int deamon_task;             /**< Handle of deamon task / thread */
+static volatile bool thread_should_exit = false; /**< Deamon exit flag */
+static volatile bool thread_running = false; /**< Deamon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 
 /**
  * Deamon management function.
@@ -73,14 +73,13 @@ int local_position_estimator_thread_main(int argc, char *argv[]);
  */
 static int usage(const char *reason);
 
-static int
-usage(const char *reason)
+static int usage(const char *reason)
 {
 	if (reason)
 	{
 		fprintf(stderr, "%s\n", reason);
 	}
-
+	
 	fprintf(stderr, "usage: local_position_estimator {start|stop|status} [-p <additional params>]\n\n");
 	return 1;
 }
@@ -95,88 +94,83 @@ usage(const char *reason)
  */
 int local_position_estimator_main(int argc, char *argv[])
 {
-
+	
 	if (argc < 2)
 	{
 		usage("missing command");
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			PX4_INFO("already running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		thread_should_exit = false;
-
-		deamon_task = px4_task_spawn_cmd("lp_estimator",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
-						 13500,
-						 local_position_estimator_thread_main,
-						 (argv && argc > 2) ? (char *const *) &argv[2] : (char *const *) nullptr);
+		
+		deamon_task = px4_task_spawn_cmd("lp_estimator", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 13500, local_position_estimator_thread_main, (argv && argc > 2) ? (char * const *) &argv[2] : (char * const *) nullptr);
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		if (thread_running)
 		{
 			PX4_DEBUG("stop");
 			thread_should_exit = true;
-
+			
 		}
 		else
 		{
 			PX4_WARN("not started");
 		}
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			PX4_INFO("is running");
-
+			
 		}
 		else
 		{
 			PX4_INFO("not started");
 		}
-
+		
 		return 0;
 	}
-
+	
 	usage("unrecognized command");
 	return 1;
 }
 
 int local_position_estimator_thread_main(int argc, char *argv[])
 {
-
+	
 	PX4_DEBUG("starting");
-
+	
 	using namespace control;
-
+	
 	BlockLocalPositionEstimator est;
-
+	
 	thread_running = true;
-
+	
 	while (!thread_should_exit)
 	{
 		est.update();
 	}
-
+	
 	PX4_DEBUG("exiting.");
-
+	
 	thread_running = false;
-
+	
 	return 0;
 }

@@ -40,9 +40,9 @@
 #include <stdbool.h>
 
 struct system_load_taskinfo_s
-{
+{	
 	uint64_t total_runtime;			///< Runtime since start (start_time - total_runtime)/(start_time - current_time) = load
-	uint64_t curr_start_time;		///< Start time of the current scheduling slot
+	uint64_t curr_start_time;///< Start time of the current scheduling slot
 #ifdef __PX4_NUTTX
 	FAR struct tcb_s *tcb;			///<
 #endif
@@ -50,7 +50,7 @@ struct system_load_taskinfo_s
 };
 
 struct system_load_s
-{
+{	
 	uint64_t start_time;			///< Global start time of measurements
 	struct system_load_taskinfo_s tasks[CONFIG_MAX_TASKS];
 	uint8_t initialized;

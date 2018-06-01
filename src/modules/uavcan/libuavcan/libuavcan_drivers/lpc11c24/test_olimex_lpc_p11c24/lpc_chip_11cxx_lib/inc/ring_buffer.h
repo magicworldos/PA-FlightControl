@@ -42,7 +42,8 @@
 /**
  * @brief Ring buffer structure
  */
-typedef struct {
+typedef struct
+{
 	void *data;
 	int count;
 	int itemSz;
@@ -179,7 +180,6 @@ int RingBuffer_Pop(RINGBUFF_T *RingBuff, void *data);
  * 			or attempted to pop when the buffer is empty)
  */
 int RingBuffer_PopMult(RINGBUFF_T *RingBuff, void *data, int num);
-
 
 /**
  * @}

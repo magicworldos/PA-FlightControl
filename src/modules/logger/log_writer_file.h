@@ -68,8 +68,11 @@ public:
 
 	void stop_log();
 
-	bool is_started() const { return _should_run; }
-
+	bool is_started() const
+	{
+		return _should_run;
+	}
+	
 	/** @see LogWriter::write_message() */
 	int write_message(void *ptr, size_t size, uint64_t dropout_start = 0);
 
@@ -77,42 +80,42 @@ public:
 	{
 		pthread_mutex_lock(&_mtx);
 	}
-
+	
 	void unlock()
 	{
 		pthread_mutex_unlock(&_mtx);
 	}
-
+	
 	void notify()
 	{
 		pthread_cond_broadcast(&_cv);
 	}
-
+	
 	size_t get_total_written() const
 	{
 		return _total_written;
 	}
-
+	
 	size_t get_buffer_size() const
 	{
 		return _buffer_size;
 	}
-
+	
 	size_t get_buffer_fill_count() const
 	{
 		return _count;
 	}
-
+	
 	void set_need_reliable_transfer(bool need_reliable)
 	{
 		_need_reliable_transfer = need_reliable;
 	}
-
+	
 	bool need_reliable_transfer() const
 	{
 		return _need_reliable_transfer;
 	}
-
+	
 private:
 	static void *run_helper(void *);
 
@@ -124,7 +127,7 @@ private:
 	{
 		_count -= n;
 	}
-
+	
 	/**
 	 * permanently store the ulog file name for the hardfault crash handler, so that it can
 	 * append crash logs to the last ulog file.
@@ -144,20 +147,20 @@ private:
 	inline void write_no_check(void *ptr, size_t size);
 
 	/* 512 didn't seem to work properly, 4096 should match the FAT cluster size */
-	static constexpr size_t	_min_write_chunk = 4096;
+	static constexpr size_t _min_write_chunk = 4096;
 
-	int			_fd = -1;
-	uint8_t 	*_buffer = nullptr;
-	const size_t	_buffer_size;
-	size_t			_head = 0; ///< next position to write to
-	size_t			_count = 0; ///< number of bytes in _buffer to be written
-	size_t		_total_written = 0;
-	bool		_should_run = false;
-	bool		_running = false;
-	bool 		_exit_thread = false;
-	bool		_need_reliable_transfer = false;
-	pthread_mutex_t		_mtx;
-	pthread_cond_t		_cv;
+	int _fd = -1;
+	uint8_t *_buffer = nullptr;
+	const size_t _buffer_size;
+	size_t _head = 0; ///< next position to write to
+	size_t _count = 0; ///< number of bytes in _buffer to be written
+	size_t _total_written = 0;
+	bool _should_run = false;
+	bool _running = false;
+	bool _exit_thread = false;
+	bool _need_reliable_transfer = false;
+	pthread_mutex_t _mtx;
+	pthread_cond_t _cv;
 	perf_counter_t _perf_write;
 	perf_counter_t _perf_fsync;
 	pthread_t _thread = 0;

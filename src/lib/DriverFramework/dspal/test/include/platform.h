@@ -58,7 +58,6 @@
 #define GPIO_INT_DEVICE_PATH  "/dev/gpio_ssc-15"
 #endif
 
-
 // UART port definition
 #if defined(DSP_TYPE_ADSP)
 #define NUM_UART_DEVICE_ENABLED  4

@@ -31,8 +31,6 @@
  *
  ****************************************************************************/
 
-
-
 /**
  * @ file roboclaw_main.cpp
  *
@@ -56,9 +54,9 @@
 #include <arch/board/board.h>
 #include "RoboClaw.hpp"
 
-static bool thread_should_exit = false;     /**< Deamon exit flag */
-static bool thread_running = false;     /**< Deamon status flag */
-static int deamon_task;             /**< Handle of deamon task / thread */
+static bool thread_should_exit = false; /**< Deamon exit flag */
+static bool thread_running = false; /**< Deamon status flag */
+static int deamon_task; /**< Handle of deamon task / thread */
 
 /**
  * Deamon management function.
@@ -78,7 +76,7 @@ static void usage();
 static void usage()
 {
 	fprintf(stderr, "usage: roboclaw "
-		"{start|stop|status|test}\n\n");
+	        "{start|stop|status|test}\n\n");
 }
 
 /**
@@ -91,49 +89,44 @@ static void usage()
  */
 int roboclaw_main(int argc, char *argv[])
 {
-
+	
 	if (argc < 2)
 	{
 		usage();
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			printf("roboclaw already running\n");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd("roboclaw",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 10,
-						 2048,
-						 roboclaw_thread_main,
-						 (char *const *)argv);
+		deamon_task = px4_task_spawn_cmd("roboclaw", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 10, 2048, roboclaw_thread_main, (char * const *) argv);
 		exit(0);
-
+		
 	}
 	else if (!strcmp(argv[1], "test"))
 	{
-
+		
 		const char *deviceName = "/dev/ttyS2";
 		uint8_t address = 128;
 		uint16_t pulsesPerRev = 1200;
-
+		
 		if (argc == 2)
 		{
 			printf("testing with default settings\n");
-
+			
 		}
 		else if (argc != 4)
 		{
 			printf("usage: roboclaw test device address pulses_per_rev\n");
 			exit(-1);
-
+			
 		}
 		else
 		{
@@ -141,38 +134,37 @@ int roboclaw_main(int argc, char *argv[])
 			address = strtoul(argv[3], nullptr, 0);
 			pulsesPerRev = strtoul(argv[4], nullptr, 0);
 		}
-
-		printf("device:\t%s\taddress:\t%d\tpulses per rev:\t%ld\n",
-		       deviceName, address, pulsesPerRev);
-
+		
+		printf("device:\t%s\taddress:\t%d\tpulses per rev:\t%ld\n", deviceName, address, pulsesPerRev);
+		
 		roboclawTest(deviceName, address, pulsesPerRev);
 		thread_should_exit = true;
 		exit(0);
-
+		
 	}
 	else if (!strcmp(argv[1], "stop"))
 	{
-
+		
 		thread_should_exit = true;
 		exit(0);
-
+		
 	}
 	else if (!strcmp(argv[1], "status"))
 	{
-
+		
 		if (thread_running)
 		{
 			printf("\troboclaw app is running\n");
-
+			
 		}
 		else
 		{
 			printf("\troboclaw app not started\n");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	usage();
 	exit(1);
 }
@@ -180,35 +172,34 @@ int roboclaw_main(int argc, char *argv[])
 int roboclaw_thread_main(int argc, char *argv[])
 {
 	printf("[roboclaw] starting\n");
-
+	
 	// skip parent process args
 	argc -= 2;
 	argv += 2;
-
+	
 	if (argc < 3)
 	{
 		printf("usage: roboclaw start device address\n");
 		return -1;
 	}
-
+	
 	const char *deviceName = argv[1];
 	uint8_t address = strtoul(argv[2], nullptr, 0);
 	uint16_t pulsesPerRev = strtoul(argv[3], nullptr, 0);
-
-	printf("device:\t%s\taddress:\t%d\tpulses per rev:\t%ld\n",
-	       deviceName, address, pulsesPerRev);
-
+	
+	printf("device:\t%s\taddress:\t%d\tpulses per rev:\t%ld\n", deviceName, address, pulsesPerRev);
+	
 	// start
 	RoboClaw roboclaw(deviceName, address, pulsesPerRev);
-
+	
 	thread_running = true;
-
+	
 	// loop
 	while (!thread_should_exit)
 	{
 		roboclaw.update();
 	}
-
+	
 	// exit
 	printf("[roboclaw] exiting.\n");
 	thread_running = false;

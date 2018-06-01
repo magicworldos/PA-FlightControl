@@ -124,7 +124,6 @@
  *     3   | primary thrust
  */
 
-
 #ifndef _SYSTEMLIB_MIXER_MIXER_H
 #define _SYSTEMLIB_MIXER_MIXER_H value
 
@@ -138,10 +137,10 @@
  * one or more outputs.
  */
 class __EXPORT Mixer
-{
+{	
 public:
 	/** next mixer in a list */
-	Mixer				*_next;
+	Mixer *_next;
 
 	/**
 	 * Fetch a control value.
@@ -152,10 +151,10 @@ public:
 	 * @param control		The returned control
 	 * @return			Zero if the value was fetched, nonzero otherwise.
 	 */
-	typedef int	(* ControlCallback)(uintptr_t handle,
-					    uint8_t control_group,
-					    uint8_t control_index,
-					    float &control);
+	typedef int (* ControlCallback)(uintptr_t handle,
+			uint8_t control_group,
+			uint8_t control_index,
+			float &control);
 
 	/**
 	 * Constructor.
@@ -163,7 +162,8 @@ public:
 	 * @param control_cb		Callback invoked when reading controls.
 	 */
 	Mixer(ControlCallback control_cb, uintptr_t cb_handle);
-	virtual ~Mixer() {}
+	virtual ~Mixer()
+	{}
 
 	/**
 	 * Perform the mixing function.
@@ -172,14 +172,14 @@ public:
 	 * @param space			The number of available entries in the output array;
 	 * @return			The number of entries in the output array that were populated.
 	 */
-	virtual unsigned		mix(float *outputs, unsigned space) = 0;
+	virtual unsigned mix(float *outputs, unsigned space) = 0;
 
 	/**
 	 * Get the saturation status.
 	 *
 	 * @return			Integer bitmask containing saturation_status from multirotor_motor_limits.msg.
 	 */
-	virtual uint16_t		get_saturation_status(void) = 0;
+	virtual uint16_t get_saturation_status(void) = 0;
 
 	/**
 	 * Analyses the mix configuration and updates a bitmask of groups
@@ -187,7 +187,7 @@ public:
 	 *
 	 * @param groups		A bitmask of groups (0-31) that the mixer requires.
 	 */
-	virtual void			groups_required(uint32_t &groups) = 0;
+	virtual void groups_required(uint32_t &groups) = 0;
 
 	/**
 	 * @brief      Empty method, only implemented for MultirotorMixer and MixerGroup class.
@@ -195,7 +195,8 @@ public:
 	 * @param[in]  delta_out_max  Maximum delta output.
 	 *
 	 */
-	virtual void 			set_max_delta_out_once(float delta_out_max) {}
+	virtual void set_max_delta_out_once(float delta_out_max)
+	{}
 
 	/**
 	 * @brief Set trim offset for this mixer
@@ -209,12 +210,13 @@ public:
 	 *
 	 * @param[in]  val   The value
 	 */
-	virtual void 			set_thrust_factor(float val) {}
+	virtual void set_thrust_factor(float val)
+	{}
 
 protected:
 	/** client-supplied callback used when fetching control values */
-	ControlCallback			_control_cb;
-	uintptr_t			_cb_handle;
+	ControlCallback _control_cb;
+	uintptr_t _cb_handle;
 
 	/**
 	 * Invoke the client callback to fetch a control value.
@@ -223,7 +225,7 @@ protected:
 	 * @param index			Control index to fetch.
 	 * @return			The control value.
 	 */
-	float				get_control(uint8_t group, uint8_t index);
+	float get_control(uint8_t group, uint8_t index);
 
 	/**
 	 * Perform simpler linear scaling.
@@ -232,7 +234,7 @@ protected:
 	 * @param input			The value to be scaled.
 	 * @return			The scaled value.
 	 */
-	static float			scale(const mixer_scaler_s &scaler, float input);
+	static float scale(const mixer_scaler_s &scaler, float input);
 
 	/**
 	 * Validate a scaler
@@ -240,7 +242,7 @@ protected:
 	 * @param scaler		The scaler to be validated.
 	 * @return			Zero if good, nonzero otherwise.
 	 */
-	static int			scale_check(struct mixer_scaler_s &scaler);
+	static int scale_check(struct mixer_scaler_s &scaler);
 
 	/**
 	 * Find a tag
@@ -249,7 +251,7 @@ protected:
 	 * @param buflen		length of the buffer.
 	 * @param tag			character to search for.
 	 */
-	static const char 		*findtag(const char *buf, unsigned &buflen, char tag);
+	static const char *findtag(const char *buf, unsigned &buflen, char tag);
 
 	/**
 	 * Skip a line
@@ -258,12 +260,12 @@ protected:
 	 * @param buflen		length of the buffer.
 	 * @return			0 / OK if a line could be skipped, 1 else
 	 */
-	static const char 		*skipline(const char *buf, unsigned &buflen);
+	static const char *skipline(const char *buf, unsigned &buflen);
 
 	/**
 	 * Check wether the string is well formed and suitable for parsing
 	 */
-	static bool				string_well_formed(const char *buf, unsigned &buflen);
+	static bool string_well_formed(const char *buf, unsigned &buflen);
 
 private:
 
@@ -277,31 +279,31 @@ private:
  * in order when mixing.
  */
 class __EXPORT MixerGroup : public Mixer
-{
+{	
 public:
 	MixerGroup(ControlCallback control_cb, uintptr_t cb_handle);
 	~MixerGroup();
 
-	virtual unsigned		mix(float *outputs, unsigned space);
-	virtual uint16_t		get_saturation_status(void);
-	virtual void			groups_required(uint32_t &groups);
+	virtual unsigned mix(float *outputs, unsigned space);
+	virtual uint16_t get_saturation_status(void);
+	virtual void groups_required(uint32_t &groups);
 
 	/**
 	 * Add a mixer to the group.
 	 *
 	 * @param mixer			The mixer to be added.
 	 */
-	void				add_mixer(Mixer *mixer);
+	void add_mixer(Mixer *mixer);
 
 	/**
 	 * Remove all the mixers from the group.
 	 */
-	void				reset();
+	void reset();
 
 	/**
 	 * Count the mixers in the group.
 	 */
-	unsigned			count();
+	unsigned count();
 
 	/**
 	 * Adds mixers to the group based on a text description in a buffer.
@@ -357,7 +359,7 @@ public:
 	 *				bytes as they are consumed.
 	 * @return			Zero on successful load, nonzero otherwise.
 	 */
-	int				load_from_buf(const char *buf, unsigned &buflen);
+	int load_from_buf(const char *buf, unsigned &buflen);
 
 	/**
 	 * @brief      Update slew rate parameter. This tells instances of the class MultirotorMixer
@@ -369,7 +371,7 @@ public:
 	 * @param[in]  delta_out_max  Maximum delta output.
 	 *
 	 */
-	virtual void 			set_max_delta_out_once(float delta_out_max);
+	virtual void set_max_delta_out_once(float delta_out_max);
 
 	/*
 	 * Invoke the set_offset method of each mixer in the group
@@ -378,7 +380,7 @@ public:
 	unsigned set_trims(int16_t *v, unsigned n);
 
 	unsigned set_trim(float trim)
-	{
+	{	
 		return 0;
 	}
 
@@ -387,10 +389,10 @@ public:
 	 *
 	 * @param[in]  val   The value
 	 */
-	virtual void	set_thrust_factor(float val);
+	virtual void set_thrust_factor(float val);
 
 private:
-	Mixer				*_first;	/**< linked list of mixers */
+	Mixer *_first; /**< linked list of mixers */
 
 	/* do not allow to copy due to pointer data members */
 	MixerGroup(const MixerGroup &);
@@ -403,10 +405,11 @@ private:
  * Used as a placeholder for output channels that are unassigned in groups.
  */
 class __EXPORT NullMixer : public Mixer
-{
+{	
 public:
 	NullMixer();
-	~NullMixer() {}
+	~NullMixer()
+	{}
 
 	/**
 	 * Factory method.
@@ -421,14 +424,15 @@ public:
 	 * @return			A new NullMixer instance, or nullptr
 	 *				if the text format is bad.
 	 */
-	static NullMixer		*from_text(const char *buf, unsigned &buflen);
+	static NullMixer *from_text(const char *buf, unsigned &buflen);
 
-	virtual unsigned		mix(float *outputs, unsigned space);
-	virtual uint16_t		get_saturation_status(void);
-	virtual void			groups_required(uint32_t &groups);
-	virtual void 			set_offset(float trim) {}
+	virtual unsigned mix(float *outputs, unsigned space);
+	virtual uint16_t get_saturation_status(void);
+	virtual void groups_required(uint32_t &groups);
+	virtual void set_offset(float trim)
+	{}
 	unsigned set_trim(float trim)
-	{
+	{	
 		return 0;
 	}
 
@@ -440,7 +444,7 @@ public:
  * Collects zero or more inputs and mixes them to a single output.
  */
 class __EXPORT SimpleMixer : public Mixer
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -450,8 +454,8 @@ public:
 	 *				will be freed when the mixer is deleted.
 	 */
 	SimpleMixer(ControlCallback control_cb,
-		    uintptr_t cb_handle,
-		    mixer_simple_s *mixinfo);
+			uintptr_t cb_handle,
+			mixer_simple_s *mixinfo);
 	~SimpleMixer();
 
 	/**
@@ -470,7 +474,7 @@ public:
 	 * @return			A new SimpleMixer instance, or nullptr
 	 *				if the text format is bad.
 	 */
-	static SimpleMixer		*from_text(Mixer::ControlCallback control_cb,
+	static SimpleMixer *from_text(Mixer::ControlCallback control_cb,
 			uintptr_t cb_handle,
 			const char *buf,
 			unsigned &buflen);
@@ -488,12 +492,12 @@ public:
 	 * @return			A new SimpleMixer instance, or nullptr if one could not be
 	 *				allocated.
 	 */
-	static SimpleMixer		*pwm_input(Mixer::ControlCallback control_cb, uintptr_t cb_handle, unsigned input, uint16_t min,
+	static SimpleMixer *pwm_input(Mixer::ControlCallback control_cb, uintptr_t cb_handle, unsigned input, uint16_t min,
 			uint16_t mid, uint16_t max);
 
-	virtual unsigned		mix(float *outputs, unsigned space);
-	virtual uint16_t		get_saturation_status(void);
-	virtual void			groups_required(uint32_t &groups);
+	virtual unsigned mix(float *outputs, unsigned space);
+	virtual uint16_t get_saturation_status(void);
+	virtual void groups_required(uint32_t &groups);
 
 	/**
 	 * Check that the mixer configuration as loaded is sensible.
@@ -503,17 +507,17 @@ public:
 	 *
 	 * @return			Zero if the mixer makes sense, nonzero otherwise.
 	 */
-	int				check();
+	int check();
 
 	unsigned set_trim(float trim);
 
 protected:
 
 private:
-	mixer_simple_s			*_pinfo;
+	mixer_simple_s *_pinfo;
 
-	static int			parse_output_scaler(const char *buf, unsigned &buflen, mixer_scaler_s &scaler);
-	static int			parse_control_scaler(const char *buf,
+	static int parse_output_scaler(const char *buf, unsigned &buflen, mixer_scaler_s &scaler);
+	static int parse_control_scaler(const char *buf,
 			unsigned &buflen,
 			mixer_scaler_s &scaler,
 			uint8_t &control_group,
@@ -530,7 +534,8 @@ private:
  * Values are generated by the px_generate_mixers.py script and placed to mixer_multirotor_normalized.generated.h
  */
 typedef unsigned int MultirotorGeometryUnderlyingType;
-enum class MultirotorGeometry : MultirotorGeometryUnderlyingType;
+enum class MultirotorGeometry
+: MultirotorGeometryUnderlyingType;
 
 /**
  * Multi-rotor mixer for pre-defined vehicle geometries.
@@ -539,18 +544,18 @@ enum class MultirotorGeometry : MultirotorGeometryUnderlyingType;
  * a set of outputs based on the configured geometry.
  */
 class __EXPORT MultirotorMixer : public Mixer
-{
+{	
 public:
 	/**
 
 	 * Precalculated rotor mix.
 	 */
 	struct Rotor
-	{
-		float	roll_scale;	/**< scales roll for this rotor */
-		float	pitch_scale;	/**< scales pitch for this rotor */
-		float	yaw_scale;	/**< scales yaw for this rotor */
-		float	out_scale;	/**< scales total out for this rotor */
+	{	
+		float roll_scale; /**< scales roll for this rotor */
+		float pitch_scale; /**< scales pitch for this rotor */
+		float yaw_scale; /**< scales yaw for this rotor */
+		float out_scale; /**< scales total out for this rotor */
 	};
 
 	/**
@@ -594,12 +599,12 @@ public:
 	 * @return			A new MultirotorMixer instance, or nullptr
 	 *				if the text format is bad.
 	 */
-	static MultirotorMixer		*from_text(Mixer::ControlCallback control_cb, uintptr_t cb_handle, const char *buf,
+	static MultirotorMixer *from_text(Mixer::ControlCallback control_cb, uintptr_t cb_handle, const char *buf,
 			unsigned &buflen);
 
-	virtual unsigned		mix(float *outputs, unsigned space);
-	virtual uint16_t		get_saturation_status(void);
-	virtual void			groups_required(uint32_t &groups);
+	virtual unsigned mix(float *outputs, unsigned space);
+	virtual uint16_t get_saturation_status(void);
+	virtual void groups_required(uint32_t &groups);
 
 	/**
 	 * @brief      Update slew rate parameter. This tells the multicopter mixer
@@ -611,10 +616,11 @@ public:
 	 * @param[in]  delta_out_max  Maximum delta output.
 	 *
 	 */
-	virtual void 			set_max_delta_out_once(float delta_out_max) { _delta_out_max = delta_out_max; }
+	virtual void set_max_delta_out_once(float delta_out_max)
+	{	_delta_out_max = delta_out_max;}
 
 	unsigned set_trim(float trim)
-	{
+	{	
 		return _rotor_count;
 	}
 
@@ -623,42 +629,43 @@ public:
 	 *
 	 * @param[in]  val   The value
 	 */
-	virtual void			set_thrust_factor(float val) {_thrust_factor = val;}
+	virtual void set_thrust_factor(float val)
+	{	_thrust_factor = val;}
 
 	union saturation_status
-	{
+	{	
 		struct
-		{
-			uint16_t valid		: 1; // 0 - true when the saturation status is used
-			uint16_t motor_pos	: 1; // 1 - true when any motor has saturated in the positive direction
-			uint16_t motor_neg	: 1; // 2 - true when any motor has saturated in the negative direction
-			uint16_t roll_pos	: 1; // 3 - true when a positive roll demand change will increase saturation
-			uint16_t roll_neg	: 1; // 4 - true when a negative roll demand change will increase saturation
-			uint16_t pitch_pos	: 1; // 5 - true when a positive pitch demand change will increase saturation
-			uint16_t pitch_neg	: 1; // 6 - true when a negative pitch demand change will increase saturation
-			uint16_t yaw_pos	: 1; // 7 - true when a positive yaw demand change will increase saturation
-			uint16_t yaw_neg	: 1; // 8 - true when a negative yaw demand change will increase saturation
-			uint16_t thrust_pos	: 1; // 9 - true when a positive thrust demand change will increase saturation
-			uint16_t thrust_neg	: 1; //10 - true when a negative thrust demand change will increase saturation
-		} flags;
+		{	
+			uint16_t valid : 1; // 0 - true when the saturation status is used
+			uint16_t motor_pos : 1;// 1 - true when any motor has saturated in the positive direction
+			uint16_t motor_neg : 1;// 2 - true when any motor has saturated in the negative direction
+			uint16_t roll_pos : 1;// 3 - true when a positive roll demand change will increase saturation
+			uint16_t roll_neg : 1;// 4 - true when a negative roll demand change will increase saturation
+			uint16_t pitch_pos : 1;// 5 - true when a positive pitch demand change will increase saturation
+			uint16_t pitch_neg : 1;// 6 - true when a negative pitch demand change will increase saturation
+			uint16_t yaw_pos : 1;// 7 - true when a positive yaw demand change will increase saturation
+			uint16_t yaw_neg : 1;// 8 - true when a negative yaw demand change will increase saturation
+			uint16_t thrust_pos : 1;// 9 - true when a positive thrust demand change will increase saturation
+			uint16_t thrust_neg : 1;//10 - true when a negative thrust demand change will increase saturation
+		}flags;
 		uint16_t value;
 	};
 
 private:
-	float				_roll_scale;
-	float				_pitch_scale;
-	float				_yaw_scale;
-	float				_idle_speed;
-	float 				_delta_out_max;
-	float 				_thrust_factor;
+	float _roll_scale;
+	float _pitch_scale;
+	float _yaw_scale;
+	float _idle_speed;
+	float _delta_out_max;
+	float _thrust_factor;
 
 	void update_saturation_status(unsigned index, bool clipping_high, bool clipping_low);
 	saturation_status _saturation_status;
 
-	unsigned			_rotor_count;
-	const Rotor			*_rotors;
+	unsigned _rotor_count;
+	const Rotor *_rotors;
 
-	float 				*_outputs_prev = nullptr;
+	float *_outputs_prev = nullptr;
 
 	/* do not allow to copy due to ptr data members */
 	MultirotorMixer(const MultirotorMixer &);
@@ -681,10 +688,10 @@ struct mixer_heli_servo_s
 /** helicopter swash plate mixer */
 struct mixer_heli_s
 {
-	uint8_t				control_count;	/**< number of inputs */
-	float				throttle_curve[HELI_CURVES_NR_POINTS];
-	float				pitch_curve[HELI_CURVES_NR_POINTS];
-	struct mixer_heli_servo_s	servos[4];	/**< up to four inputs */
+	uint8_t control_count; /**< number of inputs */
+	float throttle_curve[HELI_CURVES_NR_POINTS];
+	float pitch_curve[HELI_CURVES_NR_POINTS];
+	struct mixer_heli_servo_s servos[4]; /**< up to four inputs */
 };
 
 /**
@@ -694,7 +701,7 @@ struct mixer_heli_s
  * for swash plate tilting and throttle- and pitch curves.
  */
 class __EXPORT HelicopterMixer : public Mixer
-{
+{	
 public:
 	/**
 	 * Constructor.
@@ -724,21 +731,22 @@ public:
 	 * @return			A new HelicopterMixer instance, or nullptr
 	 *				if the text format is bad.
 	 */
-	static HelicopterMixer		*from_text(Mixer::ControlCallback control_cb, uintptr_t cb_handle, const char *buf,
+	static HelicopterMixer *from_text(Mixer::ControlCallback control_cb, uintptr_t cb_handle, const char *buf,
 			unsigned &buflen);
 
-	virtual unsigned		mix(float *outputs, unsigned space);
-	virtual void			groups_required(uint32_t &groups);
+	virtual unsigned mix(float *outputs, unsigned space);
+	virtual void groups_required(uint32_t &groups);
 
-	virtual uint16_t		get_saturation_status(void) { return 0; }
+	virtual uint16_t get_saturation_status(void)
+	{	return 0;}
 
 	unsigned set_trim(float trim)
-	{
+	{	
 		return 4;
 	}
 
 private:
-	mixer_heli_s			_mixer_info;
+	mixer_heli_s _mixer_info;
 
 	/* do not allow to copy */
 	HelicopterMixer(const HelicopterMixer &);

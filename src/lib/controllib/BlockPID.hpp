@@ -60,30 +60,36 @@ namespace control
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
 class __EXPORT BlockPID: public SuperBlock
-{
+{	
 public:
 // methods
 	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	SuperBlock(parent, name),
+	_integral(this, "I"),
+	_derivative(this, "D"),
+	_kP(this, "P"),
+	_kI(this, "I"),
+	_kD(this, "D")
 	{}
-	virtual ~BlockPID() {}
+	virtual ~BlockPID()
+	{}
 	float update(float input)
-	{
+	{	
 		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		getKI() * getIntegral().update(input) +
+		getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP()
+	{	return _kP.get();}
+	float getKI()
+	{	return _kI.get();}
+	float getKD()
+	{	return _kD.get();}
+	BlockIntegral &getIntegral()
+	{	return _integral;}
+	BlockDerivative &getDerivative()
+	{	return _derivative;}
 private:
 // attributes
 	BlockIntegral _integral;
@@ -93,4 +99,5 @@ private:
 	control::BlockParamFloat _kD;
 };
 
-} // namespace control
+}
+ // namespace control

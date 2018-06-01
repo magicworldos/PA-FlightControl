@@ -156,10 +156,7 @@
  *  PE[13] PE13/TIM1_CH3/SPI4_MISO/FMC_D10/LCD_DE            44       BLUE_LED
  *  PE[14] PE14/TIM1_CH4/SPI4_MOSI/FMC_D11/LCD_CLK           45       GND
  *  PE[15] PE15/TIM1_BKIN/FMC_D12/LCD_R7                     46       GND
-*/
-
-
-
+ */
 
 /* GPIO ***********************************************************************
  *
@@ -199,7 +196,6 @@
  */
 
 #define GPIO_WAIT_GETNODEINFO   (GPIO_INPUT | GPIO_PULLUP | GPIO_PORTC | GPIO_PIN13)
-
 
 /* LEDs ***********************************************************************
  *

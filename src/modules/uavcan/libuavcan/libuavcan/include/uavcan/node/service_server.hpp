@@ -36,29 +36,36 @@ namespace uavcan
  *
  * In the latter case, an implicit cast will happen before the callback is invoked.
  */
-template <typename ResponseDataType_>
-class ServiceResponseDataStructure : public ResponseDataType_
+template<typename ResponseDataType_>
+class ServiceResponseDataStructure: public ResponseDataType_
 {
-    // Fields are weirdly named to avoid name clashing with the inherited data type
-    bool _enabled_;
+	// Fields are weirdly named to avoid name clashing with the inherited data type
+	bool _enabled_;
 
 public:
-    typedef ResponseDataType_ ResponseDataType;
+	typedef ResponseDataType_ ResponseDataType;
 
-    ServiceResponseDataStructure()
-        : _enabled_(true)
-    { }
-
-    /**
-     * When disabled, the server will not transmit the response transfer.
-     * By default it is enabled, i.e. response will be sent.
-     */
-    void setResponseEnabled(bool x) { _enabled_ = x; }
-
-    /**
-     * Whether the response will be sent. By default it will.
-     */
-    bool isResponseEnabled() const { return _enabled_; }
+	ServiceResponseDataStructure() :
+			    _enabled_(true)
+	{
+	}
+	
+	/**
+	 * When disabled, the server will not transmit the response transfer.
+	 * By default it is enabled, i.e. response will be sent.
+	 */
+	void setResponseEnabled(bool x)
+	{
+		_enabled_ = x;
+	}
+	
+	/**
+	 * Whether the response will be sent. By default it will.
+	 */
+	bool isResponseEnabled() const
+	{
+		return _enabled_;
+	}
 };
 
 /**
@@ -78,122 +85,140 @@ public:
  *                          In C++03 mode this type defaults to a plain function pointer; use binder to
  *                          call member functions as callbacks.
  */
-template <typename DataType_,
+template<typename DataType_,
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-          typename Callback_ = std::function<void (const ReceivedDataStructure<typename DataType_::Request>&,
-                                                   ServiceResponseDataStructure<typename DataType_::Response>&)>
+        typename Callback_ = std::function<void (const ReceivedDataStructure<typename DataType_::Request>&,
+		        ServiceResponseDataStructure<typename DataType_::Response>&)>
 #else
-          typename Callback_ = void (*)(const ReceivedDataStructure<typename DataType_::Request>&,
-                                        ServiceResponseDataStructure<typename DataType_::Response>&)
+        typename Callback_ = void (*)(const ReceivedDataStructure<typename DataType_::Request>&, ServiceResponseDataStructure<typename DataType_::Response>&)
 #endif
-          >
-class UAVCAN_EXPORT ServiceServer
-    : public GenericSubscriber<DataType_, typename DataType_::Request, TransferListener>
+>
+class UAVCAN_EXPORT ServiceServer: public GenericSubscriber<DataType_, typename DataType_::Request, TransferListener>
 {
 public:
-    typedef DataType_ DataType;
-    typedef typename DataType::Request RequestType;
-    typedef typename DataType::Response ResponseType;
-    typedef Callback_ Callback;
+	typedef DataType_ DataType;
+	typedef typename DataType::Request RequestType;
+	typedef typename DataType::Response ResponseType;
+	typedef Callback_ Callback;
 
 private:
-    typedef GenericSubscriber<DataType, RequestType, TransferListener> SubscriberType;
-    typedef GenericPublisher<DataType, ResponseType> PublisherType;
+	typedef GenericSubscriber<DataType, RequestType, TransferListener> SubscriberType;
+	typedef GenericPublisher<DataType, ResponseType> PublisherType;
 
-    PublisherType publisher_;
-    Callback callback_;
-    uint32_t response_failure_count_;
+	PublisherType publisher_;
+	Callback callback_;
+	uint32_t response_failure_count_;
 
-    virtual void handleReceivedDataStruct(ReceivedDataStructure<RequestType>& request)
-    {
-        UAVCAN_ASSERT(request.getTransferType() == TransferTypeServiceRequest);
-
-        ServiceResponseDataStructure<ResponseType> response;
-
-        if (coerceOrFallback<bool>(callback_, true))
-        {
-            UAVCAN_ASSERT(response.isResponseEnabled());  // Enabled by default
-            callback_(request, response);
-        }
-        else
-        {
-            handleFatalError("Srv serv clbk");
-        }
-
-        if (response.isResponseEnabled())
-        {
-            publisher_.setPriority(request.getPriority());      // Responding at the same priority.
-
-            const int res = publisher_.publish(response, TransferTypeServiceResponse, request.getSrcNodeID(),
-                                               request.getTransferID());
-            if (res < 0)
-            {
-                UAVCAN_TRACE("ServiceServer", "Response publication failure: %i", res);
-                publisher_.getNode().getDispatcher().getTransferPerfCounter().addError();
-                response_failure_count_++;
-            }
-        }
-        else
-        {
-            UAVCAN_TRACE("ServiceServer", "Response was suppressed by the application");
-        }
-    }
-
+	virtual void handleReceivedDataStruct(ReceivedDataStructure<RequestType>& request)
+	{
+		UAVCAN_ASSERT(request.getTransferType() == TransferTypeServiceRequest);
+		
+		ServiceResponseDataStructure<ResponseType> response;
+		
+		if (coerceOrFallback<bool>(callback_, true))
+		{
+			UAVCAN_ASSERT(response.isResponseEnabled());  // Enabled by default
+			callback_(request, response);
+		}
+		else
+		{
+			handleFatalError("Srv serv clbk");
+		}
+		
+		if (response.isResponseEnabled())
+		{
+			publisher_.setPriority(request.getPriority());      // Responding at the same priority.
+			
+			const int res = publisher_.publish(response, TransferTypeServiceResponse, request.getSrcNodeID(), request.getTransferID());
+			if (res < 0)
+			{
+				UAVCAN_TRACE("ServiceServer", "Response publication failure: %i", res);
+				publisher_.getNode().getDispatcher().getTransferPerfCounter().addError();
+				response_failure_count_++;
+			}
+		}
+		else
+		{
+			UAVCAN_TRACE("ServiceServer", "Response was suppressed by the application");
+		}
+	}
+	
 public:
-    explicit ServiceServer(INode& node)
-        : SubscriberType(node)
-        , publisher_(node, getDefaultTxTimeout())
-        , callback_()
-        , response_failure_count_(0)
-    {
-        UAVCAN_ASSERT(getTxTimeout() == getDefaultTxTimeout());  // Making sure it is valid
+	explicit ServiceServer(INode& node) :
+			    SubscriberType(node),
+			    publisher_(node, getDefaultTxTimeout()),
+			    callback_(),
+			    response_failure_count_(0)
+	{
+		UAVCAN_ASSERT(getTxTimeout() == getDefaultTxTimeout());  // Making sure it is valid
+		        
+		StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindService>::check();
+	}
+	
+	/**
+	 * Starts the server.
+	 * Incoming service requests will be passed to the application via the callback.
+	 */
+	int start(const Callback& callback)
+	{
+		stop();
+		
+		if (!coerceOrFallback<bool>(callback, true))
+		{
+			UAVCAN_TRACE("ServiceServer", "Invalid callback");
+			return -ErrInvalidParam;
+		}
+		callback_ = callback;
+		
+		const int publisher_res = publisher_.init();
+		if (publisher_res < 0)
+		{
+			UAVCAN_TRACE("ServiceServer", "Publisher initialization failure: %i", publisher_res);
+			return publisher_res;
+		}
+		return SubscriberType::startAsServiceRequestListener();
+	}
+	
+	/**
+	 * Stops the server.
+	 */
+	using SubscriberType::stop;
 
-        StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindService>::check();
-    }
-
-    /**
-     * Starts the server.
-     * Incoming service requests will be passed to the application via the callback.
-     */
-    int start(const Callback& callback)
-    {
-        stop();
-
-        if (!coerceOrFallback<bool>(callback, true))
-        {
-            UAVCAN_TRACE("ServiceServer", "Invalid callback");
-            return -ErrInvalidParam;
-        }
-        callback_ = callback;
-
-        const int publisher_res = publisher_.init();
-        if (publisher_res < 0)
-        {
-            UAVCAN_TRACE("ServiceServer", "Publisher initialization failure: %i", publisher_res);
-            return publisher_res;
-        }
-        return SubscriberType::startAsServiceRequestListener();
-    }
-
-    /**
-     * Stops the server.
-     */
-    using SubscriberType::stop;
-
-    static MonotonicDuration getDefaultTxTimeout() { return MonotonicDuration::fromMSec(1000); }
-    static MonotonicDuration getMinTxTimeout() { return PublisherType::getMinTxTimeout(); }
-    static MonotonicDuration getMaxTxTimeout() { return PublisherType::getMaxTxTimeout(); }
-
-    MonotonicDuration getTxTimeout() const { return publisher_.getTxTimeout(); }
-    void setTxTimeout(MonotonicDuration tx_timeout) { publisher_.setTxTimeout(tx_timeout); }
-
-    /**
-     * Returns the number of failed attempts to decode data structs. Generally, a failed attempt means either:
-     * - Transient failure in the transport layer.
-     * - Incompatible data types.
-     */
-    uint32_t getRequestFailureCount() const { return SubscriberType::getFailureCount(); }
-    uint32_t getResponseFailureCount() const { return response_failure_count_; }
+	static MonotonicDuration getDefaultTxTimeout()
+	{
+		return MonotonicDuration::fromMSec(1000);
+	}
+	static MonotonicDuration getMinTxTimeout()
+	{
+		return PublisherType::getMinTxTimeout();
+	}
+	static MonotonicDuration getMaxTxTimeout()
+	{
+		return PublisherType::getMaxTxTimeout();
+	}
+	
+	MonotonicDuration getTxTimeout() const
+	{
+		return publisher_.getTxTimeout();
+	}
+	void setTxTimeout(MonotonicDuration tx_timeout)
+	{
+		publisher_.setTxTimeout(tx_timeout);
+	}
+	
+	/**
+	 * Returns the number of failed attempts to decode data structs. Generally, a failed attempt means either:
+	 * - Transient failure in the transport layer.
+	 * - Incompatible data types.
+	 */
+	uint32_t getRequestFailureCount() const
+	{
+		return SubscriberType::getFailureCount();
+	}
+	uint32_t getResponseFailureCount() const
+	{
+		return response_failure_count_;
+	}
 };
 
 }

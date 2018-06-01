@@ -43,27 +43,28 @@
 #include <uORB/topics/mission.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** Types of items that the data manager can store */
 typedef enum
 {
-	DM_KEY_SAFE_POINTS = 0,		/* Safe points coordinates, safe point 0 is home point */
-	DM_KEY_FENCE_POINTS,		/* Fence vertex coordinates */
-	DM_KEY_WAYPOINTS_OFFBOARD_0,	/* Mission way point coordinates sent over mavlink */
-	DM_KEY_WAYPOINTS_OFFBOARD_1,	/* (alernate between 0 and 1) */
-	DM_KEY_WAYPOINTS_ONBOARD,	/* Mission way point coordinates generated onboard */
-	DM_KEY_MISSION_STATE,		/* Persistent mission state */
+	DM_KEY_SAFE_POINTS = 0, /* Safe points coordinates, safe point 0 is home point */
+	DM_KEY_FENCE_POINTS, /* Fence vertex coordinates */
+	DM_KEY_WAYPOINTS_OFFBOARD_0, /* Mission way point coordinates sent over mavlink */
+	DM_KEY_WAYPOINTS_OFFBOARD_1, /* (alernate between 0 and 1) */
+	DM_KEY_WAYPOINTS_ONBOARD, /* Mission way point coordinates generated onboard */
+	DM_KEY_MISSION_STATE, /* Persistent mission state */
 	DM_KEY_COMPAT,
-	DM_KEY_NUM_KEYS			/* Total number of item types defined */
+	DM_KEY_NUM_KEYS /* Total number of item types defined */
 } dm_item_t;
 
 #define DM_KEY_WAYPOINTS_OFFBOARD(_id) (_id == 0 ? DM_KEY_WAYPOINTS_OFFBOARD_0 : DM_KEY_WAYPOINTS_OFFBOARD_1)
 
 #if defined(MEMORY_CONSTRAINED_SYSTEM)
 enum
-{
+{	
 	DM_KEY_SAFE_POINTS_MAX = 8,
 	DM_KEY_FENCE_POINTS_MAX = 16,
 	DM_KEY_WAYPOINTS_OFFBOARD_0_MAX = NUM_MISSIONS_SUPPORTED,
@@ -88,17 +89,17 @@ enum
 /** Data persistence levels */
 typedef enum
 {
-	DM_PERSIST_POWER_ON_RESET = 0,	/* Data survives all resets */
-	DM_PERSIST_IN_FLIGHT_RESET,     /* Data survives in-flight resets only */
-	DM_PERSIST_VOLATILE             /* Data does not survive resets */
+	DM_PERSIST_POWER_ON_RESET = 0, /* Data survives all resets */
+	DM_PERSIST_IN_FLIGHT_RESET, /* Data survives in-flight resets only */
+	DM_PERSIST_VOLATILE /* Data does not survive resets */
 } dm_persitence_t;
 
 /** The reason for the last reset */
 typedef enum
 {
-	DM_INIT_REASON_POWER_ON = 0,	/* Data survives resets */
-	DM_INIT_REASON_IN_FLIGHT,		/* Data survives in-flight resets only */
-	DM_INIT_REASON_VOLATILE			/* Data does not survive reset */
+	DM_INIT_REASON_POWER_ON = 0, /* Data survives resets */
+	DM_INIT_REASON_IN_FLIGHT, /* Data survives in-flight resets only */
+	DM_INIT_REASON_VOLATILE /* Data does not survive reset */
 } dm_reset_reason;
 
 struct dataman_compat_s
@@ -117,20 +118,20 @@ struct dataman_compat_s
 /** Retrieve from the data manager store */
 __EXPORT ssize_t
 dm_read(
-	dm_item_t item,			/* The item type to retrieve */
-	unsigned index,			/* The index of the item */
-	void *buffer,			/* Pointer to caller data buffer */
-	size_t buflen			/* Length in bytes of data to retrieve */
+		dm_item_t item, /* The item type to retrieve */
+		unsigned index, /* The index of the item */
+		void *buffer, /* Pointer to caller data buffer */
+		size_t buflen /* Length in bytes of data to retrieve */
 );
 
 /** write to the data manager store */
 __EXPORT ssize_t
 dm_write(
-	dm_item_t  item,		/* The item type to store */
-	unsigned index,			/* The index of the item */
-	dm_persitence_t persistence,	/* The persistence level of this item */
-	const void *buffer,		/* Pointer to caller data buffer */
-	size_t buflen			/* Length in bytes of data to retrieve */
+		dm_item_t item, /* The item type to store */
+		unsigned index, /* The index of the item */
+		dm_persitence_t persistence, /* The persistence level of this item */
+		const void *buffer, /* Pointer to caller data buffer */
+		size_t buflen /* Length in bytes of data to retrieve */
 );
 
 /**
@@ -140,8 +141,7 @@ dm_write(
  * @return 0 on success and lock taken, -1 on error (lock not taken, errno set)
  */
 __EXPORT int
-dm_lock(
-	dm_item_t item			/* The item type to lock */
+dm_lock(dm_item_t item /* The item type to lock */
 );
 
 /**
@@ -149,35 +149,31 @@ dm_lock(
  * @return 0 if lock is taken, -1 otherwise (on error or if already locked. errno is set accordingly)
  */
 __EXPORT int
-dm_trylock(
-	dm_item_t item			/* The item type to lock */
+dm_trylock(dm_item_t item /* The item type to lock */
 );
 
 /** Unlock all items of a type */
 __EXPORT void
-dm_unlock(
-	dm_item_t item			/* The item type to unlock */
+dm_unlock(dm_item_t item /* The item type to unlock */
 );
 
 /** Erase all items of this type */
 __EXPORT int
-dm_clear(
-	dm_item_t item			/* The item type to clear */
+dm_clear(dm_item_t item /* The item type to clear */
 );
 
 /** Tell the data manager about the type of the last reset */
 __EXPORT int
-dm_restart(
-	dm_reset_reason restart_type	/* The last reset type */
+dm_restart(dm_reset_reason restart_type /* The last reset type */
 );
 
 #if defined(FLASH_BASED_DATAMAN)
 typedef struct dm_sector_descriptor_t
-{
-	uint8_t       page;
-	uint32_t      size;
-	uint32_t      address;
-} dm_sector_descriptor_t;
+{	
+	uint8_t page;
+	uint32_t size;
+	uint32_t address;
+}dm_sector_descriptor_t;
 
 /**
  * Set the flash sector description were data should persist data
@@ -188,7 +184,7 @@ typedef struct dm_sector_descriptor_t
  */
 __EXPORT int
 dm_flash_sector_description_set(
-	const dm_sector_descriptor_t *description
+		const dm_sector_descriptor_t *description
 );
 #endif
 

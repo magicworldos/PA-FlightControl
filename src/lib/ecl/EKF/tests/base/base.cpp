@@ -46,73 +46,76 @@ extern "C" __EXPORT int base_main(int argc, char *argv[]);
 int base_main(int argc, char *argv[])
 {
 	EstimatorBase *base = new EstimatorBase();
-
+	
 	// Test1: feed in fake imu data and check if delta angles are summed correclty
-	float delta_vel[3] = { 0.002f, 0.002f, 0.002f};
-	float delta_ang[3] = { -0.1f, 0.2f, 0.3f};
+	float delta_vel[3] = { 0.002f, 0.002f, 0.002f };
+	float delta_ang[3] = { -0.1f, 0.2f, 0.3f };
 	uint32_t time_usec = 1000;
-
-
+	
 	// simulate 400 Hz imu rate, filter should downsample to 100Hz
 	// feed in 2 seconds of data
-	for (int i = 0; i < 800; i++) {
+	for (int i = 0; i < 800; i++)
+	{
 		base->setIMUData(time_usec, 2500, 2500, delta_ang, delta_vel);
 		time_usec += 2500;
 	}
-
+	
 	//base->printStoredIMU();
-
-
+	
 	// Test2: feed fake imu data and check average imu delta t
 	// simulate 400 Hz imu rate, filter should downsample to 100Hz
 	// feed in 2 seconds of data
-	for (int i = 0; i < 800; i++) {
+	for (int i = 0; i < 800; i++)
+	{
 		base->setIMUData(time_usec, 2500, 2500, delta_ang, delta_vel);
 		//base->print_imu_avg_time();
 		time_usec += 2500;
 	}
-
+	
 	// Test3: feed in slow imu data, filter should now take every sample
-	for (int i = 0; i < 800; i++) {
+	for (int i = 0; i < 800; i++)
+	{
 		base->setIMUData(time_usec, 2500, 2500, delta_ang, delta_vel);
 		time_usec += 30000;
 	}
-
+	
 	//base->printStoredIMU();
-
+	
 	// Test4: Feed in mag data at 50 Hz (too fast), check if filter samples correctly
-	float mag[3] = {0.2f, 0.0f, 0.4f};
-
-	for (int i = 0; i < 100; i++) {
+	float mag[3] = { 0.2f, 0.0f, 0.4f };
+	
+	for (int i = 0; i < 100; i++)
+	{
 		base->setMagData(time_usec, mag);
 		time_usec += 20000;
 	}
-
+	
 	//base->printStoredMag();
-
+	
 	// Test5: Feed in baro data at 50 Hz (too fast), check if filter samples correctly
 	float baro = 120.22f;
 	time_usec = 100000;
-
-	for (int i = 0; i < 100; i++) {
+	
+	for (int i = 0; i < 100; i++)
+	{
 		base->setBaroData(time_usec, &baro);
 		baro += 10.0f;
 		time_usec += 20000;
 	}
-
+	
 	//base->printStoredBaro();
-
+	
 	// Test 5: Run everything rogether in one run
 	std::default_random_engine generator;
 	std::uniform_int_distribution<int> distribution(-200, 200);
-
+	
 	int imu_sample_period = 2500;
 	uint64_t timer = 2000;		// simulation start time
 	uint64_t timer_last = timer;
-
+	
 	float airspeed = 0.0f;
-
-	struct gps_message gps = {};
+	
+	struct gps_message gps = { };
 	gps.lat = 40 * 1e7;			// Latitude in 1E-7 degrees
 	gps.lon = 5 * 1e7;			// Longitude in 1E-7 degrees
 	gps.alt = 200 * 1e3;			// Altitude in 1E-3 meters (millimeters) above MSL
@@ -120,15 +123,17 @@ int base_main(int argc, char *argv[])
 	gps.eph = 5.0f;			// GPS HDOP horizontal dilution of position in m
 	gps.epv = 5.0f;			// GPS VDOP horizontal dilution of position in m
 	gps.vel_ned_valid = true;	// GPS ground speed is valid
-
+	
 	// simulate two seconds
-	for (int i = 0; i < 800; i++) {
+	for (int i = 0; i < 800; i++)
+	{
 		timer += (imu_sample_period + distribution(generator));
-
-		if ((timer - timer_last) > 70000) {
+		
+		if ((timer - timer_last) > 70000)
+		{
 			base->setAirspeedData(timer, &airspeed);
 		}
-
+		
 		gps.time_usec = timer;
 		gps.time_usec_vel = timer;
 		base->setIMUData(timer, timer - timer_last, timer - timer_last, delta_ang, delta_vel);
@@ -136,15 +141,15 @@ int base_main(int argc, char *argv[])
 		base->setBaroData(timer, &baro);
 		base->setGpsData(timer, &gps);
 		base->print_imu_avg_time();
-
+		
 		timer_last = timer;
-
+		
 	}
-
+	
 	base->printStoredIMU();
 	base->printStoredBaro();
 	base->printStoredMag();
 	base->printStoredGps();
-
+	
 	return 0;
 }

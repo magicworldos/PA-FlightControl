@@ -32,105 +32,110 @@ namespace uavcan_linux
 class MachineIDReader
 {
 public:
-    static constexpr int MachineIDSize = 16;
+	static constexpr int MachineIDSize = 16;
 
-    typedef std::array<std::uint8_t, MachineIDSize> MachineID;
+	typedef std::array<std::uint8_t, MachineIDSize> MachineID;
 
-    static std::vector<std::string> getDefaultSearchLocations()
-    {
-        return
-        {
-            "/etc/machine-id",
-            "/var/lib/dbus/machine-id",
-            "/sys/class/dmi/id/product_uuid"
-        };
-    }
-
+	static std::vector<std::string> getDefaultSearchLocations()
+	{
+		return
+		{	
+			"/etc/machine-id",
+			"/var/lib/dbus/machine-id",
+			"/sys/class/dmi/id/product_uuid"
+		};
+	}
+	
 private:
-    const std::vector<std::string> search_locations_;
+	const std::vector<std::string> search_locations_;
 
-    static std::vector<std::string> mergeLists(const std::vector<std::string>& a, const std::vector<std::string>& b)
-    {
-        std::vector<std::string> ab;
-        ab.reserve(a.size() + b.size());
-        ab.insert(ab.end(), a.begin(), a.end());
-        ab.insert(ab.end(), b.begin(), b.end());
-        return ab;
-    }
-
-    bool tryRead(const std::string& location, MachineID& out_id) const
-    {
-        /*
-         * Reading the file
-         */
-        std::string token;
-        try
-        {
-            std::ifstream infile(location);
-            infile >> token;
-        }
-        catch (std::exception&)
-        {
-            return false;
-        }
-
-        /*
-         * Preprocessing the input string - convert to lowercase, remove all non-hex characters, limit to 32 chars
-         */
-        std::transform(token.begin(), token.end(), token.begin(), [](char x) { return std::tolower(x); });
-        token.erase(std::remove_if(token.begin(), token.end(),
-                                   [](char x){ return (x < 'a' || x > 'f') && !std::isdigit(x); }),
-                    token.end());
-
-        if (token.length() < (MachineIDSize * 2))
-        {
-            return false;
-        }
-        token.resize(MachineIDSize * 2);        // Truncating
-
-        /*
-         * Parsing the string as hex bytes
-         */
-        auto sym = std::begin(token);
-        for (auto& byte : out_id)
-        {
-            assert(sym != std::end(token));
-            byte = std::stoi(std::string{*sym++, *sym++}, nullptr, 16);
-        }
-
-        return true;
-    }
-
+	static std::vector<std::string> mergeLists(const std::vector<std::string>& a, const std::vector<std::string>& b)
+	{
+		std::vector<std::string> ab;
+		ab.reserve(a.size() + b.size());
+		ab.insert(ab.end(), a.begin(), a.end());
+		ab.insert(ab.end(), b.begin(), b.end());
+		return ab;
+	}
+	
+	bool tryRead(const std::string& location, MachineID& out_id) const
+	{
+		/*
+		 * Reading the file
+		 */
+		std::string token;
+		try
+		{
+			std::ifstream infile(location);
+			infile >> token;
+		}
+		catch (std::exception&)
+		{
+			return false;
+		}
+		
+		/*
+		 * Preprocessing the input string - convert to lowercase, remove all non-hex characters, limit to 32 chars
+		 */
+		std::transform(token.begin(), token.end(), token.begin(), [](char x)
+		{	return std::tolower(x);});
+		token.erase(std::remove_if(token.begin(), token.end(), [](char x)
+		{	return (x < 'a' || x > 'f') && !std::isdigit(x);}), token.end());
+		
+		if (token.length() < (MachineIDSize * 2))
+		{
+			return false;
+		}
+		token.resize(MachineIDSize * 2);        // Truncating
+		        
+		/*
+		 * Parsing the string as hex bytes
+		 */
+		auto sym = std::begin(token);
+		for (auto& byte : out_id)
+		{
+			assert(sym != std::end(token));
+			byte = std::stoi(std::string { *sym++, *sym++ }, nullptr, 16);
+		}
+		
+		return true;
+	}
+	
 public:
-    /**
-     * This class can use extra seach locations. If provided, they will be checked first, before default ones.
-     */
-    MachineIDReader(const std::vector<std::string>& extra_search_locations = {})
-        : search_locations_(mergeLists(extra_search_locations, getDefaultSearchLocations()))
-    { }
-
-    /**
-     * Just like @ref readAndGetLocation(), but this one doesn't return location where this ID was obtained from.
-     */
-    MachineID read() const { return readAndGetLocation().first; }
-
-    /**
-     * This function checks available search locations and reads the ID from the first valid location.
-     * It returns std::pair<> with ID and the file path where it was read from.
-     * In case if none of the search locations turned out to be valid, @ref uavcan_linux::Exception will be thrown.
-     */
-    std::pair<MachineID, std::string> readAndGetLocation() const
-    {
-        for (auto x : search_locations_)
-        {
-            auto out = MachineID();
-            if (tryRead(x, out))
-            {
-                return {out, x};
-            }
-        }
-        throw Exception("Failed to read machine ID");
-    }
+	/**
+	 * This class can use extra seach locations. If provided, they will be checked first, before default ones.
+	 */
+	MachineIDReader(const std::vector<std::string>& extra_search_locations = { }) :
+			    search_locations_(mergeLists(extra_search_locations, getDefaultSearchLocations()))
+	{
+	}
+	
+	/**
+	 * Just like @ref readAndGetLocation(), but this one doesn't return location where this ID was obtained from.
+	 */
+	MachineID read() const
+	{
+		return readAndGetLocation().first;
+	}
+	
+	/**
+	 * This function checks available search locations and reads the ID from the first valid location.
+	 * It returns std::pair<> with ID and the file path where it was read from.
+	 * In case if none of the search locations turned out to be valid, @ref uavcan_linux::Exception will be thrown.
+	 */
+	std::pair<MachineID, std::string> readAndGetLocation() const
+	{
+		for (auto x : search_locations_)
+		{
+			auto out = MachineID();
+			if (tryRead(x, out))
+			{
+				return
+				{	out, x};
+			}
+		}
+		throw Exception("Failed to read machine ID");
+	}
 };
 
 /**
@@ -140,38 +145,39 @@ public:
  *  - Node name string (e.g. "org.uavcan.linux_app.dynamic_node_id_server")
  *  - Instance ID byte, e.g. node ID (optional)
  */
-inline std::array<std::uint8_t, 16> makeApplicationID(const MachineIDReader::MachineID& machine_id,
-                                                      const std::string& node_name,
-                                                      const std::uint8_t instance_id = 0)
+inline std::array<std::uint8_t, 16> makeApplicationID(const MachineIDReader::MachineID& machine_id, const std::string& node_name, const std::uint8_t instance_id = 0)
 {
-    union HalfID
-    {
-        std::uint64_t num;
-        std::uint8_t bytes[8];
+	union HalfID
+	{
+		std::uint64_t num;
+		std::uint8_t bytes[8];
 
-        HalfID(std::uint64_t arg_num) : num(arg_num) { }
-    };
-
-    std::array<std::uint8_t, 16> out;
-
-    // First 8 bytes of the application ID are CRC64 of the machine ID in native byte order
-    {
-        uavcan::DataTypeSignatureCRC crc;
-        crc.add(machine_id.data(), static_cast<unsigned>(machine_id.size()));
-        HalfID half(crc.get());
-        std::copy_n(half.bytes, 8, out.begin());
-    }
-
-    // Last 8 bytes of the application ID are CRC64 of the node name and optionally node ID
-    {
-        uavcan::DataTypeSignatureCRC crc;
-        crc.add(reinterpret_cast<const std::uint8_t*>(node_name.c_str()), static_cast<unsigned>(node_name.length()));
-        crc.add(instance_id);
-        HalfID half(crc.get());
-        std::copy_n(half.bytes, 8, out.begin() + 8);
-    }
-
-    return out;
+		HalfID(std::uint64_t arg_num) :
+				    num(arg_num)
+		{
+		}
+	};
+	
+	std::array<std::uint8_t, 16> out;
+	
+	// First 8 bytes of the application ID are CRC64 of the machine ID in native byte order
+	{
+		uavcan::DataTypeSignatureCRC crc;
+		crc.add(machine_id.data(), static_cast<unsigned>(machine_id.size()));
+		HalfID half(crc.get());
+		std::copy_n(half.bytes, 8, out.begin());
+	}
+	
+	// Last 8 bytes of the application ID are CRC64 of the node name and optionally node ID
+	{
+		uavcan::DataTypeSignatureCRC crc;
+		crc.add(reinterpret_cast<const std::uint8_t*>(node_name.c_str()), static_cast<unsigned>(node_name.length()));
+		crc.add(instance_id);
+		HalfID half(crc.get());
+		std::copy_n(half.bytes, 8, out.begin() + 8);
+	}
+	
+	return out;
 }
 
 }

@@ -48,7 +48,7 @@ namespace logger
 class LogWriter
 {
 public:
-
+	
 	/** bitfield to specify a backend */
 	typedef uint8_t Backend;
 	static constexpr Backend BackendFile = 1 << 0;
@@ -60,8 +60,11 @@ public:
 
 	bool init();
 
-	Backend backend() const { return _backend; }
-
+	Backend backend() const
+	{
+		return _backend;
+	}
+	
 	/** stop all running threads and wait for them to exit */
 	void thread_stop();
 
@@ -97,79 +100,109 @@ public:
 	 * @param backend
 	 */
 	void select_write_backend(Backend sel_backend);
-	void unselect_write_backend() { select_write_backend(BackendAll); }
-
+	void unselect_write_backend()
+	{
+		select_write_backend(BackendAll);
+	}
+	
 	/* file logging methods */
 
 	void lock()
 	{
-		if (_log_writer_file) { _log_writer_file->lock(); }
+		if (_log_writer_file)
+		{
+			_log_writer_file->lock();
+		}
 	}
-
+	
 	void unlock()
 	{
-		if (_log_writer_file) { _log_writer_file->unlock(); }
+		if (_log_writer_file)
+		{
+			_log_writer_file->unlock();
+		}
 	}
-
+	
 	void notify()
 	{
-		if (_log_writer_file) { _log_writer_file->notify(); }
+		if (_log_writer_file)
+		{
+			_log_writer_file->notify();
+		}
 	}
-
+	
 	size_t get_total_written_file() const
 	{
-		if (_log_writer_file) { return _log_writer_file->get_total_written(); }
-
+		if (_log_writer_file)
+		{
+			return _log_writer_file->get_total_written();
+		}
+		
 		return 0;
 	}
-
+	
 	size_t get_buffer_size_file() const
 	{
-		if (_log_writer_file) { return _log_writer_file->get_buffer_size(); }
-
+		if (_log_writer_file)
+		{
+			return _log_writer_file->get_buffer_size();
+		}
+		
 		return 0;
 	}
-
+	
 	size_t get_buffer_fill_count_file() const
 	{
-		if (_log_writer_file) { return _log_writer_file->get_buffer_fill_count(); }
-
+		if (_log_writer_file)
+		{
+			return _log_writer_file->get_buffer_fill_count();
+		}
+		
 		return 0;
 	}
-
-
+	
 	/**
 	 * Indicate to the underlying backend whether future write_message() calls need a reliable
 	 * transfer. Needed for header integrity.
 	 */
 	void set_need_reliable_transfer(bool need_reliable)
 	{
-		if (_log_writer_file) { _log_writer_file->set_need_reliable_transfer(need_reliable); }
-
-		if (_log_writer_mavlink) { _log_writer_mavlink->set_need_reliable_transfer(need_reliable); }
+		if (_log_writer_file)
+		{
+			_log_writer_file->set_need_reliable_transfer(need_reliable);
+		}
+		
+		if (_log_writer_mavlink)
+		{
+			_log_writer_mavlink->set_need_reliable_transfer(need_reliable);
+		}
 	}
-
+	
 	bool need_reliable_transfer() const
 	{
-		if (_log_writer_file) { return _log_writer_file->need_reliable_transfer(); }
-
-		if (_log_writer_mavlink) { return _log_writer_mavlink->need_reliable_transfer(); }
-
+		if (_log_writer_file)
+		{
+			return _log_writer_file->need_reliable_transfer();
+		}
+		
+		if (_log_writer_mavlink)
+		{
+			return _log_writer_mavlink->need_reliable_transfer();
+		}
+		
 		return false;
 	}
-
+	
 private:
-
+	
 	LogWriterFile *_log_writer_file = nullptr;
 	LogWriterMavlink *_log_writer_mavlink = nullptr;
 
-	LogWriterFile *_log_writer_file_for_write =
-		nullptr; ///< pointer that is used for writing, to temporarily select write backends
+	LogWriterFile *_log_writer_file_for_write = nullptr; ///< pointer that is used for writing, to temporarily select write backends
 	LogWriterMavlink *_log_writer_mavlink_for_write = nullptr;
 
 	const Backend _backend;
 };
-
 
 }
 }

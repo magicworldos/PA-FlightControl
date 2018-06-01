@@ -33,7 +33,8 @@
 #define __FMC_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup FMC_11XX CHIP: LPC11xx FLASH Memory Controller driver
@@ -44,35 +45,40 @@ extern "C" {
 /**
  * @brief FLASH Memory Controller Unit register block structure
  */
-typedef struct {/*!< FMC Structure */
-	__I  uint32_t  RESERVED1[4];
-	__IO uint32_t  FLASHTIM;
-	__I  uint32_t  RESERVED2[3];
-	__IO uint32_t  FMSSTART;
-	__IO uint32_t  FMSSTOP;
-	__I  uint32_t  RESERVED3;
-	__I  uint32_t  FMSW[4];
-	__I  uint32_t  RESERVED4[25];
+typedef struct
+{/*!< FMC Structure */
+	__I
+	uint32_t RESERVED1[4];__IO
+	uint32_t FLASHTIM;__I
+	uint32_t RESERVED2[3];__IO
+	uint32_t FMSSTART;__IO
+	uint32_t FMSSTOP;__I
+	uint32_t RESERVED3;__I
+	uint32_t FMSW[4];__I
+	uint32_t RESERVED4[25];
 #if defined(CHIP_LPC1125)
-	__I  uint32_t  RESERVED5[977];
+	__I uint32_t RESERVED5[977];
 #else
-	__IO uint32_t  EEMSSTART;
-	__IO uint32_t  EEMSSTOP;
-	__I  uint32_t  EEMSSIG;
-	__I  uint32_t  RESERVED5[974];
+	__IO
+	uint32_t EEMSSTART;__IO
+	uint32_t EEMSSTOP;__I
+	uint32_t EEMSSIG;__I
+	uint32_t RESERVED5[974];
 #endif
-	__I  uint32_t  FMSTAT;
-	__I  uint32_t  RESERVED6;
-	__O  uint32_t  FMSTATCLR;
+	__I
+	uint32_t FMSTAT;__I
+	uint32_t RESERVED6;__O
+	uint32_t FMSTATCLR;
 } LPC_FMC_T;
 
 /**
  * @brief FLASH Access time definitions
  */
-typedef enum {
-	FLASHTIM_20MHZ_CPU = 0,		/*!< Flash accesses use 1 CPU clocks. Use for up to 20 MHz CPU clock*/
-	FLASHTIM_40MHZ_CPU = 1, 	/*!< Flash accesses use 2 CPU clocks. Use for up to 40 MHz CPU clock*/
-	FLASHTIM_50MHZ_CPU = 2, 	/*!< Flash accesses use 3 CPU clocks. Use for up to 50 MHz CPU clock*/
+typedef enum
+{
+	FLASHTIM_20MHZ_CPU = 0, /*!< Flash accesses use 1 CPU clocks. Use for up to 20 MHz CPU clock*/
+	FLASHTIM_40MHZ_CPU = 1, /*!< Flash accesses use 2 CPU clocks. Use for up to 40 MHz CPU clock*/
+	FLASHTIM_50MHZ_CPU = 2, /*!< Flash accesses use 3 CPU clocks. Use for up to 50 MHz CPU clock*/
 } FMC_FLASHTIM_T;
 
 /**
@@ -85,7 +91,7 @@ typedef enum {
 STATIC INLINE void Chip_FMC_SetFLASHAccess(FMC_FLASHTIM_T clks)
 {
 	uint32_t tmp = LPC_FMC->FLASHTIM & (~(0x3));
-
+	
 	/* Don't alter upper bits */
 	LPC_FMC->FLASHTIM = tmp | clks;
 }

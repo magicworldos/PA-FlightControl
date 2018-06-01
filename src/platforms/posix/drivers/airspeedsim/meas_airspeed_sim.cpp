@@ -43,7 +43,6 @@
  *
  */
 
-
 #include <px4_config.h>
 
 #include <sys/types.h>
@@ -91,22 +90,22 @@
 #define MEAS_DRIVER_FILTER_FREQ 1.2f
 #define CONVERSION_INTERVAL	(1000000 / MEAS_RATE)	/* microseconds */
 
-class MEASAirspeedSim : public AirspeedSim
+class MEASAirspeedSim: public AirspeedSim
 {
 public:
 	MEASAirspeedSim(int bus, int address = I2C_ADDRESS_MS4525DO, const char *path = PATH_MS4525);
 
 protected:
-
+	
 	/**
-	* Perform a poll cycle; collect from the previous measurement
-	* and start a new one.
-	*/
-	virtual void	cycle();
-	virtual int	measure();
-	virtual int	collect();
+	 * Perform a poll cycle; collect from the previous measurement
+	 * and start a new one.
+	 */
+	virtual void cycle();
+	virtual int measure();
+	virtual int collect();
 
-	math::LowPassFilter2p	_filter;
+	math::LowPassFilter2p _filter;
 
 	/**
 	 * Correct for 5V rail voltage variations
@@ -122,118 +121,116 @@ protected:
  */
 extern "C" __EXPORT int measairspeedsim_main(int argc, char *argv[]);
 
-MEASAirspeedSim::MEASAirspeedSim(int bus, int address, const char *path) : AirspeedSim(bus, address,
-			CONVERSION_INTERVAL, path),
-	_filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
-	_t_system_power(-1),
-	system_power{}
-{}
+MEASAirspeedSim::MEASAirspeedSim(int bus, int address, const char *path) :
+		    AirspeedSim(bus, address,
+		    CONVERSION_INTERVAL, path),
+		    _filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
+		    _t_system_power(-1),
+		    system_power { }
+{
+}
 
-int
-MEASAirspeedSim::measure()
+int MEASAirspeedSim::measure()
 {
 	int ret;
-
+	
 	/*
 	 * Send the command to begin a measurement.
 	 */
 	uint8_t cmd = 0;
 	ret = transfer(&cmd, 1, nullptr, 0);
-
+	
 	if (OK != ret)
 	{
-		perf_count(_comms_errors);
+		perf_count (_comms_errors);
 	}
-
+	
 	return ret;
 }
 
-int
-MEASAirspeedSim::collect()
+int MEASAirspeedSim::collect()
 {
-	int	ret = -EIO;
-
+	int ret = -EIO;
+	
 	/* read from the sensor */
 #pragma pack(push, 1)
 	struct
 	{
-		float		temperature;
-		float		diff_pressure;
+		float temperature;
+		float diff_pressure;
 	} airspeed_report;
 #pragma pack(pop)
-
-
-	perf_begin(_sample_perf);
-
-	ret = transfer(nullptr, 0, (uint8_t *)&airspeed_report, sizeof(airspeed_report));
-
+	
+	perf_begin (_sample_perf);
+	
+	ret = transfer(nullptr, 0, (uint8_t *) &airspeed_report, sizeof(airspeed_report));
+	
 	if (ret < 0)
 	{
-		perf_count(_comms_errors);
+		perf_count (_comms_errors);
 		perf_end(_sample_perf);
 		return ret;
 	}
-
+	
 	uint8_t status = 0;
-
+	
 	switch (status)
 	{
 		case 0:
 			break;
-
+			
 		case 1:
 
-		/* fallthrough */
+			/* fallthrough */
 		case 2:
 
-		/* fallthrough */
+			/* fallthrough */
 		case 3:
-			perf_count(_comms_errors);
+			perf_count (_comms_errors);
 			perf_end(_sample_perf);
 			return -EAGAIN;
 	}
-
+	
 	float temperature = airspeed_report.temperature;
 	float diff_press_pa_raw = airspeed_report.diff_pressure * 100.0f; // convert from millibar to bar
-
+	        
 	struct differential_pressure_s report;
-
+	
 	report.timestamp = hrt_absolute_time();
 	report.error_count = perf_event_count(_comms_errors);
 	report.temperature = temperature;
 	report.differential_pressure_filtered_pa = _filter.apply(diff_press_pa_raw);
 	report.differential_pressure_raw_pa = diff_press_pa_raw;
-
+	
 	if (_airspeed_pub != nullptr && !(_pub_blocked))
 	{
 		/* publish it */
 		orb_publish(ORB_ID(differential_pressure), _airspeed_pub, &report);
 	}
-
+	
 	new_report(report);
-
+	
 	/* notify anyone waiting for data */
 	poll_notify(POLLIN);
-
+	
 	ret = OK;
-
+	
 	perf_end(_sample_perf);
-
+	
 	return ret;
 }
 
-void
-MEASAirspeedSim::cycle()
+void MEASAirspeedSim::cycle()
 {
 	int ret;
-
+	
 	/* collection phase? */
 	if (_collect_phase)
 	{
-
+		
 		/* perform collection */
 		ret = collect();
-
+		
 		if (OK != ret)
 		{
 			/* restart the measurement state machine */
@@ -241,46 +238,38 @@ MEASAirspeedSim::cycle()
 			_sensor_ok = false;
 			return;
 		}
-
+		
 		/* next phase is measurement */
 		_collect_phase = false;
-
+		
 		/*
 		 * Is there a collect->measure gap?
 		 */
 		if (_measure_ticks > USEC2TICK(CONVERSION_INTERVAL))
 		{
-
+			
 			/* schedule a fresh cycle call when we are ready to measure again */
-			work_queue(HPWORK,
-				   &_work,
-				   (worker_t)&AirspeedSim::cycle_trampoline,
-				   this,
-				   _measure_ticks - USEC2TICK(CONVERSION_INTERVAL));
-
+			work_queue(HPWORK, &_work, (worker_t) & AirspeedSim::cycle_trampoline, this, _measure_ticks - USEC2TICK(CONVERSION_INTERVAL));
+			
 			return;
 		}
 	}
-
+	
 	/* measurement phase */
 	ret = measure();
-
+	
 	if (OK != ret)
 	{
 		DEVICE_DEBUG("measure error");
 	}
-
+	
 	_sensor_ok = (ret == OK);
-
+	
 	/* next phase is collection */
 	_collect_phase = true;
-
+	
 	/* schedule a fresh cycle call when the measurement is done */
-	work_queue(HPWORK,
-		   &_work,
-		   (worker_t)&AirspeedSim::cycle_trampoline,
-		   this,
-		   USEC2TICK(CONVERSION_INTERVAL));
+	work_queue(HPWORK, &_work, (worker_t) & AirspeedSim::cycle_trampoline, this, USEC2TICK(CONVERSION_INTERVAL));
 }
 
 /**
@@ -289,13 +278,13 @@ MEASAirspeedSim::cycle()
 namespace meas_airspeed_sim
 {
 
-MEASAirspeedSim	*g_dev = nullptr;
+MEASAirspeedSim *g_dev = nullptr;
 
-int	start(int i2c_bus);
-int	stop();
+int start(int i2c_bus);
+int stop();
 int test();
-int	reset();
-int	info();
+int reset();
+int info();
 
 /**
  * Start the driver.
@@ -303,67 +292,66 @@ int	info();
  * This function call only returns once the driver is up and running
  * or failed to detect the sensor.
  */
-int
-start(int i2c_bus)
+int start(int i2c_bus)
 {
 	int fd;
-
+	
 	if (g_dev != nullptr)
 	{
 		PX4_WARN("already started");
 	}
-
+	
 	/* create the driver, try the MS4525DO first */
 	g_dev = new MEASAirspeedSim(i2c_bus, I2C_ADDRESS_MS4525DO, PATH_MS4525);
-
+	
 	/* check if the MS4525DO was instantiated */
 	if (g_dev == nullptr)
 	{
 		goto fail;
 	}
-
+	
 	/* try the MS5525DSO next if init fails */
 	if (OK != g_dev->AirspeedSim::init())
 	{
 		delete g_dev;
 		g_dev = new MEASAirspeedSim(i2c_bus, I2C_ADDRESS_MS5525DSO, PATH_MS5525);
-
+		
 		/* check if the MS5525DSO was instantiated */
 		if (g_dev == nullptr)
 		{
 			goto fail;
 		}
-
+		
 		/* both versions failed if the init for the MS5525DSO fails, give up */
 		if (OK != g_dev->AirspeedSim::init())
 		{
 			goto fail;
 		}
 	}
-
+	
 	/* set the poll rate to default, starts automatic data collection */
 	fd = px4_open(PATH_MS4525, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		goto fail;
 	}
-
+	
 	if (px4_ioctl(fd, SENSORIOCSPOLLRATE, SENSOR_POLLRATE_DEFAULT) < 0)
 	{
 		goto fail;
 	}
-
+	
 	return 0;
-
-fail:
+	
+	fail:
 
 	if (g_dev != nullptr)
 	{
 		delete g_dev;
 		g_dev = nullptr;
 	}
-
+	
 	PX4_ERR("no MS4525 airspeedSim sensor connected");
 	return 1;
 }
@@ -371,20 +359,19 @@ fail:
 /**
  * Stop the driver
  */
-int
-stop()
+int stop()
 {
 	if (g_dev != nullptr)
 	{
 		delete g_dev;
 		g_dev = nullptr;
-
+		
 	}
 	else
 	{
 		PX4_ERR("driver not running");
 	}
-
+	
 	return 0;
 }
 
@@ -393,135 +380,130 @@ stop()
  * make sure we can collect data from the sensor in polled
  * and automatic modes.
  */
-int
-test()
+int test()
 {
 	struct differential_pressure_s report;
 	ssize_t sz;
 	int ret;
-
+	
 	int fd = px4_open(PATH_MS4525, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		PX4_ERR("%s open failed (try 'meas_airspeed_sim start' if the driver is not running", PATH_MS4525);
 		return 1;
 	}
-
+	
 	/* do a simple demand read */
 	sz = px4_read(fd, &report, sizeof(report));
-
+	
 	if (sz != sizeof(report))
 	{
 		PX4_ERR("immediate read failed");
 		return 1;
 	}
-
+	
 	PX4_WARN("single read");
-	PX4_WARN("diff pressure: %d pa", (int)report.differential_pressure_filtered_pa);
-
+	PX4_WARN("diff pressure: %d pa", (int )report.differential_pressure_filtered_pa);
+	
 	/* start the sensor polling at 2Hz */
 	if (OK != px4_ioctl(fd, SENSORIOCSPOLLRATE, 2))
 	{
 		PX4_WARN("failed to set 2Hz poll rate");
 	}
-
+	
 	/* read the sensor 5x and report each value */
 	for (unsigned i = 0; i < 5; i++)
 	{
 		struct pollfd fds;
-
+		
 		/* wait for data to be ready */
 		fds.fd = fd;
 		fds.events = POLLIN;
 		ret = poll(&fds, 1, 2000);
-
+		
 		if (ret != 1)
 		{
 			warnx("timed out");
 		}
-
+		
 		/* now go get it */
 		sz = read(fd, &report, sizeof(report));
-
+		
 		if (sz != sizeof(report))
 		{
 			PX4_WARN("periodic read failed");
 		}
-
+		
 		PX4_WARN("periodic read %u", i);
-		PX4_WARN("diff pressure: %d pa", (int)report.differential_pressure_filtered_pa);
-		PX4_WARN("temperature: %d C (0x%02x)", (int)report.temperature, (unsigned) report.temperature);
+		PX4_WARN("diff pressure: %d pa", (int )report.differential_pressure_filtered_pa);
+		PX4_WARN("temperature: %d C (0x%02x)", (int )report.temperature, (unsigned ) report.temperature);
 	}
-
+	
 	/* reset the sensor polling to its default rate */
 	if (OK != ioctl(fd, SENSORIOCSPOLLRATE, SENSOR_POLLRATE_DEFAULT))
 	{
 		PX4_ERR("failed to set default rate");
 		return 1;
 	}
-
+	
 	PX4_WARN("PASS");
-
+	
 	return 0;
 }
 
 /**
  * Reset the driver.
  */
-int
-reset()
+int reset()
 {
 	int fd = open(PATH_MS4525, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		PX4_ERR("failed ");
 		return 1;
 	}
-
+	
 	if (ioctl(fd, SENSORIOCRESET, 0) < 0)
 	{
 		PX4_ERR("driver reset failed");
 		close(fd);
 		return 1;
 	}
-
+	
 	if (ioctl(fd, SENSORIOCSPOLLRATE, SENSOR_POLLRATE_DEFAULT) < 0)
 	{
 		PX4_ERR("driver poll restart failed");
 		close(fd);
 		return 1;
 	}
-
+	
 	close(fd);
-
+	
 	return 0;
 }
 
 /**
  * Print a little info about the driver.
  */
-int
-info()
+int info()
 {
 	if (g_dev == nullptr)
 	{
 		PX4_WARN("driver not running");
 		return -1;
 	}
-
+	
 	printf("state @ %p\n", g_dev);
 	g_dev->print_info();
-
+	
 	return 0;
 }
 
 } // namespace
 
-
-static void
-meas_airspeed_usage()
+static void meas_airspeed_usage()
 {
 	PX4_WARN("usage: measairspeedsim command [options]");
 	PX4_WARN("options:");
@@ -530,13 +512,12 @@ meas_airspeed_usage()
 	PX4_WARN("\tstart|stop|reset|test|info");
 }
 
-int
-measairspeedsim_main(int argc, char *argv[])
+int measairspeedsim_main(int argc, char *argv[])
 {
-	int i2c_bus = 1;//PX4_I2C_BUS_DEFAULT;
-
+	int i2c_bus = 1; //PX4_I2C_BUS_DEFAULT;
+	
 	int i;
-
+	
 	for (i = 1; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--bus") == 0)
@@ -547,9 +528,9 @@ measairspeedsim_main(int argc, char *argv[])
 			}
 		}
 	}
-
+	
 	int ret = 1;
-
+	
 	/*
 	 * Start/load the driver.
 	 */
@@ -557,7 +538,7 @@ measairspeedsim_main(int argc, char *argv[])
 	{
 		return meas_airspeed_sim::start(i2c_bus);
 	}
-
+	
 	/*
 	 * Stop the driver
 	 */
@@ -565,7 +546,7 @@ measairspeedsim_main(int argc, char *argv[])
 	{
 		return meas_airspeed_sim::stop();
 	}
-
+	
 	/*
 	 * Test the driver/device.
 	 */
@@ -573,7 +554,7 @@ measairspeedsim_main(int argc, char *argv[])
 	{
 		return meas_airspeed_sim::test();
 	}
-
+	
 	/*
 	 * Reset the driver.
 	 */
@@ -581,7 +562,7 @@ measairspeedsim_main(int argc, char *argv[])
 	{
 		return meas_airspeed_sim::reset();
 	}
-
+	
 	/*
 	 * Print driver information.
 	 */
@@ -589,7 +570,7 @@ measairspeedsim_main(int argc, char *argv[])
 	{
 		return meas_airspeed_sim::info();
 	}
-
+	
 	meas_airspeed_usage();
 	return ret;
 }

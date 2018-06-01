@@ -58,7 +58,6 @@
  * on test HW as well as R and G LEDs on UI LED are swapped
  */
 //#define PX4_FMUV5_RC00
-
 #define PX4_FMUV5_RC01
 #define BOARD_HAS_LTC4417
 
@@ -81,7 +80,6 @@
 #define GPIO_nLED_RED        /* PB1 */  (GPIO_OUTPUT|GPIO_OPENDRAIN|GPIO_SPEED_50MHz|GPIO_OUTPUT_SET|GPIO_PORTB|GPIO_PIN1)
 #define GPIO_nLED_GREEN      /* PC6 */  (GPIO_OUTPUT|GPIO_OPENDRAIN|GPIO_SPEED_50MHz|GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN6)
 #define GPIO_nLED_BLUE       /* PC7 */  (GPIO_OUTPUT|GPIO_OPENDRAIN|GPIO_SPEED_50MHz|GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN7)
-
 
 /* SENSORS are on SPI1, 5, 6
  * MEMORY is on bus SPI2
@@ -153,7 +151,6 @@
 #define SPI6_CS3_EXTERNAL2     /* PI8  */  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTI|GPIO_PIN8)
 #define SPIAUX_CS_MEM          /* PH5  */  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTH|GPIO_PIN5)
 
-
 /*
  *  Define the ability to shut off off the sensor signals
  *  by changing the signals to inputs
@@ -161,16 +158,13 @@
 
 #define _PIN_OFF(def) (((def) & (GPIO_PORT_MASK | GPIO_PIN_MASK)) | (GPIO_INPUT|GPIO_PULLDOWN|GPIO_SPEED_2MHz))
 
-
 #define GPIO_DRDY_OFF_SPI5_DRDY7_EXTERNAL1   _PIN_OFF(GPIO_SPI5_DRDY7_EXTERNAL1)
-
 
 /* v BEGIN Legacy SPI defines TODO: fix this with enumeration */
 #define PX4_SPI_BUS_RAMTRON  PX4_SPI_BUS_MEMORY
 #define PX4_SPIDEV_BMA 0
 #define PX4_SPIDEV_BMI 0
 /* ^ END Legacy SPI defines TODO: fix this with enumeration */
-
 
 #define PX4_SPIDEV_ICM_20689      PX4_MK_SPI_SEL(PX4_SPI_BUS_SENSORS,0)
 #define PX4_SPIDEV_ICM_20602      PX4_MK_SPI_SEL(PX4_SPI_BUS_SENSORS,1)
@@ -206,7 +200,6 @@
 #define PX4_EXTERNAL2_BUS_CS_GPIO  {SPI6_CS1_EXTERNAL2, SPI6_CS2_EXTERNAL2, SPI6_CS3_EXTERNAL2, SPIAUX_CS_MEM}
 #define PX4_EXTERNAL2_BUS_FIRST_CS  PX4_SPIDEV_EXTERNAL2_1
 #define PX4_EXTERNAL2_BUS_LAST_CS   PX4_SPIDEV_AUX_MEM
-
 
 /* I2C busses */
 
@@ -406,7 +399,6 @@
 #define UI_LED_TIM5_CH2OUT /* PH11  T5C2  GREEN */ GPIO_TIM5_CH2OUT_2
 #define UI_LED_TIM5_CH3OUT /* PH12  T5C3  BLUE  */ GPIO_TIM5_CH3OUT_2
 
-
 /* User GPIOs
  *
  * GPIO0-5 are the PWM servo outputs.
@@ -433,7 +425,6 @@
 #define GPIO_GPIO2_OUTPUT        /* PE11  T1C2   FMU3 */ _MK_GPIO_OUTPUT(GPIO_TIM1_CH2OUT)
 #define GPIO_GPIO1_OUTPUT        /* PA10  T1C3   FMU2 */ _MK_GPIO_OUTPUT(GPIO_TIM1_CH3OUT)
 #define GPIO_GPIO0_OUTPUT        /* PE14  T1C4   FMU1 */ _MK_GPIO_OUTPUT(GPIO_TIM1_CH4OUT)
-
 
 /* Power supply control and monitoring GPIOs */
 
@@ -462,7 +453,6 @@
 #define GPIO_VDD_5V_RC_EN               /* PG5  */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTG|GPIO_PIN5)
 #define GPIO_VDD_5V_WIFI_EN             /* PG6  */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTG|GPIO_PIN5)
 #define GPIO_VDD_3V3_SD_CARD_EN         /* PG7  */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTG|GPIO_PIN7)
-
 
 /* Define True logic Power Control in arch agnostic form */
 
@@ -525,7 +515,6 @@
 #define GPIO_SAFETY_SWITCH_IN              /* PE10 */ (GPIO_INPUT|GPIO_PULLUP|GPIO_PORTE|GPIO_PIN10)
 
 #define INVERT_RC_INPUT(_invert_true)      board_rc_input(_invert_true);
-
 
 /* Power switch controls ******************************************************/
 
@@ -758,7 +747,6 @@ void board_spi_reset(int ms);
 extern void stm32_usbinitialize(void);
 
 extern void board_peripheral_reset(int ms);
-
 
 /****************************************************************************
  * Name: nsh_archinitialize

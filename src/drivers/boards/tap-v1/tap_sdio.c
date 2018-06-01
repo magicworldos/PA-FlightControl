@@ -103,22 +103,22 @@ __EXPORT int board_sdio_initialize(void)
 	/* Get the SPI port for the microSD slot */
 
 	spi = stm32_spibus_initialize(CONFIG_NSH_MMCSDSPIPORTNO);
-
+	
 	if (!spi)
 	{
 		message("[boot] FAILED to initialize SPI port %d\n", CONFIG_NSH_MMCSDSPIPORTNO);
 		return -ENODEV;
 	}
-
+	
 	/* Now bind the SPI interface to the MMCSD driver */
 	int result = mmcsd_spislotinitialize(CONFIG_NSH_MMCSDMINOR, CONFIG_NSH_MMCSDSLOTNO, spi);
-
+	
 	if (result != OK)
 	{
 		message("[boot] FAILED to bind SPI port 2 to the MMCSD driver\n");
 		return -ENODEV;
 	}
-
+	
 	return OK;
 }
 

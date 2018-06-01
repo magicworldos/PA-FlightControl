@@ -50,31 +50,31 @@
 namespace launchdetection
 {
 
-class CatapultLaunchMethod : public LaunchMethod, public control::SuperBlock
+class CatapultLaunchMethod: public LaunchMethod, public control::SuperBlock
 {
 public:
 	CatapultLaunchMethod(SuperBlock *parent);
 	~CatapultLaunchMethod() override = default;
-
+	
 	void update(float accel_x) override;
 	LaunchDetectionResult getLaunchDetected() const override;
 	void reset() override;
 	float getPitchMax(float pitchMaxDefault) override;
 
 private:
-	hrt_abstime last_timestamp{0};
-	float integrator{0.0f};
-	float motorDelayCounter{0.0f};
+	hrt_abstime last_timestamp { 0 };
+	float integrator { 0.0f };
+	float motorDelayCounter { 0.0f };
 
-	LaunchDetectionResult state{LAUNCHDETECTION_RES_NONE};
+	LaunchDetectionResult state { LAUNCHDETECTION_RES_NONE };
 
 	control::BlockParamFloat thresholdAccel;
 	control::BlockParamFloat thresholdTime;
 	control::BlockParamFloat motorDelay;
 	control::BlockParamFloat pitchMaxPreThrottle; /**< Upper pitch limit before throttle is turned on.
-						       Can be used to make sure that the AC does not climb
-						       too much while attached to a bungee */
-
+	 Can be used to make sure that the AC does not climb
+	 too much while attached to a bungee */
+	
 };
 
 #endif /* CATAPULTLAUNCHMETHOD_H_ */

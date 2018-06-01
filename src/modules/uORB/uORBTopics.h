@@ -40,11 +40,13 @@
  * Returns count of all declared topics.
  * It is equal to size of array from orb_get_topics()
  */
-extern size_t orb_topics_count() __EXPORT;
+extern size_t orb_topics_count()
+__EXPORT;
 
 /*
  * Returns array of topics metadata
  */
-extern const struct orb_metadata **orb_get_topics() __EXPORT;
+extern const struct orb_metadata **orb_get_topics()
+__EXPORT;
 
 #endif /* MODULES_UORB_UORBTOPICS_H_ */

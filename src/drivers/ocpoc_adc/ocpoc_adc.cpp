@@ -74,14 +74,14 @@ protected:
 	virtual void _measure() override;
 
 private:
-	int read(px4_adc_msg_t(*buf)[PX4_MAX_ADC_CHANNELS], unsigned int len);
+	int read(px4_adc_msg_t (*buf)[PX4_MAX_ADC_CHANNELS], unsigned int len);
 
 	pthread_mutex_t _samples_lock;
 	px4_adc_msg_t _samples;
 };
 
-OcpocADC::OcpocADC()
-	: DriverFramework::VirtDevObj("ocpoc_adc", ADC0_DEVICE_PATH, ADC_BASE_DEV_PATH, 1e6 / 100)
+OcpocADC::OcpocADC() :
+		    DriverFramework::VirtDevObj("ocpoc_adc", ADC0_DEVICE_PATH, ADC_BASE_DEV_PATH, 1e6 / 100)
 {
 	pthread_mutex_init(&_samples_lock, NULL);
 }
@@ -94,14 +94,14 @@ OcpocADC::~OcpocADC()
 void OcpocADC::_measure()
 {
 	px4_adc_msg_t tmp_samples[PX4_MAX_ADC_CHANNELS];
-
+	
 	int ret = read(&tmp_samples, sizeof(tmp_samples));
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("ocpoc_adc_read: %d", ret);
 	}
-
+	
 	pthread_mutex_lock(&_samples_lock);
 	memcpy(&_samples, &tmp_samples, sizeof(tmp_samples));
 	pthread_mutex_unlock(&_samples_lock);
@@ -110,15 +110,15 @@ void OcpocADC::_measure()
 int OcpocADC::init()
 {
 	int ret;
-
+	
 	ret = DriverFramework::VirtDevObj::init();
-
+	
 	if (ret != PX4_OK)
 	{
 		PX4_ERR("init failed");
 		return ret;
 	}
-
+	
 	return PX4_OK;
 }
 
@@ -131,54 +131,54 @@ ssize_t OcpocADC::devRead(void *buf, size_t count)
 {
 	const size_t maxsize = sizeof(_samples);
 	int ret;
-
+	
 	if (count > maxsize)
 	{
 		count = maxsize;
 	}
-
+	
 	ret = pthread_mutex_trylock(&_samples_lock);
-
+	
 	if (ret != 0)
 	{
 		return 0;
 	}
-
+	
 	memcpy(buf, &_samples, count);
 	pthread_mutex_unlock(&_samples_lock);
-
+	
 	return count;
 }
 
-int OcpocADC::read(px4_adc_msg_t(*buf)[PX4_MAX_ADC_CHANNELS], unsigned int len)
+int OcpocADC::read(px4_adc_msg_t (*buf)[PX4_MAX_ADC_CHANNELS], unsigned int len)
 {
 	uint32_t buff[1];
 	int ret = 0;
-
+	
 	FILE *xadc_fd = fopen(ADC_VOLTAGE_PATH, "r");
-
+	
 	if (xadc_fd != NULL)
 	{
 		int ret_tmp = fscanf(xadc_fd, "%d", buff);
-
+		
 		if (ret_tmp < 0)
 		{
 			ret = ret_tmp;
 		}
-
+		
 		fclose(xadc_fd);
-
+		
 		(*buf)[0].am_data = buff[0];
-
+		
 	}
 	else
 	{
 		(*buf)[0].am_data = 0;
 		ret = -1;
 	}
-
+	
 	(*buf)[0].am_channel = ADC_BATTERY_VOLTAGE_CHANNEL;
-
+	
 	return ret;
 }
 
@@ -187,13 +187,13 @@ static OcpocADC *instance = nullptr;
 int ocpoc_adc_main(int argc, char *argv[])
 {
 	int ret;
-
+	
 	if (argc < 2)
 	{
 		PX4_WARN("usage: {start|stop|test}");
 		return PX4_ERROR;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
 		if (instance)
@@ -201,15 +201,15 @@ int ocpoc_adc_main(int argc, char *argv[])
 			PX4_WARN("already started");
 			return PX4_OK;
 		}
-
+		
 		instance = new OcpocADC;
-
+		
 		if (!instance)
 		{
 			PX4_WARN("not enough memory");
 			return PX4_ERROR;
 		}
-
+		
 		if (instance->init() != PX4_OK)
 		{
 			delete instance;
@@ -217,9 +217,9 @@ int ocpoc_adc_main(int argc, char *argv[])
 			PX4_WARN("init failed");
 			return PX4_ERROR;
 		}
-
+		
 		return PX4_OK;
-
+		
 	}
 	else if (!strcmp(argv[1], "stop"))
 	{
@@ -228,11 +228,11 @@ int ocpoc_adc_main(int argc, char *argv[])
 			PX4_WARN("already stopped");
 			return PX4_OK;
 		}
-
+		
 		delete instance;
 		instance = nullptr;
 		return PX4_OK;
-
+		
 	}
 	else if (!strcmp(argv[1], "test"))
 	{
@@ -241,32 +241,32 @@ int ocpoc_adc_main(int argc, char *argv[])
 			PX4_ERR("start first");
 			return PX4_ERROR;
 		}
-
+		
 		px4_adc_msg_t adc_msgs[PX4_MAX_ADC_CHANNELS];
-
-		ret = instance->devRead((char *)&adc_msgs, sizeof(adc_msgs));
-
+		
+		ret = instance->devRead((char *) &adc_msgs, sizeof(adc_msgs));
+		
 		if (ret < 0)
 		{
 			PX4_ERR("ret: %s (%d)\n", strerror(ret), ret);
 			return ret;
-
+			
 		}
 		else
 		{
 			PX4_INFO("ADC Data: %d", adc_msgs[0].am_data);
 		}
-
+		
 		return PX4_OK;
-
+		
 	}
 	else
 	{
 		PX4_WARN("action (%s) not supported", argv[1]);
-
+		
 		return PX4_ERROR;
 	}
-
+	
 	return PX4_OK;
-
+	
 }

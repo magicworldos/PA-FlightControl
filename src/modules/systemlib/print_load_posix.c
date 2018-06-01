@@ -65,34 +65,34 @@ extern struct system_load_s system_load;
 
 void init_print_load_s(uint64_t t, struct print_load_s *s)
 {
-
+	
 	s->total_user_time = 0;
-
+	
 	s->running_count = 0;
 	s->blocked_count = 0;
-
+	
 	s->new_time = t;
 	s->interval_start_time = t;
-
+	
 	for (int i = 0; i < CONFIG_MAX_TASKS; i++)
 	{
 		s->last_times[i] = 0;
 	}
-
+	
 	s->interval_time_ms_inv = 0.f;
 }
 
 void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 {
 	char *clear_line = "";
-
+	
 	/* print system information */
 	if (fd == 1)
 	{
 		dprintf(fd, "\033[H"); /* move cursor home and clear screen */
 		clear_line = CL;
 	}
-
+	
 #if defined(__PX4_LINUX) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
 	dprintf(fd, "%sTOP NOT IMPLEMENTED ON LINUX, QURT, WINDOWS (ONLY ON NUTTX, APPLE)\n", clear_line);
 
@@ -108,7 +108,7 @@ void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 	kern_return_t kr = task_info(task_handle, TASK_BASIC_INFO, (task_info_t)tinfo, &th_info_cnt);
 
 	if (kr != KERN_SUCCESS)
-	{
+	{	
 		return;
 	}
 
@@ -125,13 +125,13 @@ void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 	kr = task_threads(task_handle, &thread_list, &th_cnt);
 
 	if (kr != KERN_SUCCESS)
-	{
+	{	
 		PX4_WARN("ERROR getting thread list");
 		return;
 	}
 
 	if (th_cnt > 0)
-	{
+	{	
 		stat_thread += th_cnt;
 	}
 
@@ -140,17 +140,17 @@ void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 	long tot_cpu = 0;
 
 	dprintf(fd, "%sThreads: %d total\n",
-		clear_line,
-		th_cnt);
+			clear_line,
+			th_cnt);
 
 	for (int j = 0; j < th_cnt; j++)
-	{
+	{	
 		thread_info_count = THREAD_INFO_MAX;
 		kr = thread_info(thread_list[j], THREAD_BASIC_INFO,
-				 (thread_info_t)th_info_data, &thread_info_count);
+				(thread_info_t)th_info_data, &thread_info_count);
 
 		if (kr != KERN_SUCCESS)
-		{
+		{	
 			PX4_WARN("ERROR getting thread info");
 			continue;
 		}
@@ -158,25 +158,25 @@ void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 		basic_info_th = (thread_basic_info_t)th_info_data;
 
 		if (!(basic_info_th->flags & TH_FLAGS_IDLE))
-		{
+		{	
 			tot_sec = tot_sec + basic_info_th->user_time.seconds + basic_info_th->system_time.seconds;
 			tot_usec = tot_usec + basic_info_th->system_time.microseconds + basic_info_th->system_time.microseconds;
 			tot_cpu = tot_cpu + basic_info_th->cpu_usage;
 		}
 
 		// char tname[128];
-
+		
 		// int ret = pthread_getname_np(pthread_t *thread,
 		//                      const char *name, size_t len);
-
+		
 		dprintf(fd, "thread %d\t\t %d\n", j, basic_info_th->cpu_usage);
 	}
 
 	kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list,
-			   th_cnt * sizeof(thread_t));
+			th_cnt * sizeof(thread_t));
 
 	if (kr != KERN_SUCCESS)
-	{
+	{	
 		PX4_WARN("ERROR cleaning up thread info");
 		return;
 	}
@@ -184,9 +184,8 @@ void print_load(uint64_t t, int fd, struct print_load_s *print_state)
 #endif
 }
 
-void print_load_buffer(uint64_t t, char *buffer, int buffer_length, print_load_callback_f cb, void *user,
-		       struct print_load_s *print_state)
+void print_load_buffer(uint64_t t, char *buffer, int buffer_length, print_load_callback_f cb, void *user, struct print_load_s *print_state)
 {
-
+	
 }
 

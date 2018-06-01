@@ -15,7 +15,8 @@ extern "C"
 
 typedef enum
 {
-    BIG_ENDIANNESS, LITTLE_ENDIANNESS
+	BIG_ENDIANNESS,
+	LITTLE_ENDIANNESS
 } Endianness;
 
 #define NCDR_TRUE 0
@@ -23,30 +24,30 @@ typedef enum
 
 typedef struct microCDR
 {
+	
+	struct microBuffer * m_microBuffer;
 
-    struct microBuffer * m_microBuffer;
+	//! @brief The position in the buffer when the state was created.
+	char * m_currentPosition;
 
-    //! @brief The position in the buffer when the state was created.
-    char * m_currentPosition;
+	//! @brief This variable indicates the actual position in the stream.
+	uint32_t m_iterator;
 
-    //! @brief This variable indicates the actual position in the stream.
-    uint32_t m_iterator;
+	//! @brief Pointer to the align position.
+	char * m_alignPosition;
 
-    //! @brief Pointer to the align position.
-    char * m_alignPosition;
+	//! @brief Endianness of the buffer
+	Endianness m_endianness;
 
-    //! @brief Endianness of the buffer
-    Endianness m_endianness;
+	//! @brief This variable indicates if the library must swap the words.
+	uint8_t m_swapBytes;
 
-    //! @brief This variable indicates if the library must swap the words.
-    uint8_t m_swapBytes;
+	//! @brief Stores the last datasize serialized/deserialized when the state was created.
+	uint32_t m_lastDataSize;
 
-    //! @brief Stores the last datasize serialized/deserialized when the state was created.
-    uint32_t m_lastDataSize;
-
-    //! @brief Coppy of internal buffer.
-    char * m_buffer;
-
+	//! @brief Coppy of internal buffer.
+	char * m_buffer;
+	
 } microCDR;
 
 /*!
@@ -81,8 +82,7 @@ microcdr_DllAPI void resetStaticMicroCDRForDeserialize(struct microCDR *m_microC
  * @param bufferSize The length of user's buffer.
  * @param m_microBuffer Final microBuffer.
  */
-microcdr_DllAPI void newDeserializedNonAlignedBuffer(char *buffer, uint32_t bufferSize,
-        struct microBuffer **m_microBuffer);
+microcdr_DllAPI void newDeserializedNonAlignedBuffer(char *buffer, uint32_t bufferSize, struct microBuffer **m_microBuffer);
 
 /*!
  * @brief This function initialize a already created microBuffer as non aligned stream of bytes to deserialize.
@@ -90,8 +90,7 @@ microcdr_DllAPI void newDeserializedNonAlignedBuffer(char *buffer, uint32_t buff
  * @param bufferSize The length of user's buffer.
  * @param m_microBuffer Pointer to already allocated microBuffer.
  */
-microcdr_DllAPI void initDeserializedNonAlignedBuffer(char *buffer, uint32_t bufferSize,
-        struct microBuffer *m_microBuffer);
+microcdr_DllAPI void initDeserializedNonAlignedBuffer(char *buffer, uint32_t bufferSize, struct microBuffer *m_microBuffer);
 
 /*!
  * @brief This function creates a static aligned stream of bytes.
@@ -99,8 +98,7 @@ microcdr_DllAPI void initDeserializedNonAlignedBuffer(char *buffer, uint32_t buf
  * @param bufferSize The length of user's buffer.
  * @param m_microBuffer Final microBuffer.
  */
-microcdr_DllAPI void newDeserializedAlignedBuffer(char * buffer, uint32_t bufferSize,
-        struct microBuffer ** m_microBuffer);
+microcdr_DllAPI void newDeserializedAlignedBuffer(char * buffer, uint32_t bufferSize, struct microBuffer ** m_microBuffer);
 
 /*!
  * @brief This function initialize a already created microBuffer as a static aligned stream of bytes.
@@ -108,8 +106,7 @@ microcdr_DllAPI void newDeserializedAlignedBuffer(char * buffer, uint32_t buffer
  * @param bufferSize The length of user's buffer.
  * @param m_microBuffer Pointer to already allocated microBuffer.
  */
-microcdr_DllAPI void initDeserializedAlignedBuffer(char *buffer, uint32_t bufferSize,
-        struct microBuffer *m_microBuffer);
+microcdr_DllAPI void initDeserializedAlignedBuffer(char *buffer, uint32_t bufferSize, struct microBuffer *m_microBuffer);
 
 /*!
  * @brief This function creates a dynamic aligned stream of bytes.
@@ -281,8 +278,7 @@ microcdr_DllAPI int8_t serializeString(const char * string_t, const uint32_t len
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeStringEndianness(const char * string_t, const uint32_t length_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeStringEndianness(const char * string_t, const uint32_t length_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a character.
@@ -327,8 +323,7 @@ microcdr_DllAPI int8_t deserializeString(char ** string_t, uint32_t * strlen_t, 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeStringEndianness(char ** string_t, uint32_t * strlen_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeStringEndianness(char ** string_t, uint32_t * strlen_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a short.
@@ -343,8 +338,7 @@ microcdr_DllAPI int8_t serializeShort(const int16_t short_t, struct microCDR * m
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeShortEndianness(const int16_t short_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeShortEndianness(const int16_t short_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an unsigned short.
@@ -359,8 +353,7 @@ microcdr_DllAPI int8_t serializeUnsignedShort(const uint16_t ushort_t, struct mi
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedShortEndianness(const uint16_t ushort_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedShortEndianness(const uint16_t ushort_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an int.
@@ -375,8 +368,7 @@ microcdr_DllAPI int8_t serializeInt(const int32_t int_t, struct microCDR * m_cdr
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeIntEndianness(const int32_t int_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeIntEndianness(const int32_t int_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an unsigne dint.
@@ -391,8 +383,7 @@ microcdr_DllAPI int8_t serializeUnsignedInt(const uint32_t uint_t, struct microC
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedIntEndianness(const uint32_t uint_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedIntEndianness(const uint32_t uint_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a long.
@@ -407,8 +398,7 @@ microcdr_DllAPI int8_t serializeLong(const int64_t long_t, struct microCDR * m_c
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongEndianness(const int64_t long_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongEndianness(const int64_t long_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an unsigned long.
@@ -423,8 +413,7 @@ microcdr_DllAPI int8_t serializeUnsignedLong(const uint64_t ulong_t, struct micr
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongEndianness(const uint64_t ulong_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongEndianness(const uint64_t ulong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a long long .
@@ -439,16 +428,14 @@ microcdr_DllAPI int8_t serializeLongLong(const long long int longlong_t, struct 
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongLongEndianness(const long long int longlong_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongLongEndianness(const long long int longlong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an unsigned long long.
  * @param ulonglong_t The value of the unsigned long long that will be serialized in the buffer.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLong(const unsigned long long int ulonglong_t,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLong(const unsigned long long int ulonglong_t, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an unsigned long long with a different endianness.
@@ -456,8 +443,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongLong(const unsigned long long int ul
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLongEndianness(const unsigned long long int ulonglong_t,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLongEndianness(const unsigned long long int ulonglong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a float.
@@ -472,8 +458,7 @@ microcdr_DllAPI int8_t serializeFloat(const float float_t, struct microCDR * m_c
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeFloatEndianness(const float float_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeFloatEndianness(const float float_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a double.
@@ -488,8 +473,7 @@ microcdr_DllAPI int8_t serializeDouble(const double double_t, struct microCDR * 
  * @param endianness Endianness that will be used in the serrialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeDoubleEndianness(const double double_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeDoubleEndianness(const double double_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a long double.
@@ -504,8 +488,7 @@ microcdr_DllAPI int8_t serializeLongDouble(const long double longdouble_t, struc
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongDoubleEndianness(const long double longdouble_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongDoubleEndianness(const long double longdouble_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a short.
@@ -520,8 +503,7 @@ microcdr_DllAPI int8_t deserializeShort(int16_t * short_t, struct microCDR * m_c
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeShortEndianness(int16_t * short_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeShortEndianness(int16_t * short_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an unsigned short.
@@ -536,8 +518,7 @@ microcdr_DllAPI int8_t deserializeUnsignedShort(uint16_t * ushort_t, struct micr
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedShortEndianness(uint16_t * ushort_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedShortEndianness(uint16_t * ushort_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a int.
@@ -567,8 +548,7 @@ microcdr_DllAPI int8_t deserializeUnsignedInt(uint32_t * uint_t, struct microCDR
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedIntEndianness(uint32_t * uint_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedIntEndianness(uint32_t * uint_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a long.
@@ -583,8 +563,7 @@ microcdr_DllAPI int8_t deserializeLong(int64_t * long_t, struct microCDR * m_cdr
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongEndianness(int64_t * long_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongEndianness(int64_t * long_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an unsigned long.
@@ -599,8 +578,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLong(uint64_t * ulong_t, struct microC
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongEndianness(uint64_t * ulong_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongEndianness(uint64_t * ulong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a long long.
@@ -615,8 +593,7 @@ microcdr_DllAPI int8_t deserializeLongLong(long long int * longlong_t, struct mi
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongLongEndianness(long long int * longlong_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongLongEndianness(long long int * longlong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an unsigned long long.
@@ -631,8 +608,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongLong(unsigned long long int * ulon
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongLongEndianness(unsigned long long int * ulonglong_t,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongLongEndianness(unsigned long long int * ulonglong_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a float.
@@ -647,8 +623,7 @@ microcdr_DllAPI int8_t deserializeFloat(float * float_t, struct microCDR * m_cdr
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeFloatEndianness(float * float_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeFloatEndianness(float * float_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a double.
@@ -663,8 +638,7 @@ microcdr_DllAPI int8_t deserializeDouble(double * double_t, struct microCDR * m_
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeDoubleEndianness(double * double_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeDoubleEndianness(double * double_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a long double.
@@ -679,8 +653,7 @@ microcdr_DllAPI int8_t deserializeLongDouble(long double * double_t, struct micr
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialized works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongDoubleEndianness(long double * double_t, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongDoubleEndianness(long double * double_t, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of charts.
@@ -688,8 +661,7 @@ microcdr_DllAPI int8_t deserializeLongDoubleEndianness(long double * double_t, E
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeCharArray(const char * char_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeCharArray(const char * char_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned charts.
@@ -697,8 +669,7 @@ microcdr_DllAPI int8_t serializeCharArray(const char * char_t, const uint32_t nu
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedCharArray(const unsigned char * uchar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedCharArray(const unsigned char * uchar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of signed charts.
@@ -706,8 +677,7 @@ microcdr_DllAPI int8_t serializeUnsignedCharArray(const unsigned char * uchar_t,
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeSignedCharArray(const signed char * schar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeSignedCharArray(const signed char * schar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of bools.
@@ -715,8 +685,7 @@ microcdr_DllAPI int8_t serializeSignedCharArray(const signed char * schar_t, con
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeBoolArray(const bool * bool_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeBoolArray(const bool * bool_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of strings.
@@ -724,8 +693,7 @@ microcdr_DllAPI int8_t serializeBoolArray(const bool * bool_t, const uint32_t nu
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeStringArray(const char ** string_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeStringArray(const char ** string_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of strings with a different endianness.
@@ -734,8 +702,7 @@ microcdr_DllAPI int8_t serializeStringArray(const char ** string_t, const uint32
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeStringArrayEndianness(const char ** string_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeStringArrayEndianness(const char ** string_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of shorts.
@@ -743,8 +710,7 @@ microcdr_DllAPI int8_t serializeStringArrayEndianness(const char ** string_t, co
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeShortArray(const int16_t * short_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeShortArray(const int16_t * short_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of shorts with a different endianness.
@@ -753,8 +719,7 @@ microcdr_DllAPI int8_t serializeShortArray(const int16_t * short_t, const uint32
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeShortArrayEndianness(const int16_t * short_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeShortArrayEndianness(const int16_t * short_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned shorts.
@@ -762,8 +727,7 @@ microcdr_DllAPI int8_t serializeShortArrayEndianness(const int16_t * short_t, co
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedShortArray(const uint16_t * ushort_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedShortArray(const uint16_t * ushort_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned shorts with a different endianness.
@@ -772,8 +736,7 @@ microcdr_DllAPI int8_t serializeUnsignedShortArray(const uint16_t * ushort_t, co
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedShortArrayEndianness(const uint16_t * ushort_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedShortArrayEndianness(const uint16_t * ushort_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of ints.
@@ -781,8 +744,7 @@ microcdr_DllAPI int8_t serializeUnsignedShortArrayEndianness(const uint16_t * us
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeIntArray(const int32_t * int_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeIntArray(const int32_t * int_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of ints with a different endianness.
@@ -791,8 +753,7 @@ microcdr_DllAPI int8_t serializeIntArray(const int32_t * int_t, const uint32_t n
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeIntArrayEndianness(const int32_t * int_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeIntArrayEndianness(const int32_t * int_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned ints.
@@ -800,8 +761,7 @@ microcdr_DllAPI int8_t serializeIntArrayEndianness(const int32_t * int_t, const 
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedIntArray(const uint32_t * uint_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedIntArray(const uint32_t * uint_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned ints with a different endianness.
@@ -810,8 +770,7 @@ microcdr_DllAPI int8_t serializeUnsignedIntArray(const uint32_t * uint_t, const 
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedIntArrayEndianness(const uint32_t * uint_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedIntArrayEndianness(const uint32_t * uint_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of longs.
@@ -819,8 +778,7 @@ microcdr_DllAPI int8_t serializeUnsignedIntArrayEndianness(const uint32_t * uint
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongArray(const int64_t * long_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongArray(const int64_t * long_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of longs with a different endianness.
@@ -829,8 +787,7 @@ microcdr_DllAPI int8_t serializeLongArray(const int64_t * long_t, const uint32_t
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongArrayEndianness(const int64_t * long_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongArrayEndianness(const int64_t * long_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned longs.
@@ -838,8 +795,7 @@ microcdr_DllAPI int8_t serializeLongArrayEndianness(const int64_t * long_t, cons
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongArray(const uint64_t * ulong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongArray(const uint64_t * ulong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned longs with a different endianness.
@@ -848,8 +804,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongArray(const uint64_t * ulong_t, cons
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongArrayEndianness(const uint64_t * ulong_t, const uint32_t numElements,
-        Endianness endiannes, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongArrayEndianness(const uint64_t * ulong_t, const uint32_t numElements, Endianness endiannes, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of long longs.
@@ -857,8 +812,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongArrayEndianness(const uint64_t * ulo
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongLongArray(const long long int * longlong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongLongArray(const long long int * longlong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of long longs with a different endianness.
@@ -867,8 +821,7 @@ microcdr_DllAPI int8_t serializeLongLongArray(const long long int * longlong_t, 
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongLongArrayEndianness(const long long int * longlong_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongLongArrayEndianness(const long long int * longlong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned long longs.
@@ -876,8 +829,7 @@ microcdr_DllAPI int8_t serializeLongLongArrayEndianness(const long long int * lo
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLongArray(const unsigned long long int * ulonglong_t,
-        const uint32_t numElements, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLongArray(const unsigned long long int * ulonglong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of unsigned long longs with a different endianness.
@@ -886,8 +838,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongLongArray(const unsigned long long i
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLongArrayEndianness(const unsigned long long int * ulonglong_t,
-        const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLongArrayEndianness(const unsigned long long int * ulonglong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of floats.
@@ -895,8 +846,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongLongArrayEndianness(const unsigned l
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeFloatArray(const float * float_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeFloatArray(const float * float_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of floats with a different endianness.
@@ -905,8 +855,7 @@ microcdr_DllAPI int8_t serializeFloatArray(const float * float_t, const uint32_t
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeFloatArrayEndianness(const float * float_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeFloatArrayEndianness(const float * float_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of doubles.
@@ -914,8 +863,7 @@ microcdr_DllAPI int8_t serializeFloatArrayEndianness(const float * float_t, cons
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeDoubleArray(const double * double_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeDoubleArray(const double * double_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of doubles with a different endianness.
@@ -924,8 +872,7 @@ microcdr_DllAPI int8_t serializeDoubleArray(const double * double_t, const uint3
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeDoubleArrayEndianness(const double * double_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeDoubleArrayEndianness(const double * double_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of long doubles.
@@ -933,8 +880,7 @@ microcdr_DllAPI int8_t serializeDoubleArrayEndianness(const double * double_t, c
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongDoubleArray(const long double * longdouble_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongDoubleArray(const long double * longdouble_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes an array of long doubles with a different endianness.
@@ -943,8 +889,7 @@ microcdr_DllAPI int8_t serializeLongDoubleArray(const long double * longdouble_t
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongDoubleArrayEndianness(const long double * longdouble_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongDoubleArrayEndianness(const long double * longdouble_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of chars.
@@ -964,8 +909,7 @@ microcdr_DllAPI int8_t deserializeCharArray(char ** char_t, const uint32_t numEl
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedCharArray(unsigned char ** uchar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedCharArray(unsigned char ** uchar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of signed chars.
@@ -975,8 +919,7 @@ microcdr_DllAPI int8_t deserializeUnsignedCharArray(unsigned char ** uchar_t, co
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeSignedCharArray(signed char ** schar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeSignedCharArray(signed char ** schar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of bools.
@@ -996,8 +939,7 @@ microcdr_DllAPI int8_t deserializeBoolArray(bool ** bool_t, const uint32_t numEl
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeStringArray(char *** string_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeStringArray(char *** string_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of strings with a different endianness.
@@ -1008,8 +950,7 @@ microcdr_DllAPI int8_t deserializeStringArray(char *** string_t, const uint32_t 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeStringArrayEndianness(char *** string_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeStringArrayEndianness(char *** string_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of shorts.
@@ -1019,8 +960,7 @@ microcdr_DllAPI int8_t deserializeStringArrayEndianness(char *** string_t, const
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeShortArray(int16_t ** short_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeShortArray(int16_t ** short_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of shorts with a different endianness.
@@ -1031,8 +971,7 @@ microcdr_DllAPI int8_t deserializeShortArray(int16_t ** short_t, const uint32_t 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeShortArrayEndianness(int16_t ** short_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeShortArrayEndianness(int16_t ** short_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned shorts.
@@ -1042,8 +981,7 @@ microcdr_DllAPI int8_t deserializeShortArrayEndianness(int16_t ** short_t, const
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedShortArray(uint16_t ** ushort_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedShortArray(uint16_t ** ushort_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned shorts with a different endianness.
@@ -1054,8 +992,7 @@ microcdr_DllAPI int8_t deserializeUnsignedShortArray(uint16_t ** ushort_t, const
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedShortArrayEndianness(uint16_t ** ushort_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedShortArrayEndianness(uint16_t ** ushort_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of ints.
@@ -1076,8 +1013,7 @@ microcdr_DllAPI int8_t deserializeIntArray(int32_t ** int_t, const uint32_t numE
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeIntArrayEndianness(int32_t ** int_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeIntArrayEndianness(int32_t ** int_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned ints.
@@ -1087,8 +1023,7 @@ microcdr_DllAPI int8_t deserializeIntArrayEndianness(int32_t ** int_t, const uin
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedIntArray(uint32_t ** int_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedIntArray(uint32_t ** int_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned ints with a different endianness.
@@ -1099,8 +1034,7 @@ microcdr_DllAPI int8_t deserializeUnsignedIntArray(uint32_t ** int_t, const uint
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedIntArrayEndianness(uint32_t ** int_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedIntArrayEndianness(uint32_t ** int_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of longs.
@@ -1110,8 +1044,7 @@ microcdr_DllAPI int8_t deserializeUnsignedIntArrayEndianness(uint32_t ** int_t, 
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongArray(int64_t ** long_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongArray(int64_t ** long_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of longs with a different endianness.
@@ -1122,8 +1055,7 @@ microcdr_DllAPI int8_t deserializeLongArray(int64_t ** long_t, const uint32_t nu
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongArrayEndianness(int64_t ** long_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongArrayEndianness(int64_t ** long_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned longs.
@@ -1133,8 +1065,7 @@ microcdr_DllAPI int8_t deserializeLongArrayEndianness(int64_t ** long_t, const u
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongArray(uint64_t ** ulong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongArray(uint64_t ** ulong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned longs with a different endianness.
@@ -1145,8 +1076,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongArray(uint64_t ** ulong_t, const u
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongArrayEndianness(uint64_t ** ulong_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongArrayEndianness(uint64_t ** ulong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of long longs.
@@ -1156,8 +1086,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongArrayEndianness(uint64_t ** ulong_
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongLongArray(long long int ** longlong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongLongArray(long long int ** longlong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of long longs with a different endianness.
@@ -1168,8 +1097,7 @@ microcdr_DllAPI int8_t deserializeLongLongArray(long long int ** longlong_t, con
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongLongArrayEndianness(long long int ** longlong_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongLongArrayEndianness(long long int ** longlong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned long longs.
@@ -1179,8 +1107,7 @@ microcdr_DllAPI int8_t deserializeLongLongArrayEndianness(long long int ** longl
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongLongArray(unsigned long long int ** ulonglong_t,
-        const uint32_t numElements, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongLongArray(unsigned long long int ** ulonglong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of unsigned long longs with a different endianness.
@@ -1191,8 +1118,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongLongArray(unsigned long long int *
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongLongArrayEndianness(unsigned long long int ** ulonglong_t,
-        const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongLongArrayEndianness(unsigned long long int ** ulonglong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of floats.
@@ -1202,8 +1128,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongLongArrayEndianness(unsigned long 
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeFloatArray(float ** float_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeFloatArray(float ** float_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of floats with a different endianness.
@@ -1214,8 +1139,7 @@ microcdr_DllAPI int8_t deserializeFloatArray(float ** float_t, const uint32_t nu
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeFloatArrayEndianness(float ** float_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeFloatArrayEndianness(float ** float_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of doubles.
@@ -1225,8 +1149,7 @@ microcdr_DllAPI int8_t deserializeFloatArrayEndianness(float ** float_t, const u
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeDoubleArray(double ** double_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeDoubleArray(double ** double_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of doubles with a different endianness.
@@ -1237,8 +1160,7 @@ microcdr_DllAPI int8_t deserializeDoubleArray(double ** double_t, const uint32_t
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeDoubleArrayEndianness(double ** double_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeDoubleArrayEndianness(double ** double_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of long doubles.
@@ -1248,8 +1170,7 @@ microcdr_DllAPI int8_t deserializeDoubleArrayEndianness(double ** double_t, cons
  * @param numElements Number of the elements in the array.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongDoubleArray(long double ** longdouble_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongDoubleArray(long double ** longdouble_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes an array of long doubles with a different endianness.
@@ -1260,8 +1181,7 @@ microcdr_DllAPI int8_t deserializeLongDoubleArray(long double ** longdouble_t, c
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongDoubleArrayEndianness(long double ** longdouble_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongDoubleArrayEndianness(long double ** longdouble_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of chars. The number of elements will be serialized in the buffer.
@@ -1269,8 +1189,7 @@ microcdr_DllAPI int8_t deserializeLongDoubleArrayEndianness(long double ** longd
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeCharSequence(const char * char_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeCharSequence(const char * char_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of chars. The number of elements will be serialized in the buffer with a different endianness.
@@ -1279,8 +1198,7 @@ microcdr_DllAPI int8_t serializeCharSequence(const char * char_t, const uint32_t
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeCharSequenceEndianness(const char * char_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeCharSequenceEndianness(const char * char_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned chars. The number of elements will be serialized in the buffer.
@@ -1288,8 +1206,7 @@ microcdr_DllAPI int8_t serializeCharSequenceEndianness(const char * char_t, cons
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedCharSequence(const unsigned char * uchar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedCharSequence(const unsigned char * uchar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned chars. The number of elements will be serialized in the buffer with a different endianness.
@@ -1298,8 +1215,7 @@ microcdr_DllAPI int8_t serializeUnsignedCharSequence(const unsigned char * uchar
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedCharSequenceEndianness(const unsigned char * uchar_t,
-        const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedCharSequenceEndianness(const unsigned char * uchar_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of signed chars. The number of elements will be serialized in the buffer.
@@ -1307,8 +1223,7 @@ microcdr_DllAPI int8_t serializeUnsignedCharSequenceEndianness(const unsigned ch
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeSignedCharSequence(const signed char * schar_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeSignedCharSequence(const signed char * schar_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of signed chars. The number of elements will be serialized in the buffer with a different endianness.
@@ -1317,8 +1232,7 @@ microcdr_DllAPI int8_t serializeSignedCharSequence(const signed char * schar_t, 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeSignedCharSequenceEndianness(const signed char * schar_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeSignedCharSequenceEndianness(const signed char * schar_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of strings. The number of elements will be serialized in the buffer.
@@ -1326,8 +1240,7 @@ microcdr_DllAPI int8_t serializeSignedCharSequenceEndianness(const signed char *
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeStringSequence(const char ** string_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeStringSequence(const char ** string_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of strings. The number of elements will be serialized in the buffer with a different endianness.
@@ -1336,8 +1249,7 @@ microcdr_DllAPI int8_t serializeStringSequence(const char ** string_t, const uin
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeStringSequenceEndianness(const char ** string_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeStringSequenceEndianness(const char ** string_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of shorts. The number of elements will be serialized in the buffer.
@@ -1345,8 +1257,7 @@ microcdr_DllAPI int8_t serializeStringSequenceEndianness(const char ** string_t,
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeShortSequence(const int16_t * short_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeShortSequence(const int16_t * short_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of shorts with a different endianness. The number of elements will be serialized in the buffer.
@@ -1355,8 +1266,7 @@ microcdr_DllAPI int8_t serializeShortSequence(const int16_t * short_t, const uin
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeShortSequenceEndianness(const int16_t * short_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeShortSequenceEndianness(const int16_t * short_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned shorts. The number of elements will be serialized in the buffer.
@@ -1364,8 +1274,7 @@ microcdr_DllAPI int8_t serializeShortSequenceEndianness(const int16_t * short_t,
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedShortSequence(const uint16_t * ushort_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedShortSequence(const uint16_t * ushort_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned shorts with a different endianness. The number of elements will be serialized in the buffer.
@@ -1374,8 +1283,7 @@ microcdr_DllAPI int8_t serializeUnsignedShortSequence(const uint16_t * ushort_t,
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedShortSequenceEndianness(const uint16_t * ushort_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedShortSequenceEndianness(const uint16_t * ushort_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of integers. The number of elements would not be serialized in the buffer.
@@ -1383,8 +1291,7 @@ microcdr_DllAPI int8_t serializeUnsignedShortSequenceEndianness(const uint16_t *
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeIntSequence(const int32_t * int_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeIntSequence(const int32_t * int_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of integers with a different endianness. The number of elements will be serialized in the buffer.
@@ -1393,8 +1300,7 @@ microcdr_DllAPI int8_t serializeIntSequence(const int32_t * int_t, const uint32_
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeIntSequenceEndianness(const int32_t * int_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeIntSequenceEndianness(const int32_t * int_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned integers. The number of elements will be serialized in the buffer.
@@ -1402,8 +1308,7 @@ microcdr_DllAPI int8_t serializeIntSequenceEndianness(const int32_t * int_t, con
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedIntSequence(const uint32_t * uint_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedIntSequence(const uint32_t * uint_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned integers with a different endianness. The number of elements will be serialized in the buffer.
@@ -1412,8 +1317,7 @@ microcdr_DllAPI int8_t serializeUnsignedIntSequence(const uint32_t * uint_t, con
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedIntSequenceEndianness(const uint32_t * uint_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedIntSequenceEndianness(const uint32_t * uint_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of longs. The number of elements will be serialized in the buffer.
@@ -1421,8 +1325,7 @@ microcdr_DllAPI int8_t serializeUnsignedIntSequenceEndianness(const uint32_t * u
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongSequence(const int64_t * long_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongSequence(const int64_t * long_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of longs with a different endianness. The number of elements will be serialized in the buffer.
@@ -1431,8 +1334,7 @@ microcdr_DllAPI int8_t serializeLongSequence(const int64_t * long_t, const uint3
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongSequenceEndianness(const int64_t * long_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongSequenceEndianness(const int64_t * long_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned longs. The number of elements will be serialized in the buffer.
@@ -1440,8 +1342,7 @@ microcdr_DllAPI int8_t serializeLongSequenceEndianness(const int64_t * long_t, c
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongSequence(const uint64_t * ulong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongSequence(const uint64_t * ulong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned longs with a different endianness. The number of elements will be serialized in the buffer.
@@ -1450,8 +1351,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongSequence(const uint64_t * ulong_t, c
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongSequenceEndianness(const uint64_t * ulong_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongSequenceEndianness(const uint64_t * ulong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of long longs. The number of elements will be serialized in the buffer.
@@ -1459,8 +1359,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongSequenceEndianness(const uint64_t * 
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongLongSequence(const long long int * longlong_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongLongSequence(const long long int * longlong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of long longs with a different endianness. The number of elements will be serialized in the buffer.
@@ -1469,8 +1368,7 @@ microcdr_DllAPI int8_t serializeLongLongSequence(const long long int * longlong_
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongLongSequenceEndianness(const long long int * longlong_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongLongSequenceEndianness(const long long int * longlong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned long longs. The number of elements will be serialized in the buffer.
@@ -1478,8 +1376,7 @@ microcdr_DllAPI int8_t serializeLongLongSequenceEndianness(const long long int *
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLongSequence(const unsigned long long int * ulonglong_t,
-        const uint32_t numElements, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLongSequence(const unsigned long long int * ulonglong_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of unsigned long longs with a different endianness. The number of elements will be serialized in the buffer.
@@ -1488,8 +1385,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongLongSequence(const unsigned long lon
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeUnsignedLongLongSequenceEndianness(const unsigned long long int * ulonglong_t,
-        const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeUnsignedLongLongSequenceEndianness(const unsigned long long int * ulonglong_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of floats. The number of elements will be serialized in the buffer.
@@ -1497,8 +1393,7 @@ microcdr_DllAPI int8_t serializeUnsignedLongLongSequenceEndianness(const unsigne
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeFloatSequence(const float * float_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeFloatSequence(const float * float_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of floats with a different endianness. The number of elements will be serialized in the buffer.
@@ -1507,8 +1402,7 @@ microcdr_DllAPI int8_t serializeFloatSequence(const float * float_t, const uint3
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeFloatSequenceEndianness(const float * float_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeFloatSequenceEndianness(const float * float_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of doubles. The number of elements will be serialized in the buffer.
@@ -1516,8 +1410,7 @@ microcdr_DllAPI int8_t serializeFloatSequenceEndianness(const float * float_t, c
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeDoubleSequence(const double * double_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeDoubleSequence(const double * double_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of doubles with a different endianness. The number of elements will be serialized in the buffer.
@@ -1526,8 +1419,7 @@ microcdr_DllAPI int8_t serializeDoubleSequence(const double * double_t, const ui
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeDoubleSequenceEndianness(const double * double_t, const uint32_t numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeDoubleSequenceEndianness(const double * double_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of long doubles. The number of elements will be serialized in the buffer.
@@ -1535,8 +1427,7 @@ microcdr_DllAPI int8_t serializeDoubleSequenceEndianness(const double * double_t
  * @param numElements Number of elements in the sequence.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongDoubleSequence(const long double * longdouble_t, const uint32_t numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongDoubleSequence(const long double * longdouble_t, const uint32_t numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function serializes a sequence of long doubles with a different endianness. The number of elements will be serialized in the buffer.
@@ -1545,8 +1436,7 @@ microcdr_DllAPI int8_t serializeLongDoubleSequence(const long double * longdoubl
  * @param endianness Endianness that will be used in the serialization of this value.
  * @return 0 is returned when the serialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t serializeLongDoubleSequenceEndianness(const long double * longdouble_t,
-        const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t serializeLongDoubleSequenceEndianness(const long double * longdouble_t, const uint32_t numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of chars.
@@ -1567,8 +1457,7 @@ microcdr_DllAPI int8_t deserializeCharSequence(char ** char_t, uint32_t * numEle
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeCharSequenceEndianness(char ** char_t, uint32_t * numElements, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeCharSequenceEndianness(char ** char_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned chars.
@@ -1578,8 +1467,7 @@ microcdr_DllAPI int8_t deserializeCharSequenceEndianness(char ** char_t, uint32_
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedCharSequence(unsigned char ** uchar_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedCharSequence(unsigned char ** uchar_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned chars with a different endianness.
@@ -1590,8 +1478,7 @@ microcdr_DllAPI int8_t deserializeUnsignedCharSequence(unsigned char ** uchar_t,
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedCharSequenceEndianness(unsigned char ** uchar_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedCharSequenceEndianness(unsigned char ** uchar_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of signed chars.
@@ -1601,8 +1488,7 @@ microcdr_DllAPI int8_t deserializeUnsignedCharSequenceEndianness(unsigned char *
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeSignedCharSequence(signed char ** schar_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeSignedCharSequence(signed char ** schar_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of signed chars with a different endianness.
@@ -1613,8 +1499,7 @@ microcdr_DllAPI int8_t deserializeSignedCharSequence(signed char ** schar_t, uin
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeSignedCharSequenceEndianness(signed char ** schar_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeSignedCharSequenceEndianness(signed char ** schar_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of strings.
@@ -1624,8 +1509,7 @@ microcdr_DllAPI int8_t deserializeSignedCharSequenceEndianness(signed char ** sc
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeStringSequence(char *** string_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeStringSequence(char *** string_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of strings with a different endianness.
@@ -1636,8 +1520,7 @@ microcdr_DllAPI int8_t deserializeStringSequence(char *** string_t, uint32_t * n
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeStringSequenceEndianness(char *** string_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeStringSequenceEndianness(char *** string_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of shorts.
@@ -1647,8 +1530,7 @@ microcdr_DllAPI int8_t deserializeStringSequenceEndianness(char *** string_t, ui
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeShortSequence(int16_t ** short_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeShortSequence(int16_t ** short_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of shorts with a different endianness.
@@ -1659,8 +1541,7 @@ microcdr_DllAPI int8_t deserializeShortSequence(int16_t ** short_t, uint32_t * n
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeShortSequenceEndianness(int16_t ** short_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeShortSequenceEndianness(int16_t ** short_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned shorts.
@@ -1670,8 +1551,7 @@ microcdr_DllAPI int8_t deserializeShortSequenceEndianness(int16_t ** short_t, ui
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedShortSequence(uint16_t ** ushort_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedShortSequence(uint16_t ** ushort_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned shorts with a different endianness.
@@ -1682,8 +1562,7 @@ microcdr_DllAPI int8_t deserializeUnsignedShortSequence(uint16_t ** ushort_t, ui
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedShortSequenceEndianness(uint16_t ** ushort_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedShortSequenceEndianness(uint16_t ** ushort_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of ints.
@@ -1704,8 +1583,7 @@ microcdr_DllAPI int8_t deserializeIntSequence(int32_t ** int_t, uint32_t * numEl
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeIntSequenceEndianness(int32_t ** int_t, uint32_t * numElements, Endianness endianness,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeIntSequenceEndianness(int32_t ** int_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned ints.
@@ -1715,8 +1593,7 @@ microcdr_DllAPI int8_t deserializeIntSequenceEndianness(int32_t ** int_t, uint32
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedIntSequence(uint32_t ** uint_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedIntSequence(uint32_t ** uint_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned ints with a different endianness.
@@ -1727,8 +1604,7 @@ microcdr_DllAPI int8_t deserializeUnsignedIntSequence(uint32_t ** uint_t, uint32
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedIntSequenceEndianness(uint32_t ** uint_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedIntSequenceEndianness(uint32_t ** uint_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of longs.
@@ -1738,8 +1614,7 @@ microcdr_DllAPI int8_t deserializeUnsignedIntSequenceEndianness(uint32_t ** uint
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongSequence(int64_t ** long_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongSequence(int64_t ** long_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of longs with a different endianness.
@@ -1750,8 +1625,7 @@ microcdr_DllAPI int8_t deserializeLongSequence(int64_t ** long_t, uint32_t * num
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongSequenceEndianness(int64_t ** long_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongSequenceEndianness(int64_t ** long_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned longs.
@@ -1761,8 +1635,7 @@ microcdr_DllAPI int8_t deserializeLongSequenceEndianness(int64_t ** long_t, uint
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongSequence(uint64_t ** ulong_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongSequence(uint64_t ** ulong_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned longs with a different endianness.
@@ -1773,8 +1646,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongSequence(uint64_t ** ulong_t, uint
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongSequenceEndianness(uint64_t ** ulong_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongSequenceEndianness(uint64_t ** ulong_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of long longs.
@@ -1784,8 +1656,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongSequenceEndianness(uint64_t ** ulo
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongLongSequence(long long int ** longlong_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongLongSequence(long long int ** longlong_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of long longs with a different endianness.
@@ -1796,8 +1667,7 @@ microcdr_DllAPI int8_t deserializeLongLongSequence(long long int ** longlong_t, 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongLongSequenceEndianness(long long int ** longlong_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongLongSequenceEndianness(long long int ** longlong_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned long longs.
@@ -1807,8 +1677,7 @@ microcdr_DllAPI int8_t deserializeLongLongSequenceEndianness(long long int ** lo
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongLongSequence(unsigned long long int ** ulonglong_t,
-        uint32_t * numElements, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongLongSequence(unsigned long long int ** ulonglong_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of unsigned long longs with a different endianness.
@@ -1819,8 +1688,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongLongSequence(unsigned long long in
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeUnsignedLongLongSequenceEndianness(unsigned long long int ** ulonglong_t,
-        uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeUnsignedLongLongSequenceEndianness(unsigned long long int ** ulonglong_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of floats.
@@ -1830,8 +1698,7 @@ microcdr_DllAPI int8_t deserializeUnsignedLongLongSequenceEndianness(unsigned lo
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeFloatSequence(float ** float_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeFloatSequence(float ** float_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of floats with a different endianness.
@@ -1842,8 +1709,7 @@ microcdr_DllAPI int8_t deserializeFloatSequence(float ** float_t, uint32_t * num
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeFloatSequenceEndianness(float ** float_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeFloatSequenceEndianness(float ** float_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of doubles.
@@ -1853,8 +1719,7 @@ microcdr_DllAPI int8_t deserializeFloatSequenceEndianness(float ** float_t, uint
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeDoubleSequence(double ** double_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeDoubleSequence(double ** double_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of doubles with a different endianness.
@@ -1865,8 +1730,7 @@ microcdr_DllAPI int8_t deserializeDoubleSequence(double ** double_t, uint32_t * 
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeDoubleSequenceEndianness(double ** double_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeDoubleSequenceEndianness(double ** double_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of long doubles.
@@ -1876,8 +1740,7 @@ microcdr_DllAPI int8_t deserializeDoubleSequenceEndianness(double ** double_t, u
  * @param numElements This variable return the number of elements of the sequence.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongDoubleSequence(long double ** longdouble_t, uint32_t * numElements,
-        struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongDoubleSequence(long double ** longdouble_t, uint32_t * numElements, struct microCDR * m_cdrBuffer);
 
 /*!
  * @brief This function deserializes a sequence of long doubles with a different endianness.
@@ -1888,8 +1751,7 @@ microcdr_DllAPI int8_t deserializeLongDoubleSequence(long double ** longdouble_t
  * @param endianness Endianness that will be used in the deserialization of this value.
  * @return 0 is returned when the deserialezed works successfully. Otherwise, -1 is returned.
  */
-microcdr_DllAPI int8_t deserializeLongDoubleSequenceEndianness(long double ** longdouble_t, uint32_t * numElements,
-        Endianness endianness, struct microCDR * m_cdrBuffer);
+microcdr_DllAPI int8_t deserializeLongDoubleSequenceEndianness(long double ** longdouble_t, uint32_t * numElements, Endianness endianness, struct microCDR * m_cdrBuffer);
 
 #ifdef __cplusplus
 }

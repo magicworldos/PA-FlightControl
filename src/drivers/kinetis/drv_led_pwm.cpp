@@ -32,10 +32,10 @@
  ****************************************************************************/
 
 /**
-* @file drv_led_pwm.cpp
-*
-*
-*/
+ * @file drv_led_pwm.cpp
+ *
+ *
+ */
 
 #include <px4_config.h>
 #include <systemlib/px4_macros.h>
@@ -76,7 +76,6 @@
 #define _REG(_addr)	(*(volatile uint32_t *)(_addr))
 #define _REG32(_base, _reg)	(*(volatile uint32_t *)(_base + _reg))
 #define REG(_tmr, _reg)		_REG32(led_pwm_timers[_tmr].base, _reg)
-
 
 /* Timer register accessors */
 
@@ -132,11 +131,11 @@
 
 #define FTM_SYNC (FTM_SYNC_SWSYNC)
 
-static void             led_pwm_timer_init(unsigned timer);
-static void             led_pwm_timer_set_rate(unsigned timer, unsigned rate);
-static void             led_pwm_channel_init(unsigned channel);
+static void led_pwm_timer_init(unsigned timer);
+static void led_pwm_timer_set_rate(unsigned timer, unsigned rate);
+static void led_pwm_channel_init(unsigned channel);
 
-int led_pwm_servo_set(unsigned channel, uint8_t  value);
+int led_pwm_servo_set(unsigned channel, uint8_t value);
 unsigned led_pwm_servo_get(unsigned channel);
 int led_pwm_servo_init(void);
 void led_pwm_servo_deinit(void);
@@ -144,7 +143,7 @@ void led_pwm_servo_arm(bool armed);
 unsigned led_pwm_timer_get_period(unsigned timer);
 
 static void led_pwm_timer_set_rate(unsigned timer, unsigned rate)
-{
+{	
 
 	irqstate_t flags = px4_enter_critical_section();
 
@@ -159,26 +158,25 @@ static void led_pwm_timer_set_rate(unsigned timer, unsigned rate)
 }
 
 static inline uint32_t div2psc(int div)
-{
+{	
 	return 31 - __builtin_clz(div);
 }
 
 static inline void led_pwm_timer_set_PWM_mode(unsigned timer)
-{
+{	
 	irqstate_t flags = px4_enter_critical_section();
 	rSC(timer) &= ~(FTM_SC_CLKS_MASK | FTM_SC_PS_MASK);
 	rSC(timer) |= (FTM_SC_CLKS_EXTCLK | div2psc(FTM_SRC_CLOCK_FREQ / LED_PWM_FREQ));
 	px4_leave_critical_section(flags);
 }
 
-
 static void
 led_pwm_timer_init(unsigned timer)
-{
+{	
 	/* valid Timer */
 
 	if (led_pwm_timers[timer].base != 0)
-	{
+	{	
 
 		/* enable the timer clock before we try to talk to it */
 
@@ -188,15 +186,15 @@ led_pwm_timer_init(unsigned timer)
 
 		/* disable and configure the timer */
 
-		rSC(timer)    = FTM_SC_CLKS_NONE;
-		rCNT(timer)   = 0;
+		rSC(timer) = FTM_SC_CLKS_NONE;
+		rCNT(timer) = 0;
 
 		rMODE(timer) = 0;
-		rSYNCONF(timer)   = (FTM_SYNCONF_SYNCMODE | FTM_SYNCONF_SWWRBUF | FTM_SYNCONF_SWRSTCNT);
+		rSYNCONF(timer) = (FTM_SYNCONF_SYNCMODE | FTM_SYNCONF_SWWRBUF | FTM_SYNCONF_SWRSTCNT);
 
 		/* Set to run in debug mode */
 
-		rCONF(timer)   |= FTM_CONF_BDMMODE_MASK;
+		rCONF(timer) |= FTM_CONF_BDMMODE_MASK;
 
 		/* enable the timer */
 
@@ -212,26 +210,25 @@ led_pwm_timer_init(unsigned timer)
 }
 unsigned
 led_pwm_timer_get_period(unsigned timer)
-{
+{	
 	// MOD is a 16 bit reg
 	unsigned mod = rMOD(timer);
 
 	if (mod == 0)
-	{
+	{	
 		return 1 << 16;
 	}
 
 	return (uint16_t)(mod + 1);
 }
 
-
 static void
 led_pwm_channel_init(unsigned channel)
-{
+{	
 	/* Only initialize used channels */
 
 	if (led_pwm_channels[channel].timer_channel)
-	{
+	{	
 		unsigned timer = led_pwm_channels[channel].timer_index;
 
 		irqstate_t flags = px4_enter_critical_section();
@@ -246,7 +243,7 @@ led_pwm_channel_init(unsigned channel)
 
 		uint16_t rvalue = REG(timer, KINETIS_FTM_CSC_OFFSET(chan));
 		rvalue &= ~CnSC_RESET;
-		rvalue |=  CnSC_PWMOUT_INIT;
+		rvalue |= CnSC_PWMOUT_INIT;
 		REG(timer, KINETIS_FTM_CSC_OFFSET(chan)) = rvalue;
 		REG(timer, KINETIS_FTM_CV_OFFSET(0)) = 0;
 		px4_leave_critical_section(flags);
@@ -254,10 +251,10 @@ led_pwm_channel_init(unsigned channel)
 }
 
 int
-led_pwm_servo_set(unsigned channel, uint8_t  cvalue)
-{
+led_pwm_servo_set(unsigned channel, uint8_t cvalue)
+{	
 	if (channel >= arraySize(led_pwm_channels))
-	{
+	{	
 		return -1;
 	}
 
@@ -266,7 +263,7 @@ led_pwm_servo_set(unsigned channel, uint8_t  cvalue)
 	/* test timer for validity */
 	if ((led_pwm_timers[timer].base == 0) ||
 			(led_pwm_channels[channel].gpio_out == 0))
-	{
+	{	
 		return -1;
 	}
 
@@ -276,7 +273,7 @@ led_pwm_servo_set(unsigned channel, uint8_t  cvalue)
 
 	/* configure the channel */
 	if (value > 0)
-	{
+	{	
 		value--;
 	}
 
@@ -291,9 +288,9 @@ led_pwm_servo_set(unsigned channel, uint8_t  cvalue)
 }
 unsigned
 led_pwm_servo_get(unsigned channel)
-{
+{	
 	if (channel >= 3)
-	{
+	{	
 		return 0;
 	}
 
@@ -303,7 +300,7 @@ led_pwm_servo_get(unsigned channel)
 	/* test timer for validity */
 	if ((led_pwm_timers[timer].base == 0) ||
 			(led_pwm_channels[channel].timer_channel == 0))
-	{
+	{	
 		return value;
 	}
 
@@ -313,16 +310,16 @@ led_pwm_servo_get(unsigned channel)
 }
 int
 led_pwm_servo_init(void)
-{
+{	
 	/* do basic timer initialisation first */
 	for (unsigned i = 0; i < arraySize(led_pwm_timers); i++)
-	{
+	{	
 		led_pwm_timer_init(i);
 	}
 
 	/* now init channels */
 	for (unsigned i = 0; i < arraySize(led_pwm_channels); i++)
-	{
+	{	
 		led_pwm_channel_init(i);
 	}
 
@@ -332,31 +329,31 @@ led_pwm_servo_init(void)
 
 void
 led_pwm_servo_deinit(void)
-{
+{	
 	/* disable the timers */
 	led_pwm_servo_arm(false);
 }
 
 void
 led_pwm_servo_arm(bool armed)
-{
+{	
 	/* iterate timers and arm/disarm appropriately */
 	for (unsigned i = 0; i < arraySize(led_pwm_timers); i++)
-	{
+	{	
 		if (led_pwm_timers[i].base != 0)
-		{
+		{	
 			if (armed)
-			{
+			{	
 				/* force an update to preload all registers */
 				led_pwm_timer_set_PWM_mode(i);
 
 			}
 			else
-			{
+			{	
 				/* disable and configure the timer */
 
-				rSC(i)    = FTM_SC_CLKS_NONE;
-				rCNT(i)   = 0;
+				rSC(i) = FTM_SC_CLKS_NONE;
+				rCNT(i) = 0;
 			}
 		}
 	}

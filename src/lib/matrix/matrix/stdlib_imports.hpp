@@ -13,7 +13,8 @@
 #include <cstdlib>
 #include <cinttypes>
 
-namespace matrix {
+namespace matrix
+{
 
 #if defined(__PX4_NUTTX)
 /*

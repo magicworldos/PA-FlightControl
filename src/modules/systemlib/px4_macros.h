@@ -56,7 +56,6 @@
 #ifndef _PX4_MACROS_H
 #define _PX4_MACROS_H
 
-
 #if !defined(arraySize)
 #define arraySize(a) (sizeof((a))/sizeof((a[0])))
 #endif

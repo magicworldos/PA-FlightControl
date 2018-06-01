@@ -51,7 +51,7 @@
 
 /// @brief Base class to be used for unit tests.
 class __EXPORT UnitTest
-{
+{	
 public:
 
 	UnitTest() = default;
@@ -63,14 +63,14 @@ public:
 
 	/// @brief Prints results from running of unit tests.
 	void print_results()
-	{
+	{	
 		if (_tests_failed)
-		{
+		{	
 			PX4_ERR("SOME TESTS FAILED");
 
 		}
 		else
-		{
+		{	
 			PX4_INFO("ALL TESTS PASSED");
 		}
 
@@ -78,7 +78,6 @@ public:
 		PX4_INFO("  Tests failed :      %d", _tests_failed);
 		PX4_INFO("  Tested assertions : %d", _assertions);
 	}
-
 
 	/// @brief Macro to create a function which will run a unit test class and print results.
 #define ut_declare_test(test_function, test_class)	\
@@ -90,7 +89,7 @@ public:
 		delete test;				\
 		return success;				\
 	}
-
+	
 protected:
 
 	/// @brief Runs a single unit test. Unit tests must have the function signature of bool test(void). The unit
@@ -109,7 +108,7 @@ protected:
 		}						\
 		_cleanup();					\
 	} while (0)
-
+	
 	/// @brief Used to assert a value within a unit test.
 #define ut_assert(message, test)						\
 	do {									\
@@ -120,10 +119,10 @@ protected:
 			_assertions++;						\
 		}								\
 	} while (0)
-
+	
 	/// @brief Used to assert a value within a unit test.
 #define ut_test(test) ut_assert("test", test)
-
+	
 	/// @brief To assert specifically to true.
 #define ut_assert_true(test)						\
 	do {									\
@@ -134,7 +133,7 @@ protected:
 			_assertions++;						\
 		}								\
 	} while (0)
-
+	
 	/// @brief To assert specifically to true.
 #define ut_assert_false(test)						\
 	do {									\
@@ -145,7 +144,7 @@ protected:
 			_assertions++;						\
 		}								\
 	} while (0)
-
+	
 	/// @brief Used to compare two integer values within a unit test. If possible use ut_compare instead of ut_assert
 	/// since it will give you better error reporting of the actual values being compared.
 #define ut_compare(message, v1, v2)								\
@@ -159,7 +158,7 @@ protected:
 			_assertions++;								\
 		}										\
 	} while (0)
-
+	
 	/// @brief Used to compare two float values within a unit test. If possible use ut_compare_float instead of ut_assert
 	/// since it will give you better error reporting of the actual values being compared.
 #define ut_compare_float(message, v1, v2, precision)						\
@@ -174,7 +173,7 @@ protected:
 			_assertions++;								\
 		}										\
 	} while (0)
-
+	
 	/// @brief Used to compare two integer values within a unit test. If possible use ut_less_than instead of ut_assert
 	/// since it will give you better error reporting of the actual values being compared.
 #define ut_less_than(message, v1_smaller, v2_bigger)								\
@@ -188,25 +187,31 @@ protected:
 			_assertions++;								\
 		}										\
 	} while (0)
-
-	virtual void _init(void) {}		///< Run before each unit test. Override to provide custom behavior.
-	virtual void _cleanup(void) {}		///< Run after each unit test. Override to provide custom behavior.
-
+	
+	virtual void _init(void)
+	{}		///< Run before each unit test. Override to provide custom behavior.
+	virtual void _cleanup(void)
+	{}		///< Run after each unit test. Override to provide custom behavior.
+	
 	void _print_assert(const char *msg, const char *test, const char *file, int line)
-	{
+	{	
 		PX4_ERR("Assertion failed: %s - %s (%s:%d)", msg, test, file, line);
 	}
 
 	void _print_compare(const char *msg, const char *v1_text, int v1, const char *v2_text, int v2, const char *file,
-			    int line)
-	{
+			int line)
+	{	
 		PX4_ERR("Compare failed: %s - (%s:%d) (%s:%d) (%s:%d)", msg, v1_text, v1, v2_text, v2, file, line);
 	}
 
-	int _tests_run{0};		///< The number of individual unit tests run
-	int _tests_failed{0};	///< The number of unit tests which failed
-	int _tests_passed{0};	///< The number of unit tests which passed
-	int _assertions{0};	///< Total number of assertions tested by all unit tests
+	int _tests_run
+	{	0};		///< The number of individual unit tests run
+	int _tests_failed
+	{	0};	///< The number of unit tests which failed
+	int _tests_passed
+	{	0};	///< The number of unit tests which passed
+	int _assertions
+	{	0};	///< Total number of assertions tested by all unit tests
 };
 
 #endif /* UNIT_TEST_H_ */

@@ -54,20 +54,19 @@ using matrix::Quatf;
 static constexpr float DELAY_SIGMA = 0.01f;
 
 GpsFailure::GpsFailure(Navigator *navigator, const char *name) :
-	MissionBlock(navigator, name),
-	_param_loitertime(this, "LT"),
-	_param_openlooploiter_roll(this, "R"),
-	_param_openlooploiter_pitch(this, "P"),
-	_param_openlooploiter_thrust(this, "TR"),
-	_gpsf_state(GPSF_STATE_NONE),
-	_timestamp_activation(0)
+		    MissionBlock(navigator, name),
+		    _param_loitertime(this, "LT"),
+		    _param_openlooploiter_roll(this, "R"),
+		    _param_openlooploiter_pitch(this, "P"),
+		    _param_openlooploiter_thrust(this, "TR"),
+		    _gpsf_state(GPSF_STATE_NONE),
+		    _timestamp_activation(0)
 {
 	/* initial reset */
 	on_inactive();
 }
 
-void
-GpsFailure::on_inactive()
+void GpsFailure::on_inactive()
 {
 	/* reset GPSF state only if setpoint moved */
 	if (!_navigator->get_can_loiter_at_sp())
@@ -76,8 +75,7 @@ GpsFailure::on_inactive()
 	}
 }
 
-void
-GpsFailure::on_activation()
+void GpsFailure::on_activation()
 {
 	_gpsf_state = GPSF_STATE_NONE;
 	_timestamp_activation = hrt_absolute_time();
@@ -85,107 +83,105 @@ GpsFailure::on_activation()
 	set_gpsf_item();
 }
 
-void
-GpsFailure::on_active()
+void GpsFailure::on_active()
 {
 	switch (_gpsf_state)
 	{
 		case GPSF_STATE_LOITER:
+		{
+			/* Position controller does not run in this mode:
+			 * navigator has to publish an attitude setpoint */
+			vehicle_attitude_setpoint_s att_sp = { };
+			att_sp.timestamp = hrt_absolute_time();
+			att_sp.roll_body = math::radians(_param_openlooploiter_roll.get());
+			att_sp.pitch_body = math::radians(_param_openlooploiter_pitch.get());
+			att_sp.thrust = _param_openlooploiter_thrust.get();
+			
+			Quatf q(Eulerf(att_sp.roll_body, att_sp.pitch_body, 0.0f));
+			q.copyTo(att_sp.q_d);
+			att_sp.q_d_valid = true;
+			
+			if (_att_sp_pub != nullptr)
 			{
-				/* Position controller does not run in this mode:
-				 * navigator has to publish an attitude setpoint */
-				vehicle_attitude_setpoint_s att_sp = {};
-				att_sp.timestamp = hrt_absolute_time();
-				att_sp.roll_body = math::radians(_param_openlooploiter_roll.get());
-				att_sp.pitch_body = math::radians(_param_openlooploiter_pitch.get());
-				att_sp.thrust = _param_openlooploiter_thrust.get();
-
-				Quatf q(Eulerf(att_sp.roll_body, att_sp.pitch_body, 0.0f));
-				q.copyTo(att_sp.q_d);
-				att_sp.q_d_valid = true;
-
-				if (_att_sp_pub != nullptr)
-				{
-					/* publish att sp*/
-					orb_publish(ORB_ID(vehicle_attitude_setpoint), _att_sp_pub, &att_sp);
-
-				}
-				else
-				{
-					/* advertise and publish */
-					_att_sp_pub = orb_advertise(ORB_ID(vehicle_attitude_setpoint), &att_sp);
-				}
-
-				/* Measure time */
-				if ((_param_loitertime.get() > FLT_EPSILON) &&
-						(hrt_elapsed_time(&_timestamp_activation) > _param_loitertime.get() * 1e6f))
-				{
-					/* no recovery, advance the state machine */
-					PX4_WARN("GPS not recovered, switching to next failure state");
-					advance_gpsf();
-				}
-
-				break;
+				/* publish att sp*/
+				orb_publish(ORB_ID(vehicle_attitude_setpoint), _att_sp_pub, &att_sp);
+				
 			}
-
+			else
+			{
+				/* advertise and publish */
+				_att_sp_pub = orb_advertise(ORB_ID(vehicle_attitude_setpoint), &att_sp);
+			}
+			
+			/* Measure time */
+			if ((_param_loitertime.get() > FLT_EPSILON) && (hrt_elapsed_time(&_timestamp_activation) > _param_loitertime.get() * 1e6f))
+			{
+				/* no recovery, advance the state machine */
+				PX4_WARN("GPS not recovered, switching to next failure state");
+				advance_gpsf();
+			}
+			
+			break;
+		}
+			
 		case GPSF_STATE_TERMINATE:
 			set_gpsf_item();
 			advance_gpsf();
 			break;
-
+			
 		default:
 			break;
 	}
 }
 
-void
-GpsFailure::set_gpsf_item()
+void GpsFailure::set_gpsf_item()
 {
 	struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
-
+	
 	/* Set pos sp triplet to invalid to stop pos controller */
 	pos_sp_triplet->previous.valid = false;
 	pos_sp_triplet->current.valid = false;
 	pos_sp_triplet->next.valid = false;
-
+	
 	switch (_gpsf_state)
 	{
 		case GPSF_STATE_TERMINATE:
-			{
-				/* Request flight termination from commander */
-				_navigator->get_mission_result()->flight_termination = true;
-				_navigator->set_mission_result_updated();
-				PX4_WARN("GPS failure: request flight termination");
-			}
+		{
+			/* Request flight termination from commander */
+			_navigator->get_mission_result()->flight_termination = true;
+			_navigator->set_mission_result_updated();
+			PX4_WARN("GPS failure: request flight termination");
+		}
 			break;
-
+			
 		default:
 			break;
 	}
-
+	
 	_navigator->set_position_setpoint_triplet_updated();
 }
 
-void
-GpsFailure::advance_gpsf()
+void GpsFailure::advance_gpsf()
 {
 	switch (_gpsf_state)
 	{
 		case GPSF_STATE_NONE:
 			_gpsf_state = GPSF_STATE_LOITER;
-			mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Global position failure: fixed bank loiter");
+			mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Global position failure: fixed bank loiter")
+			;
 			break;
-
+			
 		case GPSF_STATE_LOITER:
 			_gpsf_state = GPSF_STATE_TERMINATE;
-			mavlink_log_emergency(_navigator->get_mavlink_log_pub(), "no GPS recovery, terminating flight");
+			mavlink_log_emergency(_navigator->get_mavlink_log_pub(), "no GPS recovery, terminating flight")
+			;
 			break;
-
+			
 		case GPSF_STATE_TERMINATE:
 			PX4_WARN("terminate");
 			_gpsf_state = GPSF_STATE_END;
 			break;
-
+			
 		default:
 			break;
 	}

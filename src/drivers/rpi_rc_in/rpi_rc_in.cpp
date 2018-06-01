@@ -42,7 +42,7 @@ RcInput::~RcInput()
 		shmdt(_mem);
 		_mem = nullptr;
 	}
-
+	
 	work_cancel(HPWORK, &_work);
 	_is_running = false;
 }
@@ -50,48 +50,48 @@ RcInput::~RcInput()
 int RcInput::rpi_rc_init()
 {
 	int i;
-
+	
 	//--------------初始化共享内存映射----------------------------//
 	if ((_shmid = shmget(_key, sizeof(int) * _channels, 0666)) < 0)
 	{
 		PX4_WARN("Faild to access shared memory");
 		return -1;
 	}
-
-	if ((_mem = (int *) shmat(_shmid, NULL, 0)) == (void *) - 1)
+	
+	if ((_mem = (int *) shmat(_shmid, NULL, 0)) == (void *) -1)
 	{
 		PX4_WARN("Faild to map shared memory");
 		return -1;
 	}
-
+	
 	//--------------发布所有通道的数据------------------------//
 	for (i = 0; i < input_rc_s::RC_INPUT_MAX_CHANNELS; ++i)
 	{
 		_data.values[i] = UINT16_MAX;
 	}
-
+	
 	return 0;
 }
 int RcInput::start()
 {
 	int result = 0;
-
+	
 	result = rpi_rc_init();
-
+	
 	if (result != 0)
 	{
 		PX4_WARN("error: RC initialization failed");
 		return -1;
 	}
-
+	
 	_is_running = true;
 	result = work_queue(HPWORK, &_work, (worker_t) & RcInput::cycle_trampoline, this, 0);
-
+	
 	if (result == -1)
 	{
 		_is_running = false;
 	}
-
+	
 	return result;
 }
 
@@ -109,11 +109,10 @@ void RcInput::cycle_trampoline(void *arg)
 void RcInput::_cycle()
 {
 	_measure();
-
+	
 	if (!_should_exit)
 	{
-		work_queue(HPWORK, &_work, (worker_t) & RcInput::cycle_trampoline, this,
-			   USEC2TICK(RCINPUT_MEASURE_INTERVAL_US));
+		work_queue(HPWORK, &_work, (worker_t) & RcInput::cycle_trampoline, this, USEC2TICK(RCINPUT_MEASURE_INTERVAL_US));
 	}
 }
 
@@ -123,13 +122,13 @@ void RcInput::_measure(void)
 	// PWM数据发布
 	// read pwm value from shared memory
 	int i = 0;
-
+	
 	for (i = 0; i < _channels; ++i)
 	{
 		int value = _mem[i]; // access the shared memory (with a single read)
 		_data.values[i] = (value <= 0) ? UINT16_MAX : value;
 	}
-
+	
 	ts = hrt_absolute_time();
 	_data.timestamp = ts;
 	_data.timestamp_last_signal = ts;
@@ -141,12 +140,12 @@ void RcInput::_measure(void)
 	_data.rc_failsafe = false;
 	_data.rc_lost = false;
 	_data.input_source = input_rc_s::RC_INPUT_SOURCE_PX4IO_PPM;
-
+	
 	if (nullptr == _rcinput_pub)
 	{
 		int instance;
 		_rcinput_pub = orb_advertise_multi(ORB_ID(input_rc), &_data, &instance, ORB_PRIO_DEFAULT);
-
+		
 	}
 	else
 	{
@@ -171,82 +170,82 @@ int rpi_rc_in_main(int argc, char **argv)
 		usage("missing command");
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (rc_input != nullptr && rc_input->is_running())
 		{
 			PX4_INFO("already running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		rc_input = new RcInput();
-
+		
 		// Check if alloc worked.
 		if (nullptr == rc_input)
 		{
 			PX4_ERR("Rc input module initialization faild");
 			return -1;
 		}
-
+		
 		int ret = rc_input->start();
-
+		
 		if (ret != 0)
 		{
 			PX4_ERR("Rc input module failure");
 		}
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
-
+		
 		if (rc_input == nullptr || !rc_input->is_running())
 		{
 			PX4_WARN("Not running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		rc_input->stop();
-
+		
 		// Wait for task to die
 		int i = 0;
-
+		
 		do
 		{
 			/* wait up to 3s */
 			usleep(100000);
-
+			
 		}
 		while (rc_input->is_running() && ++i < 30);
-
+		
 		delete rc_input;
 		rc_input = nullptr;
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (rc_input != nullptr && rc_input->is_running())
 		{
 			PX4_INFO("running");
-
+			
 		}
 		else
 		{
 			PX4_INFO("Not running");
 		}
-
+		
 		return 0;
 	}
-
+	
 	usage("rpi_rc_in start|stop|status");
 	return 1;
-
+	
 }
 

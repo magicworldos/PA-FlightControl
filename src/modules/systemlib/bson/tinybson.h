@@ -32,13 +32,13 @@
  ****************************************************************************/
 
 /**
-* @file tinybson.h
-*
-* A simple subset SAX-style BSON parser and generator. See http://bsonspec.org
-*
-* Some types and defines taken from the standalone BSON parser/generator
-* in the Mongo C connector.
-*/
+ * @file tinybson.h
+ *
+ * A simple subset SAX-style BSON parser and generator. See http://bsonspec.org
+ *
+ * Some types and defines taken from the standalone BSON parser/generator
+ * in the Mongo C connector.
+ */
 
 #ifndef _TINYBSON_H
 #define _TINYBSON_H
@@ -85,16 +85,16 @@ typedef enum bson_binary_subtype
  */
 typedef struct bson_node_s
 {
-	char			name[BSON_MAXNAME];
-	bson_type_t		type;
-	bson_binary_subtype_t	subtype;
+	char name[BSON_MAXNAME];
+	bson_type_t type;
+	bson_binary_subtype_t subtype;
 	union
 	{
-		int64_t		i;
-		double		d;
-		bool		b;
+		int64_t i;
+		double d;
+		bool b;
 	};
-} *bson_node_t;
+}*bson_node_t;
 
 typedef struct bson_decoder_s *bson_decoder_t;
 
@@ -103,24 +103,24 @@ typedef struct bson_decoder_s *bson_decoder_t;
  *
  * The node callback function's return value is returned by bson_decoder_next.
  */
-typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, void *priv, bson_node_t node);
+typedef int (*bson_decoder_callback)(bson_decoder_t decoder, void *priv, bson_node_t node);
 
 struct bson_decoder_s
 {
 	/* file reader state */
-	int			fd;
+	int fd;
 
 	/* buffer reader state */
-	uint8_t			*buf;
-	size_t			bufsize;
-	unsigned		bufpos;
+	uint8_t *buf;
+	size_t bufsize;
+	unsigned bufpos;
 
-	bool			dead;
-	bson_decoder_callback	callback;
-	void			*priv;
-	unsigned		nesting;
-	struct bson_node_s	node;
-	int32_t			pending;
+	bool dead;
+	bson_decoder_callback callback;
+	void *priv;
+	unsigned nesting;
+	struct bson_node_s node;
+	int32_t pending;
 };
 
 /**
@@ -146,8 +146,7 @@ __EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder
  * @param priv		Callback private data, stored in node.
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback,
-				   void *priv);
+__EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback, void *priv);
 
 /**
  * Process the next node from the stream and invoke the callback.
@@ -178,17 +177,17 @@ __EXPORT size_t bson_decoder_data_pending(bson_decoder_t decoder);
 typedef struct bson_encoder_s
 {
 	/* file writer state */
-	int		fd;
+	int fd;
 
 	/* buffer writer state */
-	uint8_t		*buf;
-	unsigned	bufsize;
-	unsigned	bufpos;
+	uint8_t *buf;
+	unsigned bufsize;
+	unsigned bufpos;
 
-	bool		realloc_ok;
-	bool		dead;
-
-} *bson_encoder_t;
+	bool realloc_ok;
+	bool dead;
+	
+}*bson_encoder_t;
 
 /**
  * Initialze the encoder for writing to a file.
@@ -276,8 +275,6 @@ __EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name
  * @param size			Data size.
  * @param data			Buffer containing data to be encoded.
  */
-__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype,
-					size_t size, const void *data);
-
+__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size, const void *data);
 
 #endif

@@ -56,9 +56,9 @@
 #define DELAY_SIGMA	0.01f
 
 RCLoss::RCLoss(Navigator *navigator, const char *name) :
-	MissionBlock(navigator, name),
-	_param_loitertime(this, "NAV_RCL_LT"),
-	_rcl_state(RCL_STATE_NONE)
+		    MissionBlock(navigator, name),
+		    _param_loitertime(this, "NAV_RCL_LT"),
+		    _rcl_state(RCL_STATE_NONE)
 {
 	/* initial reset */
 	on_inactive();
@@ -68,8 +68,7 @@ RCLoss::~RCLoss()
 {
 }
 
-void
-RCLoss::on_inactive()
+void RCLoss::on_inactive()
 {
 	/* reset RCL state only if setpoint moved */
 	if (!_navigator->get_can_loiter_at_sp())
@@ -78,16 +77,14 @@ RCLoss::on_inactive()
 	}
 }
 
-void
-RCLoss::on_activation()
+void RCLoss::on_activation()
 {
 	_rcl_state = RCL_STATE_NONE;
 	advance_rcl();
 	set_rcl_item();
 }
 
-void
-RCLoss::on_active()
+void RCLoss::on_active()
 {
 	if (is_mission_item_reached())
 	{
@@ -96,62 +93,60 @@ RCLoss::on_active()
 	}
 }
 
-void
-RCLoss::set_rcl_item()
+void RCLoss::set_rcl_item()
 {
 	struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
-
+	
 	set_previous_pos_setpoint();
 	_navigator->set_can_loiter_at_sp(false);
-
+	
 	switch (_rcl_state)
 	{
 		case RCL_STATE_LOITER:
-			{
-				_mission_item.lat = _navigator->get_global_position()->lat;
-				_mission_item.lon = _navigator->get_global_position()->lon;
-				_mission_item.altitude = _navigator->get_global_position()->alt;
-				_mission_item.altitude_is_relative = false;
-				_mission_item.yaw = NAN;
-				_mission_item.loiter_radius = _navigator->get_loiter_radius();
-				_mission_item.nav_cmd = NAV_CMD_LOITER_TIME_LIMIT;
-				_mission_item.acceptance_radius = _navigator->get_acceptance_radius();
-				_mission_item.time_inside = _param_loitertime.get() < 0.0f ? 0.0f : _param_loitertime.get();
-				_mission_item.autocontinue = true;
-				_mission_item.origin = ORIGIN_ONBOARD;
-
-				_navigator->set_can_loiter_at_sp(true);
-				break;
-			}
-
+		{
+			_mission_item.lat = _navigator->get_global_position()->lat;
+			_mission_item.lon = _navigator->get_global_position()->lon;
+			_mission_item.altitude = _navigator->get_global_position()->alt;
+			_mission_item.altitude_is_relative = false;
+			_mission_item.yaw = NAN;
+			_mission_item.loiter_radius = _navigator->get_loiter_radius();
+			_mission_item.nav_cmd = NAV_CMD_LOITER_TIME_LIMIT;
+			_mission_item.acceptance_radius = _navigator->get_acceptance_radius();
+			_mission_item.time_inside = _param_loitertime.get() < 0.0f ? 0.0f : _param_loitertime.get();
+			_mission_item.autocontinue = true;
+			_mission_item.origin = ORIGIN_ONBOARD;
+			
+			_navigator->set_can_loiter_at_sp(true);
+			break;
+		}
+			
 		case RCL_STATE_TERMINATE:
-			{
-				/* Request flight termination from the commander */
-				_navigator->get_mission_result()->flight_termination = true;
-				_navigator->set_mission_result_updated();
-				warnx("rc not recovered: request flight termination");
-				pos_sp_triplet->previous.valid = false;
-				pos_sp_triplet->current.valid = false;
-				pos_sp_triplet->next.valid = false;
-				break;
-			}
-
+		{
+			/* Request flight termination from the commander */
+			_navigator->get_mission_result()->flight_termination = true;
+			_navigator->set_mission_result_updated();
+			warnx("rc not recovered: request flight termination");
+			pos_sp_triplet->previous.valid = false;
+			pos_sp_triplet->current.valid = false;
+			pos_sp_triplet->next.valid = false;
+			break;
+		}
+			
 		default:
 			break;
 	}
-
+	
 	reset_mission_item_reached();
-
+	
 	/* convert mission item to current position setpoint and make it valid */
 	mission_apply_limitation(_mission_item);
 	mission_item_to_position_setpoint(_mission_item, &pos_sp_triplet->current);
 	pos_sp_triplet->next.valid = false;
-
+	
 	_navigator->set_position_setpoint_triplet_updated();
 }
 
-void
-RCLoss::advance_rcl()
+void RCLoss::advance_rcl()
 {
 	switch (_rcl_state)
 	{
@@ -161,7 +156,7 @@ RCLoss::advance_rcl()
 				warnx("RC loss, OBC mode, loiter");
 				mavlink_log_critical(_navigator->get_mavlink_log_pub(), "rc loss, loitering");
 				_rcl_state = RCL_STATE_LOITER;
-
+				
 			}
 			else
 			{
@@ -172,23 +167,24 @@ RCLoss::advance_rcl()
 				_navigator->set_mission_result_updated();
 				reset_mission_item_reached();
 			}
-
+			
 			break;
-
+			
 		case RCL_STATE_LOITER:
 			_rcl_state = RCL_STATE_TERMINATE;
 			warnx("time is up, no RC regain, terminating");
-			mavlink_log_critical(_navigator->get_mavlink_log_pub(), "RC not regained, terminating");
+			mavlink_log_critical(_navigator->get_mavlink_log_pub(), "RC not regained, terminating")
+			;
 			_navigator->get_mission_result()->stay_in_failsafe = true;
 			_navigator->set_mission_result_updated();
 			reset_mission_item_reached();
 			break;
-
+			
 		case RCL_STATE_TERMINATE:
 			warnx("rcl end");
 			_rcl_state = RCL_STATE_END;
 			break;
-
+			
 		default:
 			break;
 	}

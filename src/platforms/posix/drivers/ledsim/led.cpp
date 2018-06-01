@@ -59,21 +59,23 @@ extern void led_off(int led);
 extern void led_toggle(int led);
 __END_DECLS
 
-class LED : public VirtDevObj
+class LED: public VirtDevObj
 {
 public:
 	LED();
 	virtual ~LED();
 
-	virtual int		init();
-	virtual int		devIOCTL(unsigned long cmd, unsigned long arg);
+	virtual int init();
+	virtual int devIOCTL(unsigned long cmd, unsigned long arg);
 
 protected:
-	virtual void		_measure() {}
+	virtual void _measure()
+	{
+	}
 };
 
 LED::LED() :
-	VirtDevObj("led", "/dev/ledsim", LED_BASE_DEVICE_PATH, 0)
+		    VirtDevObj("led", "/dev/ledsim", LED_BASE_DEVICE_PATH, 0)
 {
 	// force immediate init/device registration
 	init();
@@ -83,58 +85,54 @@ LED::~LED()
 {
 }
 
-int
-LED::init()
+int LED::init()
 {
 	int ret = VirtDevObj::init();
-
+	
 	if (ret == 0)
 	{
 		led_init();
 	}
-
+	
 	return ret;
 }
 
-int
-LED::devIOCTL(unsigned long cmd, unsigned long arg)
+int LED::devIOCTL(unsigned long cmd, unsigned long arg)
 {
 	int result = OK;
-
+	
 	switch (cmd)
 	{
 		case LED_ON:
 			led_on(arg);
 			break;
-
+			
 		case LED_OFF:
 			led_off(arg);
 			break;
-
+			
 		case LED_TOGGLE:
 			led_toggle(arg);
 			break;
-
-
+			
 		default:
 			result = VirtDevObj::devIOCTL(cmd, arg);
 	}
-
+	
 	return result;
 }
 
 namespace
 {
-LED	*gLED;
+LED *gLED;
 }
 
-void
-drv_led_start(void)
+void drv_led_start(void)
 {
 	if (gLED == nullptr)
 	{
 		gLED = new LED;
-
+		
 		if (gLED != nullptr)
 		{
 			gLED->init();

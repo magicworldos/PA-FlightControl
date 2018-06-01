@@ -33,7 +33,8 @@
 #define __PMU_11XX_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup PMU_11XX CHIP: LPC11xx Power Management Unit block driver
@@ -48,28 +49,30 @@ extern "C" {
 #if defined(CHIP_LPC1125)
 #error "LPC1125 support for the PMU driver is not ready"
 #endif
- 
+
 /**
  * @brief LPC11xx Power Management Unit register block structure
  */
-typedef struct {
-	__IO uint32_t PCON;		/*!< Offset: 0x000 Power control Register (R/W) */
-	__IO uint32_t GPREG[4];	/*!< Offset: 0x004 General purpose Registers 0..3 (R/W) */
-} LPC_PMU_T;
+typedef struct
+{	
+	__IO uint32_t PCON; /*!< Offset: 0x000 Power control Register (R/W) */
+	__IO uint32_t GPREG[4]; /*!< Offset: 0x004 General purpose Registers 0..3 (R/W) */
+}LPC_PMU_T;
 
 /**
  * @brief LPC11xx low power mode type definitions
  */
-typedef enum CHIP_PMU_MCUPOWER {
-	PMU_MCU_SLEEP = 0,			/*!< Sleep mode */
+typedef enum CHIP_PMU_MCUPOWER
+{	
+	PMU_MCU_SLEEP = 0, /*!< Sleep mode */
 #if defined(CHIP_LPC11AXX) || defined(CHIP_LPC11EXX) || defined(CHIP_LPC11UXX)
-	PMU_MCU_DEEP_SLEEP,			/*!< Deep Sleep mode */
-	PMU_MCU_POWER_DOWN,			/*!< Power down mode */
-	PMU_MCU_DEEP_PWRDOWN		/*!< Deep power down mode */
+	PMU_MCU_DEEP_SLEEP, /*!< Deep Sleep mode */
+	PMU_MCU_POWER_DOWN, /*!< Power down mode */
+	PMU_MCU_DEEP_PWRDOWN /*!< Deep power down mode */
 #elif defined(CHIP_LPC11CXX)
-	PMU_MCU_DEEP_PWRDOWN = 3	/*!< Deep power down mode */
+	PMU_MCU_DEEP_PWRDOWN = 3 /*!< Deep power down mode */
 #endif
-} CHIP_PMU_MCUPOWER_T;
+}CHIP_PMU_MCUPOWER_T;
 
 /**
  * PMU PCON register bit fields & masks
@@ -93,7 +96,7 @@ typedef enum CHIP_PMU_MCUPOWER {
  * @return	None
  */
 STATIC INLINE void Chip_PMU_WriteGPREG(LPC_PMU_T *pPMU, uint8_t regIndex, uint32_t value)
-{
+{	
 	pPMU->GPREG[regIndex] = value;
 }
 
@@ -104,7 +107,7 @@ STATIC INLINE void Chip_PMU_WriteGPREG(LPC_PMU_T *pPMU, uint8_t regIndex, uint32
  * @return	Value read from the GPREG register
  */
 STATIC INLINE uint32_t Chip_PMU_ReadGPREG(LPC_PMU_T *pPMU, uint8_t regIndex)
-{
+{	
 	return pPMU->GPREG[regIndex];
 }
 
@@ -171,7 +174,7 @@ void Chip_PMU_Sleep(LPC_PMU_T *pPMU, CHIP_PMU_MCUPOWER_T SleepMode);
  * power state on the next WFI() instruction.
  */
 STATIC INLINE uint32_t Chip_PMU_GetSleepFlags(LPC_PMU_T *pPMU)
-{
+{	
 	return (pPMU->PCON & (PMU_PCON_SLEEPFLAG | PMU_PCON_DPDFLAG));
 }
 
@@ -184,7 +187,7 @@ STATIC INLINE uint32_t Chip_PMU_GetSleepFlags(LPC_PMU_T *pPMU)
  * WFI().
  */
 STATIC INLINE void Chip_PMU_ClearSleepFlags(LPC_PMU_T *pPMU, uint32_t flags)
-{
+{	
 	pPMU->PCON &= ~flags;
 }
 

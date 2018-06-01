@@ -38,7 +38,7 @@
  * send offboard setpoints via mavros to the SITL setup the same way as on the real system
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -58,10 +58,12 @@ class Mavlink
 public:
 	Mavlink(std::string mavlink_fcu_url);
 
-	~Mavlink() {}
-
+	~Mavlink()
+	{
+	}
+	
 protected:
-
+	
 	ros::NodeHandle _n;
 	mavconn::MAVConnInterface::Ptr _link;
 	ros::Subscriber _v_att_sub;
@@ -89,7 +91,6 @@ protected:
 	 * */
 	void VehicleLocalPositionCallback(const vehicle_local_positionConstPtr &msg);
 
-
 	/**
 	 *
 	 * Handle incoming mavlink messages ant publish them to ROS ("Mavlink Receiver")
@@ -110,7 +111,7 @@ protected:
 	 *
 	 * */
 	void handle_msg_set_position_target_local_ned(const mavlink_message_t *mmsg);
-
+	
 };
 
 }

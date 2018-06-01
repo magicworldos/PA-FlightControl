@@ -47,7 +47,7 @@
 #include "navigator_mode.h"
 #include "mission_block.h"
 
-class Land : public MissionBlock
+class Land: public MissionBlock
 {
 public:
 	Land(Navigator *navigator, const char *name);
@@ -59,7 +59,7 @@ public:
 	virtual void on_activation();
 
 	virtual void on_active();
-
+	
 };
 
 #endif

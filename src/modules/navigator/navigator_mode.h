@@ -60,7 +60,7 @@ public:
 	virtual ~NavigatorMode() = default;
 	NavigatorMode(const NavigatorMode &) = delete;
 	NavigatorMode operator=(const NavigatorMode &) = delete;
-
+	
 	void run(bool active);
 
 	/**
@@ -84,14 +84,10 @@ public:
 	virtual void on_active();
 
 protected:
-	Navigator *_navigator
-	{
-	    nullptr };
+	Navigator *_navigator { nullptr };
 
 private:
-	bool _active
-	{
-	    false };
+	bool _active { false };
 };
 
 #endif

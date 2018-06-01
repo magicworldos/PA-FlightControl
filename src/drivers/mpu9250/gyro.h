@@ -38,27 +38,27 @@ class MPU9250;
 /**
  * Helper class implementing the gyro driver node.
  */
-class MPU9250_gyro : public device::CDev
+class MPU9250_gyro: public device::CDev
 {
 public:
 	MPU9250_gyro(MPU9250 *parent, const char *path);
 	~MPU9250_gyro();
 
-	virtual ssize_t		read(struct file *filp, char *buffer, size_t buflen);
-	virtual int		ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
-	virtual int		init();
+	virtual int init();
 
 protected:
 	friend class MPU9250;
 
-	void			parent_poll_notify();
+	void parent_poll_notify();
 
 private:
-	MPU9250			*_parent;
-	orb_advert_t		_gyro_topic;
-	int			_gyro_orb_class_instance;
-	int			_gyro_class_instance;
+	MPU9250 *_parent;
+	orb_advert_t _gyro_topic;
+	int _gyro_orb_class_instance;
+	int _gyro_class_instance;
 
 	/* do not allow to copy this class due to pointer data members */
 	MPU9250_gyro(const MPU9250_gyro &);

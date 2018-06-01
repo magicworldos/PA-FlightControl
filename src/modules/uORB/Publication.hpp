@@ -50,7 +50,7 @@ namespace uORB
  * of various publications.
  */
 class __EXPORT PublicationBase
-{
+{	
 public:
 
 	/**
@@ -81,8 +81,10 @@ protected:
 	const struct orb_metadata *_meta;
 	const int _priority;
 
-	int _instance{0};
-	orb_advert_t _handle{nullptr};
+	int _instance
+	{	0};
+	orb_advert_t _handle
+	{	nullptr};
 };
 
 /**
@@ -95,7 +97,7 @@ typedef PublicationBase PublicationTiny;
  * The publication base class as a list node.
  */
 class __EXPORT PublicationNode : public PublicationBase, public ListNode<PublicationNode *>
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -121,7 +123,7 @@ public:
  */
 template<class T>
 class __EXPORT Publication final : public PublicationNode
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -132,10 +134,10 @@ public:
 	 * @param list A list interface for adding to
 	 * 	list during construction
 	 */
-	Publication(const struct orb_metadata *meta, int priority = -1, List<PublicationNode *> *list = nullptr)  :
-		PublicationNode(meta, priority, list),
-		_data()
-	{
+	Publication(const struct orb_metadata *meta, int priority = -1, List<PublicationNode *> *list = nullptr) :
+	PublicationNode(meta, priority, list),
+	_data()
+	{	
 	}
 
 	~Publication() override = default;
@@ -149,13 +151,14 @@ public:
 	/*
 	 * This function gets the T struct
 	 * */
-	T &get() { return _data; }
+	T &get()
+	{	return _data;}
 
 	/**
 	 * Create an update function that uses the embedded struct.
 	 */
 	bool update() override
-	{
+	{	
 		return PublicationBase::update((void *)(&_data));
 	}
 
@@ -163,4 +166,5 @@ private:
 	T _data;
 };
 
-} // namespace uORB
+}
+ // namespace uORB

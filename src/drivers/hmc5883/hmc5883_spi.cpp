@@ -71,62 +71,63 @@
 device::Device *HMC5883_SPI_interface(int bus);
 
 class HMC5883_SPI : public device::SPI
-{
+{	
 public:
 	HMC5883_SPI(int bus, uint32_t device);
 	virtual ~HMC5883_SPI();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
 
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 };
 
 device::Device *
 HMC5883_SPI_interface(int bus)
-{
+{	
 	return new HMC5883_SPI(bus, PX4_SPIDEV_HMC);
 }
 
 HMC5883_SPI::HMC5883_SPI(int bus, uint32_t device) :
-	SPI("HMC5883_SPI", nullptr, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz */)
-{
+SPI("HMC5883_SPI", nullptr, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz */)
+{	
 	_device_id.devid_s.devtype = DRV_MAG_DEVTYPE_HMC5883;
 }
 
 HMC5883_SPI::~HMC5883_SPI()
-{
+{	
 }
 
 int
 HMC5883_SPI::init()
-{
+{	
 	int ret;
 
 	ret = SPI::init();
 
 	if (ret != OK)
-	{
+	{	
 		DEVICE_DEBUG("SPI init failed");
 		return -EIO;
 	}
 
 	// read WHO_AM_I value
-	uint8_t data[3] = {0, 0, 0};
+	uint8_t data[3] =
+	{	0, 0, 0};
 
 	if (read(ADDR_ID_A, &data[0], 1) ||
 			read(ADDR_ID_B, &data[1], 1) ||
 			read(ADDR_ID_C, &data[2], 1))
-	{
+	{	
 		DEVICE_DEBUG("read_reg fail");
 	}
 
 	if ((data[0] != ID_A_WHO_AM_I) ||
 			(data[1] != ID_B_WHO_AM_I) ||
 			(data[2] != ID_C_WHO_AM_I))
-	{
+	{	
 		DEVICE_DEBUG("ID byte mismatch (%02x,%02x,%02x)", data[0], data[1], data[2]);
 		return -EIO;
 	}
@@ -136,27 +137,27 @@ HMC5883_SPI::init()
 
 int
 HMC5883_SPI::ioctl(unsigned operation, unsigned &arg)
-{
+{	
 	int ret;
 
 	switch (operation)
-	{
+	{	
 
 		case MAGIOCGEXTERNAL:
-			/*
-			 * Even if this sensor is on the external SPI
-			 * bus it is still internal to the autopilot
-			 * assembly, so always return 0 for internal.
-			 */
-			return 0;
+		/*
+		 * Even if this sensor is on the external SPI
+		 * bus it is still internal to the autopilot
+		 * assembly, so always return 0 for internal.
+		 */
+		return 0;
 
 		case DEVIOCGDEVICEID:
-			return CDev::ioctl(nullptr, operation, arg);
+		return CDev::ioctl(nullptr, operation, arg);
 
 		default:
-			{
-				ret = -EINVAL;
-			}
+		{	
+			ret = -EINVAL;
+		}
 	}
 
 	return ret;
@@ -164,11 +165,11 @@ HMC5883_SPI::ioctl(unsigned operation, unsigned &arg)
 
 int
 HMC5883_SPI::write(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t buf[32];
 
 	if (sizeof(buf) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 
@@ -180,11 +181,11 @@ HMC5883_SPI::write(unsigned address, void *data, unsigned count)
 
 int
 HMC5883_SPI::read(unsigned address, void *data, unsigned count)
-{
+{	
 	uint8_t buf[32];
 
 	if (sizeof(buf) < (count + 1))
-	{
+	{	
 		return -EIO;
 	}
 

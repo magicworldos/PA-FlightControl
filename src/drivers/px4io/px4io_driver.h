@@ -42,5 +42,5 @@
 #include <board_config.h>
 
 #ifdef PX4IO_SERIAL_BASE
-device::Device	*PX4IO_serial_interface();
+device::Device *PX4IO_serial_interface();
 #endif

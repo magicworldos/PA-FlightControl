@@ -67,51 +67,51 @@
 #include <trone/TROne.hpp>
 #include <DevMgr.hpp>
 
-
-extern "C" { __EXPORT int df_trone_wrapper_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int df_trone_wrapper_main(int argc, char *argv[]);
+}
 
 using namespace DriverFramework;
 
-
-class DfTROneWrapper : public TROne
+class DfTROneWrapper: public TROne
 {
 public:
 	DfTROneWrapper(uint8_t rotation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
 	~DfTROneWrapper();
-
 
 	/**
 	 * Start automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		start();
+	int start();
 
 	/**
 	 * Stop automatic measurement.
 	 *
 	 * @return 0 on success
 	 */
-	int		stop();
+	int stop();
 
 private:
 	int _publish(struct range_sensor_data &data);
 
 	uint8_t _rotation;
 
-	orb_advert_t		_range_topic;
+	orb_advert_t _range_topic;
 
-	int			_orb_class_instance;
-
+	int _orb_class_instance;
+	
 	// perf_counter_t		_range_sample_perf;
-
+	
 };
 
 DfTROneWrapper::DfTROneWrapper(uint8_t rotation) :
-	TROne(TRONE_DEVICE_PATH),
-	_rotation(rotation),
-	_range_topic(nullptr),
-	_orb_class_instance(-1)
+		    TROne(TRONE_DEVICE_PATH),
+		    _rotation(rotation),
+		    _range_topic(nullptr),
+		    _orb_class_instance(-1)
 {
 }
 
@@ -122,24 +122,24 @@ DfTROneWrapper::~DfTROneWrapper()
 int DfTROneWrapper::start()
 {
 	int ret;
-
+	
 	/* Init device and start sensor. */
 	ret = init();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("TROne init fail: %d", ret);
 		return ret;
 	}
-
+	
 	ret = TROne::start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("TROne start fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
@@ -147,52 +147,51 @@ int DfTROneWrapper::stop()
 {
 	/* Stop sensor. */
 	int ret = TROne::stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("TROne stop fail: %d", ret);
 		return ret;
 	}
-
+	
 	return 0;
 }
 
 int DfTROneWrapper::_publish(struct range_sensor_data &data)
 {
 	struct distance_sensor_s d;
-
+	
 	memset(&d, 0, sizeof(d));
-
+	
 	d.timestamp = hrt_absolute_time();
-
+	
 	d.min_distance = float(TRONE_MIN_DISTANCE); /* m */
-
+	
 	d.max_distance = float(TRONE_MAX_DISTANCE); /* m */
-
+	
 	d.current_distance = float(data.dist);
-
+	
 	d.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
-
+	
 	d.id = 0; // TODO set proper ID
-
+	
 	d.orientation = _rotation;
-
+	
 	d.covariance = 0.0f;
-
+	
 	if (_range_topic == nullptr)
 	{
-		_range_topic = orb_advertise_multi(ORB_ID(distance_sensor), &d,
-						   &_orb_class_instance, ORB_PRIO_DEFAULT);
-
+		_range_topic = orb_advertise_multi(ORB_ID(distance_sensor), &d, &_orb_class_instance, ORB_PRIO_DEFAULT);
+		
 	}
 	else
 	{
 		orb_publish(ORB_ID(distance_sensor), _range_topic, &d);
 	}
-
+	
 	return 0;
-};
-
+}
+;
 
 namespace df_trone_wrapper
 {
@@ -209,34 +208,33 @@ int start(uint8_t rotation)
 {
 	PX4_ERR("start");
 	g_dev = new DfTROneWrapper(rotation);
-
+	
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("failed instantiating DfTROneWrapper object");
 		return -1;
 	}
-
+	
 	int ret = g_dev->start();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("DfTROneWrapper start failed");
 		return ret;
 	}
-
+	
 	// Open the range sensor
 	DevHandle h;
 	DevMgr::getHandle(TRONE_DEVICE_PATH, h);
-
+	
 	if (!h.isValid())
 	{
-		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)",
-			    TRONE_DEVICE_PATH, h.getError());
+		DF_LOG_INFO("Error: unable to obtain a valid handle for the receiver at: %s (%d)", TRONE_DEVICE_PATH, h.getError());
 		return -1;
 	}
-
+	
 	DevMgr::releaseHandle(h);
-
+	
 	return 0;
 }
 
@@ -247,15 +245,15 @@ int stop()
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	int ret = g_dev->stop();
-
+	
 	if (ret != 0)
 	{
 		PX4_ERR("driver could not be stopped");
 		return ret;
 	}
-
+	
 	delete g_dev;
 	g_dev = nullptr;
 	return 0;
@@ -264,121 +262,114 @@ int stop()
 /**
  * Print a little info about the driver.
  */
-int
-info()
+int info()
 {
 	if (g_dev == nullptr)
 	{
 		PX4_ERR("driver not running");
 		return 1;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
 /**
  * Who am i
  */
-int
-probe()
+int probe()
 {
 	int ret;
-
+	
 	if (g_dev == nullptr)
 	{
 		ret = start(distance_sensor_s::ROTATION_DOWNWARD_FACING);
-
+		
 		if (ret)
 		{
 			PX4_ERR("Failed to start");
 			return ret;
 		}
 	}
-
+	
 	ret = g_dev->probe();
-
+	
 	if (ret)
 	{
 		PX4_ERR("Failed to probe");
 		return ret;
 	}
-
+	
 	PX4_DEBUG("state @ %p", g_dev);
-
+	
 	return 0;
 }
 
-
-void
-usage()
+void usage()
 {
 	PX4_WARN("Usage: df_trone_wrapper 'start', 'info', 'stop'");
 }
 
 } // namespace df_trone_wrapper
 
-
-int
-df_trone_wrapper_main(int argc, char *argv[])
+int df_trone_wrapper_main(int argc, char *argv[])
 {
 	int ch;
 	int ret = 0;
 	int myoptind = 1;
 	const char *myoptarg = NULL;
 	uint8_t rotation = distance_sensor_s::ROTATION_DOWNWARD_FACING;
-
+	
 	/* jump over start/off/etc and look at options first */
 	while ((ch = px4_getopt(argc, argv, "R:", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (ch)
 		{
 			case 'R':
-				rotation = (uint8_t)atoi(myoptarg);
-				PX4_INFO("Setting distance sensor orientation to %d", (int)rotation);
+				rotation = (uint8_t) atoi(myoptarg);
+				PX4_INFO("Setting distance sensor orientation to %d", (int )rotation);
 				break;
-
+				
 			default:
 				df_trone_wrapper::usage();
 				return 0;
 		}
 	}
-
+	
 	if (argc <= 1)
 	{
 		df_trone_wrapper::usage();
 		return 1;
 	}
-
+	
 	const char *verb = argv[myoptind];
-
-
+	
 	if (!strcmp(verb, "start"))
 	{
 		ret = df_trone_wrapper::start(rotation);
 	}
-
+	
 	else if (!strcmp(verb, "stop"))
 	{
 		ret = df_trone_wrapper::stop();
 	}
-
+	
 	else if (!strcmp(verb, "info"))
 	{
 		ret = df_trone_wrapper::info();
 	}
-
+	
 	else if (!strcmp(verb, "probe"))
 	{
 		ret = df_trone_wrapper::probe();
 	}
-
+	
 	else
 	{
 		df_trone_wrapper::usage();
 		return 1;
 	}
-
+	
 	return ret;
 }

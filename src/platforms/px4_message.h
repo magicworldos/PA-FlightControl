@@ -50,26 +50,29 @@ namespace px4
 
 template <typename M>
 class __EXPORT PX4Message
-{
+{	
 	// friend class NodeHandle;
 	// #if defined(__PX4_ROS)
 	// template<typename T>
 	// friend class SubscriberROS;
 	// #endif
-
+	
 public:
 	PX4Message() :
-		_data()
+	_data()
 	{}
 
 	PX4Message(M msg) :
-		_data(msg)
+	_data(msg)
 	{}
 
-	virtual ~PX4Message() {}
+	virtual ~PX4Message()
+	{}
 
-	virtual M &data() {return _data;}
-	virtual const M &data() const {return _data;}
+	virtual M &data()
+	{	return _data;}
+	virtual const M &data() const
+	{	return _data;}
 private:
 	M _data;
 };

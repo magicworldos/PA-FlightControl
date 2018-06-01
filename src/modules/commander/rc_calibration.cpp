@@ -58,15 +58,15 @@ int do_trim_calibration(orb_advert_t *mavlink_log_pub)
 	struct manual_control_setpoint_s sp;
 	bool changed;
 	orb_check(sub_man, &changed);
-
+	
 	if (!changed)
 	{
 		mavlink_log_critical(mavlink_log_pub, "no inputs, aborting");
 		return PX4_ERROR;
 	}
-
+	
 	orb_copy(ORB_ID(manual_control_setpoint), sub_man, &sp);
-
+	
 	/* load trim values which are active */
 	float roll_trim_active;
 	param_get(param_find("TRIM_ROLL"), &roll_trim_active);
@@ -74,7 +74,7 @@ int do_trim_calibration(orb_advert_t *mavlink_log_pub)
 	param_get(param_find("TRIM_PITCH"), &pitch_trim_active);
 	float yaw_trim_active;
 	param_get(param_find("TRIM_YAW"), &yaw_trim_active);
-
+	
 	/* get manual control scale values */
 	float roll_scale;
 	param_get(param_find("FW_MAN_R_SC"), &roll_scale);
@@ -82,28 +82,28 @@ int do_trim_calibration(orb_advert_t *mavlink_log_pub)
 	param_get(param_find("FW_MAN_P_SC"), &pitch_scale);
 	float yaw_scale;
 	param_get(param_find("FW_MAN_Y_SC"), &yaw_scale);
-
+	
 	/* set parameters: the new trim values are the combination of active trim values
-	   and the values coming from the remote control of the user
-	*/
+	 and the values coming from the remote control of the user
+	 */
 	float p = sp.y * roll_scale + roll_trim_active;
 	int p1r = param_set(param_find("TRIM_ROLL"), &p);
 	/*
 	 we explicitly swap sign here because the trim is added to the actuator controls
 	 which are moving in an inverse sense to manual pitch inputs
-	*/
+	 */
 	p = -sp.x * pitch_scale + pitch_trim_active;
 	int p2r = param_set(param_find("TRIM_PITCH"), &p);
 	p = sp.r * yaw_scale + yaw_trim_active;
 	int p3r = param_set(param_find("TRIM_YAW"), &p);
-
+	
 	if (p1r != 0 || p2r != 0 || p3r != 0)
 	{
 		mavlink_log_critical(mavlink_log_pub, "TRIM: PARAM SET FAIL");
 		px4_close(sub_man);
 		return PX4_ERROR;
 	}
-
+	
 	mavlink_log_info(mavlink_log_pub, "trim cal done");
 	px4_close(sub_man);
 	return PX4_OK;

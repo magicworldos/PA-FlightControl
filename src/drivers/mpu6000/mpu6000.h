@@ -45,7 +45,6 @@
 #  define USE_I2C
 #endif
 
-
 #define DIR_READ			0x80
 #define DIR_WRITE			0x00
 
@@ -161,9 +160,9 @@
 #define ICM_ACC_DLPF_CFG_5HZ		0x06
 #define ICM_ACC_DLPF_CFG_420HZ		0x07
 /* this is an undocumented register which
-   if set incorrectly results in getting a 2.7m/s/s offset
-   on the Y axis of the accelerometer
-*/
+ if set incorrectly results in getting a 2.7m/s/s offset
+ on the Y axis of the accelerometer
+ */
 #define MPUREG_ICM_UNDOC1		0x11
 #define MPUREG_ICM_UNDOC1_VALUE	0xc9
 
@@ -229,26 +228,26 @@
  */
 struct MPUReport
 {
-	uint8_t		cmd;
-	uint8_t		status;
-	uint8_t		accel_x[2];
-	uint8_t		accel_y[2];
-	uint8_t		accel_z[2];
-	uint8_t		temp[2];
-	uint8_t		gyro_x[2];
-	uint8_t		gyro_y[2];
-	uint8_t		gyro_z[2];
+	uint8_t cmd;
+	uint8_t status;
+	uint8_t accel_x[2];
+	uint8_t accel_y[2];
+	uint8_t accel_z[2];
+	uint8_t temp[2];
+	uint8_t gyro_x[2];
+	uint8_t gyro_y[2];
+	uint8_t gyro_z[2];
 };
 #pragma pack(pop)
 
 #define MPU_MAX_READ_BUFFER_SIZE (sizeof(MPUReport) + 1)
 #define MPU_MAX_WRITE_BUFFER_SIZE (2)
 /*
-  The MPU6000 can only handle high bus speeds on the sensor and
-  interrupt status registers. All other registers have a maximum 1MHz
-  Communication with all registers of the device is performed using either
-  I2C at 400kHz or SPI at 1MHz. For applications requiring faster communications,
-  the sensor and interrupt registers may be read using SPI at 20MHz
+ The MPU6000 can only handle high bus speeds on the sensor and
+ interrupt status registers. All other registers have a maximum 1MHz
+ Communication with all registers of the device is performed using either
+ I2C at 400kHz or SPI at 1MHz. For applications requiring faster communications,
+ the sensor and interrupt registers may be read using SPI at 20MHz
  */
 #define MPU6000_LOW_BUS_SPEED				0
 #define MPU6000_HIGH_BUS_SPEED				0x8000

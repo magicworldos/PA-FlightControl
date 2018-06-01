@@ -5,10 +5,9 @@
 #include <gtest/gtest.h>
 #include <uavcan/Timestamp.hpp>
 
-
 TEST(DsdlConst2, Timestamp)
-{
-    using uavcan::Timestamp;
+{	
+	using uavcan::Timestamp;
 
-    std::cout << &Timestamp::UNKNOWN << std::endl;
+	std::cout << &Timestamp::UNKNOWN << std::endl;
 }

@@ -59,7 +59,7 @@
 static void *receive_loop(void *arg)
 {
 	int uart_usb = open("/dev/ttyACM0", O_RDONLY | O_NOCTTY);
-
+	
 	while (1)
 	{
 		char c;
@@ -67,7 +67,7 @@ static void *receive_loop(void *arg)
 		printf("%c", c);
 		fflush(stdout);
 	}
-
+	
 	return NULL;
 }
 
@@ -76,22 +76,22 @@ int test_uart_console(int argc, char *argv[])
 	/* assuming NuttShell is on UART1 (/dev/ttyS0) */
 	//
 	int uart_usb = open("/dev/ttyACM0", O_WRONLY | O_NOCTTY);
-
+	
 	if (uart_usb < 0)
 	{
 		printf("ERROR opening /dev/ttyACM0. Do you need to run sercon first? Aborting..\n");
 		return uart_usb;
 	}
-
-	uint8_t sample_uart_usb[] = {'S', 'A', 'M', 'P', 'L', 'E', ' ', '\n'};
-
+	
+	uint8_t sample_uart_usb[] = { 'S', 'A', 'M', 'P', 'L', 'E', ' ', '\n' };
+	
 	pthread_t receive_thread;
-
+	
 	pthread_create(&receive_thread, NULL, receive_loop, NULL);
-
+	
 	//wait for threads to complete:
 	pthread_join(receive_thread, NULL);
-
+	
 	for (int i = 0; i < 30; i++)
 	{
 		write(uart_usb, sample_uart_usb, sizeof(sample_uart_usb));
@@ -99,7 +99,7 @@ int test_uart_console(int argc, char *argv[])
 		fflush(stdout);
 		sleep(1);
 	}
-
+	
 	//	uint64_t start_time = hrt_absolute_time();
 	//
 	////	while (true)
@@ -136,9 +136,9 @@ int test_uart_console(int argc, char *argv[])
 	//	}
 	//
 	//	int interval = hrt_absolute_time() - start_time;
-
+	
 	close(uart_usb);
 	//	close(uart_console);
-
+	
 	return 0;
 }

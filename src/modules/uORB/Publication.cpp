@@ -43,64 +43,64 @@ namespace uORB
 {
 
 PublicationBase::PublicationBase(const struct orb_metadata *meta, int priority) :
-	_meta(meta),
-	_priority(priority)
+		    _meta(meta),
+		    _priority(priority)
 {
 }
 
 PublicationBase::~PublicationBase()
 {
-	orb_unadvertise(_handle);
+	orb_unadvertise (_handle);
 }
 
 bool PublicationBase::update(void *data)
 {
 	bool updated = false;
-
+	
 	if (_handle != nullptr)
 	{
 		if (orb_publish(_meta, _handle, data) != PX4_OK)
 		{
 			PX4_ERR("%s publish fail", _meta->o_name);
-
+			
 		}
 		else
 		{
 			updated = true;
 		}
-
+		
 	}
 	else
 	{
 		orb_advert_t handle = nullptr;
-
+		
 		if (_priority > 0)
 		{
 			handle = orb_advertise_multi(_meta, data, &_instance, _priority);
-
+			
 		}
 		else
 		{
 			handle = orb_advertise(_meta, data);
 		}
-
+		
 		if (handle != nullptr)
 		{
 			_handle = handle;
 			updated = true;
-
+			
 		}
 		else
 		{
 			PX4_ERR("%s advert fail", _meta->o_name);
 		}
 	}
-
+	
 	return updated;
 }
 
 PublicationNode::PublicationNode(const struct orb_metadata *meta, int priority, List<PublicationNode *> *list) :
-	PublicationBase(meta, priority)
+		    PublicationBase(meta, priority)
 {
 	if (list != nullptr)
 	{

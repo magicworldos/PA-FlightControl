@@ -1,4 +1,3 @@
-
 /****************************************************************************
  *
  *   Copyright (C) 2016 PX4 Development Team. All rights reserved.
@@ -40,9 +39,10 @@
 namespace DriverFramework
 {
 
-struct bebop_range {
+struct bebop_range
+{
 	float height_m;
-} __attribute__((packed));
+}__attribute__((packed));
 
 #define DRV_DF_DEVTYPE_BEBOP_RANGEFINDER 0x99
 
@@ -58,13 +58,13 @@ struct bebop_range {
 
 #define BEBOP_RANGEFINDER_PULSE_LEN 32
 
-class BebopRangeFinder : public SPIDevObj
+class BebopRangeFinder: public SPIDevObj
 {
 public:
 	BebopRangeFinder(const char *device_path);
 
 	~BebopRangeFinder() = default;
-
+	
 	// @return 0 on success, -errno on failure
 	virtual int start();
 
@@ -80,7 +80,7 @@ protected:
 	SyncObj m_synchronize;
 
 private:
-
+	
 	// @returns 0 on success, -errno on failure
 	int _bebop_rangefinder_init();
 
@@ -92,13 +92,13 @@ private:
 	int16_t _get_echo_index();
 
 	ADCPin m_sonar_pin;
-	bool m_requested_data{false};
+	bool m_requested_data { false };
 
-	uint8_t m_pulse[BEBOP_RANGEFINDER_PULSE_LEN] {0};
-	uint16_t m_read_buffer[BEBOP_RANGEFINDER_BUFFER_LEN] {0};
-	uint16_t m_filtered_buffer[BEBOP_RANGEFINDER_BUFFER_LEN] {0};
-	uint16_t m_send_length{0};
-	uint16_t m_maximum_signal_value{0};
-
+	uint8_t m_pulse[BEBOP_RANGEFINDER_PULSE_LEN] { 0 };
+	uint16_t m_read_buffer[BEBOP_RANGEFINDER_BUFFER_LEN] { 0 };
+	uint16_t m_filtered_buffer[BEBOP_RANGEFINDER_BUFFER_LEN] { 0 };
+	uint16_t m_send_length { 0 };
+	uint16_t m_maximum_signal_value { 0 };
+	
 };
 } // namespace DriverFramework

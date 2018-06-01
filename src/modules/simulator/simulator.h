@@ -89,13 +89,13 @@ struct RawMagData
 #pragma pack(push, 1)
 struct RawMPUData
 {
-	float	accel_x;
-	float	accel_y;
-	float	accel_z;
-	float	temp;
-	float	gyro_x;
-	float	gyro_y;
-	float	gyro_z;
+	float accel_x;
+	float accel_y;
+	float accel_z;
+	float temp;
+	float gyro_x;
+	float gyro_y;
+	float gyro_z;
 };
 #pragma pack(pop)
 
@@ -135,27 +135,29 @@ struct RawGPSData
 };
 #pragma pack(pop)
 
-template <typename RType> class Report
+template<typename RType> class Report
 {
 public:
 	Report(int readers) :
-		_readidx(0),
-		_max_readers(readers),
-		_report_len(sizeof(RType))
+			    _readidx(0),
+			    _max_readers(readers),
+			    _report_len(sizeof(RType))
 	{
 		memset(_buf, 0, sizeof(_buf));
 		px4_sem_init(&_lock, 0, _max_readers);
 	}
-
-	~Report() {}
-
+	
+	~Report()
+	{
+	}
+	
 	bool copyData(void *outbuf, int len)
 	{
 		if (len != _report_len)
 		{
 			return false;
 		}
-
+		
 		read_lock();
 		memcpy(outbuf, &_buf[_readidx], _report_len);
 		read_unlock();
@@ -168,10 +170,16 @@ public:
 		_readidx = !_readidx;
 		write_unlock();
 	}
-
+	
 protected:
-	void read_lock() { px4_sem_wait(&_lock); }
-	void read_unlock() { px4_sem_post(&_lock); }
+	void read_lock()
+	{
+		px4_sem_wait(&_lock);
+	}
+	void read_unlock()
+	{
+		px4_sem_post(&_lock);
+	}
 	void write_lock()
 	{
 		for (int i = 0; i < _max_readers; i++)
@@ -186,7 +194,7 @@ protected:
 			px4_sem_post(&_lock);
 		}
 	}
-
+	
 	int _readidx;
 	px4_sem_t _lock;
 	const int _max_readers;
@@ -194,9 +202,10 @@ protected:
 	RType _buf[2];
 };
 
-};
+}
+;
 
-class Simulator : public control::SuperBlock
+class Simulator: public control::SuperBlock
 {
 public:
 	static Simulator *getInstance();
@@ -213,8 +222,18 @@ public:
 		float x;
 		float y;
 		float z;
-		sample() : x(0), y(0), z(0) {}
-		sample(float a, float b, float c) : x(a), y(b), z(c) {}
+		sample() :
+				    x(0),
+				    y(0),
+				    z(0)
+		{
+		}
+		sample(float a, float b, float c) :
+				    x(a),
+				    y(b),
+				    z(c)
+		{
+		}
 	};
 
 	static int start(int argc, char *argv[]);
@@ -233,78 +252,82 @@ public:
 	void write_gps_data(void *buf);
 	void write_airspeed_data(void *buf);
 
-	bool isInitialized() { return _initialized; }
-
+	bool isInitialized()
+	{
+		return _initialized;
+	}
+	
 private:
-	Simulator() : SuperBlock(nullptr, "SIM"),
-		_accel(1),
-		_mpu(1),
-		_baro(1),
-		_mag(1),
-		_gps(1),
-		_airspeed(1),
-		_perf_accel(perf_alloc_once(PC_ELAPSED, "sim_accel_delay")),
-		_perf_mpu(perf_alloc_once(PC_ELAPSED, "sim_mpu_delay")),
-		_perf_baro(perf_alloc_once(PC_ELAPSED, "sim_baro_delay")),
-		_perf_mag(perf_alloc_once(PC_ELAPSED, "sim_mag_delay")),
-		_perf_gps(perf_alloc_once(PC_ELAPSED, "sim_gps_delay")),
-		_perf_airspeed(perf_alloc_once(PC_ELAPSED, "sim_airspeed_delay")),
-		_perf_sim_delay(perf_alloc_once(PC_ELAPSED, "sim_network_delay")),
-		_perf_sim_interval(perf_alloc(PC_INTERVAL, "sim_network_interval")),
-		_accel_pub(nullptr),
-		_baro_pub(nullptr),
-		_gyro_pub(nullptr),
-		_mag_pub(nullptr),
-		_flow_pub(nullptr),
-		_vision_position_pub(nullptr),
-		_vision_attitude_pub(nullptr),
-		_dist_pub(nullptr),
-		_battery_pub(nullptr),
-		_param_sub(-1),
-		_initialized(false),
-		_realtime_factor(1.0),
-		_system_type(0)
+	Simulator() :
+			    SuperBlock(nullptr, "SIM"),
+			    _accel(1),
+			    _mpu(1),
+			    _baro(1),
+			    _mag(1),
+			    _gps(1),
+			    _airspeed(1),
+			    _perf_accel(perf_alloc_once(PC_ELAPSED, "sim_accel_delay")),
+			    _perf_mpu(perf_alloc_once(PC_ELAPSED, "sim_mpu_delay")),
+			    _perf_baro(perf_alloc_once(PC_ELAPSED, "sim_baro_delay")),
+			    _perf_mag(perf_alloc_once(PC_ELAPSED, "sim_mag_delay")),
+			    _perf_gps(perf_alloc_once(PC_ELAPSED, "sim_gps_delay")),
+			    _perf_airspeed(perf_alloc_once(PC_ELAPSED, "sim_airspeed_delay")),
+			    _perf_sim_delay(perf_alloc_once(PC_ELAPSED, "sim_network_delay")),
+			    _perf_sim_interval(perf_alloc(PC_INTERVAL, "sim_network_interval")),
+			    _accel_pub(nullptr),
+			    _baro_pub(nullptr),
+			    _gyro_pub(nullptr),
+			    _mag_pub(nullptr),
+			    _flow_pub(nullptr),
+			    _vision_position_pub(nullptr),
+			    _vision_attitude_pub(nullptr),
+			    _dist_pub(nullptr),
+			    _battery_pub(nullptr),
+			    _param_sub(-1),
+			    _initialized(false),
+			    _realtime_factor(1.0),
+			    _system_type(0)
 #ifndef __PX4_QURT
-		,
-		_rc_channels_pub(nullptr),
-		_attitude_pub(nullptr),
-		_gpos_pub(nullptr),
-		_lpos_pub(nullptr),
-		_actuator_outputs_sub{},
-		_vehicle_attitude_sub(-1),
-		_manual_sub(-1),
-		_vehicle_status_sub(-1),
-		_hil_local_proj_ref(),
-		_hil_local_proj_inited(false),
-		_hil_ref_lat(0),
-		_hil_ref_lon(0),
-		_hil_ref_alt(0),
-		_hil_ref_timestamp(0),
-		_rc_input{},
-		_actuators{},
-		_attitude{},
-		_manual{},
-		_vehicle_status{},
-		_battery_drain_interval_s(this, "BAT_DRAIN")
+			                 ,
+			    _rc_channels_pub(nullptr),
+			    _attitude_pub(nullptr),
+			    _gpos_pub(nullptr),
+			    _lpos_pub(nullptr),
+			    _actuator_outputs_sub { },
+			    _vehicle_attitude_sub(-1),
+			    _manual_sub(-1),
+			    _vehicle_status_sub(-1),
+			    _hil_local_proj_ref(),
+			    _hil_local_proj_inited(false),
+			    _hil_ref_lat(0),
+			    _hil_ref_lon(0),
+			    _hil_ref_alt(0),
+			    _hil_ref_timestamp(0),
+			    _rc_input { },
+			    _actuators { },
+			    _attitude { },
+			    _manual { },
+			    _vehicle_status { },
+			    _battery_drain_interval_s(this, "BAT_DRAIN")
 #endif
 	{
 		// We need to know the type for the correct mapping from
 		// actuator controls to the hil actuator message.
 		param_t param_system_type = param_find("MAV_TYPE");
 		param_get(param_system_type, &_system_type);
-
+		
 		for (unsigned i = 0; i < (sizeof(_actuator_outputs_sub) / sizeof(_actuator_outputs_sub[0])); i++)
 		{
 			_actuator_outputs_sub[i] = -1;
 		}
-
-		simulator::RawGPSData gps_data{};
+		
+		simulator::RawGPSData gps_data { };
 		gps_data.eph = UINT16_MAX;
 		gps_data.epv = UINT16_MAX;
 		_gps.writeData(&gps_data);
-
+		
 		_param_sub = orb_subscribe(ORB_ID(parameter_update));
-
+		
 		_battery_status.timestamp = hrt_absolute_time();
 	}
 	~Simulator()
@@ -313,20 +336,20 @@ private:
 		{
 			delete _instance;
 		}
-
+		
 		_instance = NULL;
 	}
-
+	
 	void initializeSensorData();
 
 	static Simulator *_instance;
 
 	// simulated sensor instances
-	simulator::Report<simulator::RawAccelData>	_accel;
-	simulator::Report<simulator::RawMPUData>	_mpu;
-	simulator::Report<simulator::RawBaroData>	_baro;
-	simulator::Report<simulator::RawMagData>	_mag;
-	simulator::Report<simulator::RawGPSData>	_gps;
+	simulator::Report<simulator::RawAccelData> _accel;
+	simulator::Report<simulator::RawMPUData> _mpu;
+	simulator::Report<simulator::RawBaroData> _baro;
+	simulator::Report<simulator::RawMagData> _mag;
+	simulator::Report<simulator::RawGPSData> _gps;
 	simulator::Report<simulator::RawAirspeedData> _airspeed;
 
 	perf_counter_t _perf_accel;
@@ -349,7 +372,7 @@ private:
 	orb_advert_t _dist_pub;
 	orb_advert_t _battery_pub;
 
-	int				_param_sub;
+	int _param_sub;
 
 	bool _initialized;
 	double _realtime_factor;		///< How fast the simulation runs in comparison to real system time
@@ -358,7 +381,7 @@ private:
 
 	// Lib used to do the battery calculations.
 	Battery _battery;
-	battery_status_s _battery_status{};
+	battery_status_s _battery_status { };
 
 	// For param MAV_TYPE
 	int32_t _system_type;
@@ -398,7 +421,7 @@ private:
 	struct vehicle_status_s _vehicle_status;
 
 	control::BlockParamFloat _battery_drain_interval_s; ///< battery drain interval
-
+	
 	void poll_topics();
 	void handle_message(mavlink_message_t *msg, bool publish);
 	void send_controls();

@@ -32,12 +32,12 @@
  ****************************************************************************/
 
 /**
-* @file tailsitter.h
-*
-* @author Roman Bapst 		<bapstroman@gmail.com>
-* @author David Vorsin     <davidvorsin@gmail.com>
-*
-*/
+ * @file tailsitter.h
+ *
+ * @author Roman Bapst 		<bapstroman@gmail.com>
+ * @author David Vorsin     <davidvorsin@gmail.com>
+ *
+ */
 
 #ifndef TAILSITTER_H
 #define TAILSITTER_H
@@ -47,9 +47,9 @@
 #include <systemlib/param/param.h>
 #include <drivers/drv_hrt.h>
 
-class Tailsitter : public VtolType
+class Tailsitter: public VtolType
 {
-
+	
 public:
 	Tailsitter(VtolAttitudeControl *_att_controller);
 	~Tailsitter();
@@ -62,16 +62,16 @@ public:
 	virtual void waiting_on_tecs();
 
 private:
-
+	
 	struct
 	{
-		float front_trans_dur;			/**< duration of first part of front transition */
+		float front_trans_dur; /**< duration of first part of front transition */
 		float front_trans_dur_p2;
-		float back_trans_dur;			/**< duration of back transition */
-		float airspeed_trans;			/**< airspeed at which we switch to fw mode after transition */
-		float airspeed_blend_start;		/**< airspeed at which we start blending mc/fw controls */
-		int elevons_mc_lock;			/**< lock elevons in multicopter mode */
-
+		float back_trans_dur; /**< duration of back transition */
+		float airspeed_trans; /**< airspeed at which we switch to fw mode after transition */
+		float airspeed_blend_start; /**< airspeed at which we start blending mc/fw controls */
+		int elevons_mc_lock; /**< lock elevons in multicopter mode */
+		
 	} _params_tailsitter;
 
 	struct
@@ -82,35 +82,35 @@ private:
 		param_t airspeed_trans;
 		param_t airspeed_blend_start;
 		param_t elevons_mc_lock;
-
+		
 	} _params_handles_tailsitter;
 
 	enum vtol_mode
 	{
-		MC_MODE = 0,			/**< vtol is in multicopter mode */
-		TRANSITION_FRONT_P1,	/**< vtol is in front transition part 1 mode */
-		TRANSITION_FRONT_P2,	/**< vtol is in front transition part 2 mode */
-		TRANSITION_BACK,		/**< vtol is in back transition mode */
-		FW_MODE					/**< vtol is in fixed wing mode */
+		MC_MODE = 0, /**< vtol is in multicopter mode */
+		TRANSITION_FRONT_P1, /**< vtol is in front transition part 1 mode */
+		TRANSITION_FRONT_P2, /**< vtol is in front transition part 2 mode */
+		TRANSITION_BACK, /**< vtol is in back transition mode */
+		FW_MODE /**< vtol is in fixed wing mode */
 	};
 
 	struct
 	{
-		vtol_mode flight_mode;			/**< vtol flight mode, defined by enum vtol_mode */
-		hrt_abstime transition_start;	/**< absoulte time at which front transition started */
+		vtol_mode flight_mode; /**< vtol flight mode, defined by enum vtol_mode */
+		hrt_abstime transition_start; /**< absoulte time at which front transition started */
 	} _vtol_schedule;
 
 	/** not sure about it yet ?! **/
-	float _min_front_trans_dur;	/**< min possible time in which rotors are rotated into the first position */
-
+	float _min_front_trans_dur; /**< min possible time in which rotors are rotated into the first position */
+	
 	float _thrust_transition_start; // throttle value when we start the front transition
 	float _yaw_transition;	// yaw angle in which transition will take place
 	float _pitch_transition_start;  // pitch angle at the start of transition (tailsitter)
-
+	
 	/**
 	 * Update parameters.
 	 */
 	virtual void parameters_update();
-
+	
 };
 #endif

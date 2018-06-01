@@ -56,17 +56,18 @@ extern void led_off(int led);
 extern void led_toggle(int led);
 __END_DECLS
 
-class LED : device::CDev
+class LED: device::CDev
 {
 public:
 	LED();
 	virtual ~LED();
 
-	virtual int		init();
-	virtual int		ioctl(device::file_t *filp, int cmd, unsigned long arg);
+	virtual int init();
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg);
 };
 
-LED::LED() : CDev("led", LED0_DEVICE_PATH)
+LED::LED() :
+		    CDev("led", LED0_DEVICE_PATH)
 {
 	// force immediate init/device registration
 	init();
@@ -76,49 +77,46 @@ LED::~LED()
 {
 }
 
-int
-LED::init()
+int LED::init()
 {
 	DEVICE_DEBUG("LED::init");
 	CDev::init();
 	led_init();
-
+	
 	return 0;
 }
 
-int
-LED::ioctl(device::file_t *filp, int cmd, unsigned long arg)
+int LED::ioctl(device::file_t *filp, int cmd, unsigned long arg)
 {
 	int result = OK;
-
+	
 	switch (cmd)
 	{
 		case LED_ON:
 			led_on(arg);
 			break;
-
+			
 		case LED_OFF:
 			led_off(arg);
 			break;
-
+			
 		case LED_TOGGLE:
 			led_toggle(arg);
 			break;
-
+			
 		default:
 			result = CDev::ioctl(filp, cmd, arg);
 	}
-
+	
 	return result;
 }
 
 namespace
 {
-LED	*gLED;
+LED *gLED;
 }
 
-void
-drv_led_start(void)
+void drv_led_start(void)
 {
 	if (gLED == nullptr)
 	{

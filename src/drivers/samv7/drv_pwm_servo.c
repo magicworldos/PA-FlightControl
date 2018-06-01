@@ -64,7 +64,6 @@
 #include <up_internal.h>
 #include <up_arch.h>
 
-
 int up_pwm_servo_set(unsigned channel, servo_position_t value)
 {
 	return io_timer_set_ccr(channel, value);
@@ -79,10 +78,10 @@ int up_pwm_servo_init(uint32_t channel_mask)
 {
 	/* Init channels */
 	uint32_t current = io_timer_get_mode_channels(IOTimerChanMode_PWMOut);
-
+	
 	// First free the current set of PWMs
-
-	for (unsigned channel = 0; current != 0 &&  channel < MAX_TIMER_IO_CHANNELS; channel++)
+	
+	for (unsigned channel = 0; current != 0 && channel < MAX_TIMER_IO_CHANNELS; channel++)
 	{
 		if (current & (1 << channel))
 		{
@@ -90,26 +89,26 @@ int up_pwm_servo_init(uint32_t channel_mask)
 			current &= ~(1 << channel);
 		}
 	}
-
+	
 	// Now allocate the new set
-
-	for (unsigned channel = 0; channel_mask != 0 &&  channel < MAX_TIMER_IO_CHANNELS; channel++)
+	
+	for (unsigned channel = 0; channel_mask != 0 && channel < MAX_TIMER_IO_CHANNELS; channel++)
 	{
 		if (channel_mask & (1 << channel))
 		{
-
+			
 			// First free any that were not PWM mode before
-
+			
 			if (-EBUSY == io_timer_is_channel_free(channel))
 			{
 				io_timer_free_channel(channel);
 			}
-
+			
 			io_timer_channel_init(channel, IOTimerChanMode_PWMOut, NULL, NULL);
 			channel_mask &= ~(1 << channel);
 		}
 	}
-
+	
 	return OK;
 }
 
@@ -126,19 +125,19 @@ int up_pwm_servo_set_rate_group_update(unsigned group, unsigned rate)
 	{
 		return -ERANGE;
 	}
-
+	
 	if (rate > 10000)
 	{
 		return -ERANGE;
 	}
-
+	
 	if ((group >= MAX_IO_TIMERS) || (io_timers[group].base == 0))
 	{
 		return ERROR;
 	}
-
+	
 	io_timer_set_rate(group, rate);
-
+	
 	return OK;
 }
 
@@ -148,7 +147,7 @@ int up_pwm_servo_set_rate(unsigned rate)
 	{
 		up_pwm_servo_set_rate_group_update(i, rate);
 	}
-
+	
 	return 0;
 }
 
@@ -162,8 +161,7 @@ uint32_t up_pwm_servo_get_rate_group(unsigned group)
 	return io_timer_get_group(group);
 }
 
-void
-up_pwm_servo_arm(bool armed)
+void up_pwm_servo_arm(bool armed)
 {
 	io_timer_set_enable(armed, IOTimerChanMode_PWMOut, IO_TIMER_ALL_MODES_CHANNELS);
 }

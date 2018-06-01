@@ -1,25 +1,25 @@
 /*
-Copyright (c) 2003-2012, Troy D. Hanson     http://uthash.sourceforge.net
-All rights reserved.
+ Copyright (c) 2003-2012, Troy D. Hanson     http://uthash.sourceforge.net
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #ifndef UTHASH_H
 #define UTHASH_H
@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>   /* exit() */
 
 /* These macros use decltype or the earlier __typeof GNU extension.
-   As decltype is only available in newer compilers (VS2010 or gcc 4.3+
-   when compiling c++ source) this code uses whatever method is needed
-   or, for VS2008 where neither is available, uses casting workarounds. */
+ As decltype is only available in newer compilers (VS2010 or gcc 4.3+
+ when compiling c++ source) this code uses whatever method is needed
+ or, for VS2008 where neither is available, uses casting workarounds. */
 #ifdef _MSC_VER         /* MS compiler */
 #if _MSC_VER >= 1600 && defined(__cplusplus)  /* VS2010 or newer in C++ mode */
 #define DECLTYPE(x) (decltype(x))
@@ -236,7 +236,6 @@ typedef unsigned char uint8_t;
 		HASH_FSCK(hh,head);                                                          \
 	} while (0)
 
-
 /* convenience forms of HASH_FIND/HASH_ADD/HASH_DEL */
 #define HASH_FIND_STR(head,findstr,out)                                          \
 	HASH_FIND(hh,head,findstr,strlen(findstr),out)
@@ -343,7 +342,6 @@ typedef unsigned char uint8_t;
 		while (_hb_keylen--)  { (hashv) = ((hashv) * 33) + *_hb_key++; }               \
 		bkt = (hashv) & (num_bkts-1);                                                  \
 	} while (0)
-
 
 /* SAX/FNV/OAT/JEN hash functions are macro variants of those listed at
  * http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx */
@@ -692,7 +690,6 @@ typedef unsigned char uint8_t;
 		uthash_expand_fyi(tbl);                                                      \
 	} while(0)
 
-
 /* This is an adaptation of Simon Tatham's O(n log(n)) mergesort */
 /* Note that HASH_SORT assumes the hash handle name to be hh.
  * HASH_SRT was added to allow the hash handle name to be passed in. */
@@ -862,7 +859,7 @@ typedef struct UT_hash_bucket
 	 * value, than to do an O(n) bucket expansion too often.
 	 */
 	unsigned expand_mult;
-
+	
 } UT_hash_bucket;
 
 /* random signature used only to find hash tables in external analysis */
@@ -876,7 +873,7 @@ typedef struct UT_hash_table
 	unsigned num_items;
 	struct UT_hash_handle *tail; /* tail hh in app order, for fast append    */
 	ptrdiff_t hho; /* hash handle offset (byte pos of hash handle in element */
-
+	
 	/* in an ideal situation (all buckets used equally), no bucket would have
 	 * more than ceil(#items/#buckets) items. that's the ideal chain length. */
 	unsigned ideal_chain_maxlen;
@@ -900,19 +897,19 @@ typedef struct UT_hash_table
 	uint8_t *bloom_bv;
 	char bloom_nbits;
 #endif
-
+	
 } UT_hash_table;
 
 typedef struct UT_hash_handle
 {
 	struct UT_hash_table *tbl;
-	void *prev;                       /* prev element in app order      */
-	void *next;                       /* next element in app order      */
-	struct UT_hash_handle *hh_prev;   /* previous hh in bucket order    */
-	struct UT_hash_handle *hh_next;   /* next hh in bucket order        */
-	void *key;                        /* ptr to enclosing struct's key  */
-	unsigned keylen;                  /* enclosing struct's key len     */
-	unsigned hashv;                   /* result of hash-fcn(key)        */
+	void *prev; /* prev element in app order      */
+	void *next; /* next element in app order      */
+	struct UT_hash_handle *hh_prev; /* previous hh in bucket order    */
+	struct UT_hash_handle *hh_next; /* next hh in bucket order        */
+	void *key; /* ptr to enclosing struct's key  */
+	unsigned keylen; /* enclosing struct's key len     */
+	unsigned hashv; /* result of hash-fcn(key)        */
 } UT_hash_handle;
 
 #endif /* UTHASH_H */

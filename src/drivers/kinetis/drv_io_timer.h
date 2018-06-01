@@ -56,8 +56,8 @@ __BEGIN_DECLS
 typedef enum io_timer_channel_mode_t
 {
 	IOTimerChanMode_NotUsed = 0,
-	IOTimerChanMode_PWMOut  = 1,
-	IOTimerChanMode_PWMIn   = 2,
+	IOTimerChanMode_PWMOut = 1,
+	IOTimerChanMode_PWMIn = 2,
 	IOTimerChanMode_Capture = 3,
 	IOTimerChanMode_OneShot = 4,
 	IOTimerChanMode_Trigger = 5,
@@ -76,30 +76,25 @@ typedef uint16_t io_timer_channel_allocation_t; /* big enough to hold MAX_TIMER_
  */
 typedef struct io_timers_t
 {
-	uint32_t	base;                /* Base address of the timer */
-	uint32_t	clock_register;      /* SIM_SCGCn */
-	uint32_t	clock_bit;           /* SIM_SCGCn bit pos */
-	uint32_t	vectorno;            /* IRQ number */
-	uint32_t    first_channel_index; /* 0 based index in timer_io_channels */
-	uint32_t    last_channel_index;  /* 0 based index in timer_io_channels */
-	xcpt_t      handler;
+	uint32_t base; /* Base address of the timer */
+	uint32_t clock_register; /* SIM_SCGCn */
+	uint32_t clock_bit; /* SIM_SCGCn bit pos */
+	uint32_t vectorno; /* IRQ number */
+	uint32_t first_channel_index; /* 0 based index in timer_io_channels */
+	uint32_t last_channel_index; /* 0 based index in timer_io_channels */
+	xcpt_t handler;
 } io_timers_t;
 
 /* array of channels in logical order */
 typedef struct timer_io_channels_t
 {
-	uint32_t	gpio_out;            /* The timer channel GPIO for PWM */
-	uint32_t	gpio_in;             /* The timer channel GPIO for Capture */
-	uint8_t		timer_index;         /* 0 based index in the io_timers_t table */
-	uint8_t		timer_channel;       /* 1 based channel index GPIO_FTMt_CHcIN = c+1) */
+	uint32_t gpio_out; /* The timer channel GPIO for PWM */
+	uint32_t gpio_in; /* The timer channel GPIO for Capture */
+	uint8_t timer_index; /* 0 based index in the io_timers_t table */
+	uint8_t timer_channel; /* 1 based channel index GPIO_FTMt_CHcIN = c+1) */
 } timer_io_channels_t;
 
-
-typedef void (*channel_handler_t)(void *context, const io_timers_t *timer, uint32_t chan_index,
-				  const timer_io_channels_t *chan,
-				  hrt_abstime isrs_time, uint16_t isrs_rcnt,
-				  uint16_t capture);
-
+typedef void (*channel_handler_t)(void *context, const io_timers_t *timer, uint32_t chan_index, const timer_io_channels_t *chan, hrt_abstime isrs_time, uint16_t isrs_rcnt, uint16_t capture);
 
 /* supplied by board-specific code */
 __EXPORT extern const io_timers_t io_timers[MAX_IO_TIMERS];
@@ -114,14 +109,12 @@ __EXPORT int io_timer_handler1(int irq, void *context, void *arg);
 __EXPORT int io_timer_handler2(int irq, void *context, void *arg);
 __EXPORT int io_timer_handler3(int irq, void *context, void *arg);
 
-__EXPORT int io_timer_channel_init(unsigned channel, io_timer_channel_mode_t mode,
-				   channel_handler_t channel_handler, void *context);
+__EXPORT int io_timer_channel_init(unsigned channel, io_timer_channel_mode_t mode, channel_handler_t channel_handler, void *context);
 
 __EXPORT int io_timer_init_timer(unsigned timer);
 
 __EXPORT int io_timer_set_rate(unsigned timer, unsigned rate);
-__EXPORT int io_timer_set_enable(bool state, io_timer_channel_mode_t mode,
-				 io_timer_channel_allocation_t masks);
+__EXPORT int io_timer_set_enable(bool state, io_timer_channel_mode_t mode, io_timer_channel_allocation_t masks);
 __EXPORT int io_timer_set_rate(unsigned timer, unsigned rate);
 __EXPORT uint16_t io_channel_get_ccr(unsigned channel);
 __EXPORT int io_timer_set_ccr(unsigned channel, uint16_t value);

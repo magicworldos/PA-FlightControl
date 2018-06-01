@@ -56,39 +56,42 @@ namespace control
 {
 template<class Type, size_t M>
 class __EXPORT BlockStats: public Block
-{
+{	
 
 public:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+			const char *name) :
+	Block(parent, name),
+	_sum(),
+	_sumSq(),
+	_count(0)
 	{}
-	virtual ~BlockStats() {}
+	virtual ~BlockStats()
+	{}
 	void update(const matrix::Vector<Type, M> &u)
-	{
+	{	
 		_sum += u;
 		_sumSq += u.emult(u);
 		_count += 1;
 	}
 	void reset()
-	{
+	{	
 		_sum.setZero();
 		_sumSq.setZero();
 		_count = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t getCount()
+	{	return _count;}
+	matrix::Vector<Type, M> getMean()
+	{	return _sum / _count;}
 	matrix::Vector<Type, M> getVar()
-	{
+	{	
 		return (_sumSq - _sum.emult(_sum) / _count) / _count;
 	}
 	matrix::Vector<Type, M> getStdDev()
-	{
+	{	
 		return getVar().pow(0.5);
 	}
 private:
@@ -98,4 +101,5 @@ private:
 	size_t _count;
 };
 
-} // namespace control
+}
+ // namespace control

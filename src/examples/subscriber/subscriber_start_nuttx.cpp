@@ -42,7 +42,7 @@
 #include <systemlib/systemlib.h>
 
 extern bool thread_running;
-int daemon_task;             /**< Handle of deamon task / thread */
+int daemon_task; /**< Handle of deamon task / thread */
 namespace px4
 {
 bool task_should_exit = false;
@@ -58,50 +58,45 @@ int subscriber_main(int argc, char *argv[])
 	{
 		errx(1, "usage: subscriber {start|stop|status}");
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (thread_running)
 		{
 			warnx("already running");
 			/* this is not an error */
 			exit(0);
 		}
-
+		
 		task_should_exit = false;
-
-		daemon_task = px4_task_spawn_cmd("subscriber",
-						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
-						 2000,
-						 main,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
-
+		
+		daemon_task = px4_task_spawn_cmd("subscriber", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 2000, main, (argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
+		
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
 		task_should_exit = true;
 		exit(0);
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (thread_running)
 		{
 			warnx("is running");
-
+			
 		}
 		else
 		{
 			warnx("not started");
 		}
-
+		
 		exit(0);
 	}
-
+	
 	warnx("unrecognized command");
 	return 1;
 }

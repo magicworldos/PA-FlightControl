@@ -79,7 +79,6 @@
  * Private Functions
  ****************************************************************************/
 
-
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -97,22 +96,22 @@ int test_ppm(int argc, char *argv[])
 	printf("channels: %u\n", ppm_decoded_channels);
 
 	for (i = 0; i < ppm_decoded_channels; i++)
-	{
+	{	
 		printf("  %u\n", ppm_buffer[i]);
 	}
 
 	// printf("edges\n");
-
+	
 	// for (i = 0; i < 32; i++) {
 	// 	printf("  %u\n", ppm_edge_history[i]);
 	// }
-
+	
 	// printf("pulses\n");
-
+	
 	// for (i = 0; i < 32; i++) {
 	// 	printf("  %u\n", ppm_pulse_history[i]);
 	// }
-
+	
 	fflush(stdout);
 #else
 	printf("PPM not configured\n");
@@ -124,68 +123,68 @@ int test_tone(int argc, char *argv[])
 {
 	int fd, result;
 	unsigned long tone;
-
+	
 	fd = px4_open(TONEALARM0_DEVICE_PATH, O_WRONLY);
-
+	
 	if (fd < 0)
 	{
 		printf("failed opening " TONEALARM0_DEVICE_PATH "\n");
 		goto out;
 	}
-
+	
 	tone = 1;
-
+	
 	if (argc == 2)
 	{
 		tone = atoi(argv[1]);
 	}
-
-	if (tone  == 0)
+	
+	if (tone == 0)
 	{
 		result = px4_ioctl(fd, TONE_SET_ALARM, TONE_STOP_TUNE);
-
+		
 		if (result < 0)
 		{
 			printf("failed clearing alarms\n");
 			goto out;
-
+			
 		}
 		else
 		{
 			printf("Alarm stopped.\n");
 		}
-
+		
 	}
 	else
 	{
 		result = px4_ioctl(fd, TONE_SET_ALARM, TONE_STOP_TUNE);
-
+		
 		if (result < 0)
 		{
 			printf("failed clearing alarms\n");
 			goto out;
 		}
-
+		
 		result = px4_ioctl(fd, TONE_SET_ALARM, tone);
-
+		
 		if (result < 0)
 		{
 			printf("failed setting alarm %lu\n", tone);
-
+			
 		}
 		else
 		{
 			printf("Alarm %lu (disable with: tests tone 0)\n", tone);
 		}
 	}
-
-out:
+	
+	out:
 
 	if (fd >= 0)
 	{
 		px4_close(fd);
 	}
-
+	
 	return 0;
 }
 
@@ -199,9 +198,9 @@ int test_hrt(int argc, char *argv[])
 	hrt_abstime prev, now;
 	int i;
 	struct timeval tv1, tv2;
-
+	
 	printf("start-time (hrt, sec/usec), end-time (hrt, sec/usec), microseconds per 1/10 second\n");
-
+	
 	for (i = 0; i < 10; i++)
 	{
 		prev = hrt_absolute_time();
@@ -209,29 +208,26 @@ int test_hrt(int argc, char *argv[])
 		usleep(100000);
 		now = hrt_absolute_time();
 		gettimeofday(&tv2, NULL);
-		printf("%lu (%lu/%lu), %lu (%lu/%lu), %lu\n",
-		       (unsigned long)prev, (unsigned long)tv1.tv_sec, (unsigned long)tv1.tv_usec,
-		       (unsigned long)now, (unsigned long)tv2.tv_sec, (unsigned long)tv2.tv_usec,
-		       (unsigned long)(hrt_absolute_time() - prev));
+		printf("%lu (%lu/%lu), %lu (%lu/%lu), %lu\n", (unsigned long) prev, (unsigned long) tv1.tv_sec, (unsigned long) tv1.tv_usec, (unsigned long) now, (unsigned long) tv2.tv_sec, (unsigned long) tv2.tv_usec, (unsigned long) (hrt_absolute_time() - prev));
 		fflush(stdout);
 	}
-
+	
 	usleep(1000000);
-
+	
 	printf("one-second ticks\n");
-
+	
 	for (i = 0; i < 3; i++)
 	{
 		hrt_call_after(&call, 1000000, NULL, NULL);
-
+		
 		while (!hrt_called(&call))
 		{
 			usleep(1000);
 		}
-
+		
 		printf("tick\n");
 		fflush(stdout);
 	}
-
+	
 	return 0;
 }

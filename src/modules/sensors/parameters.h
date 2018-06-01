@@ -48,12 +48,10 @@
 
 #include <uORB/topics/rc_parameter_map.h>
 
-
 namespace sensors
 {
 
-static const unsigned RC_MAX_CHAN_COUNT =
-	input_rc_s::RC_INPUT_MAX_CHANNELS;	/**< maximum number of r/c channels we handle */
+static const unsigned RC_MAX_CHAN_COUNT = input_rc_s::RC_INPUT_MAX_CHANNELS; /**< maximum number of r/c channels we handle */
 
 struct Parameters
 {
@@ -68,7 +66,7 @@ struct Parameters
 #ifdef ADC_AIRSPEED_VOLTAGE_CHANNEL
 	float diff_pres_analog_scale;
 #endif /* ADC_AIRSPEED_VOLTAGE_CHANNEL */
-
+	
 	int32_t board_rotation;
 
 	float board_offset[3];
@@ -164,7 +162,7 @@ struct ParameterHandles
 #ifdef ADC_AIRSPEED_VOLTAGE_CHANNEL
 	param_t diff_pres_analog_scale;
 #endif /* ADC_AIRSPEED_VOLTAGE_CHANNEL */
-
+	
 	param_t rc_map_roll;
 	param_t rc_map_pitch;
 	param_t rc_map_yaw;
@@ -193,11 +191,11 @@ struct ParameterHandles
 	param_t rc_map_aux5;
 
 	param_t rc_map_param[rc_parameter_map_s::RC_PARAM_MAP_NCHAN];
-	param_t rc_param[rc_parameter_map_s::RC_PARAM_MAP_NCHAN];	/**< param handles for the parameters which are bound
-							  to a RC channel, equivalent float values in the
-							  _parameters struct are not existing
-							  because these parameters are never read. */
-
+	param_t rc_param[rc_parameter_map_s::RC_PARAM_MAP_NCHAN]; /**< param handles for the parameters which are bound
+	 to a RC channel, equivalent float values in the
+	 _parameters struct are not existing
+	 because these parameters are never read. */
+	
 	param_t rc_map_flightmode;
 
 	param_t rc_fails_thr;
@@ -235,14 +233,13 @@ struct ParameterHandles
 	param_t air_cmodel;
 	param_t air_tube_length;
 	param_t air_tube_diameter_mm;
-
+	
 };
 
 /**
  * initialize ParameterHandles struct
  */
 void initialize_parameter_handles(ParameterHandles &parameter_handles);
-
 
 /**
  * Read out the parameters using the handles into the parameters struct.

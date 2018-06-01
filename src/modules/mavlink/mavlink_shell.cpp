@@ -45,7 +45,6 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
-
 #ifdef __PX4_NUTTX
 #include <nshlib/nshlib.h>
 #endif /* __PX4_NUTTX */
@@ -66,7 +65,7 @@ MavlinkShell::~MavlinkShell()
 		PX4_INFO("Stopping mavlink shell");
 		close(_to_shell_fd);
 	}
-
+	
 	if (_from_shell_fd >= 0)
 	{
 		close(_from_shell_fd);
@@ -79,12 +78,11 @@ int MavlinkShell::start()
 #ifndef __PX4_NUTTX
 	return -1;
 #endif /* __PX4_NUTTX */
-
-
+	
 	PX4_INFO("Starting mavlink shell");
-
+	
 	int p1[2], p2[2];
-
+	
 	/* Create the shell task and redirect its stdin & stdout. If we used pthread, we would redirect
 	 * stdin/out of the calling process as well, so we need px4_task_spawn_cmd. However NuttX only
 	 * keeps (duplicates) the first 3 fd's when creating a new task, all others are not inherited.
@@ -98,51 +96,46 @@ int MavlinkShell::start()
 	{
 		return -errno;
 	}
-
+	
 	if (pipe(p2) != 0)
 	{
 		close(p1[0]);
 		close(p1[1]);
 		return -errno;
 	}
-
+	
 	int ret = 0;
-
-	_from_shell_fd  = p1[0];
+	
+	_from_shell_fd = p1[0];
 	_to_shell_fd = p2[1];
-	_shell_fds[0]  = p2[0];
+	_shell_fds[0] = p2[0];
 	_shell_fds[1] = p1[1];
-
+	
 	int fd_backups[2]; //we don't touch stderr, we will redirect it to stdout in the startup of the shell task
-
+	
 	for (int i = 0; i < 2; ++i)
 	{
 		fd_backups[i] = dup(i);
-
+		
 		if (fd_backups[i] == -1)
 		{
 			ret = -errno;
 		}
 	}
-
+	
 	dup2(_shell_fds[0], 0);
 	dup2(_shell_fds[1], 1);
-
+	
 	if (ret == 0)
 	{
-		_task = px4_task_spawn_cmd("mavlink_shell",
-					   SCHED_DEFAULT,
-					   SCHED_PRIORITY_DEFAULT,
-					   2048,
-					   &MavlinkShell::shell_start_thread,
-					   nullptr);
-
+		_task = px4_task_spawn_cmd("mavlink_shell", SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT, 2048, &MavlinkShell::shell_start_thread, nullptr);
+		
 		if (_task < 0)
 		{
 			ret = -1;
 		}
 	}
-
+	
 	//restore fd's
 	for (int i = 0; i < 2; ++i)
 	{
@@ -150,25 +143,25 @@ int MavlinkShell::start()
 		{
 			ret = -errno;
 		}
-
+		
 		close(fd_backups[i]);
 	}
-
+	
 	//close unused pipe fd's
 	close(_shell_fds[0]);
 	close(_shell_fds[1]);
-
+	
 	return ret;
 }
 
 int MavlinkShell::shell_start_thread(int argc, char *argv[])
 {
 	dup2(1, 2); //redirect stderror to stdout
-
+	
 #ifdef __PX4_NUTTX
 	nsh_consolemain(0, NULL);
 #endif /* __PX4_NUTTX */
-
+	
 	return 0;
 }
 
@@ -185,11 +178,11 @@ size_t MavlinkShell::read(uint8_t *buffer, size_t len)
 size_t MavlinkShell::available()
 {
 	int ret = 0;
-
-	if (ioctl(_from_shell_fd, FIONREAD, (unsigned long)&ret) == OK)
+	
+	if (ioctl(_from_shell_fd, FIONREAD, (unsigned long) &ret) == OK)
 	{
 		return ret;
 	}
-
+	
 	return 0;
 }

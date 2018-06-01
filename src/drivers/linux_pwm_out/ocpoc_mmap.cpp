@@ -41,14 +41,14 @@
 using namespace linux_pwm_out;
 
 #define RCOUT_ZYNQ_PWM_BASE	    0x43c00000
-static const int TICK_PER_US   =  50;
+static const int TICK_PER_US = 50;
 static const int FREQUENCY_PWM = 400;
-static const int TICK_PER_S  = 50000000;
+static const int TICK_PER_S = 50000000;
 
 OcpocMmapPWMOut::OcpocMmapPWMOut(int max_num_outputs)
 {
 	_num_outputs = max_num_outputs;
-
+	
 	if (_num_outputs > MAX_ZYNQ_PWMS)
 	{
 		PX4_WARN("number of outputs too large. Setting to %i", MAX_ZYNQ_PWMS);
@@ -60,13 +60,13 @@ OcpocMmapPWMOut::~OcpocMmapPWMOut()
 {
 	if (_shared_mem_cmd)
 	{
-		munmap((void *)_shared_mem_cmd, 0x1000);
+		munmap((void *) _shared_mem_cmd, 0x1000);
 	}
 }
 
 unsigned long OcpocMmapPWMOut::freq2tick(uint16_t freq_hz)
 {
-	unsigned long duty = TICK_PER_S / (unsigned long)freq_hz;
+	unsigned long duty = TICK_PER_S / (unsigned long) freq_hz;
 	return duty;
 }
 
@@ -74,22 +74,22 @@ int OcpocMmapPWMOut::init()
 {
 	uint32_t mem_fd = open(_device, O_RDWR | O_SYNC);
 	_shared_mem_cmd = (struct pwm_cmd *) mmap(0, 0x1000, PROT_READ | PROT_WRITE,
-			  MAP_SHARED, mem_fd, RCOUT_ZYNQ_PWM_BASE);
+	MAP_SHARED, mem_fd, RCOUT_ZYNQ_PWM_BASE);
 	close(mem_fd);
-
+	
 	if (_shared_mem_cmd == nullptr)
 	{
 		PX4_ERR("initialize pwm pointer failed.");
 		return -1;
 	}
-
+	
 	for (int i = 0; i < _num_outputs; ++i)
 	{
-		_shared_mem_cmd->periodhi[i].period   =  freq2tick(FREQUENCY_PWM);
+		_shared_mem_cmd->periodhi[i].period = freq2tick(FREQUENCY_PWM);
 		_shared_mem_cmd->periodhi[i].hi = freq2tick(FREQUENCY_PWM) / 2;
 		PX4_DEBUG("Output values: %d, %d", _shared_mem_cmd->periodhi[i].period, _shared_mem_cmd->periodhi[i].hi);
 	}
-
+	
 	return 0;
 }
 
@@ -99,7 +99,7 @@ int OcpocMmapPWMOut::send_output_pwm(const uint16_t *pwm, int num_outputs)
 	{
 		num_outputs = _num_outputs;
 	}
-
+	
 	//convert this to duty_cycle in ns
 	for (int i = 0; i < num_outputs; ++i)
 	{
@@ -108,7 +108,7 @@ int OcpocMmapPWMOut::send_output_pwm(const uint16_t *pwm, int num_outputs)
 		_shared_mem_cmd->periodhi[i].hi = TICK_PER_US * pwm[i];
 		//printf("ch:%d, val:%d*%d ", ch, period_us, TICK_PER_US);
 	}
-
+	
 	return 0;
 }
 

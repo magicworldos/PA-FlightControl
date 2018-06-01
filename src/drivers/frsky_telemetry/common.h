@@ -74,7 +74,6 @@
 #define FRSKY_ID_VOLTS_BP       0x3A
 #define FRSKY_ID_VOLTS_AP       0x3B
 
-
 /**
  * Map the PX4 flight mode (vehicle_status_s::nav_state) to the telemetry flight mode
  */

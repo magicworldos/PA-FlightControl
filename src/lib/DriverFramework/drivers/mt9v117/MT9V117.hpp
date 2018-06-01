@@ -56,15 +56,17 @@
 namespace DriverFramework
 {
 
-class MT9V117 : public I2CDevObj
+class MT9V117: public I2CDevObj
 {
 public:
-	MT9V117(const char *device_path)
-		: I2CDevObj("ImageSensor", device_path, IMAGE_CLASS_PATH, MT9V117_MEASURE_INTERVAL_US),
-		  _sensor_clock(9), _sensor_reset(129)
-	{}
+	MT9V117(const char *device_path) :
+			    I2CDevObj("ImageSensor", device_path, IMAGE_CLASS_PATH, MT9V117_MEASURE_INTERVAL_US),
+			    _sensor_clock(9),
+			    _sensor_reset(129)
+	{
+	}
 	~MT9V117() = default;
-
+	
 	int start();
 
 	int stop();
@@ -89,12 +91,18 @@ private:
 	int read16(uint16_t add, uint16_t *val);
 
 	// Helper functions
-	uint16_t to_reg(uint16_t address, uint16_t offset) {return (0x8000 | (address << 10) | offset);}
-	static uint32_t swap32(uint32_t val) { return (val >> 24) | ((val >> 8) & 0x0000FF00) | ((val << 8) & 0x00FF0000) | (val << 24); }
-
+	uint16_t to_reg(uint16_t address, uint16_t offset)
+	{
+		return (0x8000 | (address << 10) | offset);
+	}
+	static uint32_t swap32(uint32_t val)
+	{
+		return (val >> 24) | ((val >> 8) & 0x0000FF00) | ((val << 8) & 0x00FF0000) | (val << 24);
+	}
+	
 	PWM _sensor_clock;
 	GPIO _sensor_reset;
-
+	
 };
 
 }

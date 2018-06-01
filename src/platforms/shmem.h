@@ -42,11 +42,11 @@ struct shmem_info
 	union param_value_u params_val[MAX_SHMEM_PARAMS];
 	unsigned char krait_changed_index[MAX_SHMEM_PARAMS / 8 + 1]; /*bit map of all params changed by krait*/
 	unsigned char adsp_changed_index[MAX_SHMEM_PARAMS / 8 + 1]; /*bit map of all params changed by adsp*/
-
+	
 #ifdef __PX4_NUTTX
 };
 #else
-} __attribute__((packed));
+}__attribute__((packed));
 #endif
 
 #if (defined(__PX4_POSIX_EXCELSIOR) || defined(__PX4_QURT_EXCELSIOR))

@@ -40,15 +40,16 @@ int dspal_tester_test_farf_log_info()
 	const int NUM_MESSAGE_PERIODS = 5;
 	const int NUM_MESSAGES_PER_PERIOD = 20;
 	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
-
-	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
-		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
-			LOG_INFO("[%d] LOG_INFO test at %d us period", j,
-					message_periods[i]);
+	
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++)
+	{
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++)
+		{
+			LOG_INFO("[%d] LOG_INFO test at %d us period", j, message_periods[i]);
 			usleep(message_periods[i]);
 		}
 	}
-
+	
 	return 0;
 }
 
@@ -57,14 +58,16 @@ int dspal_tester_test_farf_log_err()
 	const int NUM_MESSAGE_PERIODS = 5;
 	const int NUM_MESSAGES_PER_PERIOD = 20;
 	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
-
-	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
-		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
+	
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++)
+	{
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++)
+		{
 			LOG_ERR("[%d] LOG_ERR test at %d us period", j, message_periods[i]);
 			usleep(message_periods[i]);
 		}
 	}
-
+	
 	return 0;
 }
 
@@ -73,14 +76,15 @@ int dspal_tester_test_farf_log_debug()
 	const int NUM_MESSAGE_PERIODS = 5;
 	const int NUM_MESSAGES_PER_PERIOD = 20;
 	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
-
-	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
-		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
-			LOG_DEBUG("[%d] LOG_DEBUG test at %d us period", j,
-					message_periods[i]);
+	
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++)
+	{
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++)
+		{
+			LOG_DEBUG("[%d] LOG_DEBUG test at %d us period", j, message_periods[i]);
 			usleep(message_periods[i]);
 		}
 	}
-
+	
 	return 0;
 }

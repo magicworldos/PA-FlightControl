@@ -35,7 +35,6 @@
 #include <stdio.h>
 #include "work_lock.h"
 
-
 extern px4_sem_t _work_lock[];
 
 void work_lock(int id)

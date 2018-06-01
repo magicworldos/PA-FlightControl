@@ -77,7 +77,7 @@ void init_once()
 	hrt_work_queue_init();
 	hrt_init();
 	param_init();
-
+	
 #ifdef CONFIG_SHMEM
 	PX4_DEBUG("Syncing params to shared memory\n");
 	init_params();
@@ -96,12 +96,12 @@ void init(int argc, char *argv[], const char *app_name)
 	printf("\n");
 	printf("%s starting.\n", app_name);
 	printf("\n");
-
+	
 	// set the threads name
 #ifdef __PX4_DARWIN
 	(void)pthread_setname_np(app_name);
 #else
-	(void)pthread_setname_np(pthread_self(), app_name);
+	(void) pthread_setname_np(pthread_self(), app_name);
 #endif
 }
 

@@ -43,14 +43,14 @@ const NodeID NodeID::Broadcast(ValueBroadcast);
  */
 int TransferID::computeForwardDistance(TransferID rhs) const
 {
-    int d = int(rhs.get()) - int(get());
-    if (d < 0)
-    {
-        d += 1 << BitLen;
-    }
-
-    UAVCAN_ASSERT(((get() + d) & Max) == rhs.get());
-    return d;
+	int d = int(rhs.get()) - int(get());
+	if (d < 0)
+	{
+		d += 1 << BitLen;
+	}
+	
+	UAVCAN_ASSERT(((get() + d) & Max) == rhs.get());
+	return d;
 }
 
 }

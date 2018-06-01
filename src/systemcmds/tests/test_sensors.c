@@ -71,216 +71,202 @@ static int baro(int argc, char *argv[], const char *path);
 
 struct
 {
-	const char	*name;
-	const char	*path;
-	int	(* test)(int argc, char *argv[], const char *path);
-} sensors[] =
-{
-	{"accel0",	ACCEL0_DEVICE_PATH,	accel},
-	{"accel1",	ACCEL1_DEVICE_PATH,	accel},
-	{"gyro0",	GYRO0_DEVICE_PATH,	gyro},
-	{"gyro1",	GYRO1_DEVICE_PATH,	gyro},
-	{"mag0",	MAG0_DEVICE_PATH,	mag},
-	{"baro0",	BARO0_DEVICE_PATH,	baro},
-	{NULL, NULL, NULL}
-};
+	const char *name;
+	const char *path;
+	int (*test)(int argc, char *argv[], const char *path);
+} sensors[] = { { "accel0", ACCEL0_DEVICE_PATH, accel }, { "accel1", ACCEL1_DEVICE_PATH, accel }, { "gyro0", GYRO0_DEVICE_PATH, gyro }, { "gyro1", GYRO1_DEVICE_PATH, gyro }, { "mag0", MAG0_DEVICE_PATH, mag }, { "baro0", BARO0_DEVICE_PATH, baro }, { NULL, NULL, NULL } };
 
-static int
-accel(int argc, char *argv[], const char *path)
+static int accel(int argc, char *argv[], const char *path)
 {
 	printf("\tACCEL: test start\n");
 	fflush(stdout);
-
-	int		fd;
+	
+	int fd;
 	struct accel_report buf;
-	int		ret;
-
+	int ret;
+	
 	fd = px4_open(path, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		printf("\tACCEL: open fail, run <mpu6000 start> or <lsm303 start> or <bma180 start> first.\n");
 		return ERROR;
 	}
-
+	
 	/* wait at least 100ms, sensor should have data after no more than 20ms */
 	usleep(100000);
-
+	
 	/* read data - expect samples */
 	ret = px4_read(fd, &buf, sizeof(buf));
-
+	
 	if (ret != sizeof(buf))
 	{
 		printf("\tACCEL: read1 fail (%d)\n", ret);
 		return ERROR;
-
+		
 	}
 	else
 	{
-		printf("\tACCEL accel: x:%8.4f\ty:%8.4f\tz:%8.4f m/s^2\n", (double)buf.x, (double)buf.y, (double)buf.z);
+		printf("\tACCEL accel: x:%8.4f\ty:%8.4f\tz:%8.4f m/s^2\n", (double) buf.x, (double) buf.y, (double) buf.z);
 	}
-
+	
 	if (fabsf(buf.x) > 30.0f || fabsf(buf.y) > 30.0f || fabsf(buf.z) > 30.0f)
 	{
 		warnx("ACCEL acceleration values out of range!");
 		return ERROR;
 	}
-
+	
 	float len = sqrtf(buf.x * buf.x + buf.y * buf.y + buf.z * buf.z);
-
+	
 	if (len < 8.0f || len > 12.0f)
 	{
 		warnx("ACCEL scale error!");
 		return ERROR;
 	}
-
+	
 	/* Let user know everything is ok */
 	printf("\tOK: ACCEL passed all tests successfully\n");
 	px4_close(fd);
-
+	
 	return OK;
 }
 
-static int
-gyro(int argc, char *argv[], const char *path)
+static int gyro(int argc, char *argv[], const char *path)
 {
 	printf("\tGYRO: test start\n");
 	fflush(stdout);
-
-	int		fd;
+	
+	int fd;
 	struct gyro_report buf;
-	int		ret;
-
+	int ret;
+	
 	fd = px4_open(path, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		printf("\tGYRO: open fail, run <l3gd20 start> or <mpu6000 start> first.\n");
 		return ERROR;
 	}
-
+	
 	/* wait at least 5 ms, sensor should have data after that */
 	usleep(5000);
-
+	
 	/* read data - expect samples */
 	ret = px4_read(fd, &buf, sizeof(buf));
-
+	
 	if (ret != sizeof(buf))
 	{
 		printf("\tGYRO: read fail (%d)\n", ret);
 		return ERROR;
-
+		
 	}
 	else
 	{
-		printf("\tGYRO rates: x:%8.4f\ty:%8.4f\tz:%8.4f rad/s\n", (double)buf.x, (double)buf.y, (double)buf.z);
+		printf("\tGYRO rates: x:%8.4f\ty:%8.4f\tz:%8.4f rad/s\n", (double) buf.x, (double) buf.y, (double) buf.z);
 	}
-
+	
 	float len = sqrtf(buf.x * buf.x + buf.y * buf.y + buf.z * buf.z);
-
+	
 	if (len > 0.3f)
 	{
 		warnx("GYRO scale error!");
 		return ERROR;
 	}
-
+	
 	/* Let user know everything is ok */
 	printf("\tOK: GYRO passed all tests successfully\n");
 	px4_close(fd);
-
+	
 	return OK;
 }
 
-static int
-mag(int argc, char *argv[], const char *path)
+static int mag(int argc, char *argv[], const char *path)
 {
 	printf("\tMAG: test start\n");
 	fflush(stdout);
-
-	int		fd;
+	
+	int fd;
 	struct mag_report buf;
-	int		ret;
-
+	int ret;
+	
 	fd = px4_open(path, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		printf("\tMAG: open fail, run <hmc5883 start> or <lsm303 start> first.\n");
 		return ERROR;
 	}
-
+	
 	/* wait at least 5 ms, sensor should have data after that */
 	usleep(5000);
-
+	
 	/* read data - expect samples */
 	ret = px4_read(fd, &buf, sizeof(buf));
-
+	
 	if (ret != sizeof(buf))
 	{
 		printf("\tMAG: read fail (%d)\n", ret);
 		return ERROR;
-
+		
 	}
 	else
 	{
-		printf("\tMAG values: x:%8.4f\ty:%8.4f\tz:%8.4f\n", (double)buf.x, (double)buf.y, (double)buf.z);
+		printf("\tMAG values: x:%8.4f\ty:%8.4f\tz:%8.4f\n", (double) buf.x, (double) buf.y, (double) buf.z);
 	}
-
+	
 	float len = sqrtf(buf.x * buf.x + buf.y * buf.y + buf.z * buf.z);
-
+	
 	if (len < 0.25f || len > 3.0f)
 	{
 		warnx("MAG scale error!");
 		return ERROR;
 	}
-
+	
 	/* Let user know everything is ok */
 	printf("\tOK: MAG passed all tests successfully\n");
 	px4_close(fd);
-
+	
 	return OK;
 }
 
-static int
-baro(int argc, char *argv[], const char *path)
+static int baro(int argc, char *argv[], const char *path)
 {
 	printf("\tBARO: test start\n");
 	fflush(stdout);
-
-	int		fd;
+	
+	int fd;
 	struct baro_report buf;
-	int		ret;
-
+	int ret;
+	
 	fd = px4_open(path, O_RDONLY);
-
+	
 	if (fd < 0)
 	{
 		printf("\tBARO: open fail, run <ms5611 start> or <lps331 start> first.\n");
 		return ERROR;
 	}
-
+	
 	/* wait at least 5 ms, sensor should have data after that */
 	usleep(5000);
-
+	
 	/* read data - expect samples */
 	ret = px4_read(fd, &buf, sizeof(buf));
-
+	
 	if (ret != sizeof(buf))
 	{
 		printf("\tBARO: read fail (%d)\n", ret);
 		return ERROR;
-
+		
 	}
 	else
 	{
-		printf("\tBARO pressure: %8.4f mbar\talt: %8.4f m\ttemp: %8.4f deg C\n", (double)buf.pressure, (double)buf.altitude,
-		       (double)buf.temperature);
+		printf("\tBARO pressure: %8.4f mbar\talt: %8.4f m\ttemp: %8.4f deg C\n", (double) buf.pressure, (double) buf.altitude, (double) buf.temperature);
 	}
-
+	
 	/* Let user know everything is ok */
 	printf("\tOK: BARO passed all tests successfully\n");
 	px4_close(fd);
-
+	
 	return OK;
 }
 
@@ -294,23 +280,23 @@ baro(int argc, char *argv[], const char *path)
 
 int test_sensors(int argc, char *argv[])
 {
-	unsigned	i;
-
+	unsigned i;
+	
 	printf("Running sensors tests:\n\n");
 	fflush(stdout);
-
+	
 	int ret = OK;
-
+	
 	for (i = 0; sensors[i].name; i++)
 	{
 		printf("  sensor: %s\n", sensors[i].name);
-
+		
 		/* Flush */
 		fflush(stdout);
 		/* Test the sensor - if the tests crash at this point, the right sensor name has been printed */
 
 		ret += sensors[i].test(argc, argv, sensors[i].path);
 	}
-
+	
 	return ret;
 }

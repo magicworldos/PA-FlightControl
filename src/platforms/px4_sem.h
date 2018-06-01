@@ -55,20 +55,20 @@
 __BEGIN_DECLS
 
 typedef struct
-{
+{	
 	pthread_mutex_t lock;
 	pthread_cond_t wait;
 	int value;
-} px4_sem_t;
+}px4_sem_t;
 
-__EXPORT int		px4_sem_init(px4_sem_t *s, int pshared, unsigned value);
-__EXPORT int		px4_sem_setprotocol(px4_sem_t *s, int protocol);
-__EXPORT int		px4_sem_wait(px4_sem_t *s);
-__EXPORT int		px4_sem_trywait(px4_sem_t *sem);
-__EXPORT int		px4_sem_timedwait(px4_sem_t *sem, const struct timespec *abstime);
-__EXPORT int		px4_sem_post(px4_sem_t *s);
-__EXPORT int		px4_sem_getvalue(px4_sem_t *s, int *sval);
-__EXPORT int		px4_sem_destroy(px4_sem_t *s);
+__EXPORT int px4_sem_init(px4_sem_t *s, int pshared, unsigned value);
+__EXPORT int px4_sem_setprotocol(px4_sem_t *s, int protocol);
+__EXPORT int px4_sem_wait(px4_sem_t *s);
+__EXPORT int px4_sem_trywait(px4_sem_t *sem);
+__EXPORT int px4_sem_timedwait(px4_sem_t *sem, const struct timespec *abstime);
+__EXPORT int px4_sem_post(px4_sem_t *s);
+__EXPORT int px4_sem_getvalue(px4_sem_t *s, int *sval);
+__EXPORT int px4_sem_destroy(px4_sem_t *s);
 
 __END_DECLS
 
@@ -87,7 +87,7 @@ typedef sem_t px4_sem_t;
 #define px4_sem_destroy		sem_destroy
 
 #ifdef __PX4_QURT
-__EXPORT int		px4_sem_timedwait(px4_sem_t *sem, const struct timespec *abstime);
+__EXPORT int px4_sem_timedwait(px4_sem_t *sem, const struct timespec *abstime);
 #else
 #define px4_sem_timedwait	 sem_timedwait
 #endif

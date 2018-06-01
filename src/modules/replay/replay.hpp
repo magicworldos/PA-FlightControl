@@ -55,13 +55,17 @@ namespace px4
  * to replay. This is necessary because data messages from different subscriptions don't need to be in
  * monotonic increasing order.
  */
-class Replay : public ModuleBase<Replay>
+class Replay: public ModuleBase<Replay>
 {
 public:
-	Replay() {}
-
-	virtual ~Replay() {}
-
+	Replay()
+	{
+	}
+	
+	virtual ~Replay()
+	{
+	}
+	
 	/** @see ModuleBase */
 	static int task_spawn(int argc, char *argv[]);
 
@@ -91,10 +95,13 @@ public:
 	 */
 	static void setupReplayFile(const char *file_name);
 
-	static bool isSetup() { return _replay_file; }
-
+	static bool isSetup()
+	{
+		return _replay_file;
+	}
+	
 protected:
-
+	
 	/**
 	 * @class Compatibility base class to convert topics to an updated format
 	 */
@@ -102,7 +109,7 @@ protected:
 	{
 	public:
 		virtual ~CompatBase() = default;
-
+		
 		/**
 		 * apply compatibility to a topic
 		 * @param data input topic (can be modified in place)
@@ -111,11 +118,10 @@ protected:
 		virtual void *apply(void *data) = 0;
 	};
 
-	class CompatSensorCombinedDtType : public CompatBase
+	class CompatSensorCombinedDtType: public CompatBase
 	{
 	public:
-		CompatSensorCombinedDtType(int gyro_integral_dt_offset_log, int gyro_integral_dt_offset_intern,
-					   int accelerometer_integral_dt_offset_log, int accelerometer_integral_dt_offset_intern);
+		CompatSensorCombinedDtType(int gyro_integral_dt_offset_log, int gyro_integral_dt_offset_intern, int accelerometer_integral_dt_offset_log, int accelerometer_integral_dt_offset_intern);
 
 		void *apply(void *data) override;
 	private:
@@ -125,18 +131,19 @@ protected:
 		int _accelerometer_integral_dt_offset_intern;
 	};
 
-	struct Subscription {
-
+	struct Subscription
+	{
+		
 		const orb_metadata *orb_meta = nullptr; ///< if nullptr, this subscription is invalid
 		orb_advert_t orb_advert = nullptr;
 		uint8_t multi_id;
 		int timestamp_offset; ///< marks the field of the timestamp
-
+		
 		bool ignored = false; ///< if true, it will not be considered for publication in the main loop
-
+		
 		std::streampos next_read_pos;
 		uint64_t next_timestamp; ///< timestamp of the file
-
+		
 		CompatBase *compat = nullptr;
 
 		// statistics
@@ -165,17 +172,23 @@ protected:
 	/**
 	 * called when entering the main replay loop
 	 */
-	virtual void onEnterMainLoop() {}
+	virtual void onEnterMainLoop()
+	{
+	}
 	/**
 	 * called when exiting the main replay loop
 	 */
-	virtual void onExitMainLoop() {}
-
+	virtual void onExitMainLoop()
+	{
+	}
+	
 	/**
 	 * called when a new subscription is added
 	 */
-	virtual void onSubscriptionAdded(Subscription &sub, uint16_t msg_id) {}
-
+	virtual void onSubscriptionAdded(Subscription &sub, uint16_t msg_id)
+	{
+	}
+	
 	/**
 	 * handle delay until topic can be published.
 	 * @param next_file_timestamp timestamp of next message to publish
@@ -211,16 +224,16 @@ protected:
 private:
 	std::set<std::string> _overridden_params;
 	std::map<std::string, std::string> _file_formats; ///< all formats we read from the file
-
+	
 	uint64_t _file_start_time;
 	uint64_t _replay_start_time;
 	std::streampos _data_section_start; ///< first ADD_LOGGED_MSG message
-
+	
 	/** keep track of file position to avoid adding a subscription multiple times. */
 	std::streampos _subscription_file_pos = 0;
 
 	uint64_t _read_until_file_position = 1ULL << 60; ///< read limit if log contains appended data
-
+	        
 	bool readFileHeader(std::ifstream &file);
 
 	/**
@@ -265,16 +278,15 @@ private:
 	static char *_replay_file;
 };
 
-
 /**
  * @class ReplayEkf2
  * replay specialization for Ekf2 replay
  */
-class ReplayEkf2 : public Replay
+class ReplayEkf2: public Replay
 {
 public:
 protected:
-
+	
 	void onEnterMainLoop() override;
 	void onExitMainLoop() override;
 
@@ -292,7 +304,7 @@ protected:
 	void onSubscriptionAdded(Subscription &sub, uint16_t msg_id) override;
 
 private:
-
+	
 	bool publishEkf2Topics(const ekf2_timestamps_s &ekf2_timestamps, std::ifstream &replay_file);
 
 	/**

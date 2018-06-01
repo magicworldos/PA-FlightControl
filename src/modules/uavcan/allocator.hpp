@@ -45,24 +45,30 @@
 namespace uavcan_node
 {
 
-struct AllocatorSynchronizer {
+struct AllocatorSynchronizer
+{
 	const ::irqstate_t state = ::enter_critical_section();
-	~AllocatorSynchronizer() { ::leave_critical_section(state); }
+	~AllocatorSynchronizer()
+	{
+		::leave_critical_section(state);
+	}
 };
 
-struct Allocator : public uavcan::HeapBasedPoolAllocator<uavcan::MemPoolBlockSize, AllocatorSynchronizer> {
+struct Allocator: public uavcan::HeapBasedPoolAllocator<uavcan::MemPoolBlockSize, AllocatorSynchronizer>
+{
 	static constexpr unsigned CapacitySoftLimit = 250;
 	static constexpr unsigned CapacityHardLimit = 500;
 
 	Allocator() :
-		uavcan::HeapBasedPoolAllocator<uavcan::MemPoolBlockSize, AllocatorSynchronizer>(CapacitySoftLimit, CapacityHardLimit)
-	{ }
-
+			    uavcan::HeapBasedPoolAllocator<uavcan::MemPoolBlockSize, AllocatorSynchronizer>(CapacitySoftLimit, CapacityHardLimit)
+	{
+	}
+	
 	~Allocator()
 	{
-		if (getNumAllocatedBlocks() > 0) {
-			warnx("UAVCAN LEAKS MEMORY: %u BLOCKS (%u BYTES) LOST",
-			      getNumAllocatedBlocks(), getNumAllocatedBlocks() * uavcan::MemPoolBlockSize);
+		if (getNumAllocatedBlocks() > 0)
+		{
+			warnx("UAVCAN LEAKS MEMORY: %u BLOCKS (%u BYTES) LOST", getNumAllocatedBlocks(), getNumAllocatedBlocks() * uavcan::MemPoolBlockSize);
 		}
 	}
 };

@@ -34,7 +34,8 @@
 #define __GPIO_11XX_2_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup GPIO_11XX_2 CHIP: LPC11xx GPIO driver for CHIP_LPC11CXX, CHIP_LPC110X, and CHIP_LPC11XXLV families
@@ -49,19 +50,20 @@ extern "C" {
 /**
  * @brief  GPIO port register block structure
  */
-typedef struct {				/*!< GPIO_PORT Structure */
-	__IO uint32_t DATA[4096];			/*!< Offset: 0x0000 to 0x3FFC Data address masking register (R/W) */
+typedef struct
+{ /*!< GPIO_PORT Structure */
+	__IO uint32_t DATA[4096]; /*!< Offset: 0x0000 to 0x3FFC Data address masking register (R/W) */
 	uint32_t RESERVED1[4096];
-	__IO uint32_t DIR;					/*!< Offset: 0x8000 Data direction register (R/W) */
-	__IO uint32_t IS;					/*!< Offset: 0x8004 Interrupt sense register (R/W) */
-	__IO uint32_t IBE;					/*!< Offset: 0x8008 Interrupt both edges register (R/W) */
-	__IO uint32_t IEV;					/*!< Offset: 0x800C Interrupt event register  (R/W) */
-	__IO uint32_t IE;					/*!< Offset: 0x8010 Interrupt mask register (R/W) */
-	__I  uint32_t RIS;					/*!< Offset: 0x8014 Raw interrupt status register (R/ ) */
-	__I  uint32_t MIS;					/*!< Offset: 0x8018 Masked interrupt status register (R/ ) */
-	__O  uint32_t IC;					/*!< Offset: 0x801C Interrupt clear register (W) */
-	uint32_t RESERVED2[8184];			/* Padding added for aligning contiguous GPIO blocks */
-} LPC_GPIO_T;
+	__IO uint32_t DIR; /*!< Offset: 0x8000 Data direction register (R/W) */
+	__IO uint32_t IS; /*!< Offset: 0x8004 Interrupt sense register (R/W) */
+	__IO uint32_t IBE; /*!< Offset: 0x8008 Interrupt both edges register (R/W) */
+	__IO uint32_t IEV; /*!< Offset: 0x800C Interrupt event register  (R/W) */
+	__IO uint32_t IE; /*!< Offset: 0x8010 Interrupt mask register (R/W) */
+	__I uint32_t RIS; /*!< Offset: 0x8014 Raw interrupt status register (R/ ) */
+	__I uint32_t MIS; /*!< Offset: 0x8018 Masked interrupt status register (R/ ) */
+	__O uint32_t IC; /*!< Offset: 0x801C Interrupt clear register (W) */
+	uint32_t RESERVED2[8184]; /* Padding added for aligning contiguous GPIO blocks */
+}LPC_GPIO_T;
 
 /**
  * @brief	Initialize GPIO block
@@ -86,7 +88,7 @@ void Chip_GPIO_DeInit(LPC_GPIO_T *pGPIO);
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_WritePortBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_t bit, bool setting)
-{
+{	
 	pGPIO[port].DATA[1 << bit] = setting << bit;
 }
 
@@ -100,7 +102,7 @@ STATIC INLINE void Chip_GPIO_WritePortBit(LPC_GPIO_T *pGPIO, uint32_t port, uint
  * @note	This function replaces Chip_GPIO_WritePortBit()
  */
 STATIC INLINE void Chip_GPIO_SetPinState(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin, bool setting)
-{
+{	
 	pGPIO[port].DATA[1 << pin] = setting << pin;
 }
 
@@ -113,7 +115,7 @@ STATIC INLINE void Chip_GPIO_SetPinState(LPC_GPIO_T *pGPIO, uint8_t port, uint8_
  * @note	It is recommended to use the Chip_GPIO_GetPinState() function instead.
  */
 STATIC INLINE bool Chip_GPIO_ReadPortBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_t bit)
-{
+{	
 	return (bool) ((pGPIO[port].DATA[1 << bit] >> bit) & 1);
 }
 
@@ -126,7 +128,7 @@ STATIC INLINE bool Chip_GPIO_ReadPortBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8
  * @note	This function replaces Chip_GPIO_ReadPortBit()
  */
 STATIC INLINE bool Chip_GPIO_GetPinState(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	return (pGPIO[port].DATA[1 << pin]) != 0;
 }
 
@@ -151,7 +153,7 @@ void Chip_GPIO_WriteDirBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_t bit, bool s
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetPinDIROutput(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	pGPIO[port].DIR |= (1UL << pin);
 }
 
@@ -163,7 +165,7 @@ STATIC INLINE void Chip_GPIO_SetPinDIROutput(LPC_GPIO_T *pGPIO, uint8_t port, ui
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetPinDIRInput(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	pGPIO[port].DIR &= ~(1UL << pin);
 }
 
@@ -186,7 +188,7 @@ void Chip_GPIO_SetPinDIR(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin, bool outp
  * @note	It is recommended to use the Chip_GPIO_GetPinDIR() function instead.
  */
 STATIC INLINE bool Chip_GPIO_ReadDirBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_t bit)
-{
+{	
 	return (bool) (((pGPIO[port].DIR) >> bit) & 1);
 }
 
@@ -198,7 +200,7 @@ STATIC INLINE bool Chip_GPIO_ReadDirBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_
  * @return	true if the GPIO is an output, false if input
  */
 STATIC INLINE bool Chip_GPIO_GetPinDIR(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	return (bool) (pGPIO[port].DIR >> pin) & 1;
 }
 
@@ -224,7 +226,7 @@ void Chip_GPIO_SetDir(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t bit, uint8_t out
  * high sets the corresponding pin number for that bit to an output.
  */
 STATIC INLINE void Chip_GPIO_SetPortDIROutput(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinMask)
-{
+{	
 	pGPIO[port].DIR |= pinMask;
 }
 
@@ -238,7 +240,7 @@ STATIC INLINE void Chip_GPIO_SetPortDIROutput(LPC_GPIO_T *pGPIO, uint8_t port, u
  * high sets the corresponding pin number for that bit to an input.
  */
 STATIC INLINE void Chip_GPIO_SetPortDIRInput(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinMask)
-{
+{	
 	pGPIO[port].DIR &= ~pinMask;
 }
 
@@ -263,7 +265,7 @@ void Chip_GPIO_SetPortDIR(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinMask, boo
  * same pin, while a low  state corresponds to an input state.
  */
 STATIC INLINE uint32_t Chip_GPIO_GetPortDIR(LPC_GPIO_T *pGPIO, uint8_t port)
-{
+{	
 	return pGPIO[port].DIR;
 }
 
@@ -275,7 +277,7 @@ STATIC INLINE uint32_t Chip_GPIO_GetPortDIR(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetPortValue(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t value)
-{
+{	
 	pGPIO[port].DATA[0xFFF] = value;
 }
 
@@ -286,7 +288,7 @@ STATIC INLINE void Chip_GPIO_SetPortValue(LPC_GPIO_T *pGPIO, uint8_t port, uint3
  * @return	Current (raw) state of all GPIO pins
  */
 STATIC INLINE uint32_t Chip_GPIO_GetPortValue(LPC_GPIO_T *pGPIO, uint8_t port)
-{
+{	
 	return pGPIO[port].DATA[0xFFF];
 }
 
@@ -301,7 +303,7 @@ STATIC INLINE uint32_t Chip_GPIO_GetPortValue(LPC_GPIO_T *pGPIO, uint8_t port)
  * Chip_GPIO_SetPortOutHigh() function instead.
  */
 STATIC INLINE void Chip_GPIO_SetValue(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t bit)
-{
+{	
 	pGPIO[port].DATA[bit] = bit;
 }
 
@@ -315,7 +317,7 @@ STATIC INLINE void Chip_GPIO_SetValue(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t 
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPortOutHigh(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pins)
-{
+{	
 	pGPIO[port].DATA[pins] = 0xFFF;
 }
 
@@ -329,7 +331,7 @@ STATIC INLINE void Chip_GPIO_SetPortOutHigh(LPC_GPIO_T *pGPIO, uint8_t port, uin
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPinOutHigh(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	pGPIO[port].DATA[1 << pin] = (1 << pin);
 }
 
@@ -343,7 +345,7 @@ STATIC INLINE void Chip_GPIO_SetPinOutHigh(LPC_GPIO_T *pGPIO, uint8_t port, uint
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_ClearValue(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t bit)
-{
+{	
 	pGPIO[port].DATA[bit] = ~bit;
 }
 
@@ -357,7 +359,7 @@ STATIC INLINE void Chip_GPIO_ClearValue(LPC_GPIO_T *pGPIO, uint8_t port, uint32_
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPortOutLow(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pins)
-{
+{	
 	pGPIO[port].DATA[pins] = 0;
 }
 
@@ -371,7 +373,7 @@ STATIC INLINE void Chip_GPIO_SetPortOutLow(LPC_GPIO_T *pGPIO, uint8_t port, uint
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPinOutLow(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	pGPIO[port].DATA[1 << pin] = 0;
 }
 
@@ -385,7 +387,7 @@ STATIC INLINE void Chip_GPIO_SetPinOutLow(LPC_GPIO_T *pGPIO, uint8_t port, uint8
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPortToggle(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pins)
-{
+{	
 	pGPIO[port].DATA[pins] ^= 0xFFF;
 }
 
@@ -399,7 +401,7 @@ STATIC INLINE void Chip_GPIO_SetPortToggle(LPC_GPIO_T *pGPIO, uint8_t port, uint
  * applies to ports configured as an output.
  */
 STATIC INLINE void Chip_GPIO_SetPinToggle(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
-{
+{	
 	pGPIO[port].DATA[1 << pin] ^= (1 << pin);
 }
 
@@ -412,7 +414,7 @@ STATIC INLINE void Chip_GPIO_SetPinToggle(LPC_GPIO_T *pGPIO, uint8_t port, uint8
  * whether the GPIO port bits are input or output.
  */
 STATIC INLINE uint32_t Chip_GPIO_ReadValue(LPC_GPIO_T *pGPIO, uint8_t port)
-{
+{	
 	return pGPIO[port].DATA[4095];
 }
 
@@ -424,8 +426,8 @@ STATIC INLINE uint32_t Chip_GPIO_ReadValue(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetPinModeEdge(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IS &= ~pinmask;
+{	
+	pGPIO[port].IS &= ~pinmask;
 }
 
 /**
@@ -436,8 +438,8 @@ STATIC INLINE void Chip_GPIO_SetPinModeEdge(LPC_GPIO_T *pGPIO, uint8_t port, uin
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetPinModeLevel(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IS |= pinmask;
+{	
+	pGPIO[port].IS |= pinmask;
 }
 
 /**
@@ -451,8 +453,8 @@ STATIC INLINE void Chip_GPIO_SetPinModeLevel(LPC_GPIO_T *pGPIO, uint8_t port, ui
  * edge/level configuration for each pin in a port.
  */
 STATIC INLINE uint32_t Chip_GPIO_IsLevelEnabled(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].IS;
+{	
+	return pGPIO[port].IS;
 }
 
 /**
@@ -463,8 +465,8 @@ STATIC INLINE uint32_t Chip_GPIO_IsLevelEnabled(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetEdgeModeBoth(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IBE |= pinmask;
+{	
+	pGPIO[port].IBE |= pinmask;
 }
 
 /**
@@ -475,8 +477,8 @@ STATIC INLINE void Chip_GPIO_SetEdgeModeBoth(LPC_GPIO_T *pGPIO, uint8_t port, ui
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_SetEdgeModeSingle(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IBE &= ~pinmask;
+{	
+	pGPIO[port].IBE &= ~pinmask;
 }
 
 /**
@@ -492,8 +494,8 @@ STATIC INLINE void Chip_GPIO_SetEdgeModeSingle(LPC_GPIO_T *pGPIO, uint8_t port, 
  * a port.
  */
 STATIC INLINE uint32_t Chip_GPIO_GetEdgeModeDir(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].IBE;
+{	
+	return pGPIO[port].IBE;
 }
 
 /**
@@ -506,8 +508,8 @@ STATIC INLINE uint32_t Chip_GPIO_GetEdgeModeDir(LPC_GPIO_T *pGPIO, uint8_t port)
  * for the selected pins on the selected port when not in dual edge mode.
  */
 STATIC INLINE void Chip_GPIO_SetModeHigh(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IEV |= pinmask;
+{	
+	pGPIO[port].IEV |= pinmask;
 }
 
 /**
@@ -520,8 +522,8 @@ STATIC INLINE void Chip_GPIO_SetModeHigh(LPC_GPIO_T *pGPIO, uint8_t port, uint32
  * for the selected pins on the selected port when not in dual edge mode.
  */
 STATIC INLINE void Chip_GPIO_SetModeLow(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IEV &= ~pinmask;
+{	
+	pGPIO[port].IEV &= ~pinmask;
 }
 
 /**
@@ -535,8 +537,8 @@ STATIC INLINE void Chip_GPIO_SetModeLow(LPC_GPIO_T *pGPIO, uint8_t port, uint32_
  * return value to determine the high/low configuration for each pin in a port.
  */
 STATIC INLINE uint32_t Chip_GPIO_GetModeHighLow(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].IEV;
+{	
+	return pGPIO[port].IEV;
 }
 
 /**
@@ -547,8 +549,8 @@ STATIC INLINE uint32_t Chip_GPIO_GetModeHighLow(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_EnableInt(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IE |= pinmask;
+{	
+	pGPIO[port].IE |= pinmask;
 }
 
 /**
@@ -559,8 +561,8 @@ STATIC INLINE void Chip_GPIO_EnableInt(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_DisableInt(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IE &= ~pinmask;
+{	
+	pGPIO[port].IE &= ~pinmask;
 }
 
 /**
@@ -570,8 +572,8 @@ STATIC INLINE void Chip_GPIO_DisableInt(LPC_GPIO_T *pGPIO, uint8_t port, uint32_
  * @return	A bifield containing the enabled pin interrupts (0..11)
  */
 STATIC INLINE uint32_t Chip_GPIO_GetEnabledInts(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].IE;
+{	
+	return pGPIO[port].IE;
 }
 
 /**
@@ -581,8 +583,8 @@ STATIC INLINE uint32_t Chip_GPIO_GetEnabledInts(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	A bifield containing the raw pending interrupt states for each pin (0..11) on the port
  */
 STATIC INLINE uint32_t Chip_GPIO_GetRawInts(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].RIS;
+{	
+	return pGPIO[port].RIS;
 }
 
 /**
@@ -592,8 +594,8 @@ STATIC INLINE uint32_t Chip_GPIO_GetRawInts(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	A bifield containing the masked pending interrupt states for each pin (0..11) on the port
  */
 STATIC INLINE uint32_t Chip_GPIO_GetMaskedInts(LPC_GPIO_T *pGPIO, uint8_t port)
-{
-    return pGPIO[port].MIS;
+{	
+	return pGPIO[port].MIS;
 }
 
 /**
@@ -604,20 +606,21 @@ STATIC INLINE uint32_t Chip_GPIO_GetMaskedInts(LPC_GPIO_T *pGPIO, uint8_t port)
  * @return	Nothing
  */
 STATIC INLINE void Chip_GPIO_ClearInts(LPC_GPIO_T *pGPIO, uint8_t port, uint32_t pinmask)
-{
-    pGPIO[port].IC = pinmask;
+{	
+	pGPIO[port].IC = pinmask;
 }
 
 /**
  * @brief  GPIO interrupt mode definitions
  */
-typedef enum {
-	GPIO_INT_ACTIVE_LOW_LEVEL  = 0x0,		/*!< Selects interrupt on pin to be triggered on LOW level */
-	GPIO_INT_ACTIVE_HIGH_LEVEL = 0x1,		/*!< Selects interrupt on pin to be triggered on HIGH level */
-	GPIO_INT_FALLING_EDGE      = 0x2,		/*!< Selects interrupt on pin to be triggered on FALLING level */
-	GPIO_INT_RISING_EDGE       = 0x3,		/*!< Selects interrupt on pin to be triggered on RISING level */
-	GPIO_INT_BOTH_EDGES        = 0x6		/*!< Selects interrupt on pin to be triggered on both edges */
-} GPIO_INT_MODE_T;
+typedef enum
+{	
+	GPIO_INT_ACTIVE_LOW_LEVEL = 0x0, /*!< Selects interrupt on pin to be triggered on LOW level */
+	GPIO_INT_ACTIVE_HIGH_LEVEL = 0x1, /*!< Selects interrupt on pin to be triggered on HIGH level */
+	GPIO_INT_FALLING_EDGE = 0x2, /*!< Selects interrupt on pin to be triggered on FALLING level */
+	GPIO_INT_RISING_EDGE = 0x3, /*!< Selects interrupt on pin to be triggered on RISING level */
+	GPIO_INT_BOTH_EDGES = 0x6 /*!< Selects interrupt on pin to be triggered on both edges */
+}GPIO_INT_MODE_T;
 
 /**
  * @brief	Composite function for setting up a full interrupt configuration for a single pin

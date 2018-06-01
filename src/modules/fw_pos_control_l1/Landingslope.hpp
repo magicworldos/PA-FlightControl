@@ -46,22 +46,22 @@ class Landingslope
 {
 private:
 	/* see Documentation/fw_landing.png for a plot of the landing slope */
-	float _landing_slope_angle_rad{0.0f};		/**< phi in the plot */
-	float _flare_relative_alt{0.0f};		/**< h_flare,rel in the plot */
-	float _motor_lim_relative_alt{0.0f};
-	float _H1_virt{0.0f};				/**< H1 in the plot */
-	float _H0{0.0f};				/**< h_flare,rel + H1 in the plot */
-	float _d1{0.0f};				/**< d1 in the plot */
-	float _flare_constant{0.0f};
-	float _flare_length{0.0f};			/**< d1 + delta d in the plot */
-	float _horizontal_slope_displacement{0.0f};	/**< delta d in the plot */
-
+	float _landing_slope_angle_rad { 0.0f }; /**< phi in the plot */
+	float _flare_relative_alt { 0.0f }; /**< h_flare,rel in the plot */
+	float _motor_lim_relative_alt { 0.0f };
+	float _H1_virt { 0.0f }; /**< H1 in the plot */
+	float _H0 { 0.0f }; /**< h_flare,rel + H1 in the plot */
+	float _d1 { 0.0f }; /**< d1 in the plot */
+	float _flare_constant { 0.0f };
+	float _flare_length { 0.0f }; /**< d1 + delta d in the plot */
+	float _horizontal_slope_displacement { 0.0f }; /**< delta d in the plot */
+	
 	void calculateSlopeValues();
 
 public:
 	Landingslope() = default;
 	~Landingslope() = default;
-
+	
 	/**
 	 *
 	 * @return relative altitude of point on landing slope at distance to landing waypoint=wp_landing_distance
@@ -73,58 +73,65 @@ public:
 	 * @return relative altitude of point on landing slope at distance to landing waypoint=wp_landing_distance
 	 * Performs check if aircraft is in front of waypoint to avoid climbout
 	 */
-	float getLandingSlopeRelativeAltitudeSave(float wp_landing_distance, float bearing_lastwp_currwp,
-			float bearing_airplane_currwp);
+	float getLandingSlopeRelativeAltitudeSave(float wp_landing_distance, float bearing_lastwp_currwp, float bearing_airplane_currwp);
 
 	/**
 	 *
 	 * @return Relative altitude of point on landing slope at distance to landing waypoint=wp_landing_distance
 	 */
-	__EXPORT static float getLandingSlopeRelativeAltitude(float wp_landing_distance, float horizontal_slope_displacement,
-			float landing_slope_angle_rad)
+	__EXPORT
+	static float getLandingSlopeRelativeAltitude(float wp_landing_distance, float horizontal_slope_displacement, float landing_slope_angle_rad)
 	{
 		// flare_relative_alt is negative
 		return (wp_landing_distance - horizontal_slope_displacement) * tanf(landing_slope_angle_rad);
 	}
-
+	
 	/**
 	 *
 	 * @return Absolute altitude of point on landing slope at distance to landing waypoint=wp_landing_distance
 	 */
-	__EXPORT static float getLandingSlopeAbsoluteAltitude(float wp_landing_distance, float wp_landing_altitude,
-			float horizontal_slope_displacement, float landing_slope_angle_rad)
+	__EXPORT
+	static float getLandingSlopeAbsoluteAltitude(float wp_landing_distance, float wp_landing_altitude, float horizontal_slope_displacement, float landing_slope_angle_rad)
 	{
-		return getLandingSlopeRelativeAltitude(wp_landing_distance, horizontal_slope_displacement,
-						       landing_slope_angle_rad) + wp_landing_altitude;
+		return getLandingSlopeRelativeAltitude(wp_landing_distance, horizontal_slope_displacement, landing_slope_angle_rad) + wp_landing_altitude;
 	}
-
+	
 	/**
 	 *
 	 * @return distance to landing waypoint of point on landing slope at altitude=slope_altitude
 	 */
-	__EXPORT static float getLandingSlopeWPDistance(float slope_altitude, float wp_landing_altitude,
-			float horizontal_slope_displacement, float landing_slope_angle_rad)
+	__EXPORT
+	static float getLandingSlopeWPDistance(float slope_altitude, float wp_landing_altitude, float horizontal_slope_displacement, float landing_slope_angle_rad)
 	{
 		return (slope_altitude - wp_landing_altitude) / tanf(landing_slope_angle_rad) + horizontal_slope_displacement;
-
+		
 	}
+	
+	float getFlareCurveRelativeAltitudeSave(float wp_landing_distance, float bearing_lastwp_currwp, float bearing_airplane_currwp);
 
-	float getFlareCurveRelativeAltitudeSave(float wp_landing_distance, float bearing_lastwp_currwp,
-						float bearing_airplane_currwp);
+	void update(float landing_slope_angle_rad_new, float flare_relative_alt_new, float motor_lim_relative_alt_new, float H1_virt_new);
 
-	void update(float landing_slope_angle_rad_new,
-		    float flare_relative_alt_new,
-		    float motor_lim_relative_alt_new,
-		    float H1_virt_new);
-
-
-	float landing_slope_angle_rad() { return _landing_slope_angle_rad; }
-	float flare_relative_alt() { return _flare_relative_alt; }
-	float motor_lim_relative_alt() { return _motor_lim_relative_alt; }
-	float flare_length() { return _flare_length; }
-	float horizontal_slope_displacement() { return _horizontal_slope_displacement; }
-
+	float landing_slope_angle_rad()
+	{
+		return _landing_slope_angle_rad;
+	}
+	float flare_relative_alt()
+	{
+		return _flare_relative_alt;
+	}
+	float motor_lim_relative_alt()
+	{
+		return _motor_lim_relative_alt;
+	}
+	float flare_length()
+	{
+		return _flare_length;
+	}
+	float horizontal_slope_displacement()
+	{
+		return _horizontal_slope_displacement;
+	}
+	
 };
-
 
 #endif /* LANDINGSLOPE_H_ */

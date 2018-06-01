@@ -36,7 +36,7 @@
  * Reads from the ros joystick topic and publishes to the px4 manual control setpoint topic.
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -49,8 +49,10 @@ class ManualInput
 public:
 	ManualInput();
 
-	~ManualInput() {}
-
+	~ManualInput()
+	{
+	}
+	
 protected:
 	/**
 	 * Takes ROS joystick message and converts/publishes to px4 manual control setpoint topic
@@ -60,8 +62,7 @@ protected:
 	/**
 	 * Helper function to map and scale joystick axis
 	 */
-	void MapAxis(const sensor_msgs::JoyConstPtr &msg, int map_index, double scale, double offset, double deadzone,
-		     float &out);
+	void MapAxis(const sensor_msgs::JoyConstPtr &msg, int map_index, double scale, double offset, double deadzone, float &out);
 	/**
 	 * Helper function to map joystick buttons
 	 */
@@ -85,10 +86,10 @@ protected:
 		MAIN_STATE_MAX
 	};
 
-	int _param_buttons_map[MAIN_STATE_MAX];	    /**< joystick button mapping, order according to MAIN_STATE */
-	bool _buttons_state[MAIN_STATE_MAX];	    /**< joystick button state of last iteration,
-						      order according to MAIN_STATE */
-
+	int _param_buttons_map[MAIN_STATE_MAX]; /**< joystick button mapping, order according to MAIN_STATE */
+	bool _buttons_state[MAIN_STATE_MAX]; /**< joystick button state of last iteration,
+	 order according to MAIN_STATE */
+	
 	int _param_axes_map[4];
 	double _param_axes_scale[4];
 	double _param_axes_offset[4];

@@ -90,15 +90,17 @@ private:
 
 	static void lock()
 	{
-		do {}
+		do
+		{
+		}
 		while (px4_sem_wait(&_lock) != 0);
 	}
-
+	
 	static void unlock()
 	{
 		px4_sem_post(&_lock);
 	}
-
+	
 	static MavlinkCommandSender *_instance;
 	static px4_sem_t _lock;
 
@@ -107,10 +109,10 @@ private:
 
 	typedef struct
 	{
-		mavlink_command_long_t command = {};
+		mavlink_command_long_t command = { };
 		hrt_abstime timestamp_us = 0;
 		hrt_abstime last_time_sent_us = 0;
-		int8_t num_sent_per_channel[MAX_MAVLINK_CHANNEL] = {-1, -1, -1, -1};
+		int8_t num_sent_per_channel[MAX_MAVLINK_CHANNEL] = { -1, -1, -1, -1 };
 	} command_item_t;
 
 	TimestampedList<command_item_t> _commands;

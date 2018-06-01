@@ -43,7 +43,6 @@
 #include <uavcan/equipment/esc/Status.hpp>
 #include "led.hpp"
 
-
 uavcan::Publisher<uavcan::equipment::esc::Status> *pub_status;
 namespace
 {
@@ -57,17 +56,16 @@ static void cb_raw_command(const uavcan::ReceivedDataStructure<uavcan::equipment
 		rgb_led(0, 0, 0, 0);
 		return;
 	}
-
-	const float scaled = msg.cmd[self_index] / float(
-				     uavcan::equipment::esc::RawCommand::FieldTypes::cmd::RawValueType::max());
-
+	
+	const float scaled = msg.cmd[self_index] / float(uavcan::equipment::esc::RawCommand::FieldTypes::cmd::RawValueType::max());
+	
 	static int c = 0;
-
+	
 	if (c++ % 100 == 0)
 	{
-		::syslog(LOG_INFO, "scaled:%d\n", (int)scaled);
+		::syslog(LOG_INFO, "scaled:%d\n", (int) scaled);
 	}
-
+	
 	if (scaled > 0)
 	{
 	}
@@ -82,19 +80,19 @@ static void cb_rpm_command(const uavcan::ReceivedDataStructure<uavcan::equipment
 	{
 		return;
 	}
-
+	
 	rpm = msg.rpm[self_index];
 	static int c = 0;
-
+	
 	if (c++ % 100 == 0)
 	{
 		::syslog(LOG_INFO, "rpm:%d\n", rpm);
 	}
-
+	
 	if (rpm > 0)
 	{
 		rgb_led(255, 0, 0, rpm);
-
+		
 	}
 	else
 	{
@@ -105,7 +103,7 @@ static void cb_rpm_command(const uavcan::ReceivedDataStructure<uavcan::equipment
 void cb_10Hz(const uavcan::TimerEvent &event)
 {
 	uavcan::equipment::esc::Status msg;
-
+	
 	msg.esc_index = self_index;
 	msg.rpm = rpm;
 	msg.voltage = 3.3F;
@@ -113,18 +111,18 @@ void cb_10Hz(const uavcan::TimerEvent &event)
 	msg.temperature = 24.0F;
 	msg.power_rating_pct = static_cast<unsigned>(.5F * 100 + 0.5F);
 	msg.error_count = 0;
-
+	
 	if (rpm != 0)
 	{
 		// Lower the publish rate to 1Hz if the motor is not running
 		static uavcan::MonotonicTime prev_pub_ts;
-
+		
 		if ((event.scheduled_time - prev_pub_ts).toMSec() >= 990)
 		{
 			prev_pub_ts = event.scheduled_time;
 			pub_status->broadcast(msg);
 		}
-
+		
 	}
 	else
 	{
@@ -135,40 +133,40 @@ void cb_10Hz(const uavcan::TimerEvent &event)
 }
 int init_sim_controller(uavcan::INode &node)
 {
-
+	
 	typedef void (*cb)(const uavcan::TimerEvent &);
 	static uavcan::Subscriber<uavcan::equipment::esc::RawCommand> sub_raw_command(node);
 	static uavcan::Subscriber<uavcan::equipment::esc::RPMCommand> sub_rpm_command(node);
-	static uavcan::TimerEventForwarder<cb>  timer_10hz(node);
-
+	static uavcan::TimerEventForwarder<cb> timer_10hz(node);
+	
 	self_index = 0;
-
+	
 	int res = 0;
-
+	
 	res = sub_raw_command.start(cb_raw_command);
-
+	
 	if (res != 0)
 	{
 		return res;
 	}
-
+	
 	res = sub_rpm_command.start(cb_rpm_command);
-
+	
 	if (res != 0)
 	{
 		return res;
 	}
-
+	
 	pub_status = new uavcan::Publisher<uavcan::equipment::esc::Status>(node);
 	res = pub_status->init();
-
+	
 	if (res != 0)
 	{
 		return res;
 	}
-
+	
 	timer_10hz.setCallback(&cb_10Hz);
 	timer_10hz.startPeriodic(uavcan::MonotonicDuration::fromMSec(100));
-
+	
 	return 0;
 }

@@ -31,7 +31,6 @@
  *
  ****************************************************************************/
 
-
 /**
  * @file LidarLite.h
  * @author Johan Jansen <jnsn.johan@gmail.com>
@@ -43,9 +42,9 @@
 #include <nuttx/clock.h>
 
 LidarLite::LidarLite() :
-	_min_distance(LL40LS_MIN_DISTANCE),
-	_max_distance(LL40LS_MAX_DISTANCE),
-	_measure_ticks(0)
+		    _min_distance(LL40LS_MIN_DISTANCE),
+		    _max_distance(LL40LS_MAX_DISTANCE),
+		    _measure_ticks(0)
 {
 }
 
@@ -82,85 +81,85 @@ int LidarLite::ioctl(struct file *filp, int cmd, unsigned long arg)
 {
 	switch (cmd)
 	{
-
+		
 		case SENSORIOCSPOLLRATE:
+		{
+			switch (arg)
 			{
-				switch (arg)
-				{
-
-					/* switching to manual polling */
-					case SENSOR_POLLRATE_MANUAL:
-						stop();
-						_measure_ticks = 0;
-						return OK;
-
+				
+				/* switching to manual polling */
+				case SENSOR_POLLRATE_MANUAL:
+					stop();
+					_measure_ticks = 0;
+					return OK;
+					
 					/* external signalling (DRDY) not supported */
-					case SENSOR_POLLRATE_EXTERNAL:
+				case SENSOR_POLLRATE_EXTERNAL:
 
 					/* zero would be bad */
-					case 0:
-						return -EINVAL;
-
+				case 0:
+					return -EINVAL;
+					
 					/* set default/max polling rate */
-					case SENSOR_POLLRATE_MAX:
-					case SENSOR_POLLRATE_DEFAULT:
-						{
-							/* do we need to start internal polling? */
-							bool want_start = (_measure_ticks == 0);
-
-							/* set interval for next measurement to minimum legal value */
-							_measure_ticks = USEC2TICK(LL40LS_CONVERSION_INTERVAL);
-
-							/* if we need to start the poll state machine, do it */
-							if (want_start)
-							{
-								start();
-							}
-
-							return OK;
-						}
-
+				case SENSOR_POLLRATE_MAX:
+				case SENSOR_POLLRATE_DEFAULT:
+				{
+					/* do we need to start internal polling? */
+					bool want_start = (_measure_ticks == 0);
+					
+					/* set interval for next measurement to minimum legal value */
+					_measure_ticks = USEC2TICK(LL40LS_CONVERSION_INTERVAL);
+					
+					/* if we need to start the poll state machine, do it */
+					if (want_start)
+					{
+						start();
+					}
+					
+					return OK;
+				}
+					
 					/* adjust to a legal polling interval in Hz */
-					default:
-						{
-							/* do we need to start internal polling? */
-							bool want_start = (_measure_ticks == 0);
-
-							/* convert hz to tick interval via microseconds */
-							unsigned ticks = USEC2TICK(1000000 / arg);
-
-							/* check against maximum rate */
-							if (ticks < USEC2TICK(LL40LS_CONVERSION_INTERVAL))
-							{
-								return -EINVAL;
-							}
-
-							/* update interval for next measurement */
-							_measure_ticks = ticks;
-
-							/* if we need to start the poll state machine, do it */
-							if (want_start)
-							{
-								start();
-							}
-
-							return OK;
-						}
+				default:
+				{
+					/* do we need to start internal polling? */
+					bool want_start = (_measure_ticks == 0);
+					
+					/* convert hz to tick interval via microseconds */
+					unsigned ticks = USEC2TICK(1000000 / arg);
+					
+					/* check against maximum rate */
+					if (ticks < USEC2TICK(LL40LS_CONVERSION_INTERVAL))
+					{
+						return -EINVAL;
+					}
+					
+					/* update interval for next measurement */
+					_measure_ticks = ticks;
+					
+					/* if we need to start the poll state machine, do it */
+					if (want_start)
+					{
+						start();
+					}
+					
+					return OK;
 				}
 			}
-
+		}
+			
 		case SENSORIOCGPOLLRATE:
 			if (_measure_ticks == 0)
 			{
 				return SENSOR_POLLRATE_MANUAL;
 			}
-
+			
 			return (1000 / _measure_ticks);
-
+			
 		case SENSORIOCRESET:
 			reset_sensor();
 			return OK;
-
+			
 		default:
 			return -EINVAL;
 	}

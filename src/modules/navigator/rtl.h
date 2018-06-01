@@ -48,12 +48,12 @@ class Navigator;
 
 #define STAY_TIMEOUT_US (2 * 1000 * 1000)
 
-class RTL : public MissionBlock
+class RTL: public MissionBlock
 {
 public:
 	RTL(Navigator *navigator, const char *name);
 	~RTL() = default;
-
+	
 	void on_inactive() override;
 	void on_activation() override;
 	void on_active() override;
@@ -66,19 +66,19 @@ private:
 	/**
 	 * Set the RTL item
 	 */
-	void		set_rtl_item();
+	void set_rtl_item();
 
 	/**
 	 * Move to next RTL item
 	 */
-	void		advance_rtl();
+	void advance_rtl();
 
 	enum RTLStep
 	{
 		RTL_STEP_STAYPOS = 0,
 		RTL_STEP_RTLINIT,
 		RTL_STEP_RTLDOING,
-	} _rtl_step{RTL_STEP_STAYPOS};
+	} _rtl_step { RTL_STEP_STAYPOS };
 
 	enum RTLState
 	{
@@ -90,9 +90,9 @@ private:
 		RTL_STATE_LOITER,
 		RTL_STATE_LAND,
 		RTL_STATE_LANDED,
-	} _rtl_state{RTL_STATE_NONE};
+	} _rtl_state { RTL_STATE_NONE };
 
-	bool _rtl_alt_min{false};
+	bool _rtl_alt_min { false };
 
 	control::BlockParamFloat _param_return_alt;
 	control::BlockParamFloat _param_descend_alt;

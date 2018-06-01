@@ -66,7 +66,6 @@
 #define RPMMIN 1200
 #define RPMSTOPPED (RPMMIN - 10)
 
-
 #define MAX_BOOT_TIME_MS		 (550) // Minimum time to wait after Power on before sending commands
 
 #pragma pack(push,1)
@@ -83,7 +82,7 @@
 
 typedef struct
 {
-
+	
 	uint16_t rpm_flags[TAP_ESC_MAX_MOTOR_NUM];
 } RunReq;
 
@@ -105,19 +104,19 @@ typedef struct
 /****** Run ***********/
 
 /****** ConFigInfoBasic ***********/
-typedef  struct
+typedef struct
 {
-	uint8_t  maxChannelInUse;
-	uint8_t  channelMapTable[TAP_ESC_MAX_MOTOR_NUM];
-	uint8_t  monitorMsgType;
-	uint8_t  controlMode;
+	uint8_t maxChannelInUse;
+	uint8_t channelMapTable[TAP_ESC_MAX_MOTOR_NUM];
+	uint8_t monitorMsgType;
+	uint8_t controlMode;
 	uint16_t minChannelValue;
 	uint16_t maxChannelValue;
 } ConfigInfoBasicRequest;
 
-typedef  struct
+typedef struct
 {
-	uint8_t  channelID;
+	uint8_t channelID;
 	ConfigInfoBasicRequest resp;
 } ConfigInfoBasicResponse;
 
@@ -136,34 +135,34 @@ typedef enum
 	REQEST_INFO_DEVICE,
 } InfoTypes;
 
-typedef  struct
+typedef struct
 {
-	uint8_t  channelID;
-	uint8_t  requestInfoType;
+	uint8_t channelID;
+	uint8_t requestInfoType;
 } InfoRequest;
 
 /****** InfoRequest ***********/
 
-typedef  struct
+typedef struct
 {
 	uint8_t head;
 	uint8_t len;
 	uint8_t msg_id;
 	union
 	{
-		InfoRequest 		reqInfo;
-		ConfigInfoBasicRequest 	reqConfigInfoBasic;
-		RunReq			reqRun;
+		InfoRequest reqInfo;
+		ConfigInfoBasicRequest reqConfigInfoBasic;
+		RunReq reqRun;
 		ConfigInfoBasicResponse rspConfigInfoBasic;
-		RunInfoRepsonse		rspRunInfo;
+		RunInfoRepsonse rspRunInfo;
 		uint8_t bytes[100];
 	} d;
 	uint8_t crc_data;
-
+	
 } EscPacket;
 
 #define UART_BUFFER_SIZE 128
-typedef  struct
+typedef struct
 {
 	uint8_t head;
 	uint8_t tail;
@@ -212,7 +211,6 @@ typedef enum
 	ESC_STATUS_ERROR_LOSE_CMD,
 } ESCBUS_ENUM_ESC_STATUS;
 
-
 typedef enum
 {
 	// messages or command to ESC
@@ -224,16 +222,16 @@ typedef enum
 	// messages from ESC
 	ESCBUS_MSG_ID_REQUEST_INFO,
 	ESCBUS_MSG_ID_CONFIG_INFO_BASIC,	// simple configuration info for request from flight controller
-	ESCBUS_MSG_ID_CONFIG_INFO_FULL,// full configuration info for request from host such as computer
-	ESCBUS_MSG_ID_RUN_INFO,// feedback message in RUN mode
+	ESCBUS_MSG_ID_CONFIG_INFO_FULL,	// full configuration info for request from host such as computer
+	ESCBUS_MSG_ID_RUN_INFO,	// feedback message in RUN mode
 	ESCBUS_MSG_ID_STUDY_INFO,	// studied parameters in STUDY mode
 	ESCBUS_MSG_ID_COMM_INFO,	// communication method info
-	ESCBUS_MSG_ID_DEVICE_INFO,// ESC device info
+	ESCBUS_MSG_ID_DEVICE_INFO,	// ESC device info
 	ESCBUS_MSG_ID_ASSIGNED_ID,	// never touch ESCBUS_MSG_ID_MAX_NUM
 	//boot loader used
 	PROTO_OK = 0x10, // INSYNC/OK - 'ok' response
 	PROTO_FAILED = 0x11, // INSYNC/FAILED - 'fail' response
-
+	
 	ESCBUS_MSG_ID_BOOT_SYNC = 0x21, // boot loader used
 	PROTO_GET_DEVICE = 0x22, // get device ID bytes
 	PROTO_CHIP_ERASE = 0x23, // erase program area and reset program address
@@ -242,8 +240,7 @@ typedef enum
 	PROTO_BOOT = 0x30, // boot the application
 	PROTO_GET_SOFTWARE_VERSION = 0x40,
 	ESCBUS_MSG_ID_MAX_NUM,
-}
-ESCBUS_ENUM_MESSAGE_ID;
+} ESCBUS_ENUM_MESSAGE_ID;
 
 typedef enum
 {

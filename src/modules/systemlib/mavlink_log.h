@@ -49,7 +49,8 @@
 #define MAVLINK_LOG_MAXLEN			50
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...);
 #ifdef __cplusplus

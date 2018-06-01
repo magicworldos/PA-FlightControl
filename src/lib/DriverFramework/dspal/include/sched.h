@@ -62,7 +62,6 @@
 #ifndef _SCHED_H_
 #define	_SCHED_H_
 
-
 /* POSIX 1003.1b Process Scheduling */
 
 /*
@@ -72,8 +71,9 @@
 #define SCHED_OTHER     2
 #define SCHED_RR        3
 
-struct sched_param {
-	int     sched_priority;
+struct sched_param
+{
+	int sched_priority;
 };
 
 /*
@@ -85,8 +85,8 @@ struct sched_param {
 struct timespec;
 
 __BEGIN_DECLS
-int     sched_get_priority_max(int);
-int     sched_get_priority_min(int);
+int sched_get_priority_max(int);
+int sched_get_priority_min(int);
 __END_DECLS
 
 #endif /* !_SCHED_H_ */

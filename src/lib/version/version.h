@@ -55,7 +55,6 @@
 #  error "board_config.h must define BOARD_NAME"
 #endif
 
-
 __BEGIN_DECLS
 
 /**
@@ -176,7 +175,6 @@ __EXPORT const char *px4_firmware_version_string(void);
  * get the git branch name (can be empty, for example if HEAD points to a tag)
  */
 __EXPORT const char *px4_firmware_git_branch(void);
-
 
 /**
  * Firmware version in binary form (first part of the git tag)

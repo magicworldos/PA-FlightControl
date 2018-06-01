@@ -33,92 +33,95 @@
 
 #include "test_utils.h"
 
-extern "C" {
+extern "C"
+{
 
-	void block_indefinite(void)
+void block_indefinite(void)
+{
+	for (;;)
 	{
-		for (;;) {
-			volatile int x = 0;
-			++x;
-		}
+		volatile int x = 0;
+		++x;
 	}
+}
 
-	void _Read_uleb(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Read_uleb(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Parse_fde_instr(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Parse_fde_instr(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Parse_csd(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Parse_csd(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Locksyslock(int x)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Locksyslock(int x)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Unlocksyslock(int x)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Unlocksyslock(int x)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Valbytes(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Valbytes(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Get_eh_data(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Get_eh_data(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Parse_lsda(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Parse_lsda(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void __cxa_guard_release(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void __cxa_guard_release(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Read_enc_ptr(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Read_enc_ptr(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void _Read_sleb(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void _Read_sleb(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void __cxa_guard_acquire(void)
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void __cxa_guard_acquire(void)
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-	void __cxa_pure_virtual()
-	{
-		LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
-		block_indefinite();
-	}
+void __cxa_pure_virtual()
+{
+	LOG_ERR("Error: Calling unresolved symbol stub[%s]", __FUNCTION__);
+	block_indefinite();
+}
 
-};
+}
+;

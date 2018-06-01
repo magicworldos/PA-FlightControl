@@ -43,24 +43,24 @@ namespace uORB
 {
 
 SubscriptionBase::SubscriptionBase(const struct orb_metadata *meta, unsigned interval, unsigned instance) :
-	_meta(meta),
-	_instance(instance)
+		    _meta(meta),
+		    _instance(instance)
 {
 	if (instance > 0)
 	{
 		_handle = orb_subscribe_multi(_meta, instance);
-
+		
 	}
 	else
 	{
 		_handle = orb_subscribe(_meta);
 	}
-
+	
 	if (_handle < 0)
 	{
 		PX4_ERR("%s sub failed", _meta->o_name);
 	}
-
+	
 	if (interval > 0)
 	{
 		orb_set_interval(_handle, interval);
@@ -70,32 +70,32 @@ SubscriptionBase::SubscriptionBase(const struct orb_metadata *meta, unsigned int
 bool SubscriptionBase::updated()
 {
 	bool isUpdated = false;
-
+	
 	if (orb_check(_handle, &isUpdated) != PX4_OK)
 	{
 		PX4_ERR("%s check failed", _meta->o_name);
 	}
-
+	
 	return isUpdated;
 }
 
 bool SubscriptionBase::update(void *data)
 {
 	bool orb_updated = false;
-
+	
 	if (updated())
 	{
 		if (orb_copy(_meta, _handle, data) != PX4_OK)
 		{
 			PX4_ERR("%s copy failed", _meta->o_name);
-
+			
 		}
 		else
 		{
 			orb_updated = true;
 		}
 	}
-
+	
 	return orb_updated;
 }
 
@@ -107,9 +107,8 @@ SubscriptionBase::~SubscriptionBase()
 	}
 }
 
-SubscriptionNode::SubscriptionNode(const struct orb_metadata *meta, unsigned interval, unsigned instance,
-				   List<SubscriptionNode *> *list)
-	: SubscriptionBase(meta, interval, instance)
+SubscriptionNode::SubscriptionNode(const struct orb_metadata *meta, unsigned interval, unsigned instance, List<SubscriptionNode *> *list) :
+		    SubscriptionBase(meta, interval, instance)
 {
 	if (list != nullptr)
 	{

@@ -50,7 +50,8 @@
 // beta >= 128
 // release candidate >= 192
 // release == 255
-enum FIRMWARE_TYPE {
+enum FIRMWARE_TYPE
+{
 	FIRMWARE_TYPE_DEV = 0,
 	FIRMWARE_TYPE_ALPHA = 64,
 	FIRMWARE_TYPE_BETA = 128,
@@ -61,83 +62,103 @@ enum FIRMWARE_TYPE {
 uint32_t version_tag_to_number(const char *tag)
 {
 	uint32_t version_number = 0;
-
+	
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
 	size_t dash_count = 0;
 	size_t point_count = 0;
-	char version[3] = {0, 0, 0};
+	char version[3] = { 0, 0, 0 };
 	int firmware_type = FIRMWARE_TYPE_RELEASE;
-
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (tag[i] == '-') {
+	
+	for (size_t i = 0; i < strlen(tag); i++)
+	{
+		if (tag[i] == '-')
+		{
 			dash_count++;
-
-		} else if (tag[i] == '.') {
+			
+		}
+		else if (tag[i] == '.')
+		{
 			point_count++;
 		}
-
-		if (tag[i] == 'r' && i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		
+		if (tag[i] == 'r' && i < strlen(tag) - 1 && tag[i + 1] == 'c')
+		{
 			firmware_type = FIRMWARE_TYPE_RC;
-
-		} else if (tag[i] == 'p') {
+			
+		}
+		else if (tag[i] == 'p')
+		{
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-
-		} else if (tag[i] == 't' && i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			
+		}
+		else if (tag[i] == 't' && i < strlen(tag) - 1 && tag[i + 1] == 'y')
+		{
 			firmware_type = FIRMWARE_TYPE_DEV;
-
-		} else if (tag[i] == 't') {
+			
+		}
+		else if (tag[i] == 't')
+		{
 			firmware_type = FIRMWARE_TYPE_BETA;
-
-		} else if (tag[i] == 'v' && i > 0) {
+			
+		}
+		else if (tag[i] == 'v' && i > 0)
+		{
 			firmware_type = FIRMWARE_TYPE_DEV;
 		}
 	}
-
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	
+	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) || (dash_count == 2 && point_count == 2) || (dash_count == 3 && point_count == 4) || (dash_count == 4 && point_count == 4))
+	{
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
-
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
+	
+	for (size_t i = 0; i < strlen(tag); i++)
+	{
+		if (buffer_counter > 2)
+		{
 			continue;
 		}
-
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		
+		if (tag[i] >= '0' && tag[i] <= '9')
+		{
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
-
-		} else {
-			if (buffer >= 0) {
+			
+		}
+		else
+		{
+			if (buffer >= 0)
+			{
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
-
+			
 			buffer = -1;
 		}
 	}
-
-	if (buffer >= 0) {
+	
+	if (buffer >= 0)
+	{
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
-
-	if (buffer_counter <= 0) {
+	
+	if (buffer_counter <= 0)
+	{
 		firmware_type = 0x00;
 	}
-
-	if (buffer_counter == 3 || buffer_counter == 6) {
-		version_number = ((uint8_t)version[0] << 8 * 3) |
-				 ((uint8_t)version[1] << 8 * 2) |
-				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
-
-	} else {
+	
+	if (buffer_counter == 3 || buffer_counter == 6)
+	{
+		version_number = ((uint8_t) version[0] << 8 * 3) | ((uint8_t) version[1] << 8 * 2) | ((uint8_t) version[2] << 8 * 1) | firmware_type;
+		
+	}
+	else
+	{
 		version_number = 0;
 	}
-
+	
 	return version_number;
 }
 
@@ -149,86 +170,108 @@ uint32_t px4_firmware_version(void)
 uint32_t version_tag_to_vendor_version_number(const char *tag)
 {
 	uint32_t version_number = 0;
-
+	
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	char version[6] = {0, 0, 0, 0, 0, 0};
+	char version[6] = { 0, 0, 0, 0, 0, 0 };
 	size_t dash_count = 0;
 	size_t point_count = 0;
 	int firmware_type = FIRMWARE_TYPE_RELEASE;
-
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (tag[i] == '-') {
+	
+	for (size_t i = 0; i < strlen(tag); i++)
+	{
+		if (tag[i] == '-')
+		{
 			dash_count++;
-
-		} else if (tag[i] == '.') {
+			
+		}
+		else if (tag[i] == '.')
+		{
 			point_count++;
 		}
-
-		if (tag[i] == 'r' && i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		
+		if (tag[i] == 'r' && i < strlen(tag) - 1 && tag[i + 1] == 'c')
+		{
 			firmware_type = FIRMWARE_TYPE_RC;
-
-		} else if (tag[i] == 'p') {
+			
+		}
+		else if (tag[i] == 'p')
+		{
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-
-		} else if (tag[i] == 't' && i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			
+		}
+		else if (tag[i] == 't' && i < strlen(tag) - 1 && tag[i + 1] == 'y')
+		{
 			firmware_type = FIRMWARE_TYPE_DEV;
-
-		} else if (tag[i] == 't') {
+			
+		}
+		else if (tag[i] == 't')
+		{
 			firmware_type = FIRMWARE_TYPE_BETA;
-
-		} else if (tag[i] == 'v' && i > 0) {
+			
+		}
+		else if (tag[i] == 'v' && i > 0)
+		{
 			firmware_type = FIRMWARE_TYPE_DEV;
 		}
 	}
-
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	
+	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) || (dash_count == 2 && point_count == 2) || (dash_count == 3 && point_count == 4) || (dash_count == 4 && point_count == 4))
+	{
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
-
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
+	
+	for (size_t i = 0; i < strlen(tag); i++)
+	{
+		if (buffer_counter > 5)
+		{
 			continue;
 		}
-
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		
+		if (tag[i] >= '0' && tag[i] <= '9')
+		{
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
-
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
+			
+		}
+		else
+		{
+			if (buffer >= 0)
+			{
+				if (buffer_counter + 1 == 4 && tag[i] == '-')
+				{
 					break;
 				}
-
+				
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
-
+			
 			buffer = -1;
 		}
 	}
-
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	
+	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6))
+	{
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
-
-	if (buffer_counter == 6) {
-		version_number = ((uint8_t)version[3] << 8 * 3) |
-				 ((uint8_t)version[4] << 8 * 2) |
-				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
-
-	} else if (buffer_counter == 3) {
+	
+	if (buffer_counter == 6)
+	{
+		version_number = ((uint8_t) version[3] << 8 * 3) | ((uint8_t) version[4] << 8 * 2) | ((uint8_t) version[5] << 8 * 1) | firmware_type;
+		
+	}
+	else if (buffer_counter == 3)
+	{
 		version_number = firmware_type;
-
-	} else {
+		
+	}
+	else
+	{
 		version_number = 0;
 	}
-
+	
 	return version_number;
 }
 
@@ -258,18 +301,22 @@ uint32_t px4_os_version(void)
 #elif defined(__PX4_LINUX)
 	struct utsname name;
 
-	if (uname(&name) == 0) {
+	if (uname(&name) == 0)
+	{	
 		char *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		while (*c && *c != '-')
+		{	
 			++c;
 		}
 
 		*c = 0;
 		return version_tag_to_number(name.release);
 
-	} else {
+	}
+	else
+	{	
 		return 0;
 	}
 

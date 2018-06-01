@@ -46,68 +46,67 @@
 #define PARAM_MAGIC1 12345678
 #define PARAM_MAGIC2 0xa5a5a5a5
 
-int
-test_param(int argc, char *argv[])
+int test_param(int argc, char *argv[])
 {
-	param_t		p;
-
+	param_t p;
+	
 	p = param_find("TEST_PARAMS");
-
+	
 	if (p == PARAM_INVALID)
 	{
 		warnx("test parameter not found");
 		return 1;
 	}
-
+	
 	if (param_reset(p) != OK)
 	{
 		warnx("failed param reset");
 		return 1;
 	}
-
+	
 	param_type_t t = param_type(p);
-
+	
 	if (t != PARAM_TYPE_INT32)
 	{
-		warnx("test parameter type mismatch (got %u)", (unsigned)t);
+		warnx("test parameter type mismatch (got %u)", (unsigned )t);
 		return 1;
 	}
-
-	int32_t	val = -1;
-
+	
+	int32_t val = -1;
+	
 	if (param_get(p, &val) != OK)
 	{
 		warnx("failed to read test parameter");
 		return 1;
 	}
-
+	
 	if (val != PARAM_MAGIC1)
 	{
 		warnx("parameter value mismatch");
 		return 1;
 	}
-
+	
 	val = PARAM_MAGIC2;
-
+	
 	if (param_set(p, &val) != OK)
 	{
 		warnx("failed to write test parameter");
 		return 1;
 	}
-
+	
 	if (param_get(p, &val) != OK)
 	{
 		warnx("failed to re-read test parameter");
 		return 1;
 	}
-
-	if ((uint32_t)val != PARAM_MAGIC2)
+	
+	if ((uint32_t) val != PARAM_MAGIC2)
 	{
 		warnx("parameter value mismatch after write");
 		return 1;
 	}
-
+	
 	warnx("parameter test PASS");
-
+	
 	return 0;
 }

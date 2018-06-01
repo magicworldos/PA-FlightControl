@@ -47,14 +47,12 @@
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
-
 typedef enum
 {
 	BAT_DISCHARGING = 0,
 	BAT_CHARGING = 1,
 	BAT_CHARGED = 2
 } battery_state;
-
 
 class SyslinkBridge;
 class SyslinkMemory;
@@ -70,15 +68,18 @@ public:
 	int set_channel(uint8_t channel);
 	int set_address(uint64_t addr);
 
-	int is_good(int i) { return _params_ack[i] != 0; }
-
+	int is_good(int i)
+	{
+		return _params_ack[i] != 0;
+	}
+	
 	int pktrate;
 	int nullrate;
 	int rxrate;
 	int txrate;
 
 private:
-
+	
 	friend class SyslinkBridge;
 	friend class SyslinkMemory;
 
@@ -114,7 +115,7 @@ private:
 	hrt_abstime _lasttime;
 	hrt_abstime _lasttxtime; // Last time a radio message was sent
 	hrt_abstime _lastrxtime; // Last time a radio message was recieved
-
+	
 	int _fd;
 
 	// For receiving raw syslink messages to send from other processes
@@ -132,7 +133,7 @@ private:
 	uint64_t _addr;
 	hrt_abstime _params_update[3]; // Time at which the parameters were updated
 	hrt_abstime _params_ack[3]; // Time at which the parameters were acknowledged by the nrf module
-
+	
 	orb_advert_t _battery_pub;
 	orb_advert_t _rc_pub;
 	orb_advert_t _cmd_pub;
@@ -151,53 +152,50 @@ private:
 	static int task_main_trampoline(int argc, char *argv[]);
 
 	void task_main();
-
+	
 };
 
-
-class SyslinkBridge : public device::CDev
+class SyslinkBridge: public device::CDev
 {
-
+	
 public:
 	SyslinkBridge(Syslink *link);
 	virtual ~SyslinkBridge();
 
-	virtual int	init();
+	virtual int init();
 
-	virtual ssize_t	read(struct file *filp, char *buffer, size_t buflen);
-	virtual ssize_t	write(struct file *filp, const char *buffer, size_t buflen);
-	virtual int	ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual ssize_t write(struct file *filp, const char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
 	// Makes the message available for reading to processes reading from the bridge
 	void pipe_message(crtp_message_t *msg);
 
 protected:
-
+	
 	virtual pollevent_t poll_state(struct file *filp);
 
 private:
-
+	
 	Syslink *_link;
 
 	// Stores data that was received from syslink but not yet read by another driver
 	ringbuffer::RingBuffer _readbuffer;
-
-
+	
 };
 
-
-class SyslinkMemory : public device::CDev
+class SyslinkMemory: public device::CDev
 {
-
+	
 public:
 	SyslinkMemory(Syslink *link);
 	virtual ~SyslinkMemory();
 
-	virtual int	init();
+	virtual int init();
 
-	virtual ssize_t	read(struct file *filp, char *buffer, size_t buflen);
-	virtual ssize_t	write(struct file *filp, const char *buffer, size_t buflen);
-	virtual int	ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual ssize_t write(struct file *filp, const char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
 private:
 	friend class Syslink;
@@ -215,5 +213,5 @@ private:
 	int write(int i, uint16_t addr, const char *buf, int length);
 
 	void sendAndWait();
-
+	
 };

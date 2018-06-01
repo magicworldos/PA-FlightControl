@@ -70,11 +70,11 @@
 #include "mpu9250.h"
 
 MPU9250_gyro::MPU9250_gyro(MPU9250 *parent, const char *path) :
-	CDev("MPU9250_gyro", path),
-	_parent(parent),
-	_gyro_topic(nullptr),
-	_gyro_orb_class_instance(-1),
-	_gyro_class_instance(-1)
+		    CDev("MPU9250_gyro", path),
+		    _parent(parent),
+		    _gyro_topic(nullptr),
+		    _gyro_orb_class_instance(-1),
+		    _gyro_class_instance(-1)
 {
 }
 
@@ -86,48 +86,44 @@ MPU9250_gyro::~MPU9250_gyro()
 	}
 }
 
-int
-MPU9250_gyro::init()
+int MPU9250_gyro::init()
 {
 	int ret;
-
+	
 	// do base class init
 	ret = CDev::init();
-
+	
 	/* if probe/setup failed, bail now */
 	if (ret != OK)
 	{
 		DEVICE_DEBUG("gyro init failed");
 		return ret;
 	}
-
+	
 	_gyro_class_instance = register_class_devname(GYRO_BASE_DEVICE_PATH);
-
+	
 	return ret;
 }
 
-void
-MPU9250_gyro::parent_poll_notify()
+void MPU9250_gyro::parent_poll_notify()
 {
 	poll_notify(POLLIN);
 }
 
-ssize_t
-MPU9250_gyro::read(struct file *filp, char *buffer, size_t buflen)
+ssize_t MPU9250_gyro::read(struct file *filp, char *buffer, size_t buflen)
 {
 	return _parent->gyro_read(filp, buffer, buflen);
 }
 
-int
-MPU9250_gyro::ioctl(struct file *filp, int cmd, unsigned long arg)
+int MPU9250_gyro::ioctl(struct file *filp, int cmd, unsigned long arg)
 {
-
+	
 	switch (cmd)
 	{
 		case DEVIOCGDEVICEID:
-			return (int)CDev::ioctl(filp, cmd, arg);
+			return (int) CDev::ioctl(filp, cmd, arg);
 			break;
-
+			
 		default:
 			return _parent->gyro_ioctl(filp, cmd, arg);
 	}

@@ -52,20 +52,20 @@
 
 #pragma pack(push,1)
 struct spi_data_s
-{
+{	
 	uint8_t addr;
 	struct bmp280::data_s data;
 };
 
 struct spi_calibration_s
-{
+{	
 	uint8_t addr;
 	struct bmp280::calibration_s cal;
 };
 #pragma pack(pop)
 
 class BMP280_SPI: public device::SPI, public bmp280::IBMP280
-{
+{	
 public:
 	BMP280_SPI(uint8_t bus, uint32_t device, bool external);
 	virtual ~BMP280_SPI() = default;
@@ -85,66 +85,68 @@ private:
 };
 
 bmp280::IBMP280 *bmp280_spi_interface(uint8_t busnum, uint8_t device, bool external)
-{
+{	
 	return new BMP280_SPI(busnum, device, external);
 }
 
 BMP280_SPI::BMP280_SPI(uint8_t bus, uint32_t device, bool external) :
-	SPI("BMP280_SPI", nullptr, bus, device, SPIDEV_MODE3, 10 * 1000 * 1000)
-{
+SPI("BMP280_SPI", nullptr, bus, device, SPIDEV_MODE3, 10 * 1000 * 1000)
+{	
 	_external = external;
 }
 
 bool BMP280_SPI::is_external()
-{
+{	
 	return _external;
 };
 
 int BMP280_SPI::init()
-{
+{	
 	return SPI::init();
 };
 
 uint8_t BMP280_SPI::get_reg(uint8_t addr)
-{
-	uint8_t cmd[2] = { (uint8_t)(addr | DIR_READ), 0}; //set MSB bit
+{	
+	uint8_t cmd[2] =
+	{	(uint8_t)(addr | DIR_READ), 0}; //set MSB bit
 	transfer(&cmd[0], &cmd[0], 2);
 
 	return cmd[1];
 }
 
 int BMP280_SPI::set_reg(uint8_t value, uint8_t addr)
-{
-	uint8_t cmd[2] = { (uint8_t)(addr & DIR_WRITE), value}; //clear MSB bit
+{	
+	uint8_t cmd[2] =
+	{	(uint8_t)(addr & DIR_WRITE), value}; //clear MSB bit
 	return transfer(&cmd[0], nullptr, 2);
 }
 
 bmp280::data_s *BMP280_SPI::get_data(uint8_t addr)
-{
+{	
 	_data.addr = (uint8_t)(addr | DIR_READ); //set MSB bit
-
+	
 	if (transfer((uint8_t *)&_data, (uint8_t *)&_data, sizeof(struct spi_data_s)) == OK)
-	{
+	{	
 		return &(_data.data);
 
 	}
 	else
-	{
+	{	
 		return nullptr;
 	}
 }
 
 bmp280::calibration_s *BMP280_SPI::get_calibration(uint8_t addr)
-{
+{	
 	_cal.addr = addr | DIR_READ;
 
 	if (transfer((uint8_t *)&_cal, (uint8_t *)&_cal, sizeof(struct spi_calibration_s)) == OK)
-	{
+	{	
 		return &(_cal.cal);
 
 	}
 	else
-	{
+	{	
 		return nullptr;
 	}
 }

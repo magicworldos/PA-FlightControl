@@ -39,7 +39,6 @@
  * @author Dennis Shtatnov <densht@gmail.com>
  */
 
-
 #include <px4_defines.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -48,9 +47,7 @@
 #include <poll.h>
 #include <termios.h>
 
-
 #include "syslink.h"
-
 
 const char *syslink_magic = "\xbc\xcf";
 
@@ -60,63 +57,62 @@ void syslink_parse_init(syslink_parse_state *state)
 	state->index = 0;
 }
 
-
 int syslink_parse_char(syslink_parse_state *state, char c, syslink_message_t *msg)
 {
-
+	
 	switch (state->state)
 	{
 		case SYSLINK_STATE_START:
 			if (c == syslink_magic[state->index])
 			{
 				state->index++;
-
+				
 			}
 			else
 			{
 				state->index = 0;
 			}
-
+			
 			if (syslink_magic[state->index] == '\x00')
 			{
 				state->state = SYSLINK_STATE_TYPE;
 			}
-
+			
 			break;
-
+			
 		case SYSLINK_STATE_TYPE:
 			msg->type = c;
 			state->state = SYSLINK_STATE_LENGTH;
 			break;
-
+			
 		case SYSLINK_STATE_LENGTH:
 			msg->length = c;
-
+			
 			if (c > SYSLINK_MAX_DATA_LEN)   // Too long
 			{
 				state->state = SYSLINK_STATE_START;
-
+				
 			}
 			else
 			{
 				state->state = c > 0 ? SYSLINK_STATE_DATA : SYSLINK_STATE_CKSUM;
 			}
-
+			
 			state->index = 0;
 			break;
-
+			
 		case SYSLINK_STATE_DATA:
 			msg->data[state->index++] = c;
-
+			
 			if (state->index >= msg->length)
 			{
 				state->state = SYSLINK_STATE_CKSUM;
 				state->index = 0;
 				syslink_compute_cksum(msg);
 			}
-
+			
 			break;
-
+			
 		case SYSLINK_STATE_CKSUM:
 			if (c != msg->cksum[state->index])
 			{
@@ -125,41 +121,40 @@ int syslink_parse_char(syslink_parse_state *state, char c, syslink_message_t *ms
 				state->index = 0;
 				break;
 			}
-
+			
 			state->index++;
-
-			if (state->index >= (int)sizeof(msg->cksum))
+			
+			if (state->index >= (int) sizeof(msg->cksum))
 			{
 				state->state = SYSLINK_STATE_START;
 				state->index = 0;
 				return 1;
 			}
-
-
+			
 			break;
 	}
-
+	
 	return 0;
-
+	
 }
 
 /*
-	Computes Fletcher 8bit checksum per RFC1146
-	A := A + D[i]
-	B := B + A
-*/
+ Computes Fletcher 8bit checksum per RFC1146
+ A := A + D[i]
+ B := B + A
+ */
 void syslink_compute_cksum(syslink_message_t *msg)
 {
 	uint8_t a = 0, b = 0;
-	uint8_t *Di = (uint8_t *)msg, *end = Di + (2 + msg->length) * sizeof(uint8_t);
-
+	uint8_t *Di = (uint8_t *) msg, *end = Di + (2 + msg->length) * sizeof(uint8_t);
+	
 	while (Di < end)
 	{
 		a = a + *Di;
 		b = b + a;
 		++Di;
 	}
-
+	
 	msg->cksum[0] = a;
 	msg->cksum[1] = b;
 }

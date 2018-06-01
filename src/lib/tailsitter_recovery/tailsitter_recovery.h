@@ -46,7 +46,7 @@
  * Robin Ritz and Raffaello D'Andrea. A Global Strategy for Tailsitter Hover Control.
  *
  * @author Roman Bapst <bapstroman@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -71,7 +71,7 @@ public:
 
 private:
 	bool _in_recovery_mode;	// indicates that the tailsitter is performing a recovery to hover
-
+	
 	math::Vector<3> _att_p;	// gains for attitude loop
 	float _yaw_ff;			// yaw feed forward gain
 };

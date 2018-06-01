@@ -70,16 +70,14 @@ class RcInput
 {
 public:
 	RcInput() :
-		_shouldExit(false),
-		_isRunning(false),
-		_work { },
-		_rcinput_pub(nullptr),
-		_data { }, _sbusData {   0x0f, 0x01, 0x04, 0x20, 0x00,
-					 0xff, 0x07, 0x40, 0x00, 0x02,
-					 0x10, 0x80, 0x2c, 0x64, 0x21,
-					 0x0b, 0x59, 0x08, 0x40, 0x00,
-					 0x02, 0x10, 0x80, 0x00, 0x00   }
-	{ }
+			    _shouldExit(false),
+			    _isRunning(false),
+			    _work { },
+			    _rcinput_pub(nullptr),
+			    _data { },
+			    _sbusData { 0x0f, 0x01, 0x04, 0x20, 0x00, 0xff, 0x07, 0x40, 0x00, 0x02, 0x10, 0x80, 0x2c, 0x64, 0x21, 0x0b, 0x59, 0x08, 0x40, 0x00, 0x02, 0x10, 0x80, 0x00, 0x00 }
+	{
+	}
 	~RcInput()
 	{
 		work_cancel(HPWORK, &_work);
@@ -97,7 +95,7 @@ public:
 	{
 		return _isRunning;
 	}
-
+	
 private:
 	void _cycle();
 	void _measure();
@@ -108,7 +106,7 @@ private:
 	struct input_rc_s _data;
 	uint8_t _sbusData[25];
 	int _channels;
-	int _device_fd;  /** serial port device to read SBUS; */
+	int _device_fd; /** serial port device to read SBUS; */
 	int _channels_data[16]; /** 16 channels support; */
 	uint8_t _buffer[25];
 	char _device[30];

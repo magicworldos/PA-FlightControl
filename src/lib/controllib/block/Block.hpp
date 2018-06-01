@@ -60,7 +60,7 @@ class SuperBlock;
 /**
  */
 class __EXPORT Block : public ListNode<Block *>
-{
+{	
 public:
 	friend class BlockParamBase;
 
@@ -79,19 +79,26 @@ public:
 	virtual void updateSubscriptions();
 	virtual void updatePublications();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	virtual void setDt(float dt)
+	{	_dt = dt;}
+	float getDt()
+	{	return _dt;}
 
 protected:
 
-	SuperBlock *getParent() { return _parent; }
-	List<uORB::SubscriptionNode *> &getSubscriptions() { return _subscriptions; }
-	List<uORB::PublicationNode *> &getPublications() { return _publications; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent()
+	{	return _parent;}
+	List<uORB::SubscriptionNode *> &getSubscriptions()
+	{	return _subscriptions;}
+	List<uORB::PublicationNode *> &getPublications()
+	{	return _publications;}
+	List<BlockParamBase *> &getParams()
+	{	return _params;}
 
 	const char *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	float _dt
+	{	0.0f};
 
 	List<uORB::SubscriptionNode *> _subscriptions;
 	List<uORB::PublicationNode *> _publications;
@@ -99,12 +106,13 @@ protected:
 };
 
 class __EXPORT SuperBlock :
-	public Block
-{
+public Block
+{	
 public:
 	friend class Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
+	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name)
+	{}
 	~SuperBlock() = default;
 
 	// no copy, assignment, move, move assignment
@@ -116,27 +124,31 @@ public:
 	void setDt(float dt) override;
 
 	void updateParams() override
-	{
+	{	
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		if (getChildren().getHead() != nullptr)
+		{	updateChildParams();}
 	}
 
 	void updateSubscriptions() override
-	{
+	{	
 		Block::updateSubscriptions();
 
-		if (getChildren().getHead() != nullptr) { updateChildSubscriptions(); }
+		if (getChildren().getHead() != nullptr)
+		{	updateChildSubscriptions();}
 	}
 	void updatePublications() override
-	{
+	{	
 		Block::updatePublications();
 
-		if (getChildren().getHead() != nullptr) { updateChildPublications(); }
+		if (getChildren().getHead() != nullptr)
+		{	updateChildPublications();}
 	}
 
 protected:
-	List<Block *> &getChildren() { return _children; }
+	List<Block *> &getChildren()
+	{	return _children;}
 	void updateChildParams();
 	void updateChildSubscriptions();
 	void updateChildPublications();
@@ -144,5 +156,5 @@ protected:
 	List<Block *> _children;
 };
 
-
-} // namespace control
+}
+ // namespace control

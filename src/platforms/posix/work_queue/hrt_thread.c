@@ -114,12 +114,12 @@ static void hrt_work_process()
 {
 	struct wqueue_s *wqueue = &g_hrt_work;
 	volatile struct work_s *work;
-	worker_t  worker;
+	worker_t worker;
 	void *arg;
 	uint64_t elapsed;
 	uint32_t remaining;
 	uint32_t next;
-
+	
 	// set the threads name
 #ifdef __PX4_DARWIN
 	pthread_setname_np("HRT");
@@ -127,18 +127,18 @@ static void hrt_work_process()
 	// The Linux headers do not actually contain this
 	//rv = pthread_setname_np(pthread_self(), "HRT");
 #endif
-
+	
 	/* Then process queued work.  We need to keep interrupts disabled while
 	 * we process items in the work list.
 	 */
 
 	/* Default to sleeping for 1 sec */
-	next  = 1000000;
-
+	next = 1000000;
+	
 	hrt_work_lock();
-
-	work  = (struct work_s *)wqueue->q.head;
-
+	
+	work = (struct work_s *) wqueue->q.head;
+	
 	while (work)
 	{
 		/* Is this work ready?  It is ready if there is no delay or if
@@ -148,51 +148,51 @@ static void hrt_work_process()
 		 */
 
 		elapsed = hrt_absolute_time() - work->qtime;
-
+		
 		//PX4_INFO("hrt work_process: in usec elapsed=%lu delay=%u work=%p", elapsed, work->delay, work);
 		if (elapsed >= work->delay)
 		{
 			/* Remove the ready-to-execute work from the list */
 
-			(void)dq_rem((struct dq_entry_s *) & (work->dq), &(wqueue->q));
+			(void) dq_rem((struct dq_entry_s *) &(work->dq), &(wqueue->q));
 			//PX4_INFO("Dequeued work=%p", work);
-
+			
 			/* Extract the work description from the entry (in case the work
 			 * instance by the re-used after it has been de-queued).
 			 */
 
 			worker = work->worker;
-			arg    = work->arg;
-
+			arg = work->arg;
+			
 			/* Mark the work as no longer being queued */
 
 			work->worker = NULL;
-
+			
 			/* Do the work.  Re-enable interrupts while the work is being
 			 * performed... we don't have any idea how long that will take!
 			 */
 
 			hrt_work_unlock();
-
+			
 			if (!worker)
 			{
 				PX4_ERR("MESSED UP: worker = 0");
 				PX4_BACKTRACE();
-
+				
 			}
 			else
 			{
 				worker(arg);
 			}
-
+			
 			/* Now, unfortunately, since we re-enabled interrupts we don't
 			 * know the state of the work list and we will have to start
 			 * back at the head of the list.
 			 */
 
 			hrt_work_lock();
-			work  = (struct work_s *)wqueue->q.head;
-
+			work = (struct work_s *) wqueue->q.head;
+			
 		}
 		else
 		{
@@ -202,7 +202,7 @@ static void hrt_work_process()
 
 			/* Here: elapsed < work->delay */
 			remaining = work->delay - elapsed;
-
+			
 			//PX4_INFO("remaining=%u delay=%u elapsed=%lu", remaining, work->delay, elapsed);
 			if (remaining < next)
 			{
@@ -210,19 +210,19 @@ static void hrt_work_process()
 
 				next = remaining;
 			}
-
+			
 			/* Then try the next in the list. */
 
-			work = (struct work_s *)work->dq.flink;
+			work = (struct work_s *) work->dq.flink;
 			//PX4_INFO("next %u work %p", next, work);
 		}
 	}
-
+	
 	/* Wait awhile to check the work list.  We will wait here until either
 	 * the time elapses or until we are awakened by a signal.
 	 */
 	hrt_work_unlock();
-
+	
 	/* might sleep less if a signal received and new item was queued */
 	//PX4_INFO("Sleeping for %u usec", next);
 	usleep(next);
@@ -272,7 +272,7 @@ static int work_hrtthread(int argc, char *argv[])
 
 		hrt_work_process();
 	}
-
+	
 	return PX4_OK; /* To keep some compilers happy */
 }
 
@@ -284,16 +284,10 @@ void hrt_work_queue_init(void)
 {
 	px4_sem_init(&_hrt_work_lock, 0, 1);
 	memset(&g_hrt_work, 0, sizeof(g_hrt_work));
-
+	
 	// Create high priority worker thread
-	g_hrt_work.pid = px4_task_spawn_cmd("wkr_hrt",
-					    SCHED_DEFAULT,
-					    SCHED_PRIORITY_MAX,
-					    2000,
-					    work_hrtthread,
-					    (char *const *)NULL);
-
-
+	g_hrt_work.pid = px4_task_spawn_cmd("wkr_hrt", SCHED_DEFAULT, SCHED_PRIORITY_MAX, 2000, work_hrtthread, (char * const *) NULL);
+	
 #ifdef __PX4_QURT
 	signal(SIGALRM, _sighandler);
 #else

@@ -13,7 +13,7 @@
 #include "camera_interface.h"
 
 class CameraInterfaceGPIO : public CameraInterface
-{
+{	
 public:
 	CameraInterfaceGPIO();
 	virtual ~CameraInterfaceGPIO();
@@ -31,7 +31,7 @@ private:
 	int _polarity;
 
 	static constexpr uint32_t _gpios[6] =
-	{
+	{	
 		GPIO_GPIO0_OUTPUT,
 		GPIO_GPIO1_OUTPUT,
 		GPIO_GPIO2_OUTPUT,

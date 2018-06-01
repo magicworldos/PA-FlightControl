@@ -42,7 +42,7 @@ namespace linux_pwm_out
  ** class NavioSysfsPWMOut
  * PWM output class for Navio Sysfs
  */
-class NavioSysfsPWMOut : public PWMOutBase
+class NavioSysfsPWMOut: public PWMOutBase
 {
 public:
 	NavioSysfsPWMOut(const char *device, int max_num_outputs);

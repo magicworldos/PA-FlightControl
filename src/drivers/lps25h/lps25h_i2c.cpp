@@ -63,21 +63,21 @@
 
 device::Device *LPS25H_I2C_interface(int bus);
 
-class LPS25H_I2C : public device::I2C
+class LPS25H_I2C: public device::I2C
 {
 public:
 	LPS25H_I2C(int bus);
 	virtual ~LPS25H_I2C();
 
-	virtual int	init();
-	virtual int	read(unsigned address, void *data, unsigned count);
-	virtual int	write(unsigned address, void *data, unsigned count);
+	virtual int init();
+	virtual int read(unsigned address, void *data, unsigned count);
+	virtual int write(unsigned address, void *data, unsigned count);
 
-	virtual int	ioctl(unsigned operation, unsigned &arg);
+	virtual int ioctl(unsigned operation, unsigned &arg);
 
 protected:
-	virtual int	probe();
-
+	virtual int probe();
+	
 };
 
 device::Device *
@@ -87,7 +87,7 @@ LPS25H_I2C_interface(int bus)
 }
 
 LPS25H_I2C::LPS25H_I2C(int bus) :
-	I2C("LPS25H_I2C", nullptr, bus, LPS25H_ADDRESS, 400000)
+		    I2C("LPS25H_I2C", nullptr, bus, LPS25H_ADDRESS, 400000)
 {
 }
 
@@ -95,74 +95,69 @@ LPS25H_I2C::~LPS25H_I2C()
 {
 }
 
-int
-LPS25H_I2C::init()
+int LPS25H_I2C::init()
 {
 	/* this will call probe() */
 	return I2C::init();
 }
 
-int
-LPS25H_I2C::ioctl(unsigned operation, unsigned &arg)
+int LPS25H_I2C::ioctl(unsigned operation, unsigned &arg)
 {
 	int ret;
-
+	
 	switch (operation)
 	{
-
+		
 		case DEVIOCGDEVICEID:
 			return CDev::ioctl(nullptr, operation, arg);
-
+			
 		default:
 			ret = -EINVAL;
 	}
-
+	
 	return ret;
 }
 
-int
-LPS25H_I2C::probe()
+int LPS25H_I2C::probe()
 {
 	uint8_t id;
-
+	
 	_retries = 10;
-
+	
 	if (read(ADDR_WHO_AM_I, &id, 1))
 	{
 		DEVICE_DEBUG("read_reg fail");
 		return -EIO;
 	}
-
+	
 	_retries = 2;
-
+	
 	if (id != ID_WHO_AM_I)
 	{
 		DEVICE_DEBUG("ID byte mismatch (%02x != %02x)", ID_WHO_AM_I, id);
 		return -EIO;
 	}
-
+	
 	return OK;
 }
 
-int
-LPS25H_I2C::write(unsigned address, void *data, unsigned count)
+int LPS25H_I2C::write(unsigned address, void *data, unsigned count)
 {
 	uint8_t buf[32];
-
+	
 	if (sizeof(buf) < (count + 1))
 	{
 		return -EIO;
 	}
-
+	
 	buf[0] = address;
 	memcpy(&buf[1], data, count);
-
+	
 	return transfer(&buf[0], count + 1, nullptr, 0);
 }
 
-int
-LPS25H_I2C::read(unsigned address, void *data, unsigned count)
+int LPS25H_I2C::read(unsigned address, void *data, unsigned count)
 {
 	uint8_t cmd = address;
-	return transfer(&cmd, 1, (uint8_t *)data, count);
+	return transfer(&cmd, 1, (uint8_t *) data, count);
 }

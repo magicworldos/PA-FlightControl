@@ -88,19 +88,19 @@
 /*
  * Public decoder state
  */
-uint16_t	ppm_buffer[PPM_MAX_CHANNELS];
-unsigned	ppm_decoded_channels;
-hrt_abstime	ppm_last_valid_decode;
+uint16_t ppm_buffer[PPM_MAX_CHANNELS];
+unsigned ppm_decoded_channels;
+hrt_abstime ppm_last_valid_decode;
 
 static uint16_t ppm_temp_buffer[PPM_MAX_CHANNELS];
 
 /* PPM decoder state machine */
 static struct
 {
-	uint16_t	last_edge;	/* last capture time */
-	uint16_t	last_mark;	/* last significant edge */
-	unsigned	next_channel;
-	unsigned	count_max;
+	uint16_t last_edge; /* last capture time */
+	uint16_t last_mark; /* last significant edge */
+	unsigned next_channel;
+	unsigned count_max;
 	enum
 	{
 		UNSYNCH = 0,
@@ -110,40 +110,37 @@ static struct
 	} phase;
 } ppm;
 
-
-void
-ppm_input_init(unsigned count_max)
+void ppm_input_init(unsigned count_max)
 {
 	ppm_decoded_channels = 0;
 	ppm_last_valid_decode = 0;
-
+	
 	memset(&ppm, 0, sizeof(ppm));
 	ppm.count_max = count_max;
 }
 
-void
-ppm_input_decode(bool reset, unsigned count)
+void ppm_input_decode(bool reset, unsigned count)
 {
 	uint16_t width;
 	uint16_t interval;
 	unsigned i;
-
+	
 	/* if we missed an edge, we have to give up */
 	if (reset)
 	{
 		goto error;
 	}
-
+	
 	/* how long since the last edge? */
 	width = count - ppm.last_edge;
-
+	
 	if (count < ppm.last_edge)
 	{
-		width += ppm.count_max;        /* handle wrapped count */
+		width += ppm.count_max; /* handle wrapped count */
 	}
-
+	
 	ppm.last_edge = count;
-
+	
 	/*
 	 * If this looks like a start pulse, then push the last set of values
 	 * and reset the state machine.
@@ -154,7 +151,7 @@ ppm_input_decode(bool reset, unsigned count)
 	 */
 	if (width >= PPM_MIN_START)
 	{
-
+		
 		/*
 		 * If the number of channels changes unexpectedly, we don't want
 		 * to just immediately jump on the new count as it may be a result
@@ -164,19 +161,19 @@ ppm_input_decode(bool reset, unsigned count)
 		{
 			static unsigned new_channel_count;
 			static unsigned new_channel_holdoff;
-
+			
 			if (new_channel_count != ppm.next_channel)
 			{
 				/* start the lock counter for the new channel count */
 				new_channel_count = ppm.next_channel;
 				new_channel_holdoff = PPM_CHANNEL_LOCK;
-
+				
 			}
 			else if (new_channel_holdoff > 0)
 			{
 				/* this frame matched the last one, decrement the lock counter */
 				new_channel_holdoff--;
-
+				
 			}
 			else
 			{
@@ -184,7 +181,7 @@ ppm_input_decode(bool reset, unsigned count)
 				ppm_decoded_channels = new_channel_count;
 				new_channel_count = 0;
 			}
-
+			
 		}
 		else
 		{
@@ -195,79 +192,81 @@ ppm_input_decode(bool reset, unsigned count)
 				{
 					ppm_buffer[i] = ppm_temp_buffer[i];
 				}
-
+				
 				ppm_last_valid_decode = hrt_absolute_time();
 			}
 		}
-
+		
 		/* reset for the next frame */
 		ppm.next_channel = 0;
-
+		
 		/* next edge is the reference for the first channel */
 		ppm.phase = ARM;
-
+		
 		return;
 	}
-
+	
 	switch (ppm.phase)
 	{
 		case UNSYNCH:
 			/* we are waiting for a start pulse - nothing useful to do here */
 			return;
-
+			
 		case ARM:
 
 			/* we expect a pulse giving us the first mark */
 			if (width > PPM_MAX_PULSE_WIDTH)
 			{
-				goto error;        /* pulse was too long */
+				goto error;
+				/* pulse was too long */
 			}
-
+			
 			/* record the mark timing, expect an inactive edge */
 			ppm.last_mark = count;
 			ppm.phase = INACTIVE;
 			return;
-
+			
 		case INACTIVE:
 			/* this edge is not interesting, but now we are ready for the next mark */
 			ppm.phase = ACTIVE;
-
+			
 			/* note that we don't bother looking at the timing of this edge */
 
 			return;
-
+			
 		case ACTIVE:
 
 			/* we expect a well-formed pulse */
 			if (width > PPM_MAX_PULSE_WIDTH)
 			{
-				goto error;        /* pulse was too long */
+				goto error;
+				/* pulse was too long */
 			}
-
+			
 			/* determine the interval from the last mark */
 			interval = count - ppm.last_mark;
 			ppm.last_mark = count;
-
+			
 			/* if the mark-mark timing is out of bounds, abandon the frame */
 			if ((interval < PPM_MIN_CHANNEL_VALUE) || (interval > PPM_MAX_CHANNEL_VALUE))
 			{
 				goto error;
 			}
-
+			
 			/* if we have room to store the value, do so */
 			if (ppm.next_channel < PPM_MAX_CHANNELS)
 			{
 				ppm_temp_buffer[ppm.next_channel++] = interval;
 			}
-
+			
 			ppm.phase = INACTIVE;
 			return;
-
+			
 	}
-
+	
 	/* the state machine is corrupted; reset it */
 
-error:
+	error:
 	/* we don't like the state of the decoder, reset it and try again */
 	ppm.phase = UNSYNCH;
 	ppm_decoded_channels = 0;

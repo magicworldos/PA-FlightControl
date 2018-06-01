@@ -238,14 +238,14 @@ typedef char _alignment_check_for_MEM_POOL_BLOCK_SIZE[((MemPoolBlockSize & (MemP
  * This class that allows to check at compile time whether type T can be allocated using the memory pool.
  * If the check fails, compilation fails.
  */
-template <typename T>
+template<typename T>
 struct UAVCAN_EXPORT IsDynamicallyAllocatable
 {
-    static void check()
-    {
-        char dummy[(sizeof(T) <= MemPoolBlockSize) ? 1 : -1] = { '0' };
-        (void)dummy;
-    }
+	static void check()
+	{
+		char dummy[(sizeof(T) <= MemPoolBlockSize) ? 1 : -1] = { '0' };
+		(void) dummy;
+	}
 };
 
 /**

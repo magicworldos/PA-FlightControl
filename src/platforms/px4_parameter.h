@@ -138,22 +138,21 @@ public:
 	{
 		if (_handle != PARAM_INVALID)
 		{
-			param_get(_handle, &(this->_value));
-		}
+			param_get(_handle, &(this->_value)); }
 
-		return get();
-	}
+return get();
+}
 
-	/**
-	 * Get the current parameter value
-	 */
-	T get()
-	{
-		return this->_value;
-	}
+/**
+ * Get the current parameter value
+ */
+T get()
+{
+return this->_value;
+}
 
 protected:
-	param_t _handle;
+param_t _handle;
 
 };
 #endif

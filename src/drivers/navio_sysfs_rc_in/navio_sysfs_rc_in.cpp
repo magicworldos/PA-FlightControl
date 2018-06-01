@@ -56,17 +56,16 @@ extern "C" __EXPORT int navio_sysfs_rc_in_main(int argc, char *argv[]);
 
 #define RCINPUT_MEASURE_INTERVAL_US 20000 // microseconds
 
-
 class RcInput
 {
 public:
 	RcInput() :
-		_shouldExit(false),
-		_isRunning(false),
-		_work{},
-		_rcinput_pub(nullptr),
-		_channels(8), //D8R-II plus
-		_data{}
+			    _shouldExit(false),
+			    _isRunning(false),
+			    _work { },
+			    _rcinput_pub(nullptr),
+			    _channels(8), //D8R-II plus
+			    _data { }
 	{
 		memset(_ch_fd, 0, sizeof(_ch_fd));
 	}
@@ -75,7 +74,7 @@ public:
 		work_cancel(HPWORK, &_work);
 		_isRunning = false;
 	}
-
+	
 	/* @return 0 on success, -errno on failure */
 	int start();
 
@@ -85,8 +84,11 @@ public:
 	/* Trampoline for the work queue. */
 	static void cycle_trampoline(void *arg);
 
-	bool isRunning() { return _isRunning; }
-
+	bool isRunning()
+	{
+		return _isRunning;
+	}
+	
 private:
 	void _cycle();
 	void _measure();
@@ -108,57 +110,57 @@ int RcInput::navio_rc_init()
 {
 	int i;
 	char buf[64];
-
+	
 	for (i = 0; i < _channels; ++i)
 	{
 		::snprintf(buf, sizeof(buf), "%s/ch%d", RCINPUT_DEVICE_PATH_BASE, i);
 		int fd = ::open(buf, O_RDONLY);
-
+		
 		if (fd < 0)
 		{
 			PX4_WARN("error: open %d failed", i);
 			break;
 		}
-
+		
 		_ch_fd[i] = fd;
 	}
-
+	
 	for (; i < input_rc_s::RC_INPUT_MAX_CHANNELS; ++i)
 	{
 		_data.values[i] = UINT16_MAX;
 	}
-
+	
 	_rcinput_pub = orb_advertise(ORB_ID(input_rc), &_data);
-
+	
 	if (_rcinput_pub == nullptr)
 	{
 		PX4_WARN("error: advertise failed");
 		return -1;
 	}
-
+	
 	return 0;
 }
 
 int RcInput::start()
 {
 	int result = 0;
-
+	
 	result = navio_rc_init();
-
+	
 	if (result != 0)
 	{
 		PX4_WARN("error: RC initialization failed");
 		return -1;
 	}
-
+	
 	_isRunning = true;
-	result = work_queue(HPWORK, &_work, (worker_t)&RcInput::cycle_trampoline, this, 0);
-
+	result = work_queue(HPWORK, &_work, (worker_t) & RcInput::cycle_trampoline, this, 0);
+	
 	if (result == -1)
 	{
 		_isRunning = false;
 	}
-
+	
 	return result;
 }
 
@@ -176,11 +178,10 @@ void RcInput::cycle_trampoline(void *arg)
 void RcInput::_cycle()
 {
 	_measure();
-
+	
 	if (!_shouldExit)
 	{
-		work_queue(HPWORK, &_work, (worker_t)&RcInput::cycle_trampoline, this,
-			   USEC2TICK(RCINPUT_MEASURE_INTERVAL_US));
+		work_queue(HPWORK, &_work, (worker_t) & RcInput::cycle_trampoline, this, USEC2TICK(RCINPUT_MEASURE_INTERVAL_US));
 	}
 }
 
@@ -188,22 +189,22 @@ void RcInput::_measure(void)
 {
 	uint64_t ts;
 	char buf[12];
-
+	
 	for (int i = 0; i < _channels; ++i)
 	{
 		int res;
-
+		
 		if ((res = ::pread(_ch_fd[i], buf, sizeof(buf) - 1, 0)) < 0)
 		{
 			_data.values[i] = UINT16_MAX;
 			continue;
 		}
-
+		
 		buf[sizeof(buf) - 1] = '\0';
-
+		
 		_data.values[i] = atoi(buf);
 	}
-
+	
 	ts = hrt_absolute_time();
 	_data.timestamp = ts;
 	_data.timestamp_last_signal = ts;
@@ -215,7 +216,7 @@ void RcInput::_measure(void)
 	_data.rc_failsafe = false;
 	_data.rc_lost = false;
 	_data.input_source = input_rc_s::RC_INPUT_SOURCE_PX4IO_PPM;
-
+	
 	orb_publish(ORB_ID(input_rc), _rcinput_pub, &_data);
 }
 
@@ -224,8 +225,7 @@ void RcInput::_measure(void)
  */
 static void usage(const char *reason);
 
-static void
-usage(const char *reason)
+static void usage(const char *reason)
 {
 	if (reason)
 	{
@@ -244,83 +244,85 @@ int navio_sysfs_rc_in_main(int argc, char *argv[])
 		usage("missing command");
 		return 1;
 	}
-
+	
 	if (!strcmp(argv[1], "start"))
 	{
-
+		
 		if (rc_input != nullptr && rc_input->isRunning())
 		{
 			PX4_WARN("already running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		rc_input = new RcInput();
-
+		
 		// Check if alloc worked.
 		if (rc_input == nullptr)
 		{
 			PX4_ERR("alloc failed");
 			return -1;
 		}
-
+		
 		int ret = rc_input->start();
-
+		
 		if (ret != 0)
 		{
 			PX4_ERR("start failed");
 		}
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
-
+		
 		if (rc_input == nullptr || !rc_input->isRunning())
 		{
 			PX4_WARN("not running");
 			/* this is not an error */
 			return 0;
 		}
-
+		
 		rc_input->stop();
-
+		
 		// Wait for task to die
 		int i = 0;
-
+		
 		do
 		{
 			/* wait up to 3s */
 			usleep(100000);
-
+			
 		}
 		while (rc_input->isRunning() && ++i < 30);
-
+		
 		delete rc_input;
 		rc_input = nullptr;
-
+		
 		return 0;
 	}
-
+	
 	if (!strcmp(argv[1], "status"))
 	{
 		if (rc_input != nullptr && rc_input->isRunning())
 		{
 			PX4_INFO("running");
-
+			
 		}
 		else
 		{
 			PX4_INFO("not running\n");
 		}
-
+		
 		return 0;
 	}
-
+	
 	usage("unrecognized command");
 	return 1;
-
+	
 }
 
-}; // namespace navio_sysfs_rc_in
+}
+;
+// namespace navio_sysfs_rc_in

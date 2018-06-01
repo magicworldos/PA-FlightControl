@@ -60,29 +60,34 @@ namespace control
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
 class __EXPORT BlockPD: public SuperBlock
-{
+{	
 public:
 // methods
 	BlockPD(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+	SuperBlock(parent, name),
+	_derivative(this, "D"),
+	_kP(this, "P"),
+	_kD(this, "D")
 	{}
-	virtual ~BlockPD() {}
+	virtual ~BlockPD()
+	{}
 	float update(float input)
-	{
+	{	
 		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP()
+	{	return _kP.get();}
+	float getKD()
+	{	return _kD.get();}
+	BlockDerivative &getDerivative()
+	{	return _derivative;}
 private:
 	BlockDerivative _derivative;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kD;
 };
 
-} // namespace control
+}
+ // namespace control

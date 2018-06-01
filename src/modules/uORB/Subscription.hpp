@@ -50,7 +50,7 @@ namespace uORB
  * of various subscriptions.
  */
 class __EXPORT SubscriptionBase
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -81,7 +81,8 @@ public:
 	 */
 	bool update(void *data);
 
-	int getHandle() const { return _handle; }
+	int getHandle() const
+	{	return _handle;}
 
 protected:
 	const struct orb_metadata *_meta;
@@ -98,7 +99,7 @@ typedef SubscriptionBase SubscriptionTiny;
  * The subscription base class as a list node.
  */
 class __EXPORT SubscriptionNode : public SubscriptionBase, public ListNode<SubscriptionNode *>
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -112,7 +113,7 @@ public:
 	 * 	that this should be appended to.
 	 */
 	SubscriptionNode(const struct orb_metadata *meta, unsigned interval = 0, unsigned instance = 0,
-			 List<SubscriptionNode *> *list = nullptr);
+			List<SubscriptionNode *> *list = nullptr);
 
 	virtual ~SubscriptionNode() override = default;
 
@@ -129,7 +130,7 @@ public:
  */
 template<class T>
 class __EXPORT Subscription final : public SubscriptionNode
-{
+{	
 public:
 	/**
 	 * Constructor
@@ -142,9 +143,9 @@ public:
 	 * 	list during construction
 	 */
 	Subscription(const struct orb_metadata *meta, unsigned interval = 0, unsigned instance = 0,
-		     List<SubscriptionNode *> *list = nullptr):
-		SubscriptionNode(meta, interval, instance, list),
-		_data() // initialize data structure to zero
+			List<SubscriptionNode *> *list = nullptr):
+	SubscriptionNode(meta, interval, instance, list),
+	_data() // initialize data structure to zero
 	{}
 
 	~Subscription() override final = default;
@@ -159,7 +160,7 @@ public:
 	 * Create an update function that uses the embedded struct.
 	 */
 	bool update() override final
-	{
+	{	
 		return SubscriptionBase::update((void *)(&_data));
 	}
 
@@ -167,7 +168,7 @@ public:
 	 * This function gets the T struct data
 	 * */
 	const T &get() const
-	{
+	{	
 		return _data;
 	}
 
@@ -175,4 +176,5 @@ private:
 	T _data;
 };
 
-} // namespace uORB
+}
+ // namespace uORB

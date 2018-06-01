@@ -37,7 +37,7 @@
 
 #include <lib/led/led.h>
 
-class RGBLED : public DriverFramework::DevObj
+class RGBLED: public DriverFramework::DevObj
 {
 public:
 	RGBLED(const char *name);

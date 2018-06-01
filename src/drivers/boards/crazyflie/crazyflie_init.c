@@ -126,13 +126,12 @@ __END_DECLS
  *
  ************************************************************************************/
 
-__EXPORT void
-stm32_boardinitialize(void)
+__EXPORT void stm32_boardinitialize(void)
 {
 	/* configure LEDs */
 
 	board_autoled_initialize();
-
+	
 	stm32_usbinitialize();
 }
 
@@ -147,7 +146,7 @@ stm32_boardinitialize(void)
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 #if defined(CONFIG_HAVE_CXX) && defined(CONFIG_HAVE_CXXINITIALIZE)
-
+	
 	/* run C++ ctors before we go any further */
 
 	up_cxxinitialize();
@@ -155,39 +154,36 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 #	if defined(CONFIG_EXAMPLES_NSH_CXXINITIALIZE)
 #  		error CONFIG_EXAMPLES_NSH_CXXINITIALIZE Must not be defined! Use CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE.
 #	endif
-
+	
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
-
+	
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
-
+	
 	param_init();
-
+	
 	/* configure CPU load estimation */
 #ifdef CONFIG_SCHED_INSTRUMENTATION
 	cpuload_initialize_once();
 #endif
-
+	
 	/* set up the serial DMA polling */
 	static struct hrt_call serial_dma_call;
 	struct timespec ts;
-
+	
 	/*
 	 * Poll at 1ms intervals for received bytes that have not triggered
 	 * a DMA event.
 	 */
 	ts.tv_sec = 0;
 	ts.tv_nsec = 1000000;
-
-	hrt_call_every(&serial_dma_call,
-		       ts_to_abstime(&ts),
-		       ts_to_abstime(&ts),
-		       (hrt_callout)stm32_serial_dma_poll,
-		       NULL);
+	
+	hrt_call_every(&serial_dma_call, ts_to_abstime(&ts), ts_to_abstime(&ts), (hrt_callout) stm32_serial_dma_poll,
+	NULL);
 #if defined(CONFIG_STM32_BBSRAM)
-
+	
 	/* NB. the use of the console requires the hrt running
 	 * to poll the DMA
 	 */
@@ -199,7 +195,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	stm32_bbsraminitialize(BBSRAM_PATH, filesizes);
 
 #if defined(CONFIG_STM32_SAVE_CRASHDUMP)
-
+	
 	/* Panic Logging in Battery Backed Up Files */
 
 	/*
@@ -222,10 +218,10 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	int hadCrash = hardfault_check_status("boot");
 
 	if (hadCrash == OK)
-	{
+	{	
 
-		message("[boot] There is a hard fault logged. Hold down the SPACE BAR," \
-			" while booting to halt the system!\n");
+		message("[boot] There is a hard fault logged. Hold down the SPACE BAR,"
+				" while booting to halt the system!\n");
 
 		/* Yes. So add one to the boot count - this will be reset after a successful
 		 * commit to SD
@@ -239,7 +235,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 		ioctl(fileno(stdin), FIONREAD, (unsigned long)((uintptr_t) &bytesWaiting));
 
 		if (reboots > 2 || bytesWaiting != 0)
-		{
+		{	
 
 			/* Since we can not commit the fault dump to disk. Display it
 			 * to the console.
@@ -248,9 +244,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 
 			message("[boot] There were %d reboots with Hard fault that were not committed to disk - System halted %s\n",
-				reboots,
-				(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
-
+					reboots,
+					(bytesWaiting == 0 ? "" : " Due to Key Press\n"));
 
 			/* For those of you with a debugger set a break point on up_assert and
 			 * then set dbgContinue = 1 and go.
@@ -262,69 +257,67 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 			int c = '>';
 
 			while (!dbgContinue)
-			{
+			{	
 
 				switch (c)
-				{
+				{	
 
 					case EOF:
-
 
 					case '\n':
 					case '\r':
 					case ' ':
-						continue;
+					continue;
 
 					default:
 
-						putchar(c);
-						putchar('\n');
+					putchar(c);
+					putchar('\n');
 
-						switch (c)
-						{
+					switch (c)
+					{	
 
-							case 'D':
-							case 'd':
-								hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
-								break;
-
-							case 'C':
-							case 'c':
-								hardfault_rearm("boot");
-								hardfault_increment_reboot("boot", true);
-								break;
-
-							case 'B':
-							case 'b':
-								dbgContinue = true;
-								break;
-
-							default:
-								break;
-						} // Inner Switch
-
-						message("\nEnter B - Continue booting\n" \
-							"Enter C - Clear the fault log\n" \
-							"Enter D - Dump fault log\n\n?>");
-						fflush(stdout);
-
-						if (!dbgContinue)
-						{
-							c = getchar();
-						}
-
+						case 'D':
+						case 'd':
+						hardfault_write("boot", fileno(stdout), HARDFAULT_DISPLAY_FORMAT, false);
 						break;
+
+						case 'C':
+						case 'c':
+						hardfault_rearm("boot");
+						hardfault_increment_reboot("boot", true);
+						break;
+
+						case 'B':
+						case 'b':
+						dbgContinue = true;
+						break;
+
+						default:
+						break;
+					} // Inner Switch
+					
+					message("\nEnter B - Continue booting\n"
+							"Enter C - Clear the fault log\n"
+							"Enter D - Dump fault log\n\n?>");
+					fflush(stdout);
+
+					if (!dbgContinue)
+					{	
+						c = getchar();
+					}
+
+					break;
 
 				} // outer switch
 			} // for
-
+			
 		} // inner if
 	} // outer if
-
+	
 #endif // CONFIG_STM32_SAVE_CRASHDUMP
 #endif // CONFIG_STM32_BBSRAM
-
-
+	
 	/* initial LED state */
 	drv_led_start();
 	led_off(LED_RED);
@@ -332,6 +325,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	led_off(LED_BLUE);
 	led_off(LED_TX);
 	led_off(LED_RX);
-
+	
 	return OK;
 }

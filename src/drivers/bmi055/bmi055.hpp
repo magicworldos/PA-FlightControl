@@ -104,7 +104,6 @@
 #define BMI055_ACC_FIFO_CONFIG_1    0x3E
 #define BMI055_ACC_FIFO_DATA        0x3F
 
-
 // BMI055 Gyro registers
 
 #define BMI055_GYR_CHIP_ID          0x00
@@ -156,14 +155,11 @@
 #define BMI055_GYR_FIFO_CONFIG_1    0x3E
 #define BMI055_GYR_FIFO_DATA        0x3F
 
-
 // BMI055 Accelerometer Chip-Id
 #define BMI055_ACC_WHO_AM_I         0xFA
 
 // BMI055 Gyroscope Chip-Id
 #define BMI055_GYR_WHO_AM_I         0x0F
-
-
 
 //BMI055_ACC_BW           0x10
 #define BMI055_ACCEL_BW_7_81      (1<<3) | (0<<2) | (0<<1) | (0<<0)
@@ -180,7 +176,6 @@
 #define BMI055_ACCEL_DEEP_SUSPEND   (0<<7) | (0<<6) | (1<<5)
 #define BMI055_ACCEL_LOW_POWER      (0<<7) | (1<<6) | (0<<5)
 #define BMI055_ACCEL_SUSPEND        (1<<7) | (0<<6) | (0<<5)
-
 
 //BMI055_ACC_RANGE        0x0F
 #define BMI055_ACCEL_RANGE_2_G      (0<<3) | (0<<2) | (1<<1) | (1<<0)
@@ -207,7 +202,6 @@
 #define BMI055_GYRO_RANGE_250_DPS   (0<<2) | (1<<1) | (1<<0)
 #define BMI055_GYRO_RANGE_125_DPS   (1<<2) | (0<<1) | (0<<0)
 
-
 //BMI055_ACC_INT_EN_1      0x17
 #define BMI055_ACC_DRDY_INT_EN      (1<<4)
 
@@ -219,8 +213,6 @@
 
 //BMI055_GYR_INT_MAP_1     0x18
 #define BMI055_GYR_DRDY_INT1        (1<<0)
-
-
 
 //Soft-reset command Value
 #define BMI055_SOFT_RESET       0xB6
@@ -251,298 +243,134 @@
 /* Mask definitions for Gyro bandwidth */
 #define BMI055_GYRO_BW_MASK                  0x0F
 
-class BMI055 : public device::SPI
+class BMI055: public device::SPI
 {
-
+	
 protected:
+	
+	uint8_t _whoami; /** whoami result */
+	
+	struct hrt_call _call;
+	unsigned _call_interval;
 
-	uint8_t         _whoami;    /** whoami result */
+	unsigned _dlpf_freq;
 
-	struct hrt_call     _call;
-	unsigned        _call_interval;
+	perf_counter_t _sample_perf;
+	perf_counter_t _bad_transfers;
+	perf_counter_t _bad_registers;
+	perf_counter_t _good_transfers;
+	perf_counter_t _reset_retries;
+	perf_counter_t _duplicates;
+	perf_counter_t _controller_latency_perf;
 
+	uint8_t _register_wait;
+	uint64_t _reset_wait;
 
+	enum Rotation _rotation;
 
-	unsigned        _dlpf_freq;
-
-	perf_counter_t      _sample_perf;
-	perf_counter_t      _bad_transfers;
-	perf_counter_t      _bad_registers;
-	perf_counter_t      _good_transfers;
-	perf_counter_t      _reset_retries;
-	perf_counter_t      _duplicates;
-	perf_counter_t      _controller_latency_perf;
-
-	uint8_t         _register_wait;
-	uint64_t        _reset_wait;
-
-	enum Rotation       _rotation;
-
-	uint8_t         _checked_next;
+	uint8_t _checked_next;
 
 	/**
-	* Read a register from the BMI055
-	*
-	* @param       The register to read.
-	* @return      The value that was read.
-	*/
-	uint8_t         read_reg(unsigned reg);
-	uint16_t        read_reg16(unsigned reg);
+	 * Read a register from the BMI055
+	 *
+	 * @param       The register to read.
+	 * @return      The value that was read.
+	 */
+	uint8_t read_reg(unsigned reg);
+	uint16_t read_reg16(unsigned reg);
 
 	/**
-	* Write a register in the BMI055
-	*
-	* @param reg       The register to write.
-	* @param value     The new value to write.
-	*/
-	void            write_reg(unsigned reg, uint8_t value);
+	 * Write a register in the BMI055
+	 *
+	 * @param reg       The register to write.
+	 * @param value     The new value to write.
+	 */
+	void write_reg(unsigned reg, uint8_t value);
 
 	/* do not allow to copy this class due to pointer data members */
 	BMI055(const BMI055 &);
 	BMI055 operator=(const BMI055 &);
 
 public:
-
-	BMI055(const char *name, const char *devname, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency,
-	       enum Rotation rotation);
+	
+	BMI055(const char *name, const char *devname, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency, enum Rotation rotation);
 	virtual ~BMI055();
-
-
+	
 };
 
-
-
-class BMI055_accel : public BMI055
+class BMI055_accel: public BMI055
 {
 public:
 	BMI055_accel(int bus, const char *path_accel, uint32_t device, enum Rotation rotation);
 	virtual ~BMI055_accel();
 
-	virtual int     init();
+	virtual int init();
 
-	virtual ssize_t     read(struct file *filp, char *buffer, size_t buflen);
-	virtual int     ioctl(struct file *filp, int cmd, unsigned long arg);
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
 
 	/**
-	* Diagnostics - print some basic information about the driver.
-	*/
-	void            print_info();
+	 * Diagnostics - print some basic information about the driver.
+	 */
+	void print_info();
 
-	void            print_registers();
+	void print_registers();
 
 	// deliberately cause a sensor error
-	void            test_error();
+	void test_error();
 
 protected:
-	virtual int     probe();
-
+	virtual int probe();
 
 private:
+	
+	ringbuffer::RingBuffer *_accel_reports;
 
-	ringbuffer::RingBuffer  *_accel_reports;
+	struct accel_calibration_s _accel_scale;
+	float _accel_range_scale;
+	float _accel_range_m_s2;
+	orb_advert_t _accel_topic;
+	int _accel_orb_class_instance;
+	int _accel_class_instance;
 
-	struct accel_calibration_s  _accel_scale;
-	float           _accel_range_scale;
-	float           _accel_range_m_s2;
-	orb_advert_t        _accel_topic;
-	int         _accel_orb_class_instance;
-	int         _accel_class_instance;
+	float _accel_sample_rate;
+	perf_counter_t _accel_reads;
 
+	math::LowPassFilter2p _accel_filter_x;
+	math::LowPassFilter2p _accel_filter_y;
+	math::LowPassFilter2p _accel_filter_z;
 
-
-	float       _accel_sample_rate;
-	perf_counter_t      _accel_reads;
-
-	math::LowPassFilter2p   _accel_filter_x;
-	math::LowPassFilter2p   _accel_filter_y;
-	math::LowPassFilter2p   _accel_filter_z;
-
-	Integrator      _accel_int;
-
+	Integrator _accel_int;
 
 	// this is used to support runtime checking of key
 	// configuration registers to detect SPI bus errors and sensor
 	// reset
 #define BMI055_ACCEL_NUM_CHECKED_REGISTERS 5
-	static const uint8_t    _checked_registers[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
-	uint8_t         _checked_values[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
-	uint8_t         _checked_bad[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
-
-
-	// last temperature reading for print_info()
-	float           _last_temperature;
-
-	bool            _got_duplicate;
-
-	/**
-	* Start automatic measurement.
-	*/
-	void            start();
-
-	/**
-	* Stop automatic measurement.
-	*/
-	void            stop();
-
-	/**
-	* Reset chip.
-	*
-	* Resets the chip and measurements ranges, but not scale and offset.
-	*/
-	int         reset();
-
-	/**
-	* Static trampoline from the hrt_call context; because we don't have a
-	* generic hrt wrapper yet.
-	*
-	* Called by the HRT in interrupt context at the specified rate if
-	* automatic polling is enabled.
-	*
-	* @param arg       Instance pointer for the driver that is polling.
-	*/
-	static void     measure_trampoline(void *arg);
-
-	/**
-	* Fetch measurements from the sensor and update the report buffers.
-	*/
-	void            measure();
-
-
-	/**
-	* Modify a register in the BMI055_accel
-	*
-	* Bits are cleared before bits are set.
-	*
-	* @param reg       The register to modify.
-	* @param clearbits Bits in the register to clear.
-	* @param setbits   Bits in the register to set.
-	*/
-	void            modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
-
-	/**
-	* Write a register in the BMI055_accel, updating _checked_values
-	*
-	* @param reg       The register to write.
-	* @param value     The new value to write.
-	*/
-	void            write_checked_reg(unsigned reg, uint8_t value);
-
-	/**
-	* Set the BMI055_accel measurement range.
-	*
-	* @param max_g     The maximum G value the range must support.
-	* @return      OK if the value can be supported, -EINVAL otherwise.
-	*/
-	int         set_accel_range(unsigned max_g);
-
-	/**
-	* Measurement self test
-	*
-	* @return 0 on success, 1 on failure
-	*/
-	int             self_test();
-
-	/**
-	* Accel self test
-	*
-	* @return 0 on success, 1 on failure
-	*/
-	int             accel_self_test();
-
-	/*
-	set accel sample rate
-	*/
-	int accel_set_sample_rate(float desired_sample_rate_hz);
-
-	/*
-	check that key registers still have the right value
-	*/
-	void check_registers(void);
-
-	/* do not allow to copy this class due to pointer data members */
-	BMI055_accel(const BMI055_accel &);
-	BMI055_accel operator=(const BMI055_accel &);
-
-};
-
-
-
-class BMI055_gyro : public BMI055
-{
-public:
-	BMI055_gyro(int bus, const char *path_gyro, uint32_t device, enum Rotation rotation);
-	virtual ~BMI055_gyro();
-
-	virtual int     init();
-
-	virtual ssize_t     read(struct file *filp, char *buffer, size_t buflen);
-	virtual int     ioctl(struct file *filp, int cmd, unsigned long arg);
-
-	/**
-	* Diagnostics - print some basic information about the driver.
-	*/
-	void            print_info();
-
-	void            print_registers();
-
-	// deliberately cause a sensor error
-	void            test_error();
-
-protected:
-	virtual int     probe();
-private:
-
-	ringbuffer::RingBuffer  *_gyro_reports;
-
-	struct gyro_calibration_s   _gyro_scale;
-	float           _gyro_range_scale;
-	float           _gyro_range_rad_s;
-
-	orb_advert_t        _gyro_topic;
-	int         _gyro_orb_class_instance;
-	int         _gyro_class_instance;
-
-
-
-	float       _gyro_sample_rate;
-	perf_counter_t      _gyro_reads;
-
-	math::LowPassFilter2p   _gyro_filter_x;
-	math::LowPassFilter2p   _gyro_filter_y;
-	math::LowPassFilter2p   _gyro_filter_z;
-
-	Integrator      _gyro_int;
-
-
-	// this is used to support runtime checking of key
-	// configuration registers to detect SPI bus errors and sensor
-	// reset
-#define BMI055_GYRO_NUM_CHECKED_REGISTERS 7
-	static const uint8_t    _checked_registers[BMI055_GYRO_NUM_CHECKED_REGISTERS];
-	uint8_t         _checked_values[BMI055_GYRO_NUM_CHECKED_REGISTERS];
-	uint8_t         _checked_bad[BMI055_GYRO_NUM_CHECKED_REGISTERS];
-
+	static const uint8_t _checked_registers[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_values[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_bad[BMI055_ACCEL_NUM_CHECKED_REGISTERS];
 
 	// last temperature reading for print_info()
-	float           _last_temperature;
+	float _last_temperature;
 
+	bool _got_duplicate;
 
 	/**
 	 * Start automatic measurement.
 	 */
-	void            start();
+	void start();
 
 	/**
 	 * Stop automatic measurement.
 	 */
-	void            stop();
+	void stop();
 
 	/**
 	 * Reset chip.
 	 *
 	 * Resets the chip and measurements ranges, but not scale and offset.
 	 */
-	int         reset();
+	int reset();
 
 	/**
 	 * Static trampoline from the hrt_call context; because we don't have a
@@ -553,13 +381,157 @@ private:
 	 *
 	 * @param arg       Instance pointer for the driver that is polling.
 	 */
-	static void     measure_trampoline(void *arg);
+	static void measure_trampoline(void *arg);
 
 	/**
 	 * Fetch measurements from the sensor and update the report buffers.
 	 */
-	void            measure();
+	void measure();
 
+	/**
+	 * Modify a register in the BMI055_accel
+	 *
+	 * Bits are cleared before bits are set.
+	 *
+	 * @param reg       The register to modify.
+	 * @param clearbits Bits in the register to clear.
+	 * @param setbits   Bits in the register to set.
+	 */
+	void modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
+
+	/**
+	 * Write a register in the BMI055_accel, updating _checked_values
+	 *
+	 * @param reg       The register to write.
+	 * @param value     The new value to write.
+	 */
+	void write_checked_reg(unsigned reg, uint8_t value);
+
+	/**
+	 * Set the BMI055_accel measurement range.
+	 *
+	 * @param max_g     The maximum G value the range must support.
+	 * @return      OK if the value can be supported, -EINVAL otherwise.
+	 */
+	int set_accel_range(unsigned max_g);
+
+	/**
+	 * Measurement self test
+	 *
+	 * @return 0 on success, 1 on failure
+	 */
+	int self_test();
+
+	/**
+	 * Accel self test
+	 *
+	 * @return 0 on success, 1 on failure
+	 */
+	int accel_self_test();
+
+	/*
+	 set accel sample rate
+	 */
+	int accel_set_sample_rate(float desired_sample_rate_hz);
+
+	/*
+	 check that key registers still have the right value
+	 */
+	void check_registers(void);
+
+	/* do not allow to copy this class due to pointer data members */
+	BMI055_accel(const BMI055_accel &);
+	BMI055_accel operator=(const BMI055_accel &);
+	
+};
+
+class BMI055_gyro: public BMI055
+{
+public:
+	BMI055_gyro(int bus, const char *path_gyro, uint32_t device, enum Rotation rotation);
+	virtual ~BMI055_gyro();
+
+	virtual int init();
+
+	virtual ssize_t read(struct file *filp, char *buffer, size_t buflen);
+	virtual int ioctl(struct file *filp, int cmd, unsigned long arg);
+
+	/**
+	 * Diagnostics - print some basic information about the driver.
+	 */
+	void print_info();
+
+	void print_registers();
+
+	// deliberately cause a sensor error
+	void test_error();
+
+protected:
+	virtual int probe();
+private:
+	
+	ringbuffer::RingBuffer *_gyro_reports;
+
+	struct gyro_calibration_s _gyro_scale;
+	float _gyro_range_scale;
+	float _gyro_range_rad_s;
+
+	orb_advert_t _gyro_topic;
+	int _gyro_orb_class_instance;
+	int _gyro_class_instance;
+
+	float _gyro_sample_rate;
+	perf_counter_t _gyro_reads;
+
+	math::LowPassFilter2p _gyro_filter_x;
+	math::LowPassFilter2p _gyro_filter_y;
+	math::LowPassFilter2p _gyro_filter_z;
+
+	Integrator _gyro_int;
+
+	// this is used to support runtime checking of key
+	// configuration registers to detect SPI bus errors and sensor
+	// reset
+#define BMI055_GYRO_NUM_CHECKED_REGISTERS 7
+	static const uint8_t _checked_registers[BMI055_GYRO_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_values[BMI055_GYRO_NUM_CHECKED_REGISTERS];
+	uint8_t _checked_bad[BMI055_GYRO_NUM_CHECKED_REGISTERS];
+
+	// last temperature reading for print_info()
+	float _last_temperature;
+
+	/**
+	 * Start automatic measurement.
+	 */
+	void start();
+
+	/**
+	 * Stop automatic measurement.
+	 */
+	void stop();
+
+	/**
+	 * Reset chip.
+	 *
+	 * Resets the chip and measurements ranges, but not scale and offset.
+	 */
+	int reset();
+
+	/**
+	 * Static trampoline from the hrt_call context; because we don't have a
+	 * generic hrt wrapper yet.
+	 *
+	 * Called by the HRT in interrupt context at the specified rate if
+	 * automatic polling is enabled.
+	 *
+	 * @param arg       Instance pointer for the driver that is polling.
+	 */
+	static void measure_trampoline(void *arg);
+
+	/**
+	 * Fetch measurements from the sensor and update the report buffers.
+	 */
+	void measure();
 
 	/**
 	 * Modify a register in the BMI055_gyro
@@ -570,7 +542,7 @@ private:
 	 * @param clearbits Bits in the register to clear.
 	 * @param setbits   Bits in the register to set.
 	 */
-	void            modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
+	void modify_reg(unsigned reg, uint8_t clearbits, uint8_t setbits);
 
 	/**
 	 * Write a register in the BMI055_gyro, updating _checked_values
@@ -578,7 +550,7 @@ private:
 	 * @param reg       The register to write.
 	 * @param value     The new value to write.
 	 */
-	void            write_checked_reg(unsigned reg, uint8_t value);
+	void write_checked_reg(unsigned reg, uint8_t value);
 
 	/**
 	 * Set the BMI055_gyro measurement range.
@@ -586,23 +558,21 @@ private:
 	 * @param max_dps   The maximum DPS value the range must support.
 	 * @return      OK if the value can be supported, -EINVAL otherwise.
 	 */
-	int         set_gyro_range(unsigned max_dps);
+	int set_gyro_range(unsigned max_dps);
 
 	/**
 	 * Measurement self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int             self_test();
-
+	int self_test();
 
 	/**
 	 * Gyro self test
 	 *
 	 * @return 0 on success, 1 on failure
 	 */
-	int             gyro_self_test();
-
+	int gyro_self_test();
 
 	/*
 	 * set gyro sample rate
@@ -623,16 +593,15 @@ private:
 	 * Report conversation within the BMI055_gyro, including command byte and
 	 * interrupt status.
 	 */
-	struct BMI_GyroReport {
-		uint8_t     cmd;
-		int16_t     gyro_x;
-		int16_t     gyro_y;
-		int16_t     gyro_z;
+	struct BMI_GyroReport
+	{
+		uint8_t cmd;
+		int16_t gyro_x;
+		int16_t gyro_y;
+		int16_t gyro_z;
 	};
-
+	
 #pragma pack(pop)
 };
-
-
 
 #endif /* BMI055_HPP_ */

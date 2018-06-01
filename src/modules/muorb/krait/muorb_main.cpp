@@ -35,23 +35,24 @@
 #include "modules/uORB/uORBManager.hpp"
 #include "uORBKraitFastRpcChannel.hpp"
 
-extern "C" { __EXPORT int muorb_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int muorb_main(int argc, char *argv[]);
+}
 
 static void usage()
 {
 	warnx("Usage: muorb 'start', 'stop', 'status'");
 }
 
-
-int
-muorb_main(int argc, char *argv[])
+int muorb_main(int argc, char *argv[])
 {
 	if (argc < 2)
 	{
 		usage();
 		return -EINVAL;
 	}
-
+	
 	/*
 	 * Start/load the driver.
 	 *
@@ -62,37 +63,37 @@ muorb_main(int argc, char *argv[])
 		if (uORB::KraitFastRpcChannel::isInstance())
 		{
 			PX4_WARN("muorb already running");
-
+			
 		}
 		else
 		{
 			// register the fast rpc channel with UORB.
 			uORB::Manager::get_instance()->set_uorb_communicator(uORB::KraitFastRpcChannel::GetInstance());
-
+			
 			// start the KaitFastRPC channel thread.
 			uORB::KraitFastRpcChannel::GetInstance()->Start();
 		}
-
+		
 		return OK;
-
+		
 	}
-
+	
 	if (!strcmp(argv[1], "stop"))
 	{
-
+		
 		if (uORB::KraitFastRpcChannel::isInstance())
 		{
 			uORB::KraitFastRpcChannel::GetInstance()->Stop();
-
+			
 		}
 		else
 		{
 			PX4_WARN("muorb not running");
 		}
-
+		
 		return OK;
 	}
-
+	
 	/*
 	 * Print driver information.
 	 */
@@ -101,16 +102,16 @@ muorb_main(int argc, char *argv[])
 		if (uORB::KraitFastRpcChannel::isInstance())
 		{
 			PX4_WARN("muorb running");
-
+			
 		}
 		else
 		{
 			PX4_WARN("muorb not running");
 		}
-
+		
 		return OK;
 	}
-
+	
 	usage();
 	return -EINVAL;
 }

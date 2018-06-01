@@ -44,57 +44,45 @@ namespace control
 {
 
 BlockWaypointGuidance::BlockWaypointGuidance(SuperBlock *parent, const char *name) :
-	SuperBlock(parent, name),
-	_xtYawLimit(this, "XT2YAW"),
-	_xt2Yaw(this, "XT2YAW"),
-	_psiCmd(0)
+		    SuperBlock(parent, name),
+		    _xtYawLimit(this, "XT2YAW"),
+		    _xt2Yaw(this, "XT2YAW"),
+		    _psiCmd(0)
 {
 }
 
-BlockWaypointGuidance::~BlockWaypointGuidance() {};
-
-void BlockWaypointGuidance::update(
-	const vehicle_global_position_s &pos,
-	const vehicle_attitude_s &att,
-	const position_setpoint_s &missionCmd,
-	const position_setpoint_s &lastMissionCmd)
+BlockWaypointGuidance::~BlockWaypointGuidance()
 {
+}
+;
 
+void BlockWaypointGuidance::update(const vehicle_global_position_s &pos, const vehicle_attitude_s &att, const position_setpoint_s &missionCmd, const position_setpoint_s &lastMissionCmd)
+{
+	
 	// heading to waypoint
-	float psiTrack = get_bearing_to_next_waypoint(
-				 (double)pos.lat / (double)1e7,
-				 (double)pos.lon / (double)1e7,
-				 missionCmd.lat,
-				 missionCmd.lon);
-
+	float psiTrack = get_bearing_to_next_waypoint((double) pos.lat / (double) 1e7, (double) pos.lon / (double) 1e7, missionCmd.lat, missionCmd.lon);
+	
 	// cross track
 	struct crosstrack_error_s xtrackError;
-	get_distance_to_line(&xtrackError,
-			     (double)pos.lat / (double)1e7,
-			     (double)pos.lon / (double)1e7,
-			     lastMissionCmd.lat,
-			     lastMissionCmd.lon,
-			     missionCmd.lat,
-			     missionCmd.lon);
-
-	_psiCmd = _wrap_2pi(psiTrack -
-			    _xtYawLimit.update(_xt2Yaw.update(xtrackError.distance)));
+	get_distance_to_line(&xtrackError, (double) pos.lat / (double) 1e7, (double) pos.lon / (double) 1e7, lastMissionCmd.lat, lastMissionCmd.lon, missionCmd.lat, missionCmd.lon);
+	
+	_psiCmd = _wrap_2pi(psiTrack - _xtYawLimit.update(_xt2Yaw.update(xtrackError.distance)));
 }
 
 BlockUorbEnabledAutopilot::BlockUorbEnabledAutopilot(SuperBlock *parent, const char *name) :
-	SuperBlock(parent, name),
-	// subscriptions
-	_manual(ORB_ID(manual_control_setpoint), 20, 0, &getSubscriptions()),
-	_param_update(ORB_ID(parameter_update), 1000, 0, &getSubscriptions()), // limit to 1 Hz
-	_missionCmd(ORB_ID(position_setpoint_triplet), 20, 0, &getSubscriptions()),
-	_att(ORB_ID(vehicle_attitude), 20, 0, &getSubscriptions()),
-	_attCmd(ORB_ID(vehicle_attitude_setpoint), 20, 0, &getSubscriptions()),
-	_pos(ORB_ID(vehicle_global_position), 20, 0, &getSubscriptions()),
-	_ratesCmd(ORB_ID(vehicle_rates_setpoint), 20, 0, &getSubscriptions()),
-	_status(ORB_ID(vehicle_status), 20, 0, &getSubscriptions()),
-
-	// publications
-	_actuators(ORB_ID(actuator_controls_0), -1, &getPublications())
+		    SuperBlock(parent, name),
+		    // subscriptions
+		    _manual(ORB_ID(manual_control_setpoint), 20, 0, &getSubscriptions()),
+		    _param_update(ORB_ID(parameter_update), 1000, 0, &getSubscriptions()), // limit to 1 Hz
+		    _missionCmd(ORB_ID(position_setpoint_triplet), 20, 0, &getSubscriptions()),
+		    _att(ORB_ID(vehicle_attitude), 20, 0, &getSubscriptions()),
+		    _attCmd(ORB_ID(vehicle_attitude_setpoint), 20, 0, &getSubscriptions()),
+		    _pos(ORB_ID(vehicle_global_position), 20, 0, &getSubscriptions()),
+		    _ratesCmd(ORB_ID(vehicle_rates_setpoint), 20, 0, &getSubscriptions()),
+		    _status(ORB_ID(vehicle_status), 20, 0, &getSubscriptions()),
+		    
+		    // publications
+		    _actuators(ORB_ID(actuator_controls_0), -1, &getPublications())
 {
 }
 

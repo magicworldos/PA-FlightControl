@@ -51,123 +51,27 @@
 
 #include "board_config.h"
 
-__EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] =
-{
-	{
-		.base = KINETIS_FTM0_BASE,
-		.clock_register = KINETIS_SIM_SCGC6,
-		.clock_bit = SIM_SCGC6_FTM0,
-		.first_channel_index = 0,
-		.last_channel_index = 3,
-		.handler = io_timer_handler0,
-		.vectorno =  KINETIS_IRQ_FTM0,
+__EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] = { { .base = KINETIS_FTM0_BASE, .clock_register = KINETIS_SIM_SCGC6, .clock_bit = SIM_SCGC6_FTM0, .first_channel_index = 0, .last_channel_index = 3, .handler = io_timer_handler0, .vectorno = KINETIS_IRQ_FTM0,
 
-	},
-	{
-		.base = KINETIS_FTM3_BASE,
-		.clock_register = KINETIS_SIM_SCGC3,
-		.clock_bit = SIM_SCGC3_FTM3,
-		.first_channel_index = 4,
-		.last_channel_index = 5,
-		.handler = io_timer_handler1,
-		.vectorno =  KINETIS_IRQ_FTM3,
-	},
-	{
-		.base = KINETIS_FTM2_BASE,
-		.clock_register = KINETIS_SIM_SCGC3,
-		.clock_bit = SIM_SCGC3_FTM2,
-		.first_channel_index = 6,
-		.last_channel_index = 7,
-		.handler = io_timer_handler2,
-		.vectorno =  KINETIS_IRQ_FTM2,
-	}
-};
+}, { .base = KINETIS_FTM3_BASE, .clock_register = KINETIS_SIM_SCGC3, .clock_bit = SIM_SCGC3_FTM3, .first_channel_index = 4, .last_channel_index = 5, .handler = io_timer_handler1, .vectorno = KINETIS_IRQ_FTM3, }, { .base = KINETIS_FTM2_BASE, .clock_register = KINETIS_SIM_SCGC3, .clock_bit = SIM_SCGC3_FTM2, .first_channel_index = 6, .last_channel_index = 7, .handler = io_timer_handler2, .vectorno = KINETIS_IRQ_FTM2, } };
 
-__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] =
-{
-	{
-		.gpio_out = GPIO_FTM0_CH0OUT, // FMU_CH1
-		.gpio_in  = GPIO_FTM0_CH0IN,
-		.timer_index = 0,
-		.timer_channel = 1,           // physical channel number +1
-	},
-	{
-		.gpio_out = GPIO_FTM0_CH3OUT, // FMU_CH2
-		.gpio_in  = GPIO_FTM0_CH3IN,
-		.timer_index = 0,
-		.timer_channel = 4,
-	},
-	{
-		.gpio_out = GPIO_FTM0_CH4OUT, // FMU_CH3
-		.gpio_in  = GPIO_FTM0_CH4IN,
-		.timer_index = 0,
-		.timer_channel = 5,
-	},
-	{
-		.gpio_out = GPIO_FTM0_CH5OUT, // FMU_CH4
-		.gpio_in  = GPIO_FTM0_CH5IN,
-		.timer_index = 0,
-		.timer_channel = 6,
-	},
-	{
-		.gpio_out = GPIO_FTM3_CH6OUT, // FMU_CH5
-		.gpio_in  = GPIO_FTM3_CH6IN,
-		.timer_index = 1,
-		.timer_channel = 7,
-	},
-	{
-		.gpio_out = GPIO_FTM3_CH7OUT, // FMU_CH6
-		.gpio_in  = GPIO_FTM3_CH7IN,
-		.timer_index = 1,
-		.timer_channel = 8,
-	},
-	{
-		.gpio_out = GPIO_FTM3_CH0OUT, // U_TRI
-		.gpio_in  = GPIO_FTM3_CH0IN,
-		.timer_index = 1,
-		.timer_channel = 1,
-	},
-	{
-		.gpio_out = GPIO_FTM2_CH0OUT,
-		.gpio_in  = GPIO_FTM2_CH0IN, // U_ECH
-		.timer_index = 2,
-		.timer_channel = 1,
-	},
-};
+__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = { { .gpio_out = GPIO_FTM0_CH0OUT, // FMU_CH1
+.gpio_in = GPIO_FTM0_CH0IN, .timer_index = 0, .timer_channel = 1,           // physical channel number +1
+}, { .gpio_out = GPIO_FTM0_CH3OUT, // FMU_CH2
+.gpio_in = GPIO_FTM0_CH3IN, .timer_index = 0, .timer_channel = 4, }, { .gpio_out = GPIO_FTM0_CH4OUT, // FMU_CH3
+.gpio_in = GPIO_FTM0_CH4IN, .timer_index = 0, .timer_channel = 5, }, { .gpio_out = GPIO_FTM0_CH5OUT, // FMU_CH4
+.gpio_in = GPIO_FTM0_CH5IN, .timer_index = 0, .timer_channel = 6, }, { .gpio_out = GPIO_FTM3_CH6OUT, // FMU_CH5
+.gpio_in = GPIO_FTM3_CH6IN, .timer_index = 1, .timer_channel = 7, }, { .gpio_out = GPIO_FTM3_CH7OUT, // FMU_CH6
+.gpio_in = GPIO_FTM3_CH7IN, .timer_index = 1, .timer_channel = 8, }, { .gpio_out = GPIO_FTM3_CH0OUT, // U_TRI
+.gpio_in = GPIO_FTM3_CH0IN, .timer_index = 1, .timer_channel = 1, }, { .gpio_out = GPIO_FTM2_CH0OUT, .gpio_in = GPIO_FTM2_CH0IN, // U_ECH
+.timer_index = 2, .timer_channel = 1, }, };
 
-__EXPORT const struct io_timers_t led_pwm_timers[MAX_LED_TIMERS] =
-{
-	{
-		.base = KINETIS_FTM3_BASE,
-		.clock_register = KINETIS_SIM_SCGC3,
-		.clock_bit = SIM_SCGC3_FTM3,
-		.first_channel_index = 0,
-		.last_channel_index = 2,
-		.vectorno =  0,
-	},
-};
+__EXPORT const struct io_timers_t led_pwm_timers[MAX_LED_TIMERS] = { { .base = KINETIS_FTM3_BASE, .clock_register = KINETIS_SIM_SCGC3, .clock_bit = SIM_SCGC3_FTM3, .first_channel_index = 0, .last_channel_index = 2, .vectorno = 0, }, };
 
-__EXPORT const struct timer_io_channels_t led_pwm_channels[MAX_TIMER_LED_CHANNELS] =
-{
-	{
-		.gpio_out = LED_TIM3_CH1OUT, // RGB_R
-		.gpio_in  = 0,
-		.timer_index = 0,
-		.timer_channel = 2,
-	},
-	{
-		.gpio_out = LED_TIM3_CH5OUT, // RGB_G
-		.gpio_in  = 0,
-		.timer_index = 0,
-		.timer_channel = 6,
-	},
-	{
-		.gpio_out = LED_TIM3_CH4OUT, // RGB_B
-		.gpio_in  = 0,
-		.timer_index = 0,
-		.timer_channel = 5,
-	},
-};
+__EXPORT const struct timer_io_channels_t led_pwm_channels[MAX_TIMER_LED_CHANNELS] = { { .gpio_out = LED_TIM3_CH1OUT, // RGB_R
+.gpio_in = 0, .timer_index = 0, .timer_channel = 2, }, { .gpio_out = LED_TIM3_CH5OUT, // RGB_G
+.gpio_in = 0, .timer_index = 0, .timer_channel = 6, }, { .gpio_out = LED_TIM3_CH4OUT, // RGB_B
+.gpio_in = 0, .timer_index = 0, .timer_channel = 5, }, };
 
 #define _REG(_addr)	(*(volatile uint32_t *)(_addr))
 
@@ -220,35 +124,31 @@ __EXPORT const struct timer_io_channels_t led_pwm_channels[MAX_TIMER_LED_CHANNEL
 #define BOARD_PWM_SRC_CLOCK_FREQ 16000000
 #endif
 
-
 __EXPORT void nxphlite_timer_initialize(void)
 {
-
-
+	
 	/* Y1 is 16 Mhz used to driver the FTM_CLKIN0 (PCT12) */
-
 
 	/* Enable PCT12 as FTM_CLKIN0 */
 
 	kinetis_pinconfig(PIN_FTM_CLKIN0_3);
-
+	
 	/* Select FTM_CLKIN0 as source for FTM0, FTM2, and FTM3 */
 
 	uint32_t regval = _REG(KINETIS_SIM_SOPT4);
 	regval &= ~(SIM_SOPT4_FTM0CLKSEL | SIM_SOPT4_FTM2CLKSEL | SIM_SOPT4_FTM3CLKSEL);
 	_REG(KINETIS_SIM_SOPT4) = regval;
-
-
+	
 	/* Enabled System Clock Gating Control for FTM 0 and 2*/
 
 	regval = _REG(KINETIS_SIM_SCGC6);
 	regval |= SIM_SCGC6_FTM0 | SIM_SCGC6_FTM2;
 	_REG(KINETIS_SIM_SCGC6) = regval;
-
+	
 	/* Enabled System Clock Gating Control for FTM 2 and 3 */
 
 	regval = _REG(KINETIS_SIM_SCGC3);
 	regval |= SIM_SCGC3_FTM2 | SIM_SCGC3_FTM3;
 	_REG(KINETIS_SIM_SCGC3) = regval;
-
+	
 }

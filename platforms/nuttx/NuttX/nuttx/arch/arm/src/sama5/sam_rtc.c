@@ -115,17 +115,17 @@ volatile bool g_rtc_enabled = false;
 
 #ifdef CONFIG_DEBUG_RTC_INFO
 static void rtc_dumpregs(FAR const char *msg)
-{
-  rtcinfo("%s:\n", msg);
-  rtcinfo("      CR: %08x\n", getreg32(SAM_RTC_CR));
-  rtcinfo("      MR: %08x\n", getreg32(SAM_RTC_MR));
-  rtcinfo("    TIMR: %08x\n", getreg32(SAM_RTC_TIMR));
-  rtcinfo("    CALR: %08x\n", getreg32(SAM_RTC_CALR));
-  rtcinfo("  TIMALR: %08x\n", getreg32(SAM_RTC_TIMALR));
-  rtcinfo("  CALALR: %08x\n", getreg32(SAM_RTC_CALALR));
-  rtcinfo("      SR: %08x\n", getreg32(SAM_RTC_SR));
-  rtcinfo("     IMR: %08x\n", getreg32(SAM_RTC_IMR));
-  rtcinfo("     VER: %08x\n", getreg32(SAM_RTC_VER));
+{	
+	rtcinfo("%s:\n", msg);
+	rtcinfo("      CR: %08x\n", getreg32(SAM_RTC_CR));
+	rtcinfo("      MR: %08x\n", getreg32(SAM_RTC_MR));
+	rtcinfo("    TIMR: %08x\n", getreg32(SAM_RTC_TIMR));
+	rtcinfo("    CALR: %08x\n", getreg32(SAM_RTC_CALR));
+	rtcinfo("  TIMALR: %08x\n", getreg32(SAM_RTC_TIMALR));
+	rtcinfo("  CALALR: %08x\n", getreg32(SAM_RTC_CALALR));
+	rtcinfo("      SR: %08x\n", getreg32(SAM_RTC_SR));
+	rtcinfo("     IMR: %08x\n", getreg32(SAM_RTC_IMR));
+	rtcinfo("     VER: %08x\n", getreg32(SAM_RTC_VER));
 }
 #else
 #  define rtc_dumpregs(msg)
@@ -147,14 +147,14 @@ static void rtc_dumpregs(FAR const char *msg)
 
 #ifdef CONFIG_DEBUG_RTC_INFO
 static void rtc_dumptime(FAR struct tm *tp, FAR const char *msg)
-{
-  rtcinfo("%s:\n", msg);
-  rtcinfo("  tm_sec: %08x\n", tp->tm_sec);
-  rtcinfo("  tm_min: %08x\n", tp->tm_min);
-  rtcinfo(" tm_hour: %08x\n", tp->tm_hour);
-  rtcinfo(" tm_mday: %08x\n", tp->tm_mday);
-  rtcinfo("  tm_mon: %08x\n", tp->tm_mon);
-  rtcinfo(" tm_year: %08x\n", tp->tm_year);
+{	
+	rtcinfo("%s:\n", msg);
+	rtcinfo("  tm_sec: %08x\n", tp->tm_sec);
+	rtcinfo("  tm_min: %08x\n", tp->tm_min);
+	rtcinfo(" tm_hour: %08x\n", tp->tm_hour);
+	rtcinfo(" tm_mday: %08x\n", tp->tm_mday);
+	rtcinfo("  tm_mon: %08x\n", tp->tm_mon);
+	rtcinfo(" tm_year: %08x\n", tp->tm_year);
 }
 #else
 #  define rtc_dumptime(tp, msg)
@@ -175,16 +175,16 @@ static void rtc_dumptime(FAR struct tm *tp, FAR const char *msg)
  ************************************************************************************/
 
 static uint32_t rtc_bin2bcd(int value)
-{
-  uint32_t msbcd = 0;
+{	
+	uint32_t msbcd = 0;
 
-  while (value >= 10)
-    {
-      msbcd++;
-      value -= 10;
-    }
+	while (value >= 10)
+	{	
+		msbcd++;
+		value -= 10;
+	}
 
-  return (msbcd << 4) | value;
+	return (msbcd << 4) | value;
 }
 
 /************************************************************************************
@@ -202,9 +202,9 @@ static uint32_t rtc_bin2bcd(int value)
  ************************************************************************************/
 
 static int rtc_bcd2bin(uint32_t value)
-{
-  uint32_t tens = (value >> 4) * 10;
-  return (int)(tens + (value & 0x0f));
+{	
+	uint32_t tens = (value >> 4) * 10;
+	return (int)(tens + (value & 0x0f));
 }
 
 /************************************************************************************
@@ -223,19 +223,19 @@ static int rtc_bcd2bin(uint32_t value)
 
 #ifdef CONFIG_RTC_ALARM
 static void rtc_worker(FAR void *arg)
-{
-  /* Sample once (atomically) */
+{	
+	/* Sample once (atomically) */
 
-  alarmcb_t alarmcb = g_alarmcb;
+	alarmcb_t alarmcb = g_alarmcb;
 
-  /* Is there a subscriber to the alarm? */
+	/* Is there a subscriber to the alarm? */
 
-  if (alarmcb)
-    {
-      /* Yes.. perform the callback */
+	if (alarmcb)
+	{	
+		/* Yes.. perform the callback */
 
-      alarmcb();
-    }
+		alarmcb();
+	}
 }
 #endif
 
@@ -256,26 +256,26 @@ static void rtc_worker(FAR void *arg)
 
 #ifdef CONFIG_RTC_ALARM
 static int rtc_interrupt(int irq, void *context, FAR void *arg)
-{
-  int ret;
+{	
+	int ret;
 
-  /* Schedule the callback to occur on the low-priority worker thread */
+	/* Schedule the callback to occur on the low-priority worker thread */
 
-  DEBUGASSERT(work_available(&g_alarmwork));
-  ret = work_queue(LPWORK, &g_alarmwork, rtc_worker, NULL, 0);
-  if (ret < 0)
-    {
-      rtcerr("ERROR: work_queue failed: %d\n", ret);
-    }
+	DEBUGASSERT(work_available(&g_alarmwork));
+	ret = work_queue(LPWORK, &g_alarmwork, rtc_worker, NULL, 0);
+	if (ret < 0)
+	{	
+		rtcerr("ERROR: work_queue failed: %d\n", ret);
+	}
 
-  /* Disable any further alarm interrupts */
+	/* Disable any further alarm interrupts */
 
-  putreg32(RTC_IDR_ALRDIS, SAM_RTC_IDR);
+	putreg32(RTC_IDR_ALRDIS, SAM_RTC_IDR);
 
-  /* Clear any pending alarm interrupts */
+	/* Clear any pending alarm interrupts */
 
-  putreg32(RTC_SCCR_ALRCLR, SAM_RTC_SCCR);
-  return OK;
+	putreg32(RTC_SCCR_ALRCLR, SAM_RTC_SCCR);
+	return OK;
 }
 #endif
 
@@ -299,56 +299,56 @@ static int rtc_interrupt(int irq, void *context, FAR void *arg)
  ************************************************************************************/
 
 int up_rtc_initialize(void)
-{
-  uint32_t ver;
+{	
+	uint32_t ver;
 
-  rtc_dumpregs("On reset");
+	rtc_dumpregs("On reset");
 
-  /* No clocking setup need be performed. The Real-time Clock is continuously clocked
-   * at 32768 Hz (SCLK). The Power Management Controller has no effect on RTC
-   * behavior.
-   */
+	/* No clocking setup need be performed. The Real-time Clock is continuously clocked
+	 * at 32768 Hz (SCLK). The Power Management Controller has no effect on RTC
+	 * behavior.
+	 */
 
-  /* Set the 24 hour format */
+	/* Set the 24 hour format */
 
-  putreg32(0, SAM_RTC_MR);
+	putreg32(0, SAM_RTC_MR);
 
-  /* Has the RTC been initialized? */
+	/* Has the RTC been initialized? */
 
-  ver = getreg32(SAM_RTC_VER);
-  g_rtc_enabled = ((ver & (RTC_VER_NVTIM | RTC_VER_NVCAL)) == 0);
+	ver = getreg32(SAM_RTC_VER);
+	g_rtc_enabled = ((ver & (RTC_VER_NVTIM | RTC_VER_NVCAL)) == 0);
 
 #ifdef CONFIG_RTC_ALARM
-  /* Then attach the ALARM interrupt handler */
+	/* Then attach the ALARM interrupt handler */
 
-  irq_attach(SAM_PID_SYS, rtc_interrupt, NULL);
+	irq_attach(SAM_PID_SYS, rtc_interrupt, NULL);
 
-  /* Should RTC alarm interrupt be enabled at the peripheral?  Let's assume so
-   * for now.  Let's say yes if the time is valid and a valid alarm has been
-   * programmed.
-   */
+	/* Should RTC alarm interrupt be enabled at the peripheral?  Let's assume so
+	 * for now.  Let's say yes if the time is valid and a valid alarm has been
+	 * programmed.
+	 */
 
-  if (g_rtc_enabled && (ver & (RTC_VER_NVTIMALR | RTC_VER_NVCALALR)) == 0)
-    {
-      /* Enable the alarm interrupt at the RTC */
+	if (g_rtc_enabled && (ver & (RTC_VER_NVTIMALR | RTC_VER_NVCALALR)) == 0)
+	{	
+		/* Enable the alarm interrupt at the RTC */
 
-      putreg32(RTC_IER_ALREN, SAM_RTC_IER);
-    }
-  else
-    {
-      /* Disable the alarm interrupt at the RTC */
+		putreg32(RTC_IER_ALREN, SAM_RTC_IER);
+	}
+	else
+	{	
+		/* Disable the alarm interrupt at the RTC */
 
-      putreg32(RTC_IDR_ALRDIS, SAM_RTC_IDR);
-    }
+		putreg32(RTC_IDR_ALRDIS, SAM_RTC_IDR);
+	}
 
-  /* Enable SYSC interrupts at the AIC in any event */
+	/* Enable SYSC interrupts at the AIC in any event */
 
-  up_enable_irq(SAM_PID_SYS);
+	up_enable_irq(SAM_PID_SYS);
 
 #endif
-
-  rtc_dumpregs("After Initialization");
-  return OK;
+	
+	rtc_dumpregs("After Initialization");
+	return OK;
 }
 
 /************************************************************************************
@@ -375,74 +375,74 @@ int up_rtc_initialize(void)
  ************************************************************************************/
 
 int up_rtc_getdatetime(FAR struct tm *tp)
-{
-  uint32_t timr;
-  uint32_t calr;
-  uint32_t cent;
-  uint32_t year;
-  uint32_t tmp;
+{	
+	uint32_t timr;
+	uint32_t calr;
+	uint32_t cent;
+	uint32_t year;
+	uint32_t tmp;
 
-  /* Sample the data time registers.  There is a race condition here... If we sample
-   * the time just before midnight on December 31, the date could be wrong because
-   * the day rolled over while were sampling.
-   */
+	/* Sample the data time registers.  There is a race condition here... If we sample
+	 * the time just before midnight on December 31, the date could be wrong because
+	 * the day rolled over while were sampling.
+	 */
 
-  do
-    {
-      calr  = getreg32(SAM_RTC_CALR);
-      timr  = getreg32(SAM_RTC_TIMR);
-      tmp   = getreg32(SAM_RTC_CALR);
-    }
-  while (tmp != calr);
+	do
+	{	
+		calr = getreg32(SAM_RTC_CALR);
+		timr = getreg32(SAM_RTC_TIMR);
+		tmp = getreg32(SAM_RTC_CALR);
+	}
+	while (tmp != calr);
 
-  rtc_dumpregs("Reading Time");
+	rtc_dumpregs("Reading Time");
 
-  /* Convert the RTC time register fields to struct tm format.
-   *
-   *   struct tm       TIMR register
-   *   tm_sec    0-61* SEC    (0-59)
-   *   tm_min    0-59  MIN    (0-59)
-   *   tm_hour   0-23  HOUR   (0-23)
-   *
-   *  *To allow for leap seconds.  But these never actuall happen.
-   */
+	/* Convert the RTC time register fields to struct tm format.
+	 *
+	 *   struct tm       TIMR register
+	 *   tm_sec    0-61* SEC    (0-59)
+	 *   tm_min    0-59  MIN    (0-59)
+	 *   tm_hour   0-23  HOUR   (0-23)
+	 *
+	 *  *To allow for leap seconds.  But these never actuall happen.
+	 */
 
-  tmp = (timr & RTC_TIMR_SEC_MASK) >> RTC_TIMR_SEC_SHIFT;
-  tp->tm_sec = rtc_bcd2bin(tmp);
+	tmp = (timr & RTC_TIMR_SEC_MASK) >> RTC_TIMR_SEC_SHIFT;
+	tp->tm_sec = rtc_bcd2bin(tmp);
 
-  tmp = (timr & RTC_TIMR_MIN_MASK) >> RTC_TIMR_MIN_SHIFT;
-  tp->tm_min = rtc_bcd2bin(tmp);
+	tmp = (timr & RTC_TIMR_MIN_MASK) >> RTC_TIMR_MIN_SHIFT;
+	tp->tm_min = rtc_bcd2bin(tmp);
 
-  tmp = (timr & RTC_TIMR_HOUR_MASK) >> RTC_TIMR_HOUR_SHIFT;
-  tp->tm_hour = rtc_bcd2bin(tmp);
+	tmp = (timr & RTC_TIMR_HOUR_MASK) >> RTC_TIMR_HOUR_SHIFT;
+	tp->tm_hour = rtc_bcd2bin(tmp);
 
-  /* Convert the RTC date register fields to struct tm format.
-   *
-   *   struct tm       TIMR register
-   *   tm_mday   1-31  DATE   (1-31)
-   *   tm_wday   0-6   DAY    (1-7)  **
-   *   tm_mon    0-11  MONTH: (1-12)
-   *   tm_year   *     YEAR   (0-99)
-   *                   CENT   (19-20)
-   *
-   *  *Years since 1900
-   * **Day of the week is not supported
-   */
+	/* Convert the RTC date register fields to struct tm format.
+	 *
+	 *   struct tm       TIMR register
+	 *   tm_mday   1-31  DATE   (1-31)
+	 *   tm_wday   0-6   DAY    (1-7)  **
+	 *   tm_mon    0-11  MONTH: (1-12)
+	 *   tm_year   *     YEAR   (0-99)
+	 *                   CENT   (19-20)
+	 *
+	 *  *Years since 1900
+	 * **Day of the week is not supported
+	 */
 
-  tmp  = (calr & RTC_CALR_DATE_MASK) >> RTC_CALR_DATE_SHIFT;
-  tp->tm_mday = rtc_bcd2bin(tmp);
+	tmp = (calr & RTC_CALR_DATE_MASK) >> RTC_CALR_DATE_SHIFT;
+	tp->tm_mday = rtc_bcd2bin(tmp);
 
-  tmp  = (calr & RTC_CALR_MONTH_MASK) >> RTC_CALR_MONTH_SHIFT;
-  tp->tm_mon = rtc_bcd2bin(tmp) - 1;
+	tmp = (calr & RTC_CALR_MONTH_MASK) >> RTC_CALR_MONTH_SHIFT;
+	tp->tm_mon = rtc_bcd2bin(tmp) - 1;
 
-  tmp  = (calr & RTC_CALR_CENT_MASK) >> RTC_CALR_CENT_SHIFT;
-  cent =  rtc_bcd2bin(tmp);
-  tmp  = (calr & RTC_CALR_YEAR_MASK) >> RTC_CALR_YEAR_SHIFT;
-  year =  rtc_bcd2bin(tmp);
-  tp->tm_year = cent * 100 + year - 1900;
+	tmp = (calr & RTC_CALR_CENT_MASK) >> RTC_CALR_CENT_SHIFT;
+	cent = rtc_bcd2bin(tmp);
+	tmp = (calr & RTC_CALR_YEAR_MASK) >> RTC_CALR_YEAR_SHIFT;
+	year = rtc_bcd2bin(tmp);
+	tp->tm_year = cent * 100 + year - 1900;
 
-  rtc_dumptime(tp, "Returning");
-  return OK;
+	rtc_dumptime(tp, "Returning");
+	return OK;
 }
 
 /************************************************************************************
@@ -461,99 +461,99 @@ int up_rtc_getdatetime(FAR struct tm *tp)
  ************************************************************************************/
 
 int up_rtc_settime(FAR const struct timespec *tp)
-{
-  FAR struct tm newtime;
-  uint32_t regval;
-  uint32_t timr;
-  uint32_t calr;
-  uint32_t cent;
-  uint32_t year;
+{	
+	FAR struct tm newtime;
+	uint32_t regval;
+	uint32_t timr;
+	uint32_t calr;
+	uint32_t cent;
+	uint32_t year;
 
-  /* Break out the time values (note that the time is set only to units of seconds) */
+	/* Break out the time values (note that the time is set only to units of seconds) */
 
-  (void)gmtime_r(&tp->tv_sec, &newtime);
-  rtc_dumptime(&newtime, "Setting time");
+	(void)gmtime_r(&tp->tv_sec, &newtime);
+	rtc_dumptime(&newtime, "Setting time");
 
-  /* Then write the broken out values to the RTC */
+	/* Then write the broken out values to the RTC */
 
-  /* Convert the struct tm format to RTC time register fields.
-   *
-   *   struct tm       TIMR register
-   *   tm_sec    0-61* SEC    (0-59)
-   *   tm_min    0-59  MIN    (0-59)
-   *   tm_hour   0-23  HOUR   (0-23)
-   *
-   *  *To allow for leap seconds.  But these never actuall happen.
-   */
+	/* Convert the struct tm format to RTC time register fields.
+	 *
+	 *   struct tm       TIMR register
+	 *   tm_sec    0-61* SEC    (0-59)
+	 *   tm_min    0-59  MIN    (0-59)
+	 *   tm_hour   0-23  HOUR   (0-23)
+	 *
+	 *  *To allow for leap seconds.  But these never actuall happen.
+	 */
 
-  timr  = (rtc_bin2bcd(newtime.tm_sec)  << RTC_TIMR_SEC_SHIFT)  & RTC_TIMR_SEC_MASK;
-  timr |= (rtc_bin2bcd(newtime.tm_min)  << RTC_TIMR_MIN_SHIFT)  & RTC_TIMR_MIN_MASK;
-  timr |= (rtc_bin2bcd(newtime.tm_hour) << RTC_TIMR_HOUR_SHIFT) & RTC_TIMR_HOUR_MASK;
+	timr = (rtc_bin2bcd(newtime.tm_sec) << RTC_TIMR_SEC_SHIFT) & RTC_TIMR_SEC_MASK;
+	timr |= (rtc_bin2bcd(newtime.tm_min) << RTC_TIMR_MIN_SHIFT) & RTC_TIMR_MIN_MASK;
+	timr |= (rtc_bin2bcd(newtime.tm_hour) << RTC_TIMR_HOUR_SHIFT) & RTC_TIMR_HOUR_MASK;
 
-  /* Convert the struct tm format to RTC date register fields.
-   *
-   *   struct tm       CALR register
-   *   tm_mday   1-31  DATE   (1-31)
-   *   tm_wday   0-6   DAY    (1-7)  **
-   *   tm_mon    0-11  MONTH: (1-12)
-   *   tm_year   *     YEAR   (0-99)
-   *                   CENT   (19-20)
-   *
-   *  *Years since 1900
-   * **Day of the week is not supported.  Set to Monday.
-   */
+	/* Convert the struct tm format to RTC date register fields.
+	 *
+	 *   struct tm       CALR register
+	 *   tm_mday   1-31  DATE   (1-31)
+	 *   tm_wday   0-6   DAY    (1-7)  **
+	 *   tm_mon    0-11  MONTH: (1-12)
+	 *   tm_year   *     YEAR   (0-99)
+	 *                   CENT   (19-20)
+	 *
+	 *  *Years since 1900
+	 * **Day of the week is not supported.  Set to Monday.
+	 */
 
-  calr  = (rtc_bin2bcd(newtime.tm_mday)  << RTC_CALR_DATE_SHIFT)  & RTC_CALR_DATE_MASK;
-  calr |= (rtc_bin2bcd(1)                << RTC_CALR_DAY_SHIFT)   & RTC_CALR_DAY_MASK;
-  calr |= (rtc_bin2bcd(newtime.tm_mon+1) << RTC_CALR_MONTH_SHIFT) & RTC_CALR_MONTH_MASK;
+	calr = (rtc_bin2bcd(newtime.tm_mday) << RTC_CALR_DATE_SHIFT) & RTC_CALR_DATE_MASK;
+	calr |= (rtc_bin2bcd(1) << RTC_CALR_DAY_SHIFT) & RTC_CALR_DAY_MASK;
+	calr |= (rtc_bin2bcd(newtime.tm_mon+1) << RTC_CALR_MONTH_SHIFT) & RTC_CALR_MONTH_MASK;
 
-  cent  = newtime.tm_year / 100 + 19;
-  year  = newtime.tm_year % 100;
+	cent = newtime.tm_year / 100 + 19;
+	year = newtime.tm_year % 100;
 
-  calr |= (rtc_bin2bcd(year)             << RTC_CALR_YEAR_SHIFT) & RTC_CALR_YEAR_MASK;
-  calr |= (rtc_bin2bcd(cent)             << RTC_CALR_CENT_SHIFT) & RTC_CALR_CENT_MASK;
+	calr |= (rtc_bin2bcd(year) << RTC_CALR_YEAR_SHIFT) & RTC_CALR_YEAR_MASK;
+	calr |= (rtc_bin2bcd(cent) << RTC_CALR_CENT_SHIFT) & RTC_CALR_CENT_MASK;
 
-  /* Stop RTC time and date counting */
+	/* Stop RTC time and date counting */
 
-  regval  = getreg32(SAM_RTC_CR);
-  regval |= (RTC_CR_UPDTIM | RTC_CR_UPDCAL);
-  putreg32(regval, SAM_RTC_CR);
+	regval = getreg32(SAM_RTC_CR);
+	regval |= (RTC_CR_UPDTIM | RTC_CR_UPDCAL);
+	putreg32(regval, SAM_RTC_CR);
 
-  /* Wait until the RTC has stopped so that we can update the time */
+	/* Wait until the RTC has stopped so that we can update the time */
 
-  while ((getreg32(SAM_RTC_SR) & RTC_SR_ACKUPD) != RTC_SR_ACKUPD);
+	while ((getreg32(SAM_RTC_SR) & RTC_SR_ACKUPD) != RTC_SR_ACKUPD);
 
-  /* Clear the ACKUPD bit in the status register */
+	/* Clear the ACKUPD bit in the status register */
 
-  putreg32(RTC_SCCR_ACKCLR, SAM_RTC_SCCR);
+	putreg32(RTC_SCCR_ACKCLR, SAM_RTC_SCCR);
 
-  /* Set the new date */
+	/* Set the new date */
 
-  putreg32(calr, SAM_RTC_CALR);
+	putreg32(calr, SAM_RTC_CALR);
 
-  /* Write the new time */
+	/* Write the new time */
 
-  putreg32(timr, SAM_RTC_TIMR);
+	putreg32(timr, SAM_RTC_TIMR);
 
-  /* Resume RTC date/time counting */
+	/* Resume RTC date/time counting */
 
-  regval  = getreg32(SAM_RTC_CR);
-  regval &= ~(RTC_CR_UPDTIM | RTC_CR_UPDCAL);
-  putreg32(regval, SAM_RTC_CR);
+	regval = getreg32(SAM_RTC_CR);
+	regval &= ~(RTC_CR_UPDTIM | RTC_CR_UPDCAL);
+	putreg32(regval, SAM_RTC_CR);
 
-  /* Clear the SEC status in the SR */
+	/* Clear the SEC status in the SR */
 
-  regval = getreg32(SAM_RTC_SCCR);
-  regval = RTC_SCCR_SECCLR;
-  putreg32(regval, SAM_RTC_SCCR);
+	regval = getreg32(SAM_RTC_SCCR);
+	regval = RTC_SCCR_SECCLR;
+	putreg32(regval, SAM_RTC_SCCR);
 
-  /* The RTC should now be enabled */
+	/* The RTC should now be enabled */
 
-  g_rtc_enabled = ((getreg32(SAM_RTC_VER) & (RTC_VER_NVTIM | RTC_VER_NVCAL)) == 0);
-  DEBUGASSERT(g_rtc_enabled);
+	g_rtc_enabled = ((getreg32(SAM_RTC_VER) & (RTC_VER_NVTIM | RTC_VER_NVCAL)) == 0);
+	DEBUGASSERT(g_rtc_enabled);
 
-  rtc_dumpregs("New time setting");
-  return OK;
+	rtc_dumpregs("New time setting");
+	return OK;
 }
 
 /************************************************************************************
@@ -573,88 +573,88 @@ int up_rtc_settime(FAR const struct timespec *tp)
 
 #ifdef CONFIG_RTC_ALARM
 int sam_rtc_setalarm(FAR const struct timespec *tp, alarmcb_t callback)
-{
-  FAR struct tm newalarm;
-  irqstate_t flags;
-  uint32_t timalr;
-  uint32_t calalr;
-  int ret = -EBUSY;
+{	
+	FAR struct tm newalarm;
+	irqstate_t flags;
+	uint32_t timalr;
+	uint32_t calalr;
+	int ret = -EBUSY;
 
-  /* Is there already something waiting on the ALARM? */
+	/* Is there already something waiting on the ALARM? */
 
-  flags = enter_critical_section();
-  if (g_alarmcb == NULL)
-    {
-      /* No.. Save the callback function pointer */
+	flags = enter_critical_section();
+	if (g_alarmcb == NULL)
+	{	
+		/* No.. Save the callback function pointer */
 
-      g_alarmcb = callback;
+		g_alarmcb = callback;
 
-      /* Clear any pending alarm interrupts */
+		/* Clear any pending alarm interrupts */
 
-      putreg32(RTC_SCCR_ALRCLR, SAM_RTC_SCCR);
+		putreg32(RTC_SCCR_ALRCLR, SAM_RTC_SCCR);
 
-      /* Break out the time values (note that the time is set only to units
-       * of seconds)
-       */
+		/* Break out the time values (note that the time is set only to units
+		 * of seconds)
+		 */
 
-      (void)gmtime_r(&tp->tv_sec, &newalarm);
-      rtc_dumptime(&newalarm, "Setting alarm");
+		(void)gmtime_r(&tp->tv_sec, &newalarm);
+		rtc_dumptime(&newalarm, "Setting alarm");
 
-      /* Then write the broken out values to the RTC */
+		/* Then write the broken out values to the RTC */
 
-      /* Convert the struct tm format to RTC time register fields.
-       *
-       *   struct tm       TIMALR register
-       *   tm_sec    0-61* SEC    (0-59)
-       *   tm_min    0-59  MIN    (0-59)
-       *   tm_hour   0-23  HOUR   (0-23)
-       *
-       *  *To allow for leap seconds.  But these never actuall happen.
-       */
+		/* Convert the struct tm format to RTC time register fields.
+		 *
+		 *   struct tm       TIMALR register
+		 *   tm_sec    0-61* SEC    (0-59)
+		 *   tm_min    0-59  MIN    (0-59)
+		 *   tm_hour   0-23  HOUR   (0-23)
+		 *
+		 *  *To allow for leap seconds.  But these never actuall happen.
+		 */
 
-      timalr  = (rtc_bin2bcd(newalarm.tm_sec)  << RTC_TIMALR_SEC_SHIFT)  & RTC_TIMALR_SEC_MASK;
-      timalr |= (rtc_bin2bcd(newalarm.tm_min)  << RTC_TIMALR_MIN_SHIFT)  & RTC_TIMALR_MIN_MASK;
-      timalr |= (rtc_bin2bcd(newalarm.tm_hour) << RTC_TIMALR_HOUR_SHIFT) & RTC_TIMALR_HOUR_MASK;
-      timalr |= (RTC_TIMALR_SECEN | RTC_TIMALR_MINEN | RTC_TIMALR_HOUREN);
+		timalr = (rtc_bin2bcd(newalarm.tm_sec) << RTC_TIMALR_SEC_SHIFT) & RTC_TIMALR_SEC_MASK;
+		timalr |= (rtc_bin2bcd(newalarm.tm_min) << RTC_TIMALR_MIN_SHIFT) & RTC_TIMALR_MIN_MASK;
+		timalr |= (rtc_bin2bcd(newalarm.tm_hour) << RTC_TIMALR_HOUR_SHIFT) & RTC_TIMALR_HOUR_MASK;
+		timalr |= (RTC_TIMALR_SECEN | RTC_TIMALR_MINEN | RTC_TIMALR_HOUREN);
 
-      /* Convert the struct tm format to RTC date register fields.
-       *
-       *   struct tm       CALALR register
-       *   tm_mday   1-31  DATE   (1-31)
-       *   tm_wday   0-6   DAY    (1-7)  **
-       *   tm_mon    0-11  MONTH: (1-12)
-       *   tm_year   *     YEAR   (0-99)
-       *                   CENT   (19-20)
-       *
-       *  *Years since 1900
-       * **Day of the week is not supported
-       */
+		/* Convert the struct tm format to RTC date register fields.
+		 *
+		 *   struct tm       CALALR register
+		 *   tm_mday   1-31  DATE   (1-31)
+		 *   tm_wday   0-6   DAY    (1-7)  **
+		 *   tm_mon    0-11  MONTH: (1-12)
+		 *   tm_year   *     YEAR   (0-99)
+		 *                   CENT   (19-20)
+		 *
+		 *  *Years since 1900
+		 * **Day of the week is not supported
+		 */
 
-      calalr  = (rtc_bin2bcd(newalarm.tm_mday)  << RTC_CALALR_DATE_SHIFT)  & RTC_CALALR_DATE_MASK;
-      calalr |= (rtc_bin2bcd(newalarm.tm_mon+1) << RTC_CALALR_MONTH_SHIFT) & RTC_CALALR_MONTH_MASK;
-      calalr |= (RTC_CALALR_MTHEN | RTC_CALALR_DATEEN);
+		calalr = (rtc_bin2bcd(newalarm.tm_mday) << RTC_CALALR_DATE_SHIFT) & RTC_CALALR_DATE_MASK;
+		calalr |= (rtc_bin2bcd(newalarm.tm_mon+1) << RTC_CALALR_MONTH_SHIFT) & RTC_CALALR_MONTH_MASK;
+		calalr |= (RTC_CALALR_MTHEN | RTC_CALALR_DATEEN);
 
-      /* Set the new date */
+		/* Set the new date */
 
-      putreg32(calalr, SAM_RTC_CALALR);
+		putreg32(calalr, SAM_RTC_CALALR);
 
-      /* Write the new time */
+		/* Write the new time */
 
-      putreg32(timalr, SAM_RTC_TIMALR);
+		putreg32(timalr, SAM_RTC_TIMALR);
 
-      DEBUGASSERT((getreg32(SAM_RTC_VER) & RTC_VER_NVTIMALR) == 0);
-      DEBUGASSERT((getreg32(SAM_RTC_VER) & RTC_VER_NVCALALR) == 0);
+		DEBUGASSERT((getreg32(SAM_RTC_VER) & RTC_VER_NVTIMALR) == 0);
+		DEBUGASSERT((getreg32(SAM_RTC_VER) & RTC_VER_NVCALALR) == 0);
 
-      rtc_dumpregs("New alarm setting");
+		rtc_dumpregs("New alarm setting");
 
-      /* Enable alarm interrupts */
+		/* Enable alarm interrupts */
 
-      putreg32(RTC_IER_ALREN, SAM_RTC_IER);
-      ret = OK;
-    }
+		putreg32(RTC_IER_ALREN, SAM_RTC_IER);
+		ret = OK;
+	}
 
-  leave_critical_section(flags);
-  return ret;
+	leave_critical_section(flags);
+	return ret;
 }
 #endif
 

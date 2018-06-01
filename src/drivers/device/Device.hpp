@@ -63,7 +63,7 @@ namespace device
  * This class provides the basic driver template for I2C and SPI devices
  */
 class __EXPORT Device
-{
+{	
 public:
 	/**
 	 * Destructor.
@@ -81,7 +81,8 @@ public:
 	 *
 	 * @return	OK if the driver initialized OK, negative errno otherwise;
 	 */
-	virtual int	init() { return PX4_OK; }
+	virtual int init()
+	{	return PX4_OK;}
 
 	/**
 	 * Read directly from the device.
@@ -93,7 +94,8 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual int read(unsigned address, void *data, unsigned count)
+	{	return -ENODEV;}
 
 	/**
 	 * Write directly to the device.
@@ -105,7 +107,8 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual int write(unsigned address, void *data, unsigned count)
+	{	return -ENODEV;}
 
 	/**
 	 * Perform a device-specific operation.
@@ -114,10 +117,11 @@ public:
 	 * @param arg		An argument to the operation.
 	 * @return		Negative errno on error, OK or positive value on success.
 	 */
-	virtual int	ioctl(unsigned operation, unsigned &arg)
-	{
-		switch (operation) {
-		case DEVIOCGDEVICEID:
+	virtual int ioctl(unsigned operation, unsigned &arg)
+	{	
+		switch (operation)
+		{	
+			case DEVIOCGDEVICEID:
 			return (int)_device_id.devid;
 		}
 
@@ -125,11 +129,12 @@ public:
 	}
 
 	/** Device bus types for DEVID */
-	enum DeviceBusType {
+	enum DeviceBusType
+	{	
 		DeviceBusType_UNKNOWN = 0,
-		DeviceBusType_I2C     = 1,
-		DeviceBusType_SPI     = 2,
-		DeviceBusType_UAVCAN  = 3,
+		DeviceBusType_I2C = 1,
+		DeviceBusType_SPI = 2,
+		DeviceBusType_UAVCAN = 3,
 	};
 
 	/**
@@ -137,61 +142,70 @@ public:
 	 *
 	 * @return The bus ID
 	 */
-	uint8_t get_device_bus() { return _device_id.devid_s.bus; }
+	uint8_t get_device_bus()
+	{	return _device_id.devid_s.bus;}
 
 	/**
 	 * Return the bus type the device is connected to.
 	 *
 	 * @return The bus type
 	 */
-	DeviceBusType get_device_bus_type() { return _device_id.devid_s.bus_type; }
+	DeviceBusType get_device_bus_type()
+	{	return _device_id.devid_s.bus_type;}
 
 	/**
 	 * Return the bus address of the device.
 	 *
 	 * @return The bus address
 	 */
-	uint8_t get_device_address() { return _device_id.devid_s.address; }
+	uint8_t get_device_address()
+	{	return _device_id.devid_s.address;}
 
-	void set_device_address(int address) { _device_id.devid_s.address = address; }
+	void set_device_address(int address)
+	{	_device_id.devid_s.address = address;}
 
 	/**
 	 * Set the device type
 	 *
 	 * @return The device type
 	 */
-	void set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
+	void set_device_type(uint8_t devtype)
+	{	_device_id.devid_s.devtype = devtype;}
 
-	virtual bool external() { return false; }
+	virtual bool external()
+	{	return false;}
 
 	/*
-	  broken out device elements. The bitfields are used to keep
-	  the overall value small enough to fit in a float accurately,
-	  which makes it possible to transport over the MAVLink
-	  parameter protocol without loss of information.
+	 broken out device elements. The bitfields are used to keep
+	 the overall value small enough to fit in a float accurately,
+	 which makes it possible to transport over the MAVLink
+	 parameter protocol without loss of information.
 	 */
-	struct DeviceStructure {
+	struct DeviceStructure
+	{	
 		enum DeviceBusType bus_type : 3;
 		uint8_t bus: 5;    // which instance of the bus type
-		uint8_t address;   // address on the bus (eg. I2C address)
-		uint8_t devtype;   // device class specific device type
+		uint8_t address;// address on the bus (eg. I2C address)
+		uint8_t devtype;// device class specific device type
 	};
 
-	union DeviceId {
+	union DeviceId
+	{	
 		struct DeviceStructure devid_s;
 		uint32_t devid;
 	};
 
 protected:
-	union DeviceId	_device_id;             /**< device identifier information */
+	union DeviceId _device_id; /**< device identifier information */
 
-	const char	*_name;			/**< driver name */
-	bool		_debug_enabled{false};		/**< if true, debug messages are printed */
+	const char *_name; /**< driver name */
+	bool _debug_enabled
+	{	false}; /**< if true, debug messages are printed */
 
 	Device(const char *name) : _name(name)
-	{
+	{	
 		/* setup a default device ID. When bus_type is UNKNOWN the
-		   other fields are invalid */
+		 other fields are invalid */
 		_device_id.devid = 0;
 		_device_id.devid_s.bus_type = DeviceBusType_UNKNOWN;
 		_device_id.devid_s.bus = 0;
@@ -200,7 +214,7 @@ protected:
 	}
 
 	Device(DeviceBusType bus_type, uint8_t bus, uint8_t address, uint8_t devtype = 0)
-	{
+	{	
 		_device_id.devid = 0;
 		_device_id.devid_s.bus_type = bus_type;
 		_device_id.devid_s.bus = bus;
@@ -216,6 +230,7 @@ protected:
 
 };
 
-} // namespace device
+}
+ // namespace device
 
 #endif /* _DEVICE_DEVICE_HPP */

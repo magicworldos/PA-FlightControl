@@ -71,42 +71,43 @@ class TEST_PPM
 public:
 	TEST_PPM(unsigned channels);
 	virtual ~TEST_PPM(void);
-	virtual int		init();
-	unsigned 		_values[20];
-	unsigned 		_gaps[20];
-	unsigned 		_channels;
-	unsigned 		_plus_width;
+	virtual int init();
+	unsigned _values[20];
+	unsigned _gaps[20];
+	unsigned _channels;
+	unsigned _plus_width;
 protected:
-
+	
 private:
-	struct hrt_call		_call;
-	unsigned 		_call_times;
-	void			start();
+	struct hrt_call _call;
+	unsigned _call_times;
+	void start();
 
-	void			stop();
-	void 			do_out();
-	static void		loops(void *arg);
-
-
+	void stop();
+	void do_out();
+	static void loops(void *arg);
+	
 };
 
-
 /** driver 'main' command */
-extern "C" { __EXPORT int test_ppm_main(int argc, char *argv[]); }
+extern "C"
+{
+__EXPORT int test_ppm_main(int argc, char *argv[]);
+}
 
 TEST_PPM::TEST_PPM(unsigned channels) :
-	_channels(channels),
-	_plus_width(400),
-	_call{},
-	_call_times(0)
+		    _channels(channels),
+		    _plus_width(400),
+		    _call { },
+		    _call_times(0)
 {
 	memset(&_call, 0, sizeof(_call));
-
+	
 	for (int i = 0; i < 20; i++)
 	{
 		_values[i] = 1500;
 	}
-
+	
 	_values[0] = 5000;
 }
 
@@ -116,64 +117,64 @@ TEST_PPM::~TEST_PPM()
 	stop();
 }
 
-int
-TEST_PPM::init()
+int TEST_PPM::init()
 {
 	px4_arch_configgpio(TEST_PPM_PIN);
 	start();
 	return OK;
 }
 
-
-void
-TEST_PPM::start()
+void TEST_PPM::start()
 {
 	stop();
 	_call_times = 0;
-	hrt_call_after(&_call, 1000, (hrt_callout)&TEST_PPM::loops, this);
+	hrt_call_after(&_call, 1000, (hrt_callout) &TEST_PPM::loops, this);
 }
 
-void
-TEST_PPM::stop()
+void TEST_PPM::stop()
 {
 	hrt_cancel(&_call);
 }
 
-void
-TEST_PPM::loops(void *arg)
+void TEST_PPM::loops(void *arg)
 {
 	TEST_PPM *dev = reinterpret_cast<TEST_PPM *>(arg);
 	dev->do_out();
 }
-void
-TEST_PPM::do_out(void)
+void TEST_PPM::do_out(void)
 {
 	if ((_call_times % 2) == 0)
 	{
 		px4_arch_gpiowrite(TEST_PPM_PIN, false);
-		hrt_call_after(&_call, _values[_call_times / 2] - _plus_width, (hrt_callout)&TEST_PPM::loops, this);
-
+		hrt_call_after(&_call, _values[_call_times / 2] - _plus_width, (hrt_callout) &TEST_PPM::loops, this);
+		
 	}
 	else
 	{
 		px4_arch_gpiowrite(TEST_PPM_PIN, true);
-		hrt_call_after(&_call, _plus_width, (hrt_callout)&TEST_PPM::loops, this);
+		hrt_call_after(&_call, _plus_width, (hrt_callout) &TEST_PPM::loops, this);
 	}
-
-	if ((_call_times / 2) < _channels + 1) { _call_times++; }
-
-	else { _call_times = 0; }
+	
+	if ((_call_times / 2) < _channels + 1)
+	{
+		_call_times++;
+	}
+	
+	else
+	{
+		_call_times = 0;
+	}
 }
 
 namespace test_ppm
 {
 
-TEST_PPM	*g_test = nullptr;
+TEST_PPM *g_test = nullptr;
 
-void	start(unsigned channels);
-void	stop();
-void	usage();
-void 	set(unsigned ch, unsigned value);
+void start(unsigned channels);
+void stop();
+void usage();
+void set(unsigned ch, unsigned value);
 
 /**
  * Start the driver.
@@ -181,30 +182,29 @@ void 	set(unsigned ch, unsigned value);
  * This function only returns if the driver is up and running
  * or failed to detect the sensor.
  */
-void
-start(unsigned  channels)
+void start(unsigned channels)
 {
-
+	
 	if (g_test != nullptr)
-		/* if already started, the still command succeeded */
+	/* if already started, the still command succeeded */
 	{
 		errx(1, "already started");
 	}
-
+	
 	g_test = new TEST_PPM(channels);
-
+	
 	if (g_test == nullptr)
 	{
 		goto fail;
 	}
-
+	
 	if (OK != g_test->init())
 	{
 		goto fail;
 	}
-
+	
 	exit(0);
-fail:
+	fail:
 
 	if (g_test != nullptr)
 	{
@@ -215,53 +215,58 @@ fail:
 	errx(1, "test_ppm  start failed");
 }
 
-void
-stop()
+void stop()
 {
 	if (g_test != nullptr)
 	{
 		delete g_test;
 		g_test = nullptr;
-
+		
 	}
 	else
 	{
 		/* warn, but not an error */
 		warnx("test_ppm already stopped.");
 	}
-
+	
 	exit(0);
 }
 
-void
-set(unsigned  ch, unsigned value)
+void set(unsigned ch, unsigned value)
 {
-	if (ch > 18 || ch < 1) {warnx("channel is not valid.");}
-
-	if (value > 2500 || value < 1) { warnx("value is not valid.");}
-
+	if (ch > 18 || ch < 1)
+	{
+		warnx("channel is not valid.");
+	}
+	
+	if (value > 2500 || value < 1)
+	{
+		warnx("value is not valid.");
+	}
+	
 	g_test->_values[ch] = value;
 	g_test->_gaps[ch] = 2500 - value;
-
-	if (ch == g_test->_channels) { g_test->_gaps[ch] = 5000; }
-
+	
+	if (ch == g_test->_channels)
+	{
+		g_test->_gaps[ch] = 5000;
+	}
+	
 	return;
 }
 
-void
-usage()
+void usage()
 {
 	warnx("missing command: try 'start',  'stop', 'set'\n");
 }
 
 } // namespace
 
-int
-test_ppm_main(int argc, char *argv[])
+int test_ppm_main(int argc, char *argv[])
 {
 	const char *verb = argv[1];
-	unsigned  channels = 7;
-
+	unsigned channels = 7;
+	
 	/*
 	 * Start/load the driver.
 
@@ -272,14 +277,14 @@ test_ppm_main(int argc, char *argv[])
 		test_ppm::start(channels);
 		exit(0);
 	}
-
+	
 	if (!strcmp(verb, "stop"))
 	{
-
+		
 		test_ppm::stop();
 		exit(0);
 	}
-
+	
 	/*
 	 * Test the driver/device.
 	 */
@@ -289,16 +294,14 @@ test_ppm_main(int argc, char *argv[])
 		{
 			errx(1, "Usage: test_ppm  set  <channel> <value>");
 		}
-
-		unsigned channel  = strtol(argv[2], NULL, 0);
-		unsigned value	= strtol(argv[3], NULL, 0);
-
+		
+		unsigned channel = strtol(argv[2], NULL, 0);
+		unsigned value = strtol(argv[3], NULL, 0);
+		
 		test_ppm::set(channel, value);
 		exit(0);
 	}
-
-
-
+	
 	test_ppm::usage();
 	exit(1);
 }

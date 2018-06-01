@@ -51,7 +51,6 @@
 #include "RoverLandDetector.h"
 #include "VtolLandDetector.h"
 
-
 namespace land_detector
 {
 
@@ -66,53 +65,53 @@ int LandDetector::task_spawn(int argc, char *argv[])
 		print_usage();
 		return -1;
 	}
-
+	
 	LandDetector *obj;
-
+	
 	if (strcmp(argv[1], "fixedwing") == 0)
 	{
 		obj = new FixedwingLandDetector();
-
+		
 	}
 	else if (strcmp(argv[1], "multicopter") == 0)
 	{
 		obj = new MulticopterLandDetector();
-
+		
 	}
 	else if (strcmp(argv[1], "vtol") == 0)
 	{
 		obj = new VtolLandDetector();
-
+		
 	}
 	else if (strcmp(argv[1], "ugv") == 0)
 	{
 		obj = new RoverLandDetector();
-
+		
 	}
 	else
 	{
 		print_usage("unknown mode");
 		return -1;
 	}
-
+	
 	if (obj == nullptr)
 	{
 		PX4_ERR("alloc failed");
 		return -1;
 	}
-
+	
 	int ret = obj->start();
-
+	
 	if (ret < 0)
 	{
 		delete obj;
 		return ret;
 	}
-
+	
 	// Remember current active mode
 	strncpy(_currentMode, argv[1], sizeof(_currentMode) - 1);
 	_currentMode[sizeof(_currentMode) - 1] = '\0';
-
+	
 	wait_until_running(); // this will wait until _object is set from the cycle method
 	_task_id = task_id_is_work_queue;
 	return 0;
@@ -122,26 +121,26 @@ int LandDetector::print_status()
 {
 	PX4_INFO("running (%s)", _currentMode);
 	LandDetector::LandDetectionState state = get_state();
-
+	
 	switch (state)
 	{
 		case LandDetector::LandDetectionState::FLYING:
 			PX4_INFO("State: Flying");
 			break;
-
+			
 		case LandDetector::LandDetectionState::LANDED:
 			PX4_INFO("State: Landed");
 			break;
-
+			
 		case LandDetector::LandDetectionState::FREEFALL:
 			PX4_INFO("State: Freefall");
 			break;
-
+			
 		default:
 			PX4_ERR("State: unknown");
 			break;
 	}
-
+	
 	return 0;
 }
 
@@ -151,9 +150,8 @@ int LandDetector::print_usage(const char *reason)
 	{
 		PX4_ERR("%s\n", reason);
 	}
-
-	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
+	
+	PRINT_MODULE_DESCRIPTION(R"DESCR_STR(
 ### Description
 Module to detect the freefall and landed state of the vehicle, and publishing the `vehicle_land_detected` topic.
 Each vehicle type (multirotor, fixedwing, vtol, ...) provides its own algorithm, taking into account various
@@ -177,14 +175,14 @@ position controller sets the thrust setpoint to zero.
 
 The module runs periodically on the HP work queue.
 )DESCR_STR");
-
+	
 	PRINT_MODULE_USAGE_NAME("land_detector", "system");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("start", "Start the background task");
 	PRINT_MODULE_USAGE_ARG("fixedwing|multicopter|vtol|ugv", "Select vehicle type", false);
-	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
+	PRINT_MODULE_USAGE_DEFAULT_COMMANDS()
+	;
 	return 0;
 }
-
 
 int land_detector_main(int argc, char *argv[])
 {

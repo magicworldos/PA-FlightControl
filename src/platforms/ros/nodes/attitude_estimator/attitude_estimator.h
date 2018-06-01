@@ -36,7 +36,7 @@
  * Dummy attitude estimator that forwards attitude from gazebo to px4 topic
  *
  * @author Thomas Gubler <thomasgubler@gmail.com>
-*/
+ */
 
 #pragma once
 
@@ -49,8 +49,10 @@ class AttitudeEstimator
 public:
 	AttitudeEstimator();
 
-	~AttitudeEstimator() {}
-
+	~AttitudeEstimator()
+	{
+	}
+	
 protected:
 	void ModelStatesCallback(const gazebo_msgs::ModelStatesConstPtr &msg);
 	void ImuCallback(const sensor_msgs::ImuConstPtr &msg);
@@ -59,6 +61,5 @@ protected:
 	ros::Subscriber _sub_modelstates;
 	ros::Subscriber _sub_imu;
 	ros::Publisher _vehicle_attitude_pub;
-
-
+	
 };

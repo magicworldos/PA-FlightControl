@@ -57,7 +57,7 @@ namespace status
 class StatusDisplay
 {
 public:
-
+	
 	StatusDisplay(const events::SubscriberHandler &subscriber_handler);
 
 	/** regularily called to handle state updates */
@@ -79,13 +79,13 @@ protected:
 	void publish();
 
 	// TODO: review if there is a better variant that allocate this in the memory
-	struct battery_status_s _battery_status = {};
-	struct cpuload_s _cpu_load = {};
-	struct vehicle_status_s _vehicle_status = {};
-	struct vehicle_status_flags_s _vehicle_status_flags = {};
-	struct vehicle_attitude_s _vehicle_attitude = {};
+	struct battery_status_s _battery_status = { };
+	struct cpuload_s _cpu_load = { };
+	struct vehicle_status_s _vehicle_status = { };
+	struct vehicle_status_flags_s _vehicle_status_flags = { };
+	struct vehicle_attitude_s _vehicle_attitude = { };
 
-	struct led_control_s _led_control = {};
+	struct led_control_s _led_control = { };
 
 private:
 	bool _old_gps_lock_valid = false;

@@ -52,27 +52,30 @@ namespace DriverFramework
 #define BEBOP_BUS_SLAVE_ADDRESS 0x08
 
 /// package with published data
-struct bebop_state_data {
+struct bebop_state_data
+{
 	float battery_voltage_v;
 	uint16_t rpm[4];
-} __attribute__((packed));
+}__attribute__((packed));
 
 /// read observations from the Bebop
-struct bebop_bus_observation {
+struct bebop_bus_observation
+{
 	uint16_t rpm_front_left;
 	uint16_t rpm_front_right;
 	uint16_t rpm_back_right;
 	uint16_t rpm_back_left;
 	uint16_t battery_voltage_mv;
-	uint8_t  status;
-	uint8_t  error;
-	uint8_t  motors_in_fault;
-	uint8_t  temperatur_c;
-	uint8_t  checksum;
-} __attribute__((packed));
+	uint8_t status;
+	uint8_t error;
+	uint8_t motors_in_fault;
+	uint8_t temperatur_c;
+	uint8_t checksum;
+}__attribute__((packed));
 
 /// read information from the Bebop
-struct bebop_bus_info {
+struct bebop_bus_info
+{
 	uint8_t version_major;
 	uint8_t version_minor;
 	uint8_t type;
@@ -81,37 +84,39 @@ struct bebop_bus_info {
 	uint16_t last_flight_time;
 	uint32_t total_flight_time;
 	uint8_t last_error;
-} __attribute__((packed));
+}__attribute__((packed));
 
 /// send esc speeds to the Bebop
-struct bebop_bus_esc_speeds {
+struct bebop_bus_esc_speeds
+{
 	uint16_t rpm_front_left;
 	uint16_t rpm_front_right;
 	uint16_t rpm_back_right;
 	uint16_t rpm_back_left;
-	uint8_t  enable_security;
-	uint8_t  checksum;
-} __attribute__((packed));
+	uint8_t enable_security;
+	uint8_t checksum;
+}__attribute__((packed));
 
-class BebopBus : public DriverFramework::I2CDevObj
+class BebopBus: public DriverFramework::I2CDevObj
 {
 public:
-	BebopBus(const char *device_path)
-		: I2CDevObj("BebopBus", device_path, BEBOP_BUS_CLASS_PATH, BEBOP_BUS_UPDATE_INTERVAL_US),
-		  _speed_setpoint{}
+	BebopBus(const char *device_path) :
+			    I2CDevObj("BebopBus", device_path, BEBOP_BUS_CLASS_PATH, BEBOP_BUS_UPDATE_INTERVAL_US),
+			    _speed_setpoint { }
 	{
 	}
-
-
+	
 	virtual int start();
 
 	virtual int stop();
 
 protected:
-
+	
 	/// Enum for the BLDC states, read in observations
-	enum BebopBusBLDCStatus : uint8_t {
-		INIT = 0x00,
+	enum BebopBusBLDCStatus
+		: uint8_t
+		{	
+			INIT = 0x00,
 		IDLE = 0x01,
 		RAMPING = 0x02,
 		SPINNING_1 = 0x03,
@@ -121,8 +126,10 @@ protected:
 	};
 
 	/// Enum to specify the sound played on the Bebop
-	enum BebopBusSound : int8_t {
-		NONE = 0,
+	enum BebopBusSound
+		: int8_t
+		{	
+			NONE = 0,
 		SHORT = 1,
 		BOOT = 2,
 		MELODY = 3,
@@ -130,8 +137,10 @@ protected:
 	};
 
 	/// Enum to specify the LED signal
-	enum BebopBusGPIO : uint8_t {
-		RESET = 0x01,
+	enum BebopBusGPIO
+		: uint8_t
+		{	
+			RESET = 0x01,
 		RED = 0x02,
 		GREEN = 0x04,
 	};
@@ -172,7 +181,7 @@ protected:
 	void _get_esc_speed_setpoint(uint16_t speeds_rpm[4]);
 
 private:
-
+	
 	uint16_t _speed_setpoint[4];
 
 	/// Scale the scale 0.0-1.0 to MIN-MAX rpm of the Bebop
@@ -181,7 +190,12 @@ private:
 	/// The Bebop's checksum
 	uint8_t _checksum(uint8_t initial, uint8_t *data, uint16_t packet_size);
 
-	static uint32_t swap32(uint32_t val) { return (val >> 24) | ((val >> 8) & 0x0000FF00) | ((val << 8) & 0x00FF0000) | (val << 24); }
+	static uint32_t swap32(uint32_t val)
+	{
+		return (val >> 24) | ((val >> 8) & 0x0000FF00) | ((val << 8) & 0x00FF0000) | (val << 24);
+	}
 };
 
-}; // namespace DriverFramework
+}
+;
+// namespace DriverFramework

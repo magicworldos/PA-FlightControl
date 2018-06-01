@@ -85,14 +85,10 @@ static input_capture_stats_t channel_stats[MAX_TIMER_IO_CHANNELS];
 static struct channel_handler_entry
 {
 	capture_callback_t callback;
-	void			  *context;
+	void *context;
 } channel_handlers[MAX_TIMER_IO_CHANNELS];
 
-
-
-static void input_capture_chan_handler(void *context, const io_timers_t *timer, uint32_t chan_index,
-				       const timer_io_channels_t *chan,
-				       hrt_abstime isrs_time, uint16_t isrs_rcnt)
+static void input_capture_chan_handler(void *context, const io_timers_t *timer, uint32_t chan_index, const timer_io_channels_t *chan, hrt_abstime isrs_time, uint16_t isrs_rcnt)
 {
 }
 static void input_capture_bind(unsigned channel, capture_callback_t callback, void *context)
@@ -108,53 +104,52 @@ static void input_capture_unbind(unsigned channel)
 	input_capture_bind(channel, NULL, NULL);
 }
 
-int up_input_capture_set(unsigned channel, input_capture_edge edge, capture_filter_t filter,
-			 capture_callback_t callback, void *context)
+int up_input_capture_set(unsigned channel, input_capture_edge edge, capture_filter_t filter, capture_callback_t callback, void *context)
 {
 	if (filter > 200)  //GTIM_CCMR1_IC1F_MASK) {
 	{
 		return -EINVAL;
 	}
-
+	
 	if (edge > Both)
 	{
 		return -EINVAL;
 	}
-
+	
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
 		if (edge == Disabled)
 		{
-
+			
 			io_timer_set_enable(false, IOTimerChanMode_Capture, 1 << channel);
 			input_capture_unbind(channel);
-
+			
 		}
 		else
 		{
-
+			
 			if (-EBUSY == io_timer_is_channel_free(channel))
 			{
 				io_timer_free_channel(channel);
 			}
-
+			
 			input_capture_bind(channel, callback, context);
-
+			
 			rv = io_timer_channel_init(channel, IOTimerChanMode_Capture, input_capture_chan_handler, context);
-
+			
 			if (rv != 0)
 			{
 				return rv;
 			}
-
+			
 			rv = up_input_capture_set_filter(channel, filter);
-
+			
 			if (rv == 0)
 			{
 				rv = up_input_capture_set_trigger(channel, edge);
-
+				
 				if (rv == 0)
 				{
 					rv = io_timer_set_enable(true, IOTimerChanMode_Capture, 1 << channel);
@@ -162,32 +157,30 @@ int up_input_capture_set(unsigned channel, input_capture_edge edge, capture_filt
 			}
 		}
 	}
-
+	
 	return rv;
 }
-
-
 
 int up_input_capture_get_filter(unsigned channel, capture_filter_t *filter)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
 		{
-
+			
 			uint32_t timer = timer_io_channels[channel].timer_index;
 			rv = OK;
-
+			
 			switch (timer_io_channels[channel].timer_channel)
 			{
-
+				
 				case 1:
 				case 2:
 				case 3:
@@ -198,31 +191,31 @@ int up_input_capture_get_filter(unsigned channel, capture_filter_t *filter)
 			}
 		}
 	}
-
+	
 	return rv;
 }
-int up_input_capture_set_filter(unsigned channel,  capture_filter_t filter)
+int up_input_capture_set_filter(unsigned channel, capture_filter_t filter)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
 		{
-
+			
 			rv = OK;
 			uint32_t timer = timer_io_channels[channel].timer_index;
-
+			
 			irqstate_t flags = enter_critical_section();
-
+			
 			switch (timer_io_channels[channel].timer_channel)
 			{
-
+				
 				case 1:
 				case 2:
 				case 3:
@@ -235,32 +228,32 @@ int up_input_capture_set_filter(unsigned channel,  capture_filter_t filter)
 			leave_critical_section(flags);
 		}
 	}
-
+	
 	return rv;
 }
 
-int up_input_capture_get_trigger(unsigned channel,  input_capture_edge *edge)
+int up_input_capture_get_trigger(unsigned channel, input_capture_edge *edge)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
 		{
-
+			
 			rv = OK;
-
+			
 			uint32_t timer = timer_io_channels[channel].timer_index;
 			uint32_t rvalue = 0;
-
+			
 			switch (timer_io_channels[channel].timer_channel)
 			{
-
+				
 				case 1:
 				case 2:
 				case 3:
@@ -269,79 +262,80 @@ int up_input_capture_get_trigger(unsigned channel,  input_capture_edge *edge)
 					UNUSED(timer);
 					rv = -EIO;
 			}
-
+			
 			if (rv == 0)
 			{
 				switch (rvalue)
 				{
-
+					
 					case 0:
 						*edge = Rising;
 						break;
-
-					case 1:// (GTIM_CCER_CC1P | GTIM_CCER_CC1NP):
+						
+					case 1:  // (GTIM_CCER_CC1P | GTIM_CCER_CC1NP):
 						*edge = Both;
 						break;
-
+						
 					case 2: //(GTIM_CCER_CC1P):
 						*edge = Falling;
 						break;
-
+						
 					default:
 						rv = -EIO;
 				}
 			}
 		}
 	}
-
+	
 	return rv;
 }
-int up_input_capture_set_trigger(unsigned channel,  input_capture_edge edge)
+int up_input_capture_set_trigger(unsigned channel, input_capture_edge edge)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
 		{
-
+			
 			uint16_t edge_bits = 0xffff;
-
+			
 			switch (edge)
 			{
 				case Disabled:
 					break;
-
+					
 				case Rising:
 					edge_bits = 0;
 					break;
-
+					
 				case Falling:
-					edge_bits = 0;// GTIM_CCER_CC1P;
+					edge_bits = 0; // GTIM_CCER_CC1P;
 					break;
-
+					
 				case Both:
-					edge_bits = 0;// GTIM_CCER_CC1P | GTIM_CCER_CC1NP;
+					edge_bits = 0; // GTIM_CCER_CC1P | GTIM_CCER_CC1NP;
 					break;
-
+					
 				default:
-					return -EINVAL;;
+					return -EINVAL;
+					;
 			}
-
+			
 			uint32_t timer = timer_io_channels[channel].timer_index;
 			uint16_t rvalue;
 			rv = OK;
-
+			
 			irqstate_t flags = enter_critical_section();
-
+			
 			switch (timer_io_channels[channel].timer_channel)
 			{
-
+				
 				case 1:
 				case 2:
 				case 3:
@@ -356,24 +350,24 @@ int up_input_capture_set_trigger(unsigned channel,  input_capture_edge edge)
 			leave_critical_section(flags);
 		}
 	}
-
+	
 	return rv;
 }
 
 int up_input_capture_get_callback(unsigned channel, capture_callback_t *callback, void **context)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
 		{
-
+			
 			irqstate_t flags = enter_critical_section();
 			*callback = channel_handlers[channel].callback;
 			*context = channel_handlers[channel].context;
@@ -381,20 +375,20 @@ int up_input_capture_get_callback(unsigned channel, capture_callback_t *callback
 			rv = OK;
 		}
 	}
-
+	
 	return rv;
-
+	
 }
 
 int up_input_capture_set_callback(unsigned channel, capture_callback_t callback, void *context)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
-
+		
 		rv = -ENXIO;
-
+		
 		/* Any pins in capture mode */
 
 		if (io_timer_get_channel_mode(channel) == IOTimerChanMode_Capture)
@@ -403,19 +397,19 @@ int up_input_capture_set_callback(unsigned channel, capture_callback_t callback,
 			rv = 0;
 		}
 	}
-
+	
 	return rv;
 }
 
 int up_input_capture_get_stats(unsigned channel, input_capture_stats_t *stats, bool clear)
 {
 	int rv = io_timer_validate_channel_index(channel);
-
+	
 	if (rv == 0)
 	{
 		irqstate_t flags = enter_critical_section();
-		*stats =  channel_stats[channel];
-
+		*stats = channel_stats[channel];
+		
 		if (clear)
 		{
 			memset(&channel_stats[channel], 0, sizeof(*stats));
@@ -423,6 +417,6 @@ int up_input_capture_get_stats(unsigned channel, input_capture_stats_t *stats, b
 
 		leave_critical_section(flags);
 	}
-
+	
 	return rv;
 }

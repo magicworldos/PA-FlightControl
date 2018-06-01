@@ -50,14 +50,14 @@
 static constexpr uint8_t PX4_I2C_BUS_DEFAULT = PX4_I2C_BUS_EXPANSION;
 
 class __EXPORT Airspeed : public device::I2C
-{
+{	
 public:
 	Airspeed(int bus, int address, unsigned conversion_interval, const char *path);
 	virtual ~Airspeed();
 
-	virtual int	init();
+	virtual int init();
 
-	virtual int	ioctl(device::file_t *filp, int cmd, unsigned long arg);
+	virtual int ioctl(device::file_t *filp, int cmd, unsigned long arg);
 
 private:
 	/* this class has pointer data members and should not be copied */
@@ -65,67 +65,66 @@ private:
 	Airspeed &operator=(const Airspeed &);
 
 protected:
-	virtual int	probe();
+	virtual int probe();
 
 	/**
-	* Perform a poll cycle; collect from the previous measurement
-	* and start a new one.
-	*/
-	virtual void	cycle() = 0;
-	virtual int	measure() = 0;
-	virtual int	collect() = 0;
+	 * Perform a poll cycle; collect from the previous measurement
+	 * and start a new one.
+	 */
+	virtual void cycle() = 0;
+	virtual int measure() = 0;
+	virtual int collect() = 0;
 
 	/**
 	 * Update the subsystem status
 	 */
 	void update_status();
 
-	work_s			_work;
-	bool			_sensor_ok;
-	bool			_last_published_sensor_ok;
-	uint32_t		_measure_ticks;
-	bool			_collect_phase;
-	float			_diff_pres_offset;
+	work_s _work;
+	bool _sensor_ok;
+	bool _last_published_sensor_ok;
+	uint32_t _measure_ticks;
+	bool _collect_phase;
+	float _diff_pres_offset;
 
-	orb_advert_t		_airspeed_pub;
-	int			_airspeed_orb_class_instance;
+	orb_advert_t _airspeed_pub;
+	int _airspeed_orb_class_instance;
 
-	orb_advert_t		_subsys_pub;
+	orb_advert_t _subsys_pub;
 
-	int			_class_instance;
+	int _class_instance;
 
-	unsigned		_conversion_interval;
+	unsigned _conversion_interval;
 
-	perf_counter_t		_sample_perf;
-	perf_counter_t		_comms_errors;
-
-	/**
-	* Initialise the automatic measurement state machine and start it.
-	*
-	* @note This function is called at open and error time.  It might make sense
-	*       to make it more aggressive about resetting the bus in case of errors.
-	*/
-	void	start();
+	perf_counter_t _sample_perf;
+	perf_counter_t _comms_errors;
 
 	/**
-	* Stop the automatic measurement state machine.
-	*/
-	void	stop();
+	 * Initialise the automatic measurement state machine and start it.
+	 *
+	 * @note This function is called at open and error time.  It might make sense
+	 *       to make it more aggressive about resetting the bus in case of errors.
+	 */
+	void start();
 
 	/**
-	* Static trampoline from the workq context; because we don't have a
-	* generic workq wrapper yet.
-	*
-	* @param arg		Instance pointer for the driver that is polling.
-	*/
-	static void	cycle_trampoline(void *arg);
+	 * Stop the automatic measurement state machine.
+	 */
+	void stop();
 
 	/**
-	* add a new report to the reports queue
-	*
-	* @param report		differential_pressure_s report
-	*/
-	void	new_report(const differential_pressure_s &report);
+	 * Static trampoline from the workq context; because we don't have a
+	 * generic workq wrapper yet.
+	 *
+	 * @param arg		Instance pointer for the driver that is polling.
+	 */
+	static void cycle_trampoline(void *arg);
+
+	/**
+	 * add a new report to the reports queue
+	 *
+	 * @param report		differential_pressure_s report
+	 */
+	void new_report(const differential_pressure_s &report);
 };
-
 

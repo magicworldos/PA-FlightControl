@@ -79,9 +79,9 @@ __EXPORT void board_autoled_on(int led)
 
 __EXPORT void board_autoled_off(int led)
 
-{
+{	
 	if (led == 1)
-	{
+	{	
 		/* Pull up to switch off */
 		stm32_gpiowrite(GPIO_LED1, true);
 	}
@@ -94,7 +94,7 @@ __EXPORT void led_toggle(int led)
 		if (stm32_gpioread(GPIO_LED1))
 		{
 			stm32_gpiowrite(GPIO_LED1, false);
-
+			
 		}
 		else
 		{

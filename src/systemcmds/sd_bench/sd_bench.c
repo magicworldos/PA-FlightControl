@@ -50,10 +50,10 @@
 
 #include <drivers/drv_hrt.h>
 
-static void	usage(void);
+static void usage(void);
 
 /** sequential write speed test */
-static void	write_test(int fd, uint8_t *block, int block_size);
+static void write_test(int fd, uint8_t *block, int block_size);
 
 /**
  * Measure the time for fsync.
@@ -62,7 +62,7 @@ static void	write_test(int fd, uint8_t *block, int block_size);
  */
 static inline unsigned int time_fsync(int fd);
 
-__EXPORT int	sd_bench_main(int argc, char *argv[]);
+__EXPORT int sd_bench_main(int argc, char *argv[]);
 
 static const char *BENCHMARK_FILE = PX4_ROOTFSDIR"/fs/microsd/benchmark.tmp";
 
@@ -70,11 +70,10 @@ static int num_runs; ///< number of runs
 static int run_duration; ///< duration of a single run [ms]
 static bool synchronized; ///< call fsync after each block?
 
-static void
-usage()
+static void usage()
 {
 	PRINT_MODULE_DESCRIPTION("Test the speed of an SD Card");
-
+	
 	PRINT_MODULE_USAGE_NAME_SIMPLE("sd_bench", "command");
 	PRINT_MODULE_USAGE_PARAM_INT('b', 4096, 1, 1000000, "Block size for each read/write", true);
 	PRINT_MODULE_USAGE_PARAM_INT('r', 5, 1, 1000, "Number of runs", true);
@@ -82,8 +81,7 @@ usage()
 	PRINT_MODULE_USAGE_PARAM_FLAG('s', "Call fsync after each block (default=at end of each run)", true);
 }
 
-int
-sd_bench_main(int argc, char *argv[])
+int sd_bench_main(int argc, char *argv[])
 {
 	int block_size = 4096;
 	int myoptind = 1;
@@ -92,7 +90,7 @@ sd_bench_main(int argc, char *argv[])
 	synchronized = false;
 	num_runs = 5;
 	run_duration = 2000;
-
+	
 	while ((ch = px4_getopt(argc, argv, "b:r:d:s", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (ch)
@@ -100,62 +98,62 @@ sd_bench_main(int argc, char *argv[])
 			case 'b':
 				block_size = strtol(myoptarg, NULL, 0);
 				break;
-
+				
 			case 'r':
 				num_runs = strtol(myoptarg, NULL, 0);
 				break;
-
+				
 			case 'd':
 				run_duration = strtol(myoptarg, NULL, 0);
 				break;
-
+				
 			case 's':
 				synchronized = true;
 				break;
-
+				
 			default:
 				usage();
 				return -1;
 				break;
 		}
 	}
-
+	
 	if (block_size <= 0 || num_runs <= 0)
 	{
 		PX4_ERR("invalid argument");
 		return -1;
 	}
-
+	
 	int bench_fd = open(BENCHMARK_FILE, O_CREAT | O_WRONLY | O_TRUNC, PX4_O_MODE_666);
-
+	
 	if (bench_fd < 0)
 	{
 		PX4_ERR("Can't open benchmark file %s", BENCHMARK_FILE);
 		return -1;
 	}
-
+	
 	//create some data block
-	uint8_t *block = (uint8_t *)malloc(block_size);
-
+	uint8_t *block = (uint8_t *) malloc(block_size);
+	
 	if (!block)
 	{
 		PX4_ERR("Failed to allocate memory block");
 		close(bench_fd);
 		return -1;
 	}
-
+	
 	for (int i = 0; i < block_size; ++i)
 	{
-		block[i] = (uint8_t)i;
+		block[i] = (uint8_t) i;
 	}
-
-	PX4_INFO("Using block size = %i bytes, sync=%i", block_size, (int)synchronized);
+	
+	PX4_INFO("Using block size = %i bytes, sync=%i", block_size, (int )synchronized);
 	write_test(bench_fd, block, block_size);
-
+	
 	free(block);
 	close(bench_fd);
 	unlink(BENCHMARK_FILE);
-
+	
 	return 0;
 }
 
@@ -172,54 +170,52 @@ void write_test(int fd, uint8_t *block, int block_size)
 	PX4_INFO("Testing Sequential Write Speed...");
 	double total_elapsed = 0.;
 	unsigned int total_blocks = 0;
-
+	
 	for (int run = 0; run < num_runs; ++run)
 	{
 		hrt_abstime start = hrt_absolute_time();
 		unsigned int num_blocks = 0;
 		unsigned int max_write_time = 0;
 		unsigned int fsync_time = 0;
-
+		
 		while (hrt_elapsed_time(&start) < run_duration * 1000)
 		{
-
+			
 			hrt_abstime write_start = hrt_absolute_time();
 			size_t written = write(fd, block, block_size);
 			unsigned int write_time = hrt_elapsed_time(&write_start) / 1000;
-
+			
 			if (write_time > max_write_time)
 			{
 				max_write_time = write_time;
 			}
-
-			if ((int)written != block_size)
+			
+			if ((int) written != block_size)
 			{
 				PX4_ERR("Write error");
 				return;
 			}
-
+			
 			if (synchronized)
 			{
 				fsync_time += time_fsync(fd);
 			}
-
+			
 			++num_blocks;
 		}
-
+		
 		//Note: if testing a slow device (SD Card) and the OS buffers a lot (eg. Linux),
 		//fsync can take really long, and it looks like the process hangs. But it does
 		//not and the reported result will still be correct.
 		fsync_time += time_fsync(fd);
-
+		
 		//report
 		double elapsed = hrt_elapsed_time(&start) / 1.e6;
-		PX4_INFO("  Run %2i: %8.2lf KB/s, max write time: %i ms (=%7.2lf KB/s), fsync: %i ms", run,
-			 (double)block_size * num_blocks / elapsed / 1024.,
-			 max_write_time, (double)block_size / max_write_time * 1000. / 1024., fsync_time);
-
+		PX4_INFO("  Run %2i: %8.2lf KB/s, max write time: %i ms (=%7.2lf KB/s), fsync: %i ms", run, (double )block_size * num_blocks / elapsed / 1024., max_write_time, (double )block_size / max_write_time * 1000. / 1024., fsync_time);
+		
 		total_elapsed += elapsed;
 		total_blocks += num_blocks;
 	}
 
-	PX4_INFO("  Avg   : %8.2lf KB/s", (double)block_size * total_blocks / total_elapsed / 1024.);
+	PX4_INFO("  Avg   : %8.2lf KB/s", (double )block_size * total_blocks / total_elapsed / 1024.);
 }

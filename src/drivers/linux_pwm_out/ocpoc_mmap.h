@@ -42,7 +42,7 @@ namespace linux_pwm_out
  ** class OcpocMmapPWMOut
  * PWM output class for Aerotenna OcPoC via mmap
  */
-class OcpocMmapPWMOut : public PWMOutBase
+class OcpocMmapPWMOut: public PWMOutBase
 {
 public:
 	OcpocMmapPWMOut(int max_num_outputs);
@@ -55,8 +55,8 @@ public:
 private:
 	static unsigned long freq2tick(uint16_t freq_hz);
 
-	static constexpr int MAX_ZYNQ_PWMS = 8;	/**< maximum number of pwm channels */
-
+	static constexpr int MAX_ZYNQ_PWMS = 8; /**< maximum number of pwm channels */
+	
 	// Period|Hi 32 bits each
 	struct s_period_hi
 	{

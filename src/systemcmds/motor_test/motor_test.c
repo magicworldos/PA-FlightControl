@@ -52,9 +52,7 @@
 #include <drivers/drv_hrt.h>
 #include <uORB/topics/test_motor.h>
 
-
 #include "systemlib/systemlib.h"
-
 
 __EXPORT int motor_test_main(int argc, char *argv[]);
 
@@ -66,24 +64,24 @@ static orb_advert_t _test_motor_pub = NULL;
 void motor_test(unsigned channel, float value)
 {
 	struct test_motor_s _test_motor;
-
+	
 	_test_motor.motor_number = channel;
 	_test_motor.timestamp = hrt_absolute_time();
 	_test_motor.value = value;
-
+	
 	if (_test_motor_pub != NULL)
 	{
 		/* publish test state */
 		orb_publish(ORB_ID(test_motor), _test_motor_pub, &_test_motor);
-
+		
 	}
 	else
 	{
 		/* advertise and publish */
 		_test_motor_pub = orb_advertise_queue(ORB_ID(test_motor), &_test_motor, 4);
 	}
-
-	printf("motor %d set to %.2f\n", channel, (double)value);
+	
+	printf("motor %d set to %.2f\n", channel, (double) value);
 }
 
 static void usage(const char *reason)
@@ -92,19 +90,18 @@ static void usage(const char *reason)
 	{
 		PX4_WARN("%s", reason);
 	}
-
+	
 	PRINT_MODULE_DESCRIPTION("Utility to test motors.\n"
-				 "\n"
-				 "Note: this can only be used for drivers which support the motor_test uorb topic (currently uavcan and tap_esc)\n"
-				);
-
+	                         "\n"
+	                         "Note: this can only be used for drivers which support the motor_test uorb topic (currently uavcan and tap_esc)\n");
+	
 	PRINT_MODULE_USAGE_NAME("motor_test", "command");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("test", "Set motor(s) to a specific output value");
 	PRINT_MODULE_USAGE_PARAM_INT('m', -1, 0, 7, "Motor to test (0...7, all if not specified)", true);
 	PRINT_MODULE_USAGE_PARAM_INT('p', 0, 0, 100, "Power (0...100)", true);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("stop", "Stop all motors");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("iterate", "Iterate all motors starting and stopping one after the other");
-
+	
 }
 
 int motor_test_main(int argc, char *argv[])
@@ -113,53 +110,53 @@ int motor_test_main(int argc, char *argv[])
 	unsigned long lval;
 	float value = 0.0f;
 	int ch;
-
+	
 	int myoptind = 1;
 	const char *myoptarg = NULL;
-
+	
 	while ((ch = px4_getopt(argc, argv, "m:p:", &myoptind, &myoptarg)) != EOF)
 	{
 		switch (ch)
 		{
-
+			
 			case 'm':
 				/* Read in motor number */
-				channel = (int)strtol(myoptarg, NULL, 0);
+				channel = (int) strtol(myoptarg, NULL, 0);
 				break;
-
+				
 			case 'p':
 				/* Read in power value */
 				lval = strtoul(myoptarg, NULL, 0);
-
+				
 				if (lval > 100)
 				{
 					usage("value invalid");
 					return 1;
 				}
-
-				value = ((float)lval) / 100.f;
+				
+				value = ((float) lval) / 100.f;
 				break;
-
+				
 			default:
 				usage(NULL);
 				return 1;
 		}
 	}
-
+	
 	bool run_test = true;
-
+	
 	if (myoptind >= 0 && myoptind < argc)
 	{
 		if (strcmp("stop", argv[myoptind]) == 0)
 		{
 			channel = -1;
 			value = 0.f;
-
+			
 		}
 		else if (strcmp("iterate", argv[myoptind]) == 0)
 		{
 			value = 0.3f;
-
+			
 			for (int i = 0; i < 8; ++i)
 			{
 				motor_test(i, value);
@@ -167,9 +164,9 @@ int motor_test_main(int argc, char *argv[])
 				motor_test(i, 0.f);
 				usleep(10000);
 			}
-
+			
 			run_test = false;
-
+			
 		}
 		else if (strcmp("test", argv[myoptind]) == 0)
 		{
@@ -180,14 +177,14 @@ int motor_test_main(int argc, char *argv[])
 			usage(NULL);
 			return 0;
 		}
-
+		
 	}
 	else
 	{
 		usage(NULL);
 		return 0;
 	}
-
+	
 	if (run_test)
 	{
 		if (channel < 0)
@@ -197,13 +194,13 @@ int motor_test_main(int argc, char *argv[])
 				motor_test(i, value);
 				usleep(10000);
 			}
-
+			
 		}
 		else
 		{
 			motor_test(channel, value);
 		}
 	}
-
+	
 	return 0;
 }

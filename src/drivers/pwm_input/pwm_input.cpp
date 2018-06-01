@@ -226,7 +226,7 @@
 #define TIMEOUT_POLL 300000 /* reset after no response over this time in microseconds [0.3s] */
 #define TIMEOUT_READ 200000 /* don't reset if the last read is back more than this time in microseconds [0.2s] */
 
-class PWMIN : device::CDev
+class PWMIN: device::CDev
 {
 public:
 	PWMIN();
@@ -251,15 +251,15 @@ private:
 	ringbuffer::RingBuffer *_reports;
 	bool _timer_started;
 
-	hrt_call _hard_reset_call;	/* HRT callout for note completion */
-	hrt_call _freeze_test_call;	/* HRT callout for note completion */
-
+	hrt_call _hard_reset_call; /* HRT callout for note completion */
+	hrt_call _freeze_test_call; /* HRT callout for note completion */
+	
 	void _timer_init(void);
 
 	void _turn_on();
 	void _turn_off();
 	void _freeze_test();
-
+	
 };
 
 static int pwmin_tim_isr(int irq, void *context, void *arg);
@@ -271,13 +271,13 @@ static void pwmin_reset(void);
 static PWMIN *g_dev;
 
 PWMIN::PWMIN() :
-	CDev("pwmin", PWMIN0_DEVICE_PATH),
-	_error_count(0),
-	_pulses_captured(0),
-	_last_period(0),
-	_last_width(0),
-	_reports(nullptr),
-	_timer_started(false)
+		    CDev("pwmin", PWMIN0_DEVICE_PATH),
+		    _error_count(0),
+		    _pulses_captured(0),
+		    _last_period(0),
+		    _last_width(0),
+		    _reports(nullptr),
+		    _timer_started(false)
 {
 }
 
@@ -295,23 +295,22 @@ PWMIN::~PWMIN()
  * to be started in init scripts when the user may be using the input
  * pin as PWM output
  */
-int
-PWMIN::init()
+int PWMIN::init()
 {
 	/* we just register the device in /dev, and only actually
 	 * activate the timer when requested to when the device is opened */
 	CDev::init();
-
+	
 	_reports = new ringbuffer::RingBuffer(2, sizeof(struct pwm_input_s));
-
+	
 	if (_reports == nullptr)
 	{
 		return -ENOMEM;
 	}
-
+	
 	/* Schedule freeze check to invoke periodically */
 	hrt_call_every(&_freeze_test_call, 0, TIMEOUT_POLL, reinterpret_cast<hrt_callout>(&PWMIN::_freeze_test), this);
-
+	
 	return OK;
 }
 
@@ -323,65 +322,64 @@ void PWMIN::_timer_init(void)
 	/* run with interrupts disabled in case the timer is already
 	 * setup. We don't want it firing while we are doing the setup */
 	irqstate_t flags = px4_enter_critical_section();
-
+	
 	/* configure input pin */
-	px4_arch_configgpio(GPIO_PWM_IN);
-
+	px4_arch_configgpio (GPIO_PWM_IN);
+	
 	// XXX refactor this out of this driver
 	/* configure reset pin */
-	px4_arch_configgpio(GPIO_VDD_RANGEFINDER_EN);
-
+	px4_arch_configgpio (GPIO_VDD_RANGEFINDER_EN);
+	
 	/* claim our interrupt vector */
 	irq_attach(PWMIN_TIMER_VECTOR, pwmin_tim_isr, NULL);
-
+	
 	/* Clear no bits, set timer enable bit.*/
 	modifyreg32(PWMIN_TIMER_POWER_REG, 0, PWMIN_TIMER_POWER_BIT);
-
+	
 	/* disable and configure the timer */
 	rCR1 = 0;
 	rCR2 = 0;
 	rSMCR = 0;
 	rDIER = DIER_PWMIN_A;
-	rCCER = 0;		/* unlock CCMR* registers */
+	rCCER = 0; /* unlock CCMR* registers */
 	rCCMR1 = CCMR1_PWMIN;
 	rCCMR2 = CCMR2_PWMIN;
-	rSMCR = SMCR_PWMIN_1;	/* Set up mode */
-	rSMCR = SMCR_PWMIN_2;	/* Enable slave mode controller */
+	rSMCR = SMCR_PWMIN_1; /* Set up mode */
+	rSMCR = SMCR_PWMIN_2; /* Enable slave mode controller */
 	rCCER = CCER_PWMIN;
 	rDCR = 0;
-
+	
 	/* for simplicity scale by the clock in MHz. This gives us
 	 * readings in microseconds which is typically what is needed
 	 * for a PWM input driver */
 	uint32_t prescaler = PWMIN_TIMER_CLOCK / 1000000UL;
-
+	
 	/*
 	 * define the clock speed. We want the highest possible clock
 	 * speed that avoids overflows.
 	 */
 	rPSC = prescaler - 1;
-
+	
 	/* run the full span of the counter. All timers can handle
 	 * uint16 */
 	rARR = UINT16_MAX;
-
+	
 	/* generate an update event; reloads the counter, all registers */
 	rEGR = GTIM_EGR_UG;
-
+	
 	/* enable the timer */
 	rCR1 = GTIM_CR1_CEN;
-
+	
 	/* enable interrupts */
-	up_enable_irq(PWMIN_TIMER_VECTOR);
-
+	up_enable_irq (PWMIN_TIMER_VECTOR);
+	
 	px4_leave_critical_section(flags);
-
+	
 	_timer_started = true;
 }
 
 // XXX refactor this out of this driver
-void
-PWMIN::_freeze_test()
+void PWMIN::_freeze_test()
 {
 	/* reset if last poll time was way back and a read was recently requested */
 	if (hrt_elapsed_time(&_last_poll_time) > TIMEOUT_POLL && hrt_elapsed_time(&_last_read_time) < TIMEOUT_READ)
@@ -391,22 +389,19 @@ PWMIN::_freeze_test()
 }
 
 // XXX refactor this out of this driver
-void
-PWMIN::_turn_on()
+void PWMIN::_turn_on()
 {
 	px4_arch_gpiowrite(GPIO_VDD_RANGEFINDER_EN, 1);
 }
 
 // XXX refactor this out of this driver
-void
-PWMIN::_turn_off()
+void PWMIN::_turn_off()
 {
 	px4_arch_gpiowrite(GPIO_VDD_RANGEFINDER_EN, 0);
 }
 
 // XXX refactor this out of this driver
-void
-PWMIN::hard_reset()
+void PWMIN::hard_reset()
 {
 	_turn_off();
 	hrt_call_after(&_hard_reset_call, 9000, reinterpret_cast<hrt_callout>(&PWMIN::_turn_on), this);
@@ -416,54 +411,51 @@ PWMIN::hard_reset()
  * hook for open of the driver. We start the timer at this point, then
  * leave it running
  */
-int
-PWMIN::open(struct file *filp)
+int PWMIN::open(struct file *filp)
 {
 	if (g_dev == nullptr)
 	{
 		return -EIO;
 	}
-
+	
 	int ret = CDev::open(filp);
-
+	
 	if (ret == OK && !_timer_started)
 	{
 		g_dev->_timer_init();
 	}
-
+	
 	return ret;
 }
-
 
 /*
  * handle ioctl requests
  */
-int
-PWMIN::ioctl(struct file *filp, int cmd, unsigned long arg)
+int PWMIN::ioctl(struct file *filp, int cmd, unsigned long arg)
 {
 	switch (cmd)
 	{
 		case SENSORIOCSQUEUEDEPTH:
+		{
+			/* lower bound is mandatory, upper bound is a sanity check */
+			if ((arg < 1) || (arg > 500))
 			{
-				/* lower bound is mandatory, upper bound is a sanity check */
-				if ((arg < 1) || (arg > 500))
-				{
-					return -EINVAL;
-				}
-
-				irqstate_t flags = px4_enter_critical_section();
-
-				if (!_reports->resize(arg))
-				{
-					px4_leave_critical_section(flags);
-					return -ENOMEM;
-				}
-
-				px4_leave_critical_section(flags);
-
-				return OK;
+				return -EINVAL;
 			}
-
+			
+			irqstate_t flags = px4_enter_critical_section();
+			
+			if (!_reports->resize(arg))
+			{
+				px4_leave_critical_section(flags);
+				return -ENOMEM;
+			}
+			
+			px4_leave_critical_section(flags);
+			
+			return OK;
+		}
+			
 		case SENSORIOCRESET:
 			/* user has asked for the timer to be reset. This may
 			 * be needed if the pin was used for a different
@@ -472,32 +464,30 @@ PWMIN::ioctl(struct file *filp, int cmd, unsigned long arg)
 			/* also reset the sensor */
 			hard_reset();
 			return OK;
-
+			
 		default:
 			/* give it to the superclass */
 			return CDev::ioctl(filp, cmd, arg);
 	}
 }
 
-
 /*
  * read some samples from the device
  */
-ssize_t
-PWMIN::read(struct file *filp, char *buffer, size_t buflen)
+ssize_t PWMIN::read(struct file *filp, char *buffer, size_t buflen)
 {
 	_last_read_time = hrt_absolute_time();
-
+	
 	unsigned count = buflen / sizeof(struct pwm_input_s);
 	struct pwm_input_s *buf = reinterpret_cast<struct pwm_input_s *>(buffer);
 	int ret = 0;
-
+	
 	/* buffer must be large enough */
 	if (count < 1)
 	{
 		return -ENOSPC;
 	}
-
+	
 	while (count--)
 	{
 		if (_reports->get(buf))
@@ -506,7 +496,7 @@ PWMIN::read(struct file *filp, char *buffer, size_t buflen)
 			buf++;
 		}
 	}
-
+	
 	/* if there was no data, warn the caller */
 	return ret ? ret : -EAGAIN;
 }
@@ -522,15 +512,15 @@ void PWMIN::publish(uint16_t status, uint32_t period, uint32_t pulse_width)
 		_error_count++;
 		return;
 	}
-
+	
 	_last_poll_time = hrt_absolute_time();
-
+	
 	struct pwm_input_s pwmin_report;
 	pwmin_report.timestamp = _last_poll_time;
 	pwmin_report.error_count = _error_count;
 	pwmin_report.period = period;
 	pwmin_report.pulse_width = pulse_width;
-
+	
 	_reports->force(&pwmin_report);
 }
 
@@ -542,17 +532,13 @@ void PWMIN::print_info(void)
 	if (!_timer_started)
 	{
 		printf("timer not started - try the 'test' command\n");
-
+		
 	}
 	else
 	{
-		printf("count=%u period=%u width=%u\n",
-		       (unsigned)_pulses_captured,
-		       (unsigned)_last_period,
-		       (unsigned)_last_width);
+		printf("count=%u period=%u width=%u\n", (unsigned) _pulses_captured, (unsigned) _last_period, (unsigned) _last_width);
 	}
 }
-
 
 /*
  * Handle the interrupt, gathering pulse data
@@ -562,15 +548,15 @@ static int pwmin_tim_isr(int irq, void *context, void *arg)
 	uint16_t status = rSR;
 	uint32_t period = rCCR_PWMIN_A;
 	uint32_t pulse_width = rCCR_PWMIN_B;
-
+	
 	/* ack the interrupts we just read */
 	rSR = 0;
-
+	
 	if (g_dev != nullptr)
 	{
 		g_dev->publish(status, period, pulse_width);
 	}
-
+	
 	return OK;
 }
 
@@ -583,19 +569,19 @@ static void pwmin_start()
 	{
 		errx(1, "driver already started");
 	}
-
+	
 	g_dev = new PWMIN();
-
+	
 	if (g_dev == nullptr)
 	{
 		errx(1, "driver allocation failed");
 	}
-
+	
 	if (g_dev->init() != OK)
 	{
 		errx(1, "driver init failed");
 	}
-
+	
 	exit(0);
 }
 
@@ -605,27 +591,24 @@ static void pwmin_start()
 static void pwmin_test(void)
 {
 	int fd = open(PWMIN0_DEVICE_PATH, O_RDONLY);
-
+	
 	if (fd == -1)
 	{
 		errx(1, "Failed to open device");
 	}
-
+	
 	uint64_t start_time = hrt_absolute_time();
-
+	
 	printf("Showing samples for 5 seconds\n");
-
+	
 	while (hrt_absolute_time() < start_time + 5U * 1000UL * 1000UL)
 	{
 		struct pwm_input_s buf;
-
+		
 		if (::read(fd, &buf, sizeof(buf)) == sizeof(buf))
 		{
-			printf("period=%u width=%u error_count=%u\n",
-			       (unsigned)buf.period,
-			       (unsigned)buf.pulse_width,
-			       (unsigned)buf.error_count);
-
+			printf("period=%u width=%u error_count=%u\n", (unsigned) buf.period, (unsigned) buf.pulse_width, (unsigned) buf.error_count);
+			
 		}
 		else
 		{
@@ -633,7 +616,7 @@ static void pwmin_test(void)
 			::usleep(2000);
 		}
 	}
-
+	
 	close(fd);
 	exit(0);
 }
@@ -645,17 +628,17 @@ static void pwmin_reset(void)
 {
 	g_dev->hard_reset();
 	int fd = open(PWMIN0_DEVICE_PATH, O_RDONLY);
-
+	
 	if (fd == -1)
 	{
 		errx(1, "Failed to open device");
 	}
-
+	
 	if (ioctl(fd, SENSORIOCRESET, 0) != OK)
 	{
 		errx(1, "reset failed");
 	}
-
+	
 	close(fd);
 	exit(0);
 }
@@ -670,11 +653,10 @@ static void pwmin_info(void)
 		printf("driver not started\n");
 		exit(1);
 	}
-
+	
 	g_dev->print_info();
 	exit(0);
 }
-
 
 /*
  * driver entry point
@@ -682,7 +664,7 @@ static void pwmin_info(void)
 int pwm_input_main(int argc, char *argv[])
 {
 	const char *verb = argv[1];
-
+	
 	/*
 	 * Start/load the driver.
 	 */
@@ -690,7 +672,7 @@ int pwm_input_main(int argc, char *argv[])
 	{
 		pwmin_start();
 	}
-
+	
 	/*
 	 * Print driver information.
 	 */
@@ -698,7 +680,7 @@ int pwm_input_main(int argc, char *argv[])
 	{
 		pwmin_info();
 	}
-
+	
 	/*
 	 * print test results
 	 */
@@ -706,7 +688,7 @@ int pwm_input_main(int argc, char *argv[])
 	{
 		pwmin_test();
 	}
-
+	
 	/*
 	 * reset the timer
 	 */
@@ -714,7 +696,7 @@ int pwm_input_main(int argc, char *argv[])
 	{
 		pwmin_reset();
 	}
-
+	
 	errx(1, "unrecognized command, try 'start', 'info', 'reset' or 'test'");
 	return 0;
 }

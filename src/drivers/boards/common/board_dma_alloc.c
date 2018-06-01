@@ -96,19 +96,19 @@ static uint16_t dma_heap_peak_use;
  * Public Functions
  ****************************************************************************/
 __EXPORT int board_dma_alloc_init(void)
-{
+{	
 	dma_allocator = gran_initialize(g_dma_heap,
-					sizeof(g_dma_heap),
-					7,  /* 128B granule - must be > alignment (XXX bug?) */
-					6); /* 64B alignment */
+			sizeof(g_dma_heap),
+			7, /* 128B granule - must be > alignment (XXX bug?) */
+			6); /* 64B alignment */
 
 	if (dma_allocator == NULL)
-	{
+	{	
 		return -ENOMEM;
 
 	}
 	else
-	{
+	{	
 		dma_heap_inuse = 0;
 		dma_heap_peak_use = 0;
 		g_dma_perf = perf_alloc(PC_COUNT, "dma_alloc");
@@ -118,7 +118,7 @@ __EXPORT int board_dma_alloc_init(void)
 }
 
 __EXPORT int board_get_dma_usage(uint16_t *dma_total, uint16_t *dma_used, uint16_t *dma_peak_used)
-{
+{	
 	*dma_total = sizeof(g_dma_heap);
 	*dma_used = dma_heap_inuse;
 	*dma_peak_used = dma_heap_peak_use;
@@ -134,17 +134,17 @@ __EXPORT void fat_dma_free(FAR void *memory, size_t size);
 
 void *
 fat_dma_alloc(size_t size)
-{
+{	
 	void *rv = NULL;
 	perf_count(g_dma_perf);
 	rv = gran_alloc(dma_allocator, size);
 
 	if (rv != NULL)
-	{
+	{	
 		dma_heap_inuse += size;
 
 		if (dma_heap_inuse > dma_heap_peak_use)
-		{
+		{	
 			dma_heap_peak_use = dma_heap_inuse;
 		}
 	}
@@ -154,7 +154,7 @@ fat_dma_alloc(size_t size)
 
 void
 fat_dma_free(FAR void *memory, size_t size)
-{
+{	
 	gran_free(dma_allocator, memory, size);
 	dma_heap_inuse -= size;
 }
