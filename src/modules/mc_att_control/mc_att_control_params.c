@@ -92,7 +92,7 @@ PARAM_DEFINE_FLOAT(MC_ROLL_P, 4.0f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.11f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.13f);
 
 /**
  * Roll rate I gain
@@ -104,7 +104,7 @@ PARAM_DEFINE_FLOAT(MC_ROLLRATE_P, 0.11f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_I, 0.28f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_I, 0.20f);
 
 /**
  * Roll rate integrator limit
@@ -129,7 +129,7 @@ PARAM_DEFINE_FLOAT(MC_RR_INT_LIM, 0.30f);
  * @increment 0.0005
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_ROLLRATE_D, 0.003f);
+PARAM_DEFINE_FLOAT(MC_ROLLRATE_D, 0.005f);
 
 /**
  * Roll rate feedforward
@@ -167,7 +167,7 @@ PARAM_DEFINE_FLOAT(MC_PITCH_P, 4.0f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.11f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.13f);
 
 /**
  * Pitch rate I gain
@@ -179,7 +179,7 @@ PARAM_DEFINE_FLOAT(MC_PITCHRATE_P, 0.11f);
  * @increment 0.01
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_I, 0.28f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_I, 0.20f);
 
 /**
  * Pitch rate integrator limit
@@ -203,7 +203,7 @@ PARAM_DEFINE_FLOAT(MC_PR_INT_LIM, 0.30f);
  * @increment 0.0005
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_FLOAT(MC_PITCHRATE_D, 0.003f);
+PARAM_DEFINE_FLOAT(MC_PITCHRATE_D, 0.005f);
 
 /**
  * Pitch rate feedforward
