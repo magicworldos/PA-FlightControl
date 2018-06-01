@@ -299,7 +299,7 @@ PARAM_DEFINE_FLOAT(MPC_XY_VEL_MAX, 12.0f);
  * @decimal 1
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_TILTMAX_AIR, 20.0f);
+PARAM_DEFINE_FLOAT(MPC_TILTMAX_AIR, 35.0f);
 
 /**
  * Maximum tilt during landing
@@ -344,7 +344,7 @@ PARAM_DEFINE_FLOAT(MPC_TKO_SPEED, 1.5f);
  * @decimal 1
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_MAN_TILT_MAX, 25.0f);
+PARAM_DEFINE_FLOAT(MPC_MAN_TILT_MAX, 35.0f);
 
 /**
  * Max manual yaw rate
