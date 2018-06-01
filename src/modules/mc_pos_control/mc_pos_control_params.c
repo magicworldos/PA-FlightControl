@@ -216,7 +216,7 @@ PARAM_DEFINE_FLOAT(MPC_XY_VEL_P, 0.12f);
  * @decimal 3
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_XY_VEL_I, 0.06f);
+PARAM_DEFINE_FLOAT(MPC_XY_VEL_I, 0.08f);
 
 /**
  * Differential gain for horizontal velocity error. Small values help reduce fast oscillations. If value is too big oscillations will appear again.
@@ -226,7 +226,7 @@ PARAM_DEFINE_FLOAT(MPC_XY_VEL_I, 0.06f);
  * @decimal 3
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_XY_VEL_D, 0.003f);
+PARAM_DEFINE_FLOAT(MPC_XY_VEL_D, 0.02f);
 
 /**
  * Maximum horizontal velocity in mission
