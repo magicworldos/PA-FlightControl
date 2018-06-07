@@ -8,7 +8,6 @@
 #ifndef SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
 #define SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
 
-
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -37,6 +36,9 @@
 #include <systemlib/mavlink_log.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_global_position.h>
+#include <uORB/topics/vehicle_command.h>
+#include <uORB/topics/vehicle_status.h>
+#include <uORB/topics/vehicle_land_detected.h>
 #include <uORB/topics/input_rc.h>
 #include <uORB/topics/extctl_sp.h>
 
@@ -47,6 +49,7 @@
 #define DEV_RATE_POS		(DEV_RATE_BASE / 10)
 #define DEV_RATE_RC			(DEV_RATE_BASE / 10)
 #define DEV_RATE_SP			(DEV_RATE_BASE / 10)
+#define DEV_RATE_LAND		(DEV_RATE_BASE / 2)
 
 #define FRM_HEAD_0			0X55
 #define FRM_HEAD_1			0XAA
@@ -102,8 +105,10 @@ typedef struct vehicle_pos_s
 
 typedef struct vehicle_sp_s
 {
-	int ctl_type;
-	float yaw;
+	bool run_pos_control;
+	bool run_alt_control;
+	bool run_yaw_control;
+	float sp_yaw;
 	struct
 	{
 		float sp_x;
@@ -126,11 +131,30 @@ typedef struct rc_s
 	uint16_t values[18];
 } rc_s;
 
+typedef struct cmd_s
+{
+	uint32_t command;
+	float param1;
+	float param2;
+	float param3;
+	float param4;
+	float param5;
+	float param6;
+	float param7;
+} cmd_s;
+
+typedef struct land_s
+{
+	bool landed;
+} land_s;
+
 enum data_type
 {
 	DATA_TYPE_POS = 0,
 	DATA_TYPE_SP,
 	DATA_TYPE_RC,
+	DATA_TYPE_CMD,
+	DATA_TYPE_LAND,
 	DATA_TYPE_END,
 };
 

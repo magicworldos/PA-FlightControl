@@ -757,6 +757,7 @@ bool Commander::handle_command(vehicle_status_s *status_local, const safety_s *s
 	/* only handle commands that are meant to be handled by this system and component */
 	if (cmd->target_system != status_local->system_id || ((cmd->target_component != status_local->component_id) && (cmd->target_component != 0)))   // component_id 0: valid for all components
 	{
+		mavlink_log_info(&mavlink_log_pub, "cmd handle %d %d", status_local->system_id, status_local->component_id);
 		return false;
 	}
 	
@@ -815,6 +816,8 @@ bool Commander::handle_command(vehicle_status_s *status_local, const safety_s *s
 				if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_EXTCTL)
 				{
 					main_ret = main_state_transition(status_local, commander_state_s::MAIN_STATE_EXTCTL, main_state_prev, &status_flags, &internal_state);
+
+					mavlink_log_info(&mavlink_log_pub, "cmd handle extmode");
 				}
 				/* use autopilot-specific mode */
 				else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_MANUAL)

@@ -7,7 +7,7 @@
 
 #include "extctl_sp.h"
 
-#define __EXTCTL_DEBUG_
+//#define __EXTCTL_DEBUG_
 
 extern bool _extctl_should_exit;
 extern orb_advert_t _extctl_mavlink_log_pub;
@@ -32,21 +32,11 @@ int extctl_sp_handle(void *data)
 		return -1;
 	}
 
-	_orb_sp.run_pos_control = false;
-	_orb_sp.run_alt_control = true;
+	_orb_sp.run_pos_control = sp->run_pos_control;
+	_orb_sp.run_alt_control = sp->run_alt_control;
+	_orb_sp.run_yaw_control = sp->run_yaw_control;
 
-	if (sp->ctl_type == 0)
-	{
-		_orb_sp.run_pos_control = true;
-		_orb_sp.run_alt_control = false;
-	}
-	else if (sp->ctl_type == 1)
-	{
-		_orb_sp.run_pos_control = false;
-		_orb_sp.run_alt_control = true;
-	}
-
-	_orb_sp.yaw = sp->yaw;
+	_orb_sp.sp_yaw = sp->sp_yaw;
 
 	_orb_sp.sp_x = sp->sp_x;
 	_orb_sp.sp_y = sp->sp_y;

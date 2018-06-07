@@ -53,11 +53,13 @@ int extctl_read(int argc, char *argv[])
 	set_opt(_serial_fd, DEV_BAUDRATE, 8, 'N', 1);
 
 	extctl_sp_init();
+	extctl_cmd_init();
 
 	pthread_t pthddr;
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_sp_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_pos_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_rc_send, NULL);
+	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_land_send, NULL);
 
 	int (*p_handle)(void *) = NULL;
 
@@ -74,11 +76,15 @@ int extctl_read(int argc, char *argv[])
 					p_handle = &extctl_pos_handle;
 					break;
 
+				case DATA_TYPE_SP:
+					p_handle = &extctl_sp_handle;
+					break;
+
 				case DATA_TYPE_RC:
 					p_handle = &extctl_rc_handle;
 
-				case DATA_TYPE_SP:
-					p_handle = &extctl_sp_handle;
+				case DATA_TYPE_CMD:
+					p_handle = &extctl_cmd_handle;
 					break;
 
 				default:

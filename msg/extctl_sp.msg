@@ -1,7 +1,8 @@
 bool run_pos_control
 bool run_alt_control
+bool run_yaw_control
 
-float32 yaw
+float32 sp_yaw
 
 float32 sp_x
 float32 sp_y

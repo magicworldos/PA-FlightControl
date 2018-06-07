@@ -1711,9 +1711,10 @@ void MulticopterPositionControl::control_auto_extctl(float dt)
 {
 	_run_alt_control = _extctl_sp.run_alt_control;
 	_run_pos_control = _extctl_sp.run_pos_control;
-	
-	_att_sp.yaw_body = _extctl_sp.yaw;
-	
+	if (_extctl_sp.run_yaw_control)
+	{
+		_att_sp.yaw_body = _extctl_sp.sp_yaw;
+	}
 	_pos_sp(0) = _extctl_sp.sp_x;
 	_pos_sp(1) = _extctl_sp.sp_y;
 	_pos_sp(2) = _extctl_sp.sp_z;
