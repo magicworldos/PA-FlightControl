@@ -36,7 +36,10 @@ px4_add_module(
 	MAIN extctl
 	STACK_MAIN 1200
 	SRCS
-		extern_control.c
+		extctl_main.c
+		extctl_rc.c
+		extctl_pos.c
+		extctl_sp.c
 	DEPENDS
 		platforms__common
 	)

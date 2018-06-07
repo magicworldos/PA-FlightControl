@@ -812,8 +812,12 @@ bool Commander::handle_command(vehicle_status_s *status_local, const safety_s *s
 			
 			if (base_mode & VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED)
 			{
+				if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_EXTCTL)
+				{
+					main_ret = main_state_transition(status_local, commander_state_s::MAIN_STATE_EXTCTL, main_state_prev, &status_flags, &internal_state);
+				}
 				/* use autopilot-specific mode */
-				if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_MANUAL)
+				else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_MANUAL)
 				{
 					/* MANUAL */
 					main_ret = main_state_transition(status_local, commander_state_s::MAIN_STATE_MANUAL, main_state_prev, &status_flags, &internal_state);
@@ -1818,7 +1822,7 @@ void Commander::run()
 	bool failsafe_old = false;
 	
 	bool have_taken_off_since_arming = false;
-	
+
 	/* initialize low priority thread */
 	pthread_attr_t commander_low_prio_attr;
 	pthread_attr_init(&commander_low_prio_attr);
@@ -2355,7 +2359,7 @@ void Commander::run()
 		
 		/* update condition_local_altitude_valid */
 		check_valid(local_position.timestamp, posctl_nav_loss_delay, local_position.z_valid, &(status_flags.condition_local_altitude_valid), &status_changed);
-		
+
 		/* Update land detector */
 		orb_check(land_detector_sub, &updated);
 		if (updated)
@@ -2406,9 +2410,9 @@ void Commander::run()
 		{
 			timeout_time *= 5;
 		}
-		
+
 		auto_disarm_hysteresis.set_hysteresis_time_from(false, timeout_time);
-		
+
 		// Check for auto-disarm
 		if (armed.armed && land_detector.landed && disarm_when_landed > 0)
 		{
@@ -2423,7 +2427,7 @@ void Commander::run()
 		{
 			arm_disarm(false, &mavlink_log_pub, "auto disarm on land");
 		}
-		
+
 		if (!warning_action_on)
 		{
 			// store the last good main_state when not in an navigation
@@ -2436,7 +2440,7 @@ void Commander::run()
 			// reset flag again when we switched out of it
 			warning_action_on = false;
 		}
-		
+
 		orb_check(cpuload_sub, &updated);
 		
 		if (updated)
@@ -2878,7 +2882,7 @@ void Commander::run()
 			{
 				status_flags.rc_signal_found_once = true;
 				status_changed = true;
-				
+
 			}
 			else
 			{
@@ -2888,26 +2892,26 @@ void Commander::run()
 					status_changed = true;
 				}
 			}
-			
+
 			status.rc_signal_lost = false;
-			
+
 			const bool in_armed_state = status.arming_state == vehicle_status_s::ARMING_STATE_ARMED || status.arming_state == vehicle_status_s::ARMING_STATE_ARMED_ERROR;
 			const bool arm_button_pressed = arm_switch_is_button == 1 && sp_man.arm_switch == manual_control_setpoint_s::SWITCH_POS_ON;
-			
+
 			/* DISARM
 			 * check if left stick is in lower left position or arm button is pushed or arm switch has transition from arm to disarm
 			 * and we are in MANUAL, Rattitude, or AUTO_READY mode or (ASSIST mode and landed)
 			 * do it only for rotary wings in manual mode or fixed wing if landed */
 			const bool stick_in_lower_left = sp_man.r < -STICK_ON_OFF_LIMIT && sp_man.z < 0.1f;
 			const bool arm_switch_to_disarm_transition = arm_switch_is_button == 0 && _last_sp_man_arm_switch == manual_control_setpoint_s::SWITCH_POS_ON && sp_man.arm_switch == manual_control_setpoint_s::SWITCH_POS_OFF;
-			
+
 			if (in_armed_state && status.rc_input_mode != vehicle_status_s::RC_IN_MODE_OFF && (status.is_rotary_wing || (!status.is_rotary_wing && land_detector.landed)) && (stick_in_lower_left || arm_button_pressed || arm_switch_to_disarm_transition))
 			{
-				
+
 				if (internal_state.main_state != commander_state_s::MAIN_STATE_MANUAL && internal_state.main_state != commander_state_s::MAIN_STATE_ACRO && internal_state.main_state != commander_state_s::MAIN_STATE_STAB && internal_state.main_state != commander_state_s::MAIN_STATE_RATTITUDE && !land_detector.landed)
 				{
 					print_reject_arm("NOT DISARMING: Not in manual mode or landed yet.");
-					
+
 				}
 				else if ((stick_off_counter == rc_arm_hyst && stick_on_counter < rc_arm_hyst) || arm_switch_to_disarm_transition)
 				{
@@ -2922,18 +2926,18 @@ void Commander::run()
 			{
 				stick_off_counter = 0;
 			}
-			
+
 			/* ARM
 			 * check if left stick is in lower right position or arm button is pushed or arm switch has transition from disarm to arm
 			 * and we're in MANUAL mode */
 			const bool stick_in_lower_right = (sp_man.r > STICK_ON_OFF_LIMIT && sp_man.z < 0.1f);
 			const bool arm_switch_to_arm_transition = arm_switch_is_button == 0 && _last_sp_man_arm_switch == manual_control_setpoint_s::SWITCH_POS_OFF && sp_man.arm_switch == manual_control_setpoint_s::SWITCH_POS_ON;
-			
+
 			if (!in_armed_state && status.rc_input_mode != vehicle_status_s::RC_IN_MODE_OFF && (stick_in_lower_right || arm_button_pressed || arm_switch_to_arm_transition))
 			{
 				if ((stick_on_counter == rc_arm_hyst && stick_off_counter < rc_arm_hyst) || arm_switch_to_arm_transition)
 				{
-					
+
 					/* we check outside of the transition function here because the requirement
 					 * for being in manual mode only applies to manual arming actions.
 					 * the system can be armed in auto if armed via the GCS.
@@ -2942,17 +2946,17 @@ void Commander::run()
 					if ((internal_state.main_state != commander_state_s::MAIN_STATE_MANUAL) && (internal_state.main_state != commander_state_s::MAIN_STATE_ACRO) && (internal_state.main_state != commander_state_s::MAIN_STATE_STAB) && (internal_state.main_state != commander_state_s::MAIN_STATE_ALTCTL) && (internal_state.main_state != commander_state_s::MAIN_STATE_POSCTL) && (internal_state.main_state != commander_state_s::MAIN_STATE_RATTITUDE))
 					{
 						print_reject_arm("NOT ARMING: Switch to a manual mode first.");
-						
+
 					}
 					else if (!status_flags.condition_home_position_valid && geofence_action == geofence_result_s::GF_ACTION_RTL)
 					{
 						print_reject_arm("NOT ARMING: Geofence RTL requires valid home");
-						
+
 					}
 					else if (status.arming_state == vehicle_status_s::ARMING_STATE_STANDBY)
 					{
 						arming_ret = arming_state_transition(&status, &battery, &safety, vehicle_status_s::ARMING_STATE_ARMED, &armed, true /* fRunPreArmChecks */, &mavlink_log_pub, &status_flags, avionics_power_rail_voltage, arm_requirements, hrt_elapsed_time(&commander_boot_timestamp));
-						
+
 						if (arming_ret != TRANSITION_CHANGED)
 						{
 							usleep(100000);
@@ -2967,9 +2971,9 @@ void Commander::run()
 			{
 				stick_on_counter = 0;
 			}
-			
+
 			_last_sp_man_arm_switch = sp_man.arm_switch;
-			
+
 			if (arming_ret == TRANSITION_DENIED)
 			{
 				/*
@@ -2980,27 +2984,27 @@ void Commander::run()
 				 */
 				tune_negative(true);
 			}
-			
+
 			/* evaluate the main state machine according to mode switches */
 			bool first_rc_eval = (_last_sp_man.timestamp == 0) && (sp_man.timestamp > 0);
 			transition_result_t main_res = set_main_state(&status, &global_position, &local_position, &status_changed);
-			
+
 			/* store last position lock state */
 			_last_condition_global_position_valid = status_flags.condition_global_position_valid;
-			
+
 			/* play tune on mode change only if armed, blink LED always */
 			if (main_res == TRANSITION_CHANGED || first_rc_eval)
 			{
 				tune_positive(armed.armed);
 				main_state_changed = true;
-				
+
 			}
 			else if (main_res == TRANSITION_DENIED)
 			{
 				/* DENIED here indicates bug in the commander */
 				mavlink_log_critical(&mavlink_log_pub, "Switching to this mode is currently not possible");
 			}
-			
+
 			/* check throttle kill switch */
 			if (sp_man.kill_switch == manual_control_setpoint_s::SWITCH_POS_ON)
 			{
@@ -4236,10 +4240,27 @@ void set_control_mode()
 	control_mode.flag_armed = armed.armed;
 	control_mode.flag_external_manual_override_ok = (!status.is_rotary_wing && !status.is_vtol);
 	control_mode.flag_control_offboard_enabled = false;
+	control_mode.flag_control_extctl_enabled = false;
 	
 	switch (status.nav_state)
 	{
+		case vehicle_status_s::NAVIGATION_STATE_EXTCTL:
+			control_mode.flag_control_extctl_enabled = true;
+			control_mode.flag_control_manual_enabled = false;
+			control_mode.flag_control_auto_enabled = true;
+			control_mode.flag_control_rates_enabled = true;
+			control_mode.flag_control_attitude_enabled = true;
+			control_mode.flag_control_rattitude_enabled = false;
+			control_mode.flag_control_altitude_enabled = true;
+			control_mode.flag_control_climb_rate_enabled = true;
+			control_mode.flag_control_position_enabled = !status.in_transition_mode;
+			control_mode.flag_control_velocity_enabled = !status.in_transition_mode;
+			control_mode.flag_control_acceleration_enabled = false;
+			control_mode.flag_control_termination_enabled = false;
+			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_MANUAL:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = stabilization_required();
@@ -4254,6 +4275,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_STAB:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4268,6 +4290,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_RATTITUDE:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4282,6 +4305,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4296,6 +4320,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_POSCTL:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4321,6 +4346,7 @@ void set_control_mode()
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION:
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER:
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = false;
 			control_mode.flag_control_auto_enabled = true;
 			control_mode.flag_control_rates_enabled = true;
@@ -4335,6 +4361,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_LANDGPSFAIL:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = false;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4349,6 +4376,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_ACRO:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = true;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = true;
@@ -4364,6 +4392,7 @@ void set_control_mode()
 			
 		case vehicle_status_s::NAVIGATION_STATE_DESCEND:
 			/* TODO: check if this makes sense */
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = false;
 			control_mode.flag_control_auto_enabled = true;
 			control_mode.flag_control_rates_enabled = true;
@@ -4379,6 +4408,7 @@ void set_control_mode()
 			
 		case vehicle_status_s::NAVIGATION_STATE_TERMINATION:
 			/* disable all controllers on termination */
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = false;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_rates_enabled = false;
@@ -4393,6 +4423,7 @@ void set_control_mode()
 			break;
 			
 		case vehicle_status_s::NAVIGATION_STATE_OFFBOARD:
+			control_mode.flag_control_extctl_enabled = false;
 			control_mode.flag_control_manual_enabled = false;
 			control_mode.flag_control_auto_enabled = false;
 			control_mode.flag_control_offboard_enabled = true;

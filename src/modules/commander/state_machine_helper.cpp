@@ -83,7 +83,13 @@ static const char reason_no_datalink[] = "no datalink";
 // code for those checks.
 static const bool arming_transitions[vehicle_status_s::ARMING_STATE_MAX][vehicle_status_s::ARMING_STATE_MAX] = {
 //                                                    INIT,  STANDBY, ARMED, ARMED_ERROR, STANDBY_ERROR, REBOOT, IN_AIR_RESTORE
-{ /* vehicle_status_s::ARMING_STATE_INIT */true, true, false, false, true, false, false }, { /* vehicle_status_s::ARMING_STATE_STANDBY */true, true, true, true, false, false, false }, { /* vehicle_status_s::ARMING_STATE_ARMED */false, true, true, false, false, false, true }, { /* vehicle_status_s::ARMING_STATE_ARMED_ERROR */false, false, true, true, false, false, false }, { /* vehicle_status_s::ARMING_STATE_STANDBY_ERROR */true, true, true, true, true, false, false }, { /* vehicle_status_s::ARMING_STATE_REBOOT */true, true, false, false, true, true, true }, { /* vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE */false, false, false, false, false, false, false }, // NYI
+{ /* vehicle_status_s::ARMING_STATE_INIT */true, true, false, false, true, false, false },
+{ /* vehicle_status_s::ARMING_STATE_STANDBY */true, true, true, true, false, false, false },
+{ /* vehicle_status_s::ARMING_STATE_ARMED */false, true, true, false, false, false, true },
+{ /* vehicle_status_s::ARMING_STATE_ARMED_ERROR */false, false, true, true, false, false, false },
+{ /* vehicle_status_s::ARMING_STATE_STANDBY_ERROR */true, true, true, true, true, false, false },
+{ /* vehicle_status_s::ARMING_STATE_REBOOT */true, true, false, false, true, true, true },
+{ /* vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE */false, false, false, false, false, false, false }, // NYI
 };
 
 // You can index into the array with an arming_state_t in order to get its textual representation
@@ -407,6 +413,10 @@ transition_result_t main_state_transition(struct vehicle_status_s *status, main_
 	/* transition may be denied even if the same state is requested because conditions may have changed */
 	switch (new_main_state)
 	{
+		case commander_state_s::MAIN_STATE_EXTCTL:
+			ret = TRANSITION_CHANGED;
+			break;
+
 		case commander_state_s::MAIN_STATE_MANUAL:
 		case commander_state_s::MAIN_STATE_STAB:
 		case commander_state_s::MAIN_STATE_ACRO:
@@ -624,6 +634,9 @@ bool set_nav_state(struct vehicle_status_s *status, struct actuator_armed_s *arm
 	/* evaluate main state to decide in normal (non-failsafe) mode */
 	switch (internal_state->main_state)
 	{
+		case commander_state_s::MAIN_STATE_EXTCTL:
+			status->nav_state = vehicle_status_s::NAVIGATION_STATE_EXTCTL;
+			break;
 		case commander_state_s::MAIN_STATE_ACRO:
 		case commander_state_s::MAIN_STATE_MANUAL:
 		case commander_state_s::MAIN_STATE_RATTITUDE:
@@ -895,7 +908,6 @@ bool set_nav_state(struct vehicle_status_s *status, struct actuator_armed_s *arm
 			else if (is_armed && check_invalid_pos_nav_state(status, old_failsafe, mavlink_log_pub, status_flags, false, false))
 			{
 				// nothing to do - everything done in check_invalid_pos_nav_state
-				
 			}
 			else
 			{

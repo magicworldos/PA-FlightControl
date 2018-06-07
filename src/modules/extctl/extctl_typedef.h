@@ -1,12 +1,13 @@
 /*
- * Extern_control.h
+ * extctl_typedef.h
  *
- *  Created on: Apr 21, 2018
+ *  Created on: Jun 7, 2018
  *      Author: lidq
  */
 
-#ifndef SRC_DRIVERS_Extern_CONTROL_EXTERN_CONTROL_H_
-#define SRC_DRIVERS_Extern_CONTROL_EXTERN_CONTROL_H_
+#ifndef SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
+#define SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
+
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -19,7 +20,6 @@
 #include <pthread.h>
 #include <poll.h>
 #include <errno.h>
-#include <stdio.h>
 #include <math.h>
 #include <unistd.h>
 #include <px4_config.h>
@@ -34,6 +34,7 @@
 #include <systemlib/err.h>
 #include <termios.h>
 #include <semaphore.h>
+#include <systemlib/mavlink_log.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_global_position.h>
 #include <uORB/topics/input_rc.h>
@@ -41,21 +42,22 @@
 
 #define DEV_NAME			"/dev/ttyS2"
 #define DEV_BAUDRATE		(B115200)
-#define DEV_RW_RATE			(10)
-#define DEV_RW_RATE_RC		(10)
-#define DEV_RW_USLEEP		(1000 * 1000 / DEV_RW_RATE)
-#define DEV_RW_USLEEP_RC	(1000 * 1000 / DEV_RW_RATE_RC)
+#define DEV_RATE_BASE		(1000 * 1000)
+#define DEV_RATE_READ		(DEV_RATE_BASE / 30)
+#define DEV_RATE_POS		(DEV_RATE_BASE / 10)
+#define DEV_RATE_RC			(DEV_RATE_BASE / 10)
+#define DEV_RATE_SP			(DEV_RATE_BASE / 10)
 
-#define FRM_HEAD_0		0X55
-#define FRM_HEAD_1		0XAA
-#define FRM_FOOT_0		0XA5
-#define FRM_FOOT_1		0X5A
+#define FRM_HEAD_0			0X55
+#define FRM_HEAD_1			0XAA
+#define FRM_FOOT_0			0XA5
+#define FRM_FOOT_1			0X5A
 
-#define PAR_HEAD		0
-#define PAR_LEN			1
-#define PAR_END			2
+#define PAR_HEAD			0
+#define PAR_LEN				1
+#define PAR_END				2
 
-#define SIZE_BUFF		(0x200)
+#define SIZE_BUFF			(0x200)
 
 typedef struct s_buff
 {
@@ -100,8 +102,7 @@ typedef struct vehicle_pos_s
 
 typedef struct vehicle_sp_s
 {
-	bool run_pos_control;
-	bool run_alt_control;
+	int ctl_type;
 	float yaw;
 	struct
 	{
@@ -133,42 +134,6 @@ enum data_type
 	DATA_TYPE_END,
 };
 
-int extctl_main(int argc, char *argv[]);
+int send_data_buff(void *data, int data_type, int data_len);
 
-extern void bzero(void *s, int n);
-
-static int frame_pos(int len_data);
-
-static int frame_data(char *frame, int len_frame, char *data, int type, int len_data);
-
-static int send_data_pos(vehicle_pos_s *pos);
-
-static int send_data_sp(vehicle_sp_s *sp);
-
-static int send_data_rc(rc_s *rc);
-
-static int send_frame_data(char *frame, int len);
-
-static int start(int argc, char *argv[]);
-
-static int stop(void);
-
-int frame_count(s_buff *lb);
-
-int frame_parse(void);
-
-void frame_read_data(void);
-
-static int task_main_read(int argc, char* argv[]);
-
-static int task_main_write(int argc, char* argv[]);
-
-static int task_main_write_rc(int argc, char* argv[]);
-
-static uint16_t crc16_value(uint8_t *buff, uint8_t len);
-
-static int crc16_check(uint8_t *buff, uint8_t len, uint16_t crc16);
-
-static int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop);
-
-#endif /* SRC_DRIVERS_Extern_CONTROL_EXTERN_CONTROL_H_ */
+#endif /* SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_ */
