@@ -110,6 +110,7 @@ struct status_flags_s
 	bool rc_input_blocked;                                // set if RC input should be ignored temporarily
 	bool vtol_transition_failure;                        // Set to true if vtol transition failed
 	bool gps_failure;                                // Set to true if a gps failure is detected
+	bool extctl_failure;
 };
 
 bool is_safe(const struct safety_s *safety, const struct actuator_armed_s *armed);

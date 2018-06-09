@@ -121,6 +121,7 @@
 #include <uORB/topics/vehicle_status_flags.h>
 #include <uORB/topics/vtol_vehicle_status.h>
 #include <uORB/topics/estimator_status.h>
+#include <uORB/topics/extctl_sp.h>
 
 typedef enum VEHICLE_MODE_FLAG
 {
@@ -161,6 +162,8 @@ static constexpr uint8_t COMMANDER_MAX_GPS_NOISE = 60; /**< Maximum percentage s
 #define POSVEL_PROBATION_MIN 1E6		/**< minimum probation duration (usec) */
 #define POSVEL_PROBATION_MAX 100E6		/**< maximum probation duration (usec) */
 #define POSVEL_VALID_PROBATION_FACTOR 10	/**< the rate at which the probation duration is increased while checks are failing */
+
+#define TIMEOUT_EXTCTL_SP		(1000 * 1000)
 
 /* Parameters controlling the sensitivity of the position failsafe */
 static int32_t posctl_nav_loss_delay = POSITION_TIMEOUT * (1000 * 1000);
@@ -1716,6 +1719,12 @@ void Commander::run()
 	struct actuator_controls_s actuator_controls;
 	memset(&actuator_controls, 0, sizeof(actuator_controls));
 	
+	/* Subscribe to extctl topic */
+	int extctl_sp_sub = orb_subscribe(ORB_ID(extctl_sp));
+	struct extctl_sp_s extctl_sp_s;
+	memset(&extctl_sp_s, 0, sizeof(struct extctl_sp_s));
+	hrt_abstime time_at_extctl = 0;
+
 	/* Subscribe to vtol vehicle status topic */
 	int vtol_vehicle_status_sub = orb_subscribe(ORB_ID(vtol_vehicle_status));
 	//struct vtol_vehicle_status_s vtol_status;
@@ -3189,6 +3198,20 @@ void Commander::run()
 			}
 		}
 		
+		orb_check(extctl_sp_sub, &updated);
+		if (updated)
+		{
+			orb_copy(ORB_ID(extctl_sp), extctl_sp_sub, &extctl_sp_s);
+			time_at_extctl = hrt_absolute_time();
+		}
+		else
+		{
+			if (internal_state.main_state == commander_state_s::MAIN_STATE_EXTCTL && hrt_absolute_time() - time_at_extctl > TIMEOUT_EXTCTL_SP)
+			{
+				main_state_transition(&status, commander_state_s::MAIN_STATE_AUTO_RTL, main_state_prev, &status_flags, &internal_state);
+			}
+		}
+
 		/* Reset main state to loiter or auto-mission after takeoff is completed.
 		 * Sometimes, the mission result topic is outdated and the mission is still signaled
 		 * as finished even though we only just started with the takeoff. Therefore, we also
