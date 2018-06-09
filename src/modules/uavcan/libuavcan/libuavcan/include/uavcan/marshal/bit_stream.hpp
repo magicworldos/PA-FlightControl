@@ -60,9 +60,9 @@ public:
 	};
 
 	explicit BitStream(ITransferBuffer& buf) :
-			    buf_(buf),
-			    bit_offset_(0),
-			    byte_cache_(0)
+				buf_(buf),
+				bit_offset_(0),
+				byte_cache_(0)
 	{
 		StaticAssert<sizeof(uint8_t) == 1>::check();
 	}

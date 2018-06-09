@@ -41,7 +41,7 @@
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-	         "\trpm {yada|yada|yada}");
+				"\trpm {yada|yada|yada}");
 }
 
 extern "C" __EXPORT int rpm_main(int argc, char *argv[]);

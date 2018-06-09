@@ -52,7 +52,7 @@ public:
 	{
 	public:
 		DFListNode(void *item) :
-				    m_item(item)
+					m_item(item)
 		{
 		}
 		~DFListNode() = default;
@@ -95,7 +95,7 @@ class DFManagedList: public DFPointerList
 {
 public:
 	DFManagedList() :
-			    DFPointerList()
+				DFPointerList()
 	{
 	}
 	
@@ -166,7 +166,7 @@ public:
 	{
 	public:
 		DFUIntListNode(unsigned int item) :
-				    m_item(item)
+					m_item(item)
 		{
 		}
 		~DFUIntListNode() = default;

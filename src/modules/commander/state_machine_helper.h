@@ -114,7 +114,7 @@ struct status_flags_s
 
 bool is_safe(const struct safety_s *safety, const struct actuator_armed_s *armed);
 
-transition_result_t arming_state_transition(struct vehicle_status_s *status, struct battery_status_s *battery, const struct safety_s *safety, arming_state_t new_arming_state, struct actuator_armed_s *armed, bool fRunPreArmChecks, orb_advert_t *mavlink_log_pub,        ///< uORB handle for mavlink log
+transition_result_t arming_state_transition(struct vehicle_status_s *status, struct battery_status_s *battery, const struct safety_s *safety, arming_state_t new_arming_state, struct actuator_armed_s *armed, bool fRunPreArmChecks, orb_advert_t *mavlink_log_pub, ///< uORB handle for mavlink log
 status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_requirements, hrt_abstime time_since_boot);
 
 transition_result_t

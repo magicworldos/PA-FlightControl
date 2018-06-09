@@ -87,7 +87,7 @@ LPS25H_I2C_interface(int bus)
 }
 
 LPS25H_I2C::LPS25H_I2C(int bus) :
-		    I2C("LPS25H_I2C", nullptr, bus, LPS25H_ADDRESS, 400000)
+			I2C("LPS25H_I2C", nullptr, bus, LPS25H_ADDRESS, 400000)
 {
 }
 

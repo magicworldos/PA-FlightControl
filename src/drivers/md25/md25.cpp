@@ -84,20 +84,20 @@ enum
 static orb_advert_t mavlink_log_pub;
 
 MD25::MD25(const char *deviceName, int bus, uint16_t address, uint32_t speed) :
-		    I2C("MD25", deviceName, bus, address, speed),
-		    _controlPoll(),
-		    _actuators(NULL, ORB_ID(actuator_controls_0), 20),
-		    _version(0),
-		    _motor1Speed(0),
-		    _motor2Speed(0),
-		    _revolutions1(0),
-		    _revolutions2(0),
-		    _batteryVoltage(0),
-		    _motor1Current(0),
-		    _motor2Current(0),
-		    _motorAccel(0),
-		    _mode(MODE_UNSIGNED_SPEED),
-		    _command(CMD_RESET_ENCODERS)
+			I2C("MD25", deviceName, bus, address, speed),
+			_controlPoll(),
+			_actuators(NULL, ORB_ID(actuator_controls_0), 20),
+			_version(0),
+			_motor1Speed(0),
+			_motor2Speed(0),
+			_revolutions1(0),
+			_revolutions2(0),
+			_batteryVoltage(0),
+			_motor1Current(0),
+			_motor2Current(0),
+			_motorAccel(0),
+			_mode(MODE_UNSIGNED_SPEED),
+			_command(CMD_RESET_ENCODERS)
 {
 	// setup control polling
 	_controlPoll.fd = _actuators.getHandle();
@@ -154,16 +154,16 @@ int MD25::readData()
 void MD25::status(char *string, size_t n)
 {
 	snprintf(string, n, "version:\t%10d\n"
-	         "motor 1 speed:\t%10.2f\n"
-	         "motor 2 speed:\t%10.2f\n"
-	         "revolutions 1:\t%10.2f\n"
-	         "revolutions 2:\t%10.2f\n"
-	         "battery volts :\t%10.2f\n"
-	         "motor 1 current :\t%10.2f\n"
-	         "motor 2 current :\t%10.2f\n"
-	         "motor accel :\t%10d\n"
-	         "mode :\t%10d\n"
-	         "command :\t%10d\n", getVersion(), double(getMotor1Speed()), double(getMotor2Speed()), double(getRevolutions1()), double(getRevolutions2()), double(getBatteryVolts()), double(getMotor1Current()), double(getMotor2Current()), getMotorAccel(), getMode(), getCommand());
+				"motor 1 speed:\t%10.2f\n"
+				"motor 2 speed:\t%10.2f\n"
+				"revolutions 1:\t%10.2f\n"
+				"revolutions 2:\t%10.2f\n"
+				"battery volts :\t%10.2f\n"
+				"motor 1 current :\t%10.2f\n"
+				"motor 2 current :\t%10.2f\n"
+				"motor accel :\t%10d\n"
+				"mode :\t%10d\n"
+				"command :\t%10d\n", getVersion(), double(getMotor1Speed()), double(getMotor2Speed()), double(getRevolutions1()), double(getRevolutions2()), double(getBatteryVolts()), double(getMotor1Current()), double(getMotor2Current()), getMotorAccel(), getMode(), getCommand());
 }
 
 uint8_t MD25::getVersion()

@@ -41,9 +41,9 @@
 #include <systemlib/err.h>
 
 UavcanHardpointController::UavcanHardpointController(uavcan::INode &node) :
-		    _node(node),
-		    _uavcan_pub_raw_cmd(node),
-		    _timer(node)
+			_node(node),
+			_uavcan_pub_raw_cmd(node),
+			_timer(node)
 {
 	_uavcan_pub_raw_cmd.setPriority(uavcan::TransferPriority::MiddleLower);
 }

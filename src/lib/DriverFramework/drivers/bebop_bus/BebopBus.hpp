@@ -101,8 +101,8 @@ class BebopBus: public DriverFramework::I2CDevObj
 {
 public:
 	BebopBus(const char *device_path) :
-			    I2CDevObj("BebopBus", device_path, BEBOP_BUS_CLASS_PATH, BEBOP_BUS_UPDATE_INTERVAL_US),
-			    _speed_setpoint { }
+				I2CDevObj("BebopBus", device_path, BEBOP_BUS_CLASS_PATH, BEBOP_BUS_UPDATE_INTERVAL_US),
+				_speed_setpoint { }
 	{
 	}
 	

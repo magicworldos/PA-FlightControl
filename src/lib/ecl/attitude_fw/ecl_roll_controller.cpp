@@ -48,7 +48,7 @@
 #include <systemlib/err.h>
 
 ECL_RollController::ECL_RollController() :
-		    ECL_Controller("roll")
+			ECL_Controller("roll")
 {
 }
 

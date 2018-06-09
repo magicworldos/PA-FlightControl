@@ -47,13 +47,13 @@ CameraFeedback *g_camera_feedback;
 }
 
 CameraFeedback::CameraFeedback() :
-		    _task_should_exit(false),
-		    _main_task(-1),
-		    _trigger_sub(-1),
-		    _gpos_sub(-1),
-		    _att_sub(-1),
-		    _capture_pub(nullptr),
-		    _camera_feedback_mode(CAMERA_FEEDBACK_MODE_NONE)
+			_task_should_exit(false),
+			_main_task(-1),
+			_trigger_sub(-1),
+			_gpos_sub(-1),
+			_att_sub(-1),
+			_capture_pub(nullptr),
+			_camera_feedback_mode(CAMERA_FEEDBACK_MODE_NONE)
 {
 	
 	// Parameters

@@ -42,9 +42,9 @@
 #include <nuttx/clock.h>
 
 LidarLite::LidarLite() :
-		    _min_distance(LL40LS_MIN_DISTANCE),
-		    _max_distance(LL40LS_MAX_DISTANCE),
-		    _measure_ticks(0)
+			_min_distance(LL40LS_MIN_DISTANCE),
+			_max_distance(LL40LS_MAX_DISTANCE),
+			_measure_ticks(0)
 {
 }
 

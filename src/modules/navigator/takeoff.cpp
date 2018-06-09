@@ -54,8 +54,8 @@
 #include "navigator.h"
 
 Takeoff::Takeoff(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _param_min_alt(this, "MIS_TAKEOFF_ALT", false)
+			MissionBlock(navigator, name),
+			_param_min_alt(this, "MIS_TAKEOFF_ALT", false)
 {
 }
 

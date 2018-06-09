@@ -47,12 +47,12 @@
 const char * const UavcanGnssBridge::NAME = "gnss";
 
 UavcanGnssBridge::UavcanGnssBridge(uavcan::INode &node) :
-		    _node(node),
-		    _sub_fix(node),
-		    _sub_fix2(node),
-		    _pub_fix2(node),
-		    _orb_to_uavcan_pub_timer(node, TimerCbBinder(this, &UavcanGnssBridge::broadcast_from_orb)),
-		    _report_pub(nullptr)
+			_node(node),
+			_sub_fix(node),
+			_sub_fix2(node),
+			_pub_fix2(node),
+			_orb_to_uavcan_pub_timer(node, TimerCbBinder(this, &UavcanGnssBridge::broadcast_from_orb)),
+			_report_pub(nullptr)
 {
 }
 
@@ -319,7 +319,7 @@ void UavcanGnssBridge::process_fixx(const uavcan::ReceivedDataStructure<FixType>
 		float vel_n_sq = vel_n * vel_n;
 		float vel_e_sq = vel_e * vel_e;
 		report.c_variance_rad = (vel_e_sq * vel_cov[0] + -2 * vel_n * vel_e * vel_cov[1] +	// Covariance matrix is symmetric
-		        vel_n_sq * vel_cov[4]) / ((vel_n_sq + vel_e_sq) * (vel_n_sq + vel_e_sq));
+				vel_n_sq * vel_cov[4]) / ((vel_n_sq + vel_e_sq) * (vel_n_sq + vel_e_sq));
 		
 	}
 	else

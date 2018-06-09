@@ -28,7 +28,7 @@ void BlockLocalPositionEstimator::flowInit()
 	if (_flowQStats.getCount() > REQ_FLOW_INIT_COUNT)
 	{
 		mavlink_and_console_log_info(&mavlink_log_pub, "[lpe] flow init: "
-		                             "quality %d std %d", int(_flowQStats.getMean()(0)), int(_flowQStats.getStdDev()(0)));
+										"quality %d std %d", int(_flowQStats.getMean()(0)), int(_flowQStats.getStdDev()(0)));
 		_sensorTimeout &= ~SENSOR_FLOW;
 		_sensorFault &= ~SENSOR_FLOW;
 	}
@@ -163,7 +163,8 @@ void BlockLocalPositionEstimator::flowCorrect()
 	// compute polynomial value
 	float flow_vxy_stddev = p[0] * h + p[1] * h * h + p[2] * v + p[3] * v * h + p[4] * v * h * h;
 	
-	float rotrate_sq = _sub_att.get().rollspeed * _sub_att.get().rollspeed + _sub_att.get().pitchspeed * _sub_att.get().pitchspeed + _sub_att.get().yawspeed * _sub_att.get().yawspeed;
+	float rotrate_sq = _sub_att.get().rollspeed * _sub_att.get().rollspeed + _sub_att.get().pitchspeed * _sub_att.get().pitchspeed
+			+ _sub_att.get().yawspeed * _sub_att.get().yawspeed;
 	
 	float rot_sq = _eul(0) * _eul(0) + _eul(1) * _eul(1);
 	

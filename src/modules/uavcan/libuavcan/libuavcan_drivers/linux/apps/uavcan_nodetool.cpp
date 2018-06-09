@@ -39,7 +39,7 @@ class StdinLineReader
 	
 public:
 	StdinLineReader() :
-			    thread_(&StdinLineReader::worker, this)
+				thread_(&StdinLineReader::worker, this)
 	{
 		thread_.detach();
 	}
@@ -201,7 +201,7 @@ void runForever(const uavcan_linux::NodePtr& node)
 		{
 			std::cout << "<command> <remote node id> [args...]\n";
 			std::cout << "Say 'help' to get help.\n";     // I'll show myself out.
-			        
+					
 			if (!words.empty() && words.at(0) == "help")
 			{
 				std::cout << "Usage:\n\n";

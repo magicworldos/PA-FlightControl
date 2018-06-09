@@ -93,32 +93,32 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 
 template<>
 BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-		    BlockParamBase(block, name, parent_prefix),
-		    _val()
+			BlockParamBase(block, name, parent_prefix),
+			_val()
 {
 	update();
 }
 
 template<>
 BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-		    BlockParamBase(block, name, parent_prefix),
-		    _val()
+			BlockParamBase(block, name, parent_prefix),
+			_val()
 {
 	update();
 }
 
 template<>
 BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-		    BlockParamBase(block, name, parent_prefix),
-		    _val(extern_val)
+			BlockParamBase(block, name, parent_prefix),
+			_val(extern_val)
 {
 	update();
 }
 
 template<>
 BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-		    BlockParamBase(block, name, parent_prefix),
-		    _val(extern_val)
+			BlockParamBase(block, name, parent_prefix),
+			_val(extern_val)
 {
 	update();
 }

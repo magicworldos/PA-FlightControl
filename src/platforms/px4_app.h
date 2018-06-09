@@ -60,8 +60,8 @@ public:
 	{	ros::shutdown();}
 #else
 	AppState() :
-			    _exitRequested(false),
-			    _isRunning(false)
+				_exitRequested(false),
+				_isRunning(false)
 	{
 	}
 	

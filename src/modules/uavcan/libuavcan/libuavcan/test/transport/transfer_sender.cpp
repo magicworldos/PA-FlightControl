@@ -163,8 +163,8 @@ struct TransferSenderTestLoopbackFrameListener: public uavcan::LoopbackFrameList
 	unsigned count;
 
 	TransferSenderTestLoopbackFrameListener(uavcan::Dispatcher& dispatcher) :
-			    uavcan::LoopbackFrameListenerBase(dispatcher),
-			    count(0)
+				uavcan::LoopbackFrameListenerBase(dispatcher),
+				count(0)
 	{
 		startListening();
 	}

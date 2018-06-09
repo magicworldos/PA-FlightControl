@@ -114,11 +114,11 @@ protected:
 extern "C" __EXPORT int ms4525_airspeed_main(int argc, char *argv[]);
 
 MEASAirspeed::MEASAirspeed(int bus, int address, const char *path) :
-		    Airspeed(bus, address,
-		    CONVERSION_INTERVAL, path),
-		    _filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
-		    _t_system_power(-1),
-		    system_power { }
+			Airspeed(bus, address,
+			CONVERSION_INTERVAL, path),
+			_filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
+			_t_system_power(-1),
+			system_power { }
 {
 	_device_id.devid_s.devtype = DRV_DIFF_PRESS_DEVTYPE_MS4525;
 }

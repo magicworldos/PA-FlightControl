@@ -71,16 +71,16 @@
  */
 
 MultirotorMixer::MultirotorMixer(ControlCallback control_cb, uintptr_t cb_handle, MultirotorGeometry geometry, float roll_scale, float pitch_scale, float yaw_scale, float idle_speed) :
-		    Mixer(control_cb, cb_handle),
-		    _roll_scale(roll_scale),
-		    _pitch_scale(pitch_scale),
-		    _yaw_scale(yaw_scale),
-		    _idle_speed(-1.0f + idle_speed * 2.0f), /* shift to output range here to avoid runtime calculation */
-		    _delta_out_max(0.0f),
-		    _thrust_factor(0.0f),
-		    _rotor_count(_config_rotor_count[(MultirotorGeometryUnderlyingType) geometry]),
-		    _rotors(_config_index[(MultirotorGeometryUnderlyingType) geometry]),
-		    _outputs_prev(new float[_rotor_count])
+			Mixer(control_cb, cb_handle),
+			_roll_scale(roll_scale),
+			_pitch_scale(pitch_scale),
+			_yaw_scale(yaw_scale),
+			_idle_speed(-1.0f + idle_speed * 2.0f), /* shift to output range here to avoid runtime calculation */
+			_delta_out_max(0.0f),
+			_thrust_factor(0.0f),
+			_rotor_count(_config_rotor_count[(MultirotorGeometryUnderlyingType) geometry]),
+			_rotors(_config_index[(MultirotorGeometryUnderlyingType) geometry]),
+			_outputs_prev(new float[_rotor_count])
 {
 	memset(_outputs_prev, _idle_speed, _rotor_count * sizeof(float));
 }
@@ -323,7 +323,9 @@ unsigned MultirotorMixer::mix(float *outputs, unsigned space)
 		 */
 		if (_thrust_factor > 0.0f)
 		{
-			outputs[i] = -(1.0f - _thrust_factor) / (2.0f * _thrust_factor) + sqrtf((1.0f - _thrust_factor) * (1.0f - _thrust_factor) / (4.0f * _thrust_factor * _thrust_factor) + (outputs[i] < 0.0f ? 0.0f : outputs[i] / _thrust_factor));
+			outputs[i] = -(1.0f - _thrust_factor) / (2.0f * _thrust_factor)
+					+ sqrtf((1.0f - _thrust_factor) * (1.0f - _thrust_factor) / (4.0f * _thrust_factor * _thrust_factor)
+							+ (outputs[i] < 0.0f ? 0.0f : outputs[i] / _thrust_factor));
 		}
 		
 		outputs[i] = math::constrain(_idle_speed + (outputs[i] * (1.0f - _idle_speed)), _idle_speed, 1.0f);

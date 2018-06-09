@@ -233,7 +233,7 @@ private:
 	std::streampos _subscription_file_pos = 0;
 
 	uint64_t _read_until_file_position = 1ULL << 60; ///< read limit if log contains appended data
-	        
+			
 	bool readFileHeader(std::ifstream &file);
 
 	/**

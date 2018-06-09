@@ -119,9 +119,9 @@ class LimitedPoolAllocator: public IPoolAllocator
 
 public:
 	LimitedPoolAllocator(IPoolAllocator& allocator, std::size_t max_blocks) :
-			    allocator_(allocator),
-			    max_blocks_(static_cast<uint16_t>(min<std::size_t>(max_blocks, 0xFFFFU))),
-			    used_blocks_(0)
+				allocator_(allocator),
+				max_blocks_(static_cast<uint16_t>(min<std::size_t>(max_blocks, 0xFFFFU))),
+				used_blocks_(0)
 	{
 		UAVCAN_ASSERT(max_blocks_ > 0);
 	}
@@ -142,9 +142,9 @@ const uint16_t PoolAllocator<PoolSize, BlockSize, RaiiSynchronizer>::NumBlocks;
 
 template<std::size_t PoolSize, uint8_t BlockSize, typename RaiiSynchronizer>
 PoolAllocator<PoolSize, BlockSize, RaiiSynchronizer>::PoolAllocator() :
-		    free_list_(reinterpret_cast<Node*>(pool_.bytes)),
-		    used_(0),
-		    max_used_(0)
+			free_list_(reinterpret_cast<Node*>(pool_.bytes)),
+			used_(0),
+			max_used_(0)
 {
 	// The limit is imposed by the width of the pool usage tracking variables.
 	StaticAssert<((PoolSize / BlockSize) <= 0xFFFFU)>::check();

@@ -44,11 +44,11 @@ namespace ringbuffer
 {
 
 RingBuffer::RingBuffer(unsigned num_items, size_t item_size) :
-		    _num_items(num_items),
-		    _item_size(item_size),
-		    _buf(new char[(_num_items + 1) * item_size]),
-		    _head(_num_items),
-		    _tail(_num_items)
+			_num_items(num_items),
+			_item_size(item_size),
+			_buf(new char[(_num_items + 1) * item_size]),
+			_head(_num_items),
+			_tail(_num_items)
 {
 }
 

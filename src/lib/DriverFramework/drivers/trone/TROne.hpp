@@ -69,7 +69,7 @@ class TROne: public I2CDevObj
 {
 public:
 	TROne(const char *device_path) :
-			    I2CDevObj("RangeFinder", device_path, TRONE_CLASS_PATH, TRONE_MEASURE_INTERVAL_US)
+				I2CDevObj("RangeFinder", device_path, TRONE_CLASS_PATH, TRONE_MEASURE_INTERVAL_US)
 	{
 		set_slave_addr(TRONE_SLAVE_ADDRESS);
 	}

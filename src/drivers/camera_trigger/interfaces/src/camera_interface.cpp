@@ -7,8 +7,8 @@
  */
 
 CameraInterface::CameraInterface() :
-		    _p_pin(PARAM_INVALID),
-		    _pins { }
+			_p_pin(PARAM_INVALID),
+			_pins { }
 {
 }
 

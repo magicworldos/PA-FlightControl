@@ -159,9 +159,9 @@ protected:
 	
 public:
 	BasicFileServer(INode& node, IFileServerBackend& backend) :
-			    get_info_srv_(node),
-			    read_srv_(node),
-			    backend_(backend)
+				get_info_srv_(node),
+				read_srv_(node),
+				backend_(backend)
 	{
 	}
 	
@@ -221,10 +221,10 @@ class FileServer: protected BasicFileServer
 	
 public:
 	FileServer(INode& node, IFileServerBackend& backend) :
-			    BasicFileServer(node, backend),
-			    write_srv_(node),
-			    delete_srv_(node),
-			    get_directory_entry_info_srv_(node)
+				BasicFileServer(node, backend),
+				write_srv_(node),
+				delete_srv_(node),
+				get_directory_entry_info_srv_(node)
 	{
 	}
 	

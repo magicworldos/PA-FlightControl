@@ -79,12 +79,12 @@ boot_app_shared_section app_descriptor_t AppDescriptor = { .signature = { APP_DE
 UavcanEsc *UavcanEsc::_instance;
 
 UavcanEsc::UavcanEsc(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &system_clock) :
-		    CDev("uavcanesc", UAVCAN_DEVICE_PATH),
-		    active_bitrate(0),
-		    _node(can_driver, system_clock),
-		    _node_mutex(),
-		    _fw_update_listner(_node),
-		    _reset_timer(_node)
+			CDev("uavcanesc", UAVCAN_DEVICE_PATH),
+			active_bitrate(0),
+			_node(can_driver, system_clock),
+			_node_mutex(),
+			_fw_update_listner(_node),
+			_reset_timer(_node)
 {
 	const int res = pthread_mutex_init(&_node_mutex, nullptr);
 	
@@ -243,7 +243,8 @@ static void cb_reboot(const uavcan::TimerEvent &)
 	
 }
 
-void UavcanEsc::cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<UavcanEsc::BeginFirmwareUpdate::Response> &rsp)
+void UavcanEsc::cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<
+												UavcanEsc::BeginFirmwareUpdate::Response> &rsp)
 {
 	static bool inprogress = false;
 	
@@ -454,7 +455,7 @@ void UavcanEsc::print_info()
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-	         "\tuavcanesc {start|status|stop}");
+				"\tuavcanesc {start|status|stop}");
 }
 
 extern "C" __EXPORT int uavcannode_start(int argc, char *argv[]);

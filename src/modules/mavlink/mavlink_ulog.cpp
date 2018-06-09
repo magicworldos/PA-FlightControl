@@ -49,11 +49,12 @@ px4_sem_t MavlinkULog::_lock;
 const float MavlinkULog::_rate_calculation_delta_t = 0.1f;
 
 MavlinkULog::MavlinkULog(int datarate, float max_rate_factor, uint8_t target_system, uint8_t target_component) :
-		    _target_system(target_system),
-		    _target_component(target_component),
-		    _max_rate_factor(max_rate_factor),
-		    _max_num_messages(math::max(1, (int) ceilf(_rate_calculation_delta_t * _max_rate_factor * datarate / (MAVLINK_MSG_ID_LOGGING_DATA_LEN + MAVLINK_NUM_NON_PAYLOAD_BYTES)))),
-		    _current_rate_factor(max_rate_factor)
+			_target_system(target_system),
+			_target_component(target_component),
+			_max_rate_factor(max_rate_factor),
+			_max_num_messages(math::max(1, (int) ceilf(_rate_calculation_delta_t * _max_rate_factor * datarate
+					/ (MAVLINK_MSG_ID_LOGGING_DATA_LEN + MAVLINK_NUM_NON_PAYLOAD_BYTES)))),
+			_current_rate_factor(max_rate_factor)
 {
 	_ulog_stream_sub = orb_subscribe(ORB_ID(ulog_stream));
 	

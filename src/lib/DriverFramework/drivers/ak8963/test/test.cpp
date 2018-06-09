@@ -84,7 +84,7 @@ public:
 	static const int TEST_FAIL = 1;
 
 	MagTester() :
-			    m_sensor(MAG_DEVICE_PATH)
+				m_sensor(MAG_DEVICE_PATH)
 	{
 	}
 	

@@ -49,25 +49,25 @@
 #include <drivers/drv_hrt.h>
 
 LidarLiteI2C::LidarLiteI2C(int bus, const char *path, uint8_t rotation, int address) :
-		    I2C("LL40LS", path, bus, address, 100000),
-		    _rotation(rotation),
-		    _work { },
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "ll40ls_i2c_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "ll40ls_i2c_comms_errors")),
-		    _sensor_resets(perf_alloc(PC_COUNT, "ll40ls_i2c_resets")),
-		    _sensor_zero_resets(perf_alloc(PC_COUNT, "ll40ls_i2c_zero_resets")),
-		    _last_distance(0),
-		    _zero_counter(0),
-		    _acquire_time_usec(0),
-		    _pause_measurements(false),
-		    _hw_version(0),
-		    _sw_version(0)
+			I2C("LL40LS", path, bus, address, 100000),
+			_rotation(rotation),
+			_work { },
+			_reports(nullptr),
+			_sensor_ok(false),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "ll40ls_i2c_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "ll40ls_i2c_comms_errors")),
+			_sensor_resets(perf_alloc(PC_COUNT, "ll40ls_i2c_resets")),
+			_sensor_zero_resets(perf_alloc(PC_COUNT, "ll40ls_i2c_zero_resets")),
+			_last_distance(0),
+			_zero_counter(0),
+			_acquire_time_usec(0),
+			_pause_measurements(false),
+			_hw_version(0),
+			_sw_version(0)
 {
 	// up the retries since the device misses the first measure attempts
 	_retries = 3;

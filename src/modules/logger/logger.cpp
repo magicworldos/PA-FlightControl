@@ -396,12 +396,12 @@ Logger *Logger::instantiate(int argc, char *argv[])
 }
 
 Logger::Logger(LogWriter::Backend backend, size_t buffer_size, uint32_t log_interval, const char *poll_topic_name, bool log_on_start, bool log_until_shutdown, bool log_name_timestamp, unsigned int queue_size) :
-		    _arm_override(false),
-		    _log_on_start(log_on_start),
-		    _log_until_shutdown(log_until_shutdown),
-		    _log_name_timestamp(log_name_timestamp),
-		    _writer(backend, buffer_size, queue_size),
-		    _log_interval(log_interval)
+			_arm_override(false),
+			_log_on_start(log_on_start),
+			_log_until_shutdown(log_until_shutdown),
+			_log_name_timestamp(log_name_timestamp),
+			_writer(backend, buffer_size, queue_size),
+			_log_interval(log_interval)
 {
 	_log_utc_offset = param_find("SDLOG_UTC_OFFSET");
 	_log_dirs_max = param_find("SDLOG_DIRS_MAX");
@@ -455,7 +455,7 @@ LoggerSubscription* Logger::add_topic(const orb_metadata *topic)
 {
 	LoggerSubscription *subscription = nullptr;
 	size_t fields_len = strlen(topic->o_fields) + strlen(topic->o_name) + 1; //1 for ':'
-	        
+			
 	if (fields_len > sizeof(ulog_message_format_s::format))
 	{
 		PX4_WARN("skip topic %s, format string is too large: %zu (max is %zu)", topic->o_name, fields_len, sizeof(ulog_message_format_s::format));
@@ -1030,7 +1030,8 @@ void Logger::run()
 		{
 			vehicle_status_s vehicle_status;
 			orb_copy(ORB_ID(vehicle_status), vehicle_status_sub, &vehicle_status);
-			bool armed = (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) || (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED_ERROR) || _arm_override;
+			bool armed = (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) || (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED_ERROR)
+					|| _arm_override;
 			
 			if (_was_armed != armed && !_log_until_shutdown)
 			{

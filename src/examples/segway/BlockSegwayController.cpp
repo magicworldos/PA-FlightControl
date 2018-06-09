@@ -56,7 +56,8 @@ void BlockSegwayController::update()
 	float spdCmd = -th2v.update(euler.theta()) - q2v.update(_att.get().pitchspeed);
 	
 	// handle autopilot modes
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION || nav_state == vehicle_status_s::NAVIGATION_STATE_ALTCTL || nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL)
+	if (nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION || nav_state == vehicle_status_s::NAVIGATION_STATE_ALTCTL
+			|| nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL)
 	{
 		
 		actuators.control[0] = spdCmd;

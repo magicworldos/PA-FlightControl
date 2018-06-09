@@ -309,19 +309,19 @@ int device_chemistry();
 int solo_battery_check();
 
 BATT_SMBUS::BATT_SMBUS(int bus, uint16_t batt_smbus_addr) :
-		    I2C("batt_smbus", BATT_SMBUS0_DEVICE_PATH, bus, batt_smbus_addr, 100000),
-		    _enabled(false),
-		    _work { },
-		    _reports(nullptr),
-		    _batt_topic(nullptr),
-		    _batt_orb_id(nullptr),
-		    _start_time(0),
-		    _batt_capacity(0),
-		    _manufacturer_name(nullptr),
-		    _device_name(nullptr),
-		    _device_chemistry(nullptr),
-		    _is_solo_battery(false),
-		    _button_press_counts(0)
+			I2C("batt_smbus", BATT_SMBUS0_DEVICE_PATH, bus, batt_smbus_addr, 100000),
+			_enabled(false),
+			_work { },
+			_reports(nullptr),
+			_batt_topic(nullptr),
+			_batt_orb_id(nullptr),
+			_start_time(0),
+			_batt_capacity(0),
+			_manufacturer_name(nullptr),
+			_device_name(nullptr),
+			_device_chemistry(nullptr),
+			_is_solo_battery(false),
+			_button_press_counts(0)
 {
 	// work_cancel in the dtor will explode if we don't do this...
 	memset(&_work, 0, sizeof(_work));
@@ -879,7 +879,7 @@ uint8_t BATT_SMBUS::write_block(uint8_t reg, uint8_t *data, uint8_t len)
 	buff[1] = len;
 	memcpy(&buff[2], data, len);
 	buff[len + 2] = get_PEC(reg, false, &buff[1], len + 1); // Append PEC
-	                                
+									
 	// send bytes
 	int ret = transfer(buff, len + 3, nullptr, 0);
 	

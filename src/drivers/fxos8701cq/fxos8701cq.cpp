@@ -462,45 +462,45 @@ private:
 };
 
 FXOS8701CQ::FXOS8701CQ(int bus, const char *path, uint32_t device, enum Rotation rotation) :
-		    SPI("FXOS8701CQ", path, bus, device, SPIDEV_MODE0, 1 * 1000 * 1000),
-		    _mag(new FXOS8701CQ_mag(this)),
-		    _accel_call { },
-		    _mag_call { },
-		    _call_accel_interval(0),
-		    _call_mag_interval(0),
-		    _accel_reports(nullptr),
-		    _mag_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_m_s2(0.0f),
-		    _accel_range_scale(0.0f),
-		    _accel_samplerate(0),
-		    _accel_onchip_filter_bandwith(0),
-		    _mag_scale { },
-		    _mag_range_ga(0.0f),
-		    _mag_range_scale(0.0f),
-		    _mag_samplerate(0),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _accel_read(0),
-		    _mag_read(0),
-		    _accel_sample_perf(perf_alloc(PC_ELAPSED, "fxos8701cq_acc_read")),
-		    _mag_sample_perf(perf_alloc(PC_ELAPSED, "fxos8701cq_mag_read")),
-		    _bad_registers(perf_alloc(PC_COUNT, "fxos8701cq_bad_reg")),
-		    _bad_values(perf_alloc(PC_COUNT, "fxos8701cq_bad_val")),
-		    _accel_duplicates(perf_alloc(PC_COUNT, "fxos8701cq_acc_dupe")),
-		    _register_wait(0),
-		    _accel_filter_x(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_int(1000000 / FXOS8701C_ACCEL_MAX_OUTPUT_RATE, true),
-		    _rotation(rotation),
-		    _constant_accel_count(0),
-		    _last_temperature(0),
-		    _last_raw_mag_x(0),
-		    _last_raw_mag_y(0),
-		    _last_raw_mag_z(0),
-		    _checked_next(0)
+			SPI("FXOS8701CQ", path, bus, device, SPIDEV_MODE0, 1 * 1000 * 1000),
+			_mag(new FXOS8701CQ_mag(this)),
+			_accel_call { },
+			_mag_call { },
+			_call_accel_interval(0),
+			_call_mag_interval(0),
+			_accel_reports(nullptr),
+			_mag_reports(nullptr),
+			_accel_scale { },
+			_accel_range_m_s2(0.0f),
+			_accel_range_scale(0.0f),
+			_accel_samplerate(0),
+			_accel_onchip_filter_bandwith(0),
+			_mag_scale { },
+			_mag_range_ga(0.0f),
+			_mag_range_scale(0.0f),
+			_mag_samplerate(0),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_accel_read(0),
+			_mag_read(0),
+			_accel_sample_perf(perf_alloc(PC_ELAPSED, "fxos8701cq_acc_read")),
+			_mag_sample_perf(perf_alloc(PC_ELAPSED, "fxos8701cq_mag_read")),
+			_bad_registers(perf_alloc(PC_COUNT, "fxos8701cq_bad_reg")),
+			_bad_values(perf_alloc(PC_COUNT, "fxos8701cq_bad_val")),
+			_accel_duplicates(perf_alloc(PC_COUNT, "fxos8701cq_acc_dupe")),
+			_register_wait(0),
+			_accel_filter_x(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(FXOS8701C_ACCEL_DEFAULT_RATE, FXOS8701C_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_int(1000000 / FXOS8701C_ACCEL_MAX_OUTPUT_RATE, true),
+			_rotation(rotation),
+			_constant_accel_count(0),
+			_last_temperature(0),
+			_last_raw_mag_x(0),
+			_last_raw_mag_y(0),
+			_last_raw_mag_z(0),
+			_checked_next(0)
 {
 	
 	// enable debug() calls
@@ -1475,7 +1475,8 @@ void FXOS8701CQ::measure()
 	 large value. We want to detect this and mark the sensor as
 	 being faulty
 	 */
-	if (fabsf(_last_accel[0] - x_in_new) < 0.001f && fabsf(_last_accel[1] - y_in_new) < 0.001f && fabsf(_last_accel[2] - z_in_new) < 0.001f && fabsf(x_in_new) > 20 && fabsf(y_in_new) > 20 && fabsf(z_in_new) > 20)
+	if (fabsf(_last_accel[0] - x_in_new) < 0.001f && fabsf(_last_accel[1] - y_in_new) < 0.001f && fabsf(_last_accel[2] - z_in_new) < 0.001f && fabsf(x_in_new) > 20
+			&& fabsf(y_in_new) > 20 && fabsf(z_in_new) > 20)
 	{
 		_constant_accel_count += 1;
 		
@@ -1662,11 +1663,11 @@ void FXOS8701CQ::test_error()
 }
 
 FXOS8701CQ_mag::FXOS8701CQ_mag(FXOS8701CQ *parent) :
-		    CDev("FXOS8701C_mag", FXOS8701C_DEVICE_PATH_MAG),
-		    _parent(parent),
-		    _mag_topic(nullptr),
-		    _mag_orb_class_instance(-1),
-		    _mag_class_instance(-1)
+			CDev("FXOS8701C_mag", FXOS8701C_DEVICE_PATH_MAG),
+			_parent(parent),
+			_mag_topic(nullptr),
+			_mag_orb_class_instance(-1),
+			_mag_class_instance(-1)
 {
 }
 

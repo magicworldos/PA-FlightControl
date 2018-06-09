@@ -133,10 +133,10 @@ class UAVCAN_EXPORT GlobalTimeSyncSlave: Noncopyable
 	
 public:
 	explicit GlobalTimeSyncSlave(INode& node) :
-			    sub_(node),
-			    state_(Update),
-			    prev_iface_index_(0xFF),
-			    suppressed_(false)
+				sub_(node),
+				state_(Update),
+				prev_iface_index_(0xFF),
+				suppressed_(false)
 	{
 	}
 	

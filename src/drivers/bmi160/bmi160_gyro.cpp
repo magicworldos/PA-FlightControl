@@ -2,11 +2,11 @@
 #include "bmi160.hpp"
 
 BMI160_gyro::BMI160_gyro(BMI160 *parent, const char *path) :
-		    CDev("BMI160_gyro", path),
-		    _parent(parent),
-		    _gyro_topic(nullptr),
-		    _gyro_orb_class_instance(-1),
-		    _gyro_class_instance(-1)
+			CDev("BMI160_gyro", path),
+			_parent(parent),
+			_gyro_topic(nullptr),
+			_gyro_orb_class_instance(-1),
+			_gyro_class_instance(-1)
 {
 }
 

@@ -343,28 +343,28 @@ private:
 extern "C" __EXPORT int hmc5883_main(int argc, char *argv[]);
 
 HMC5883::HMC5883(device::Device *interface, const char *path, enum Rotation rotation) :
-		    CDev("HMC5883", path),
-		    _interface(interface),
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _scale { },
-		    _range_scale(0), /* default range scale from counts to gauss */
-		    _range_ga(1.9f),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _mag_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "hmc5883_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "hmc5883_com_err")),
-		    _range_errors(perf_alloc(PC_COUNT, "hmc5883_rng_err")),
-		    _conf_errors(perf_alloc(PC_COUNT, "hmc5883_conf_err")),
-		    _sensor_ok(false),
-		    _calibrated(false),
-		    _rotation(rotation),
-		    _range_bits(0),
-		    _conf_reg(0),
-		    _temperature_counter(0),
-		    _temperature_error_count(0)
+			CDev("HMC5883", path),
+			_interface(interface),
+			_measure_ticks(0),
+			_reports(nullptr),
+			_scale { },
+			_range_scale(0), /* default range scale from counts to gauss */
+			_range_ga(1.9f),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_mag_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "hmc5883_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "hmc5883_com_err")),
+			_range_errors(perf_alloc(PC_COUNT, "hmc5883_rng_err")),
+			_conf_errors(perf_alloc(PC_COUNT, "hmc5883_conf_err")),
+			_sensor_ok(false),
+			_calibrated(false),
+			_rotation(rotation),
+			_range_bits(0),
+			_conf_reg(0),
+			_temperature_counter(0),
+			_temperature_error_count(0)
 {
 	// set the device type from the interface
 	_device_id.devid_s.bus_type = _interface->get_device_bus_type();
@@ -1304,7 +1304,8 @@ int HMC5883::check_scale()
 {
 	bool scale_valid;
 	
-	if ((-FLT_EPSILON + 1.0f < _scale.x_scale && _scale.x_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.y_scale && _scale.y_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.z_scale && _scale.z_scale < FLT_EPSILON + 1.0f))
+	if ((-FLT_EPSILON + 1.0f < _scale.x_scale && _scale.x_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.y_scale && _scale.y_scale < FLT_EPSILON + 1.0f)
+			&& (-FLT_EPSILON + 1.0f < _scale.z_scale && _scale.z_scale < FLT_EPSILON + 1.0f))
 	{
 		/* scale is one */
 		scale_valid = false;
@@ -1323,7 +1324,8 @@ int HMC5883::check_offset()
 {
 	bool offset_valid;
 	
-	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
+	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON)
+			&& (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
 	{
 		/* offset is zero */
 		offset_valid = false;
@@ -1512,18 +1514,18 @@ struct hmc5883_bus_option
 	HMC5883 *dev;
 } bus_options[] = { { HMC5883_BUS_I2C_EXTERNAL, "/dev/hmc5883_ext", &HMC5883_I2C_interface, PX4_I2C_BUS_EXPANSION, NULL },
 #ifdef PX4_I2C_BUS_EXPANSION1
-        {	HMC5883_BUS_I2C_EXTERNAL, "/dev/hmc5883_ext1", &HMC5883_I2C_interface, PX4_I2C_BUS_EXPANSION1, NULL},
+		{	HMC5883_BUS_I2C_EXTERNAL, "/dev/hmc5883_ext1", &HMC5883_I2C_interface, PX4_I2C_BUS_EXPANSION1, NULL},
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION2
-        {	HMC5883_BUS_I2C_EXTERNAL, "/dev/hmc5883_ext2", &HMC5883_I2C_interface, PX4_I2C_BUS_EXPANSION2, NULL},
+		{	HMC5883_BUS_I2C_EXTERNAL, "/dev/hmc5883_ext2", &HMC5883_I2C_interface, PX4_I2C_BUS_EXPANSION2, NULL},
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	HMC5883_BUS_I2C_INTERNAL, "/dev/hmc5883_int", &HMC5883_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
+		{	HMC5883_BUS_I2C_INTERNAL, "/dev/hmc5883_int", &HMC5883_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
 #endif
 #ifdef PX4_SPIDEV_HMC
-        {	HMC5883_BUS_SPI, "/dev/hmc5883_spi", &HMC5883_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
+		{	HMC5883_BUS_SPI, "/dev/hmc5883_spi", &HMC5883_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
 #endif
-    };
+	};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 void start(enum HMC5883_BUS busid, enum Rotation rotation);

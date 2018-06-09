@@ -65,7 +65,7 @@ class Storage
 	
 public:
 	Storage(IStorageBackend& storage) :
-			    storage_(storage)
+				storage_(storage)
 	{
 	}
 	

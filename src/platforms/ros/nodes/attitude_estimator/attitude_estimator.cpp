@@ -46,9 +46,9 @@
 #include <platforms/px4_middleware.h>
 
 AttitudeEstimator::AttitudeEstimator() :
-		    _n(),
-		    // _sub_modelstates(_n.subscribe("/gazebo/model_states", 1, &AttitudeEstimator::ModelStatesCallback, this)),
-		    _vehicle_attitude_pub(_n.advertise < px4::vehicle_attitude > ("vehicle_attitude", 1))
+			_n(),
+			// _sub_modelstates(_n.subscribe("/gazebo/model_states", 1, &AttitudeEstimator::ModelStatesCallback, this)),
+			_vehicle_attitude_pub(_n.advertise < px4::vehicle_attitude > ("vehicle_attitude", 1))
 {
 	std::string vehicle_model;
 	_n.param("vehicle_model", vehicle_model, std::string("iris"));

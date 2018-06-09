@@ -92,7 +92,7 @@ public:
 	};
 
 	SquareMatrixAnalyzer(ElementIterator first_element_iterator) :
-			    first_(first_element_iterator)
+				first_(first_element_iterator)
 	{
 		StaticAssert<(NumElements > 0)>::check();
 	}
@@ -242,7 +242,7 @@ private:
 
 protected:
 	DynamicArrayBase() :
-			    size_(0)
+				size_(0)
 	{
 	}
 	~DynamicArrayBase()
@@ -456,7 +456,8 @@ public:
  * This should be compatible with std::bitset.
  */
 template<unsigned MaxSize, ArrayMode ArrayMode, CastMode CastMode>
-class UAVCAN_EXPORT ArrayImpl<IntegerSpec<1, SignednessUnsigned, CastMode>, ArrayMode, MaxSize> : public BitSet<MaxSize>, public Select<ArrayMode == ArrayModeDynamic, DynamicArrayBase<MaxSize>, StaticArrayBase<MaxSize> >::Result
+class UAVCAN_EXPORT ArrayImpl<IntegerSpec<1, SignednessUnsigned, CastMode>, ArrayMode, MaxSize> : public BitSet<MaxSize>, public Select<ArrayMode == ArrayModeDynamic,
+		DynamicArrayBase<MaxSize>, StaticArrayBase<MaxSize> >::Result
 {
 	typedef typename Select<ArrayMode == ArrayModeDynamic, DynamicArrayBase<MaxSize>, StaticArrayBase<MaxSize> >::Result ArrayBase;
 
@@ -1356,7 +1357,8 @@ public:
 	template<typename Stream>
 	static void stream(Stream& s, const ArrayType& array, int level)
 	{
-		typedef typename Select<ArrayType::IsStringLike, SelectorStringLike, typename Select<IsPrimitiveType<typename ArrayType::RawValueType>::Result, SelectorPrimitives, SelectorObjects>::Result>::Result Type;
+		typedef typename Select<ArrayType::IsStringLike, SelectorStringLike,
+				typename Select<IsPrimitiveType<typename ArrayType::RawValueType>::Result, SelectorPrimitives, SelectorObjects>::Result>::Result Type;
 		genericStreamImpl(s, array, level, Type());
 	}
 };

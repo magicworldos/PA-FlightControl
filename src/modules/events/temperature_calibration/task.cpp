@@ -105,9 +105,9 @@ private:
 };
 
 TemperatureCalibration::TemperatureCalibration(bool accel, bool baro, bool gyro) :
-		    _accel(accel),
-		    _baro(baro),
-		    _gyro(gyro)
+			_accel(accel),
+			_baro(baro),
+			_gyro(gyro)
 {
 }
 

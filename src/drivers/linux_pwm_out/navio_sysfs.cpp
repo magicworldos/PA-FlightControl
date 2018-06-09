@@ -40,7 +40,7 @@
 using namespace linux_pwm_out;
 
 NavioSysfsPWMOut::NavioSysfsPWMOut(const char *device, int max_num_outputs) :
-		    _device(device)
+			_device(device)
 {
 	if (max_num_outputs > MAX_NUM_PWM)
 	{

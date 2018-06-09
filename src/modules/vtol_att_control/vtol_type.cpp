@@ -47,8 +47,8 @@
 #include <matrix/math.hpp>
 
 VtolType::VtolType(VtolAttitudeControl *att_controller) :
-		    _attc(att_controller),
-		    _vtol_mode(ROTARY_WING)
+			_attc(att_controller),
+			_vtol_mode(ROTARY_WING)
 {
 	_v_att = _attc->get_att();
 	_v_att_sp = _attc->get_att_sp();

@@ -880,7 +880,7 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	/*
 	 * Wait once, long enough for a timeout to occur.
 	 */
-		LOG_DEBUG("entering first pthread_cond_timedwait call, testing timeout");
+			LOG_DEBUG("entering first pthread_cond_timedwait call, testing timeout");
 	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
 	
 	if (cond_status != ETIMEDOUT)

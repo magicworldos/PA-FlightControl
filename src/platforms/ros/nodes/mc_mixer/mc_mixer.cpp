@@ -96,9 +96,9 @@ const MultirotorMixer::Rotor _config_quad_iris[] = { { -0.876559, 0.481295, 1.00
 const MultirotorMixer::Rotor *_config_index[5] = { &_config_x[0], &_config_quad_plus[0], &_config_quad_plus_rotorssim[0], &_config_quad_wide[0], &_config_quad_iris[0] };
 
 MultirotorMixer::MultirotorMixer() :
-		    _n(),
-		    _rotor_count(4),
-		    _rotors(_config_index[0])
+			_n(),
+			_rotor_count(4),
+			_rotors(_config_index[0])
 {
 	_sub = _n.subscribe("actuator_controls_0", 1, &MultirotorMixer::actuatorControlsCallback, this);
 	_pub = _n.advertise < mav_msgs::CommandMotorSpeed > ("command/motor_speed", 10);

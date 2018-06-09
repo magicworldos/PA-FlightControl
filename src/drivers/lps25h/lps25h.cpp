@@ -323,19 +323,19 @@ private:
 extern "C" __EXPORT int lps25h_main(int argc, char *argv[]);
 
 LPS25H::LPS25H(device::Device *interface, const char *path) :
-		    CDev("LPS25H", path),
-		    _interface(interface),
-		    _work { },
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _collect_phase(false),
-		    _msl_pressure(101325),
-		    _baro_topic(nullptr),
-		    _orb_class_instance(-1),
-		    _class_instance(-1),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "lps25h_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "lps25h_comms_errors")),
-		    _last_report { 0 }
+			CDev("LPS25H", path),
+			_interface(interface),
+			_work { },
+			_measure_ticks(0),
+			_reports(nullptr),
+			_collect_phase(false),
+			_msl_pressure(101325),
+			_baro_topic(nullptr),
+			_orb_class_instance(-1),
+			_class_instance(-1),
+			_sample_perf(perf_alloc(PC_ELAPSED, "lps25h_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "lps25h_comms_errors")),
+			_last_report { 0 }
 {
 	// set the device type from the interface
 	_device_id.devid_s.bus_type = _interface->get_device_bus_type();
@@ -839,12 +839,12 @@ struct lps25h_bus_option
 	LPS25H *dev;
 } bus_options[] = { { LPS25H_BUS_I2C_EXTERNAL, "/dev/lps25h_ext", &LPS25H_I2C_interface, PX4_I2C_BUS_EXPANSION, NULL },
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	LPS25H_BUS_I2C_INTERNAL, "/dev/lps25h_int", &LPS25H_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
+		{	LPS25H_BUS_I2C_INTERNAL, "/dev/lps25h_int", &LPS25H_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
 #endif
 #ifdef PX4_SPIDEV_HMC
-        {	LPS25H_BUS_SPI, "/dev/lps25h_spi", &LPS25H_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
+		{	LPS25H_BUS_SPI, "/dev/lps25h_spi", &LPS25H_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
 #endif
-    };
+	};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 void start(enum LPS25H_BUS busid);

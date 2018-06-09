@@ -51,7 +51,10 @@ public:
 		IsPrimitive = 1
 	};
 
-	typedef typename Select<(BitLen <= 8), typename Select<IsSigned, int8_t, uint8_t>::Result, typename Select<(BitLen <= 16), typename Select<IsSigned, int16_t, uint16_t>::Result, typename Select<(BitLen <= 32), typename Select<IsSigned, int32_t, uint32_t>::Result, typename Select<(BitLen <= 64), typename Select<IsSigned, int64_t, uint64_t>::Result, ErrorNoSuchInteger>::Result>::Result>::Result>::Result StorageType;
+	typedef typename Select<(BitLen <= 8), typename Select<IsSigned, int8_t, uint8_t>::Result,
+			typename Select<(BitLen <= 16), typename Select<IsSigned, int16_t, uint16_t>::Result,
+					typename Select<(BitLen <= 32), typename Select<IsSigned, int32_t, uint32_t>::Result,
+							typename Select<(BitLen <= 64), typename Select<IsSigned, int64_t, uint64_t>::Result, ErrorNoSuchInteger>::Result>::Result>::Result>::Result StorageType;
 
 	typedef typename IntegerSpec<BitLen, SignednessUnsigned, CastMode>::StorageType UnsignedStorageType;
 

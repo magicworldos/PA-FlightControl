@@ -103,7 +103,7 @@ bool logbuffer_write(struct logbuffer_s *lb, void *ptr, int size)
 	
 	char *c = (char *) ptr;
 	int n = lb->size - lb->write_ptr;	// bytes to end of the buffer
-	        
+			
 	if (n < size)
 	{
 		// message goes over end of the buffer

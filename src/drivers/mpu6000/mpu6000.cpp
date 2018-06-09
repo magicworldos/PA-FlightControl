@@ -486,57 +486,57 @@ __EXPORT int mpu6000_main(int argc, char *argv[]);
 }
 
 MPU6000::MPU6000(device::Device *interface, const char *path_accel, const char *path_gyro, enum Rotation rotation, int device_type) :
-		    CDev("MPU6000", path_accel),
-		    _interface(interface),
-		    _device_type(device_type),
-		    _gyro(new MPU6000_gyro(this, path_gyro)),
-		    _product(0),
+			CDev("MPU6000", path_accel),
+			_interface(interface),
+			_device_type(device_type),
+			_gyro(new MPU6000_gyro(this, path_gyro)),
+			_product(0),
 #if defined(USE_I2C)
-		    _work
-		    {},
-		    _use_hrt(false),
+			_work
+			{},
+			_use_hrt(false),
 #else
-		    _use_hrt(true),
+			_use_hrt(true),
 #endif
-		    _call { },
-		    _call_interval(0),
-		    _accel_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_scale(0.0f),
-		    _accel_range_m_s2(0.0f),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _gyro_reports(nullptr),
-		    _gyro_scale { },
-		    _gyro_range_scale(0.0f),
-		    _gyro_range_rad_s(0.0f),
-		    _sample_rate(1000),
-		    _accel_reads(perf_alloc(PC_COUNT, "mpu6k_acc_read")),
-		    _gyro_reads(perf_alloc(PC_COUNT, "mpu6k_gyro_read")),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "mpu6k_read")),
-		    _bad_transfers(perf_alloc(PC_COUNT, "mpu6k_bad_trans")),
-		    _bad_registers(perf_alloc(PC_COUNT, "mpu6k_bad_reg")),
-		    _good_transfers(perf_alloc(PC_COUNT, "mpu6k_good_trans")),
-		    _reset_retries(perf_alloc(PC_COUNT, "mpu6k_reset")),
-		    _duplicates(perf_alloc(PC_COUNT, "mpu6k_duplicates")),
-		    _controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency")),
-		    _register_wait(0),
-		    _reset_wait(0),
-		    _accel_filter_x(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_x(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_y(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_z(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_int(1000000 / MPU6000_ACCEL_MAX_OUTPUT_RATE),
-		    _gyro_int(1000000 / MPU6000_GYRO_MAX_OUTPUT_RATE, true),
-		    _rotation(rotation),
-		    _checked_next(0),
-		    _in_factory_test(false),
-		    _last_temperature(0),
-		    _last_accel { },
-		    _got_duplicate(false)
+			_call { },
+			_call_interval(0),
+			_accel_reports(nullptr),
+			_accel_scale { },
+			_accel_range_scale(0.0f),
+			_accel_range_m_s2(0.0f),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_gyro_reports(nullptr),
+			_gyro_scale { },
+			_gyro_range_scale(0.0f),
+			_gyro_range_rad_s(0.0f),
+			_sample_rate(1000),
+			_accel_reads(perf_alloc(PC_COUNT, "mpu6k_acc_read")),
+			_gyro_reads(perf_alloc(PC_COUNT, "mpu6k_gyro_read")),
+			_sample_perf(perf_alloc(PC_ELAPSED, "mpu6k_read")),
+			_bad_transfers(perf_alloc(PC_COUNT, "mpu6k_bad_trans")),
+			_bad_registers(perf_alloc(PC_COUNT, "mpu6k_bad_reg")),
+			_good_transfers(perf_alloc(PC_COUNT, "mpu6k_good_trans")),
+			_reset_retries(perf_alloc(PC_COUNT, "mpu6k_reset")),
+			_duplicates(perf_alloc(PC_COUNT, "mpu6k_duplicates")),
+			_controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency")),
+			_register_wait(0),
+			_reset_wait(0),
+			_accel_filter_x(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(MPU6000_ACCEL_DEFAULT_RATE, MPU6000_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_x(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_y(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_z(MPU6000_GYRO_DEFAULT_RATE, MPU6000_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_int(1000000 / MPU6000_ACCEL_MAX_OUTPUT_RATE),
+			_gyro_int(1000000 / MPU6000_GYRO_MAX_OUTPUT_RATE, true),
+			_rotation(rotation),
+			_checked_next(0),
+			_in_factory_test(false),
+			_last_temperature(0),
+			_last_accel { },
+			_got_duplicate(false)
 {
 	// disable debug() calls
 	_debug_enabled = false;
@@ -1333,7 +1333,8 @@ int MPU6000::factory_self_test()
 	{
 		float diff = accel[i] - accel_baseline[i];
 		float err = 100 * (diff - accel_ftrim[i]) / accel_ftrim[i];
-		::printf("ACCEL[%u] baseline=%d accel=%d diff=%d ftrim=%d err=%d\n", (unsigned) i, (int) (1000 * accel_baseline[i]), (int) (1000 * accel[i]), (int) (1000 * diff), (int) (1000 * accel_ftrim[i]), (int) err);
+		::printf("ACCEL[%u] baseline=%d accel=%d diff=%d ftrim=%d err=%d\n", (unsigned) i, (int) (1000 * accel_baseline[i]), (int) (1000 * accel[i]), (int) (1000 * diff), (int) (1000
+							* accel_ftrim[i]), (int) err);
 		
 		if (fabsf(err) > 14)
 		{
@@ -1346,7 +1347,8 @@ int MPU6000::factory_self_test()
 	{
 		float diff = gyro[i] - gyro_baseline[i];
 		float err = 100 * (diff - gyro_ftrim[i]) / gyro_ftrim[i];
-		::printf("GYRO[%u] baseline=%d gyro=%d diff=%d ftrim=%d err=%d\n", (unsigned) i, (int) (1000 * gyro_baseline[i]), (int) (1000 * gyro[i]), (int) (1000 * (gyro[i] - gyro_baseline[i])), (int) (1000 * gyro_ftrim[i]), (int) err);
+		::printf("GYRO[%u] baseline=%d gyro=%d diff=%d ftrim=%d err=%d\n", (unsigned) i, (int) (1000 * gyro_baseline[i]), (int) (1000 * gyro[i]), (int) (1000
+							* (gyro[i] - gyro_baseline[i])), (int) (1000 * gyro_ftrim[i]), (int) err);
 		
 		if (fabsf(err) > 14)
 		{
@@ -2251,11 +2253,11 @@ void MPU6000::print_registers()
 }
 
 MPU6000_gyro::MPU6000_gyro(MPU6000 *parent, const char *path) :
-		    CDev("MPU6000_gyro", path),
-		    _parent(parent),
-		    _gyro_topic(nullptr),
-		    _gyro_orb_class_instance(-1),
-		    _gyro_class_instance(-1)
+			CDev("MPU6000_gyro", path),
+			_parent(parent),
+			_gyro_topic(nullptr),
+			_gyro_orb_class_instance(-1),
+			_gyro_class_instance(-1)
 {
 }
 
@@ -2333,32 +2335,32 @@ struct mpu6000_bus_option
 } bus_options[] = {
 #if defined (USE_I2C)
 #  if defined(PX4_I2C_BUS_ONBOARD)
-        {	MPU6000_BUS_I2C_INTERNAL, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL, MPU_DEVICE_PATH_GYRO, &MPU6000_I2C_interface, PX4_I2C_BUS_ONBOARD, false, NULL},
+		{	MPU6000_BUS_I2C_INTERNAL, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL, MPU_DEVICE_PATH_GYRO, &MPU6000_I2C_interface, PX4_I2C_BUS_ONBOARD, false, NULL},
 #  endif
 #  if defined(PX4_I2C_BUS_EXPANSION)
-        {	MPU6000_BUS_I2C_EXTERNAL, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_I2C_interface, PX4_I2C_BUS_EXPANSION, true, NULL},
+		{	MPU6000_BUS_I2C_EXTERNAL, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_I2C_interface, PX4_I2C_BUS_EXPANSION, true, NULL},
 #  endif
 #endif
 #ifdef PX4_SPIDEV_MPU
-        {	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL, MPU_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
+		{	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL, MPU_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
 #endif
 #if defined(PX4_SPI_BUS_EXT)
-        {	MPU6000_BUS_SPI_EXTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_SPI_interface, PX4_SPI_BUS_EXT, true, NULL},
+		{	MPU6000_BUS_SPI_EXTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_SPI_interface, PX4_SPI_BUS_EXT, true, NULL},
 #endif
 #ifdef PX4_SPIDEV_ICM_20602
-        {	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_ICM20602, ICM20602_DEVICE_PATH_ACCEL, ICM20602_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
+		{	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_ICM20602, ICM20602_DEVICE_PATH_ACCEL, ICM20602_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
 #endif
 #ifdef PX4_SPIDEV_ICM_20608
-        {	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_ICM20608, ICM20608_DEVICE_PATH_ACCEL, ICM20608_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
+		{	MPU6000_BUS_SPI_INTERNAL1, MPU_DEVICE_TYPE_ICM20608, ICM20608_DEVICE_PATH_ACCEL, ICM20608_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
 #endif
 #ifdef PX4_SPIDEV_ICM_20689
-        {	MPU6000_BUS_SPI_INTERNAL2, MPU_DEVICE_TYPE_ICM20689, ICM20689_DEVICE_PATH_ACCEL, ICM20689_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
+		{	MPU6000_BUS_SPI_INTERNAL2, MPU_DEVICE_TYPE_ICM20689, ICM20689_DEVICE_PATH_ACCEL, ICM20689_DEVICE_PATH_GYRO, &MPU6000_SPI_interface, PX4_SPI_BUS_SENSORS, false, NULL},
 #endif
 #if defined(PX4_SPI_BUS_EXTERNAL)
-        {	MPU6000_BUS_SPI_EXTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_SPI_interface, PX4_SPI_BUS_EXTERNAL, true, NULL},
-        {	MPU6000_BUS_SPI_EXTERNAL2, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT1, MPU_DEVICE_PATH_GYRO_EXT1, &MPU6000_SPI_interface, PX4_SPI_BUS_EXTERNAL, true, NULL},
+		{	MPU6000_BUS_SPI_EXTERNAL1, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT, MPU_DEVICE_PATH_GYRO_EXT, &MPU6000_SPI_interface, PX4_SPI_BUS_EXTERNAL, true, NULL},
+		{	MPU6000_BUS_SPI_EXTERNAL2, MPU_DEVICE_TYPE_MPU6000, MPU_DEVICE_PATH_ACCEL_EXT1, MPU_DEVICE_PATH_GYRO_EXT1, &MPU6000_SPI_interface, PX4_SPI_BUS_EXTERNAL, true, NULL},
 #endif
-    };
+	};
 
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 

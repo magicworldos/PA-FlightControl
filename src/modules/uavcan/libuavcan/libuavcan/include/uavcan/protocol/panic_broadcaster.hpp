@@ -36,8 +36,8 @@ class UAVCAN_EXPORT PanicBroadcaster: private TimerBase
 	
 public:
 	explicit PanicBroadcaster(INode& node) :
-			    TimerBase(node),
-			    pub_(node)
+				TimerBase(node),
+				pub_(node)
 	{
 	}
 	

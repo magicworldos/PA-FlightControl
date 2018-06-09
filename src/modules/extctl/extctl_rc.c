@@ -16,7 +16,7 @@ int extctl_rc_handle(void *data)
 	{
 		return -1;
 	}
-
+	
 	return 0;
 }
 
@@ -25,7 +25,7 @@ int extctl_rc_send(void)
 	int rc_sub = orb_subscribe(ORB_ID(input_rc));
 	struct input_rc_s in_rc;
 	rc_s rc = { 0 };
-
+	
 	while (!_extctl_should_exit)
 	{
 		bool updated = false;
@@ -41,11 +41,11 @@ int extctl_rc_send(void)
 			{
 				rc.values[i] = in_rc.values[i];
 			}
-
+			
 			send_data_buff(&rc, DATA_TYPE_RC, sizeof(rc_s));
 		}
 		usleep(DEV_RATE_RC);
 	}
-
+	
 	return 0;
 }

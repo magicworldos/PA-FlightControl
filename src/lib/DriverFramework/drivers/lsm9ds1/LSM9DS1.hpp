@@ -178,12 +178,12 @@ class LSM9DS1: public ImuSensor
 {
 public:
 	LSM9DS1(const char *acc_gyro_device_path, const char *mag_device_path, bool mag_enabled = true) :
-			    ImuSensor(acc_gyro_device_path, LSM9DS1_MEASURE_INTERVAL_US, mag_enabled),
-			    _mag_enabled(mag_enabled),
-			    _last_temp_c(0.0f),
-			    _temp_initialized(false),
-			    _mag_device_path(mag_device_path),
-			    _mag(nullptr)
+				ImuSensor(acc_gyro_device_path, LSM9DS1_MEASURE_INTERVAL_US, mag_enabled),
+				_mag_enabled(mag_enabled),
+				_last_temp_c(0.0f),
+				_temp_initialized(false),
+				_mag_device_path(mag_device_path),
+				_mag(nullptr)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_LSM9DS1;
 		m_id.dev_id_s.address = LSM9DS1XG_WHO_AM_I;
@@ -216,7 +216,7 @@ private:
 	{
 	public:
 		LSM9DS1M(const char *device_path) :
-				    ImuSensor(device_path, LSM9DS1_MEASURE_INTERVAL_US, true)
+					ImuSensor(device_path, LSM9DS1_MEASURE_INTERVAL_US, true)
 		{
 			m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_LSM9DS1M;
 			m_id.dev_id_s.address = LSM9DS1M_WHO_AM_I;

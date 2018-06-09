@@ -119,7 +119,7 @@ private:
 };
 
 MixerTest::MixerTest() :
-		    mixer_group(mixer_callback, 0)
+			mixer_group(mixer_callback, 0)
 {
 }
 

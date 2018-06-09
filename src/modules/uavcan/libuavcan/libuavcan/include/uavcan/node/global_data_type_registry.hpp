@@ -43,7 +43,7 @@ class UAVCAN_EXPORT GlobalDataTypeRegistry: Noncopyable
 		}
 		
 		Entry(DataTypeKind kind, DataTypeID id, const DataTypeSignature& signature, const char* name) :
-				    descriptor(kind, id, signature, name)
+					descriptor(kind, id, signature, name)
 		{
 		}
 	};
@@ -52,7 +52,7 @@ class UAVCAN_EXPORT GlobalDataTypeRegistry: Noncopyable
 	{
 		const DataTypeID id;
 		explicit EntryInsertionComparator(const Entry* dtd) :
-				    id((dtd == UAVCAN_NULLPTR) ? DataTypeID() : dtd->descriptor.getID())
+					id((dtd == UAVCAN_NULLPTR) ? DataTypeID() : dtd->descriptor.getID())
 		{
 			UAVCAN_ASSERT(dtd != UAVCAN_NULLPTR);
 		}
@@ -82,7 +82,7 @@ private:
 	bool frozen_;
 
 	GlobalDataTypeRegistry() :
-			    frozen_(false)
+				frozen_(false)
 	{
 	}
 	

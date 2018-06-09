@@ -52,18 +52,18 @@
 #include <mathlib/mathlib.h>
 
 ECL_Controller::ECL_Controller(const char *name) :
-		    _last_run(0),
-		    _tc(0.1f),
-		    _k_p(0.0f),
-		    _k_i(0.0f),
-		    _k_ff(0.0f),
-		    _integrator_max(0.0f),
-		    _max_rate(0.0f),
-		    _last_output(0.0f),
-		    _integrator(0.0f),
-		    _rate_error(0.0f),
-		    _rate_setpoint(0.0f),
-		    _bodyrate_setpoint(0.0f)
+			_last_run(0),
+			_tc(0.1f),
+			_k_p(0.0f),
+			_k_i(0.0f),
+			_k_ff(0.0f),
+			_integrator_max(0.0f),
+			_max_rate(0.0f),
+			_last_output(0.0f),
+			_integrator(0.0f),
+			_rate_error(0.0f),
+			_rate_setpoint(0.0f),
+			_bodyrate_setpoint(0.0f)
 {
 }
 

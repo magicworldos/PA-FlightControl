@@ -29,9 +29,9 @@ public:
 		uint8_t sub_mode :3;
 
 		NodeStatus() :
-				    health(protocol::NodeStatus::HEALTH_CRITICAL),
-				    mode(protocol::NodeStatus::MODE_OFFLINE),
-				    sub_mode(0)
+					health(protocol::NodeStatus::HEALTH_CRITICAL),
+					mode(protocol::NodeStatus::MODE_OFFLINE),
+					sub_mode(0)
 		{
 			StaticAssert<protocol::NodeStatus::FieldTypes::health::BitLen == 2>::check();
 			StaticAssert<protocol::NodeStatus::FieldTypes::mode::BitLen == 3>::check();
@@ -65,7 +65,7 @@ public:
 		bool was_known;
 
 		NodeStatusChangeEvent() :
-				    was_known(false)
+					was_known(false)
 		{
 		}
 	};
@@ -89,7 +89,7 @@ private:
 		NodeStatus status;
 		int8_t time_since_last_update_ms100;
 		Entry() :
-				    time_since_last_update_ms100(-1)
+					time_since_last_update_ms100(-1)
 		{
 		}
 	};
@@ -181,8 +181,8 @@ protected:
 	
 public:
 	explicit NodeStatusMonitor(INode& node) :
-			    sub_(node),
-			    timer_(node)
+				sub_(node),
+				timer_(node)
 	{
 	}
 	

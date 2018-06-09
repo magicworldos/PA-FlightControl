@@ -84,28 +84,28 @@ Navigator *g_navigator;
 }
 
 Navigator::Navigator() :
-		    SuperBlock(nullptr, "NAV"),
-		    _loop_perf(perf_alloc(PC_ELAPSED, "navigator")),
-		    _geofence(this),
-		    _mission(this, "MIS"),
-		    _loiter(this, "LOI"),
-		    _takeoff(this, "TKF"),
-		    _land(this, "LND"),
-		    _rtl(this, "RTL"),
-		    _rcLoss(this, "RCL"),
-		    _dataLinkLoss(this, "DLL"),
-		    _engineFailure(this, "EF"),
-		    _gpsFailure(this, "GPSF"),
-		    _follow_target(this, "TAR"),
-		    // navigator params
-		    _param_loiter_radius(this, "LOITER_RAD"),
-		    _param_acceptance_radius(this, "ACC_RAD"),
-		    _param_fw_alt_acceptance_radius(this, "FW_ALT_RAD"),
-		    _param_mc_alt_acceptance_radius(this, "MC_ALT_RAD"),
-		    _param_force_vtol(this, "FORCE_VT"),
-		    _param_traffic_avoidance_mode(this, "TRAFF_AVOID"),
-		    // non-navigator params
-		    _param_loiter_min_alt(this, "MIS_LTRMIN_ALT", false)
+			SuperBlock(nullptr, "NAV"),
+			_loop_perf(perf_alloc(PC_ELAPSED, "navigator")),
+			_geofence(this),
+			_mission(this, "MIS"),
+			_loiter(this, "LOI"),
+			_takeoff(this, "TKF"),
+			_land(this, "LND"),
+			_rtl(this, "RTL"),
+			_rcLoss(this, "RCL"),
+			_dataLinkLoss(this, "DLL"),
+			_engineFailure(this, "EF"),
+			_gpsFailure(this, "GPSF"),
+			_follow_target(this, "TAR"),
+			// navigator params
+			_param_loiter_radius(this, "LOITER_RAD"),
+			_param_acceptance_radius(this, "ACC_RAD"),
+			_param_fw_alt_acceptance_radius(this, "FW_ALT_RAD"),
+			_param_mc_alt_acceptance_radius(this, "MC_ALT_RAD"),
+			_param_force_vtol(this, "FORCE_VT"),
+			_param_traffic_avoidance_mode(this, "TRAFF_AVOID"),
+			// non-navigator params
+			_param_loiter_min_alt(this, "MIS_LTRMIN_ALT", false)
 {
 	/* Create a list of our possible navigation types */
 	_navigation_mode_array[0] = &_mission;
@@ -768,7 +768,8 @@ while (!_task_should_exit)
 	}
 	
 	/* if we landed and have not received takeoff setpoint then stay in idle */
-	if (_land_detected.landed && !((_vstatus.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF) || (_vstatus.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION)))
+	if (_land_detected.landed
+			&& !((_vstatus.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF) || (_vstatus.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION)))
 	{
 		
 		_pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_IDLE;

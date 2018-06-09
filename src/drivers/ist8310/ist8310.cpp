@@ -395,27 +395,27 @@ private:
 extern "C" __EXPORT int ist8310_main(int argc, char *argv[]);
 
 IST8310::IST8310(int bus_number, int address, const char *path, enum Rotation rotation) :
-		    I2C("IST8310", path, bus_number, address, IST8310_DEFAULT_BUS_SPEED),
-		    _work { },
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _scale { },
-		    _range_scale(0.003), /* default range scale from counts to gauss */
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _mag_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "ist8310_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "ist8310_com_err")),
-		    _range_errors(perf_alloc(PC_COUNT, "ist8310_rng_err")),
-		    _conf_errors(perf_alloc(PC_COUNT, "ist8310_conf_err")),
-		    _sensor_ok(false),
-		    _calibrated(false),
-		    _ctl_reg_mismatch(false),
-		    _rotation(rotation),
-		    _last_report { 0 },
-		    _ctl3_reg(0),
-		    _ctl4_reg(0)
+			I2C("IST8310", path, bus_number, address, IST8310_DEFAULT_BUS_SPEED),
+			_work { },
+			_measure_ticks(0),
+			_reports(nullptr),
+			_scale { },
+			_range_scale(0.003), /* default range scale from counts to gauss */
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_mag_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "ist8310_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "ist8310_com_err")),
+			_range_errors(perf_alloc(PC_COUNT, "ist8310_rng_err")),
+			_conf_errors(perf_alloc(PC_COUNT, "ist8310_conf_err")),
+			_sensor_ok(false),
+			_calibrated(false),
+			_ctl_reg_mismatch(false),
+			_rotation(rotation),
+			_last_report { 0 },
+			_ctl3_reg(0),
+			_ctl4_reg(0)
 {
 	_device_id.devid_s.devtype = DRV_MAG_DEVTYPE_IST8310;
 	
@@ -957,7 +957,8 @@ int IST8310::collect()
 	 * Check if value makes sense according to the FSR and Resolution of
 	 * this sensor, discarding outliers
 	 */
-	if (report.x > IST8310_MAX_VAL_XY || report.x < IST8310_MIN_VAL_XY || report.y > IST8310_MAX_VAL_XY || report.y < IST8310_MIN_VAL_XY || report.z > IST8310_MAX_VAL_Z || report.z < IST8310_MIN_VAL_Z)
+	if (report.x > IST8310_MAX_VAL_XY || report.x < IST8310_MIN_VAL_XY || report.y > IST8310_MAX_VAL_XY || report.y < IST8310_MIN_VAL_XY || report.z > IST8310_MAX_VAL_Z
+			|| report.z < IST8310_MIN_VAL_Z)
 	{
 		perf_count(_range_errors);
 		DEVICE_DEBUG("data/status read error");
@@ -1188,7 +1189,8 @@ int IST8310::check_offset()
 {
 	bool offset_valid;
 	
-	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
+	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON)
+			&& (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
 	{
 		/* offset is zero */
 		offset_valid = false;
@@ -1313,18 +1315,18 @@ struct ist8310_bus_option
 	IST8310 *dev;
 } bus_options[] = { { IST8310_BUS_I2C_EXTERNAL, "/dev/ist8310_ext", PX4_I2C_BUS_EXPANSION, NULL },
 #ifdef PX4_I2C_BUS_EXPANSION1
-        {	IST8310_BUS_I2C_EXTERNAL1, "/dev/ist8311_int", PX4_I2C_BUS_EXPANSION1, NULL},
+		{	IST8310_BUS_I2C_EXTERNAL1, "/dev/ist8311_int", PX4_I2C_BUS_EXPANSION1, NULL},
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION2
-        {	IST8310_BUS_I2C_EXTERNAL2, "/dev/ist8312_int", PX4_I2C_BUS_EXPANSION2, NULL},
+		{	IST8310_BUS_I2C_EXTERNAL2, "/dev/ist8312_int", PX4_I2C_BUS_EXPANSION2, NULL},
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION3
-        {	IST8310_BUS_I2C_EXTERNAL3, "/dev/ist8313_int", PX4_I2C_BUS_EXPANSION3, NULL},
+		{	IST8310_BUS_I2C_EXTERNAL3, "/dev/ist8313_int", PX4_I2C_BUS_EXPANSION3, NULL},
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	IST8310_BUS_I2C_INTERNAL, "/dev/ist8310_int", PX4_I2C_BUS_ONBOARD, NULL},
+		{	IST8310_BUS_I2C_INTERNAL, "/dev/ist8310_int", PX4_I2C_BUS_ONBOARD, NULL},
 #endif
-    };
+	};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 void start(enum IST8310_BUS busid, int address, enum Rotation rotation);

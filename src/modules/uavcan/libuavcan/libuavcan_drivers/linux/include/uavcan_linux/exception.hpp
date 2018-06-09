@@ -24,8 +24,8 @@ class Exception: public std::runtime_error
 	
 public:
 	explicit Exception(const std::string& descr, int use_errno = errno) :
-			    std::runtime_error(makeErrorString(descr, use_errno)),
-			    errno_(use_errno)
+				std::runtime_error(makeErrorString(descr, use_errno)),
+				errno_(use_errno)
 	{
 	}
 	
@@ -54,8 +54,8 @@ class LibuavcanErrorException: public Exception
 	
 public:
 	explicit LibuavcanErrorException(std::int16_t uavcan_error_code) :
-			    Exception(makeErrorString(uavcan_error_code)),
-			    error_(std::abs(uavcan_error_code))
+				Exception(makeErrorString(uavcan_error_code)),
+				error_(std::abs(uavcan_error_code))
 	{
 	}
 	
@@ -72,7 +72,7 @@ class AllIfacesDownException: public Exception
 {
 public:
 	AllIfacesDownException() :
-			    Exception("All ifaces are down", ENETDOWN)
+				Exception("All ifaces are down", ENETDOWN)
 	{
 	}
 };

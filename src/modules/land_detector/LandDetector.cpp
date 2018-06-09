@@ -51,7 +51,7 @@ namespace land_detector
 {
 
 LandDetector::LandDetector() :
-		    _cycle_perf(perf_alloc(PC_ELAPSED, "land_detector_cycle"))
+			_cycle_perf(perf_alloc(PC_ELAPSED, "land_detector_cycle"))
 {
 }
 
@@ -112,7 +112,9 @@ void LandDetector::_cycle()
 	const hrt_abstime now = hrt_absolute_time();
 	
 	// Only publish very first time or when the result has changed.
-	if ((_landDetectedPub == nullptr) || (_landDetected.landed != landDetected) || (_landDetected.freefall != freefallDetected) || (_landDetected.maybe_landed != maybe_landedDetected) || (_landDetected.ground_contact != ground_contactDetected) || (fabsf(_landDetected.alt_max - alt_max) > FLT_EPSILON))
+	if ((_landDetectedPub == nullptr) || (_landDetected.landed != landDetected) || (_landDetected.freefall != freefallDetected)
+			|| (_landDetected.maybe_landed != maybe_landedDetected) || (_landDetected.ground_contact != ground_contactDetected)
+			|| (fabsf(_landDetected.alt_max - alt_max) > FLT_EPSILON))
 	{
 		
 		if (!landDetected && _landDetected.landed)

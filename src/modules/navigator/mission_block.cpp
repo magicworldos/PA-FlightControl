@@ -55,11 +55,11 @@
 #include <uORB/topics/vtol_vehicle_status.h>
 
 MissionBlock::MissionBlock(Navigator *navigator, const char *name) :
-		    NavigatorMode(navigator, name),
-		    _param_yaw_timeout(this, "MIS_YAW_TMT", false),
-		    _param_yaw_err(this, "MIS_YAW_ERR", false),
-		    _param_back_trans_dec_mss(this, "VT_B_DEC_MSS", false),
-		    _param_reverse_delay(this, "VT_B_REV_DEL", false)
+			NavigatorMode(navigator, name),
+			_param_yaw_timeout(this, "MIS_YAW_TMT", false),
+			_param_yaw_err(this, "MIS_YAW_ERR", false),
+			_param_back_trans_dec_mss(this, "VT_B_DEC_MSS", false),
+			_param_reverse_delay(this, "VT_B_REV_DEL", false)
 {
 }
 
@@ -299,7 +299,8 @@ bool MissionBlock::is_mission_item_reached()
 			if (_mission_item.vtol_back_transition)
 			{
 				
-				float velocity = sqrtf(_navigator->get_local_position()->vx * _navigator->get_local_position()->vx + _navigator->get_local_position()->vy * _navigator->get_local_position()->vy);
+				float velocity = sqrtf(_navigator->get_local_position()->vx * _navigator->get_local_position()->vx
+						+ _navigator->get_local_position()->vy * _navigator->get_local_position()->vy);
 				
 				if (_param_back_trans_dec_mss.get() > FLT_EPSILON && velocity > FLT_EPSILON)
 				{
@@ -331,7 +332,8 @@ bool MissionBlock::is_mission_item_reached()
 		{
 			
 			/* check course if defined only for rotary wing except takeoff */
-			float cog = _navigator->get_vstatus()->is_rotary_wing ? _navigator->get_global_position()->yaw : atan2f(_navigator->get_global_position()->vel_e, _navigator->get_global_position()->vel_n);
+			float cog =
+					_navigator->get_vstatus()->is_rotary_wing ? _navigator->get_global_position()->yaw : atan2f(_navigator->get_global_position()->vel_e, _navigator->get_global_position()->vel_n);
 			float yaw_err = _wrap_pi(_mission_item.yaw - cog);
 			
 			/* accept yaw if reached or if timeout is set in which case we ignore not forced headings */
@@ -342,7 +344,8 @@ bool MissionBlock::is_mission_item_reached()
 			}
 			
 			/* if heading needs to be reached, the timeout is enabled and we don't make it, abort mission */
-			if (!_waypoint_yaw_reached && _mission_item.force_heading && (_param_yaw_timeout.get() >= FLT_EPSILON) && (now - _time_wp_reached >= (hrt_abstime) _param_yaw_timeout.get() * 1e6f))
+			if (!_waypoint_yaw_reached && _mission_item.force_heading && (_param_yaw_timeout.get() >= FLT_EPSILON)
+					&& (now - _time_wp_reached >= (hrt_abstime) _param_yaw_timeout.get() * 1e6f))
 			{
 				
 				_navigator->set_mission_failure("unable to reach heading within timeout");
@@ -365,7 +368,7 @@ bool MissionBlock::is_mission_item_reached()
 		}
 		
 		/* check if the MAV was long enough inside the waypoint orbit */
-		if ((get_time_inside(_mission_item) < FLT_EPSILON) || (now - _time_first_inside_orbit >= (hrt_abstime) (get_time_inside(_mission_item) * 1e6f)))
+		if ((get_time_inside(_mission_item) < FLT_EPSILON) || (now - _time_first_inside_orbit >= (hrt_abstime)(get_time_inside(_mission_item) * 1e6f)))
 		{
 			
 			position_setpoint_s &curr_sp = _navigator->get_position_setpoint_triplet()->current;
@@ -375,7 +378,8 @@ bool MissionBlock::is_mission_item_reached()
 			
 			// exit xtrack location
 			// reset lat/lon of loiter waypoint so vehicle follows a tangent
-			if (_mission_item.loiter_exit_xtrack && next_sp.valid && PX4_ISFINITE(range) && (_mission_item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || _mission_item.nav_cmd == NAV_CMD_LOITER_TO_ALT))
+			if (_mission_item.loiter_exit_xtrack && next_sp.valid && PX4_ISFINITE(range)
+					&& (_mission_item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || _mission_item.nav_cmd == NAV_CMD_LOITER_TO_ALT))
 			{
 				
 				float bearing = get_bearing_to_next_waypoint(curr_sp.lat, curr_sp.lon, next_sp.lat, next_sp.lon);
@@ -484,7 +488,9 @@ float MissionBlock::get_time_inside(const struct mission_item_s &item)
 
 bool MissionBlock::item_contains_position(const mission_item_s &item)
 {
-	return item.nav_cmd == NAV_CMD_WAYPOINT || item.nav_cmd == NAV_CMD_LOITER_UNLIMITED || item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || item.nav_cmd == NAV_CMD_LAND || item.nav_cmd == NAV_CMD_TAKEOFF || item.nav_cmd == NAV_CMD_LOITER_TO_ALT || item.nav_cmd == NAV_CMD_VTOL_TAKEOFF || item.nav_cmd == NAV_CMD_VTOL_LAND || item.nav_cmd == NAV_CMD_DO_FOLLOW_REPOSITION;
+	return item.nav_cmd == NAV_CMD_WAYPOINT || item.nav_cmd == NAV_CMD_LOITER_UNLIMITED || item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || item.nav_cmd == NAV_CMD_LAND
+			|| item.nav_cmd == NAV_CMD_TAKEOFF || item.nav_cmd == NAV_CMD_LOITER_TO_ALT || item.nav_cmd == NAV_CMD_VTOL_TAKEOFF || item.nav_cmd == NAV_CMD_VTOL_LAND
+			|| item.nav_cmd == NAV_CMD_DO_FOLLOW_REPOSITION;
 }
 
 bool MissionBlock::mission_item_to_position_setpoint(const mission_item_s &item, position_setpoint_s *sp)

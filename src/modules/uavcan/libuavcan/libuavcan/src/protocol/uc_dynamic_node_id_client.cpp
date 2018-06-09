@@ -27,7 +27,8 @@ void DynamicNodeIDClient::restartTimer(const Mode mode)
 	UAVCAN_ASSERT(mode < NumModes);
 	UAVCAN_ASSERT((mode == ModeWaitingForTimeSlot) == (size_of_received_unique_id_ == 0));
 	
-	const MonotonicDuration delay = (mode == ModeWaitingForTimeSlot) ? getRandomDuration(protocol::dynamic_node_id::Allocation::MIN_REQUEST_PERIOD_MS, protocol::dynamic_node_id::Allocation::MAX_REQUEST_PERIOD_MS) : getRandomDuration(protocol::dynamic_node_id::Allocation::MIN_FOLLOWUP_DELAY_MS, protocol::dynamic_node_id::Allocation::MAX_FOLLOWUP_DELAY_MS);
+	const MonotonicDuration delay =
+			(mode == ModeWaitingForTimeSlot) ? getRandomDuration(protocol::dynamic_node_id::Allocation::MIN_REQUEST_PERIOD_MS, protocol::dynamic_node_id::Allocation::MAX_REQUEST_PERIOD_MS) : getRandomDuration(protocol::dynamic_node_id::Allocation::MIN_FOLLOWUP_DELAY_MS, protocol::dynamic_node_id::Allocation::MAX_FOLLOWUP_DELAY_MS);
 	
 	startOneShotWithDelay(delay);
 	
@@ -53,7 +54,8 @@ void DynamicNodeIDClient::handleTimerEvent(const TimerEvent&)
 	tx.node_id = preferred_node_id_.get();
 	tx.first_part_of_unique_id = (size_of_received_unique_id_ == 0);
 	
-	const uint8_t size_of_unique_id_in_request = min(protocol::dynamic_node_id::Allocation::MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST, static_cast<uint8_t>(tx.unique_id.capacity() - size_of_received_unique_id_));
+	const uint8_t size_of_unique_id_in_request = min(protocol::dynamic_node_id::Allocation::MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST, static_cast<uint8_t>(tx.unique_id.capacity()
+																- size_of_received_unique_id_));
 	
 	tx.unique_id.resize(size_of_unique_id_in_request);
 	copy(unique_id_ + size_of_received_unique_id_, unique_id_ + size_of_received_unique_id_ + size_of_unique_id_in_request, tx.unique_id.begin());

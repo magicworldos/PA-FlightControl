@@ -86,7 +86,7 @@ public:
 	static constexpr unsigned num_read_attempts = 1000;
 
 	ImuTester() :
-			    m_sensor(IMU_DEVICE_PATH)
+				m_sensor(IMU_DEVICE_PATH)
 	{
 	}
 	

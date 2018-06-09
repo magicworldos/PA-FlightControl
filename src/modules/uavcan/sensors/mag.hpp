@@ -62,7 +62,8 @@ private:
 
 	void mag_sub_cb(const uavcan::ReceivedDataStructure<uavcan::equipment::ahrs::MagneticFieldStrength> &msg);
 
-	typedef uavcan::MethodBinder<UavcanMagnetometerBridge *, void (UavcanMagnetometerBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::ahrs::MagneticFieldStrength> &)> MagCbBinder;
+	typedef uavcan::MethodBinder<UavcanMagnetometerBridge *,
+			void (UavcanMagnetometerBridge::*)(const uavcan::ReceivedDataStructure<uavcan::equipment::ahrs::MagneticFieldStrength> &)> MagCbBinder;
 
 	uavcan::Subscriber<uavcan::equipment::ahrs::MagneticFieldStrength, MagCbBinder> _sub_mag;
 	struct mag_calibration_s _scale = { };mag_report _report = { };

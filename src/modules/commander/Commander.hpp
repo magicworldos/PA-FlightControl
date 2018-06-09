@@ -64,7 +64,7 @@ class Commander: public control::SuperBlock, public ModuleBase<Commander>
 {
 public:
 	Commander() :
-			    SuperBlock(nullptr, "COM")
+				SuperBlock(nullptr, "COM")
 	{
 		updateParams();
 	}

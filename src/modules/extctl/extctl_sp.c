@@ -20,7 +20,7 @@ int extctl_sp_init(void)
 {
 	_orb_sp_topic = orb_advertise_multi(ORB_ID(extctl_sp), &_orb_sp, &_orb_class_instance, ORB_PRIO_HIGH);
 	orb_publish(ORB_ID(extctl_sp), _orb_sp_topic, &_orb_sp);
-
+	
 	return 0;
 }
 
@@ -31,27 +31,27 @@ int extctl_sp_handle(void *data)
 	{
 		return -1;
 	}
-
+	
 	_orb_sp.run_pos_control = sp->run_pos_control;
 	_orb_sp.run_alt_control = sp->run_alt_control;
 	_orb_sp.run_yaw_control = sp->run_yaw_control;
-
+	
 	_orb_sp.sp_yaw = sp->sp_yaw;
-
+	
 	_orb_sp.sp_x = sp->sp_x;
 	_orb_sp.sp_y = sp->sp_y;
 	_orb_sp.sp_z = sp->sp_z;
-
+	
 	_orb_sp.vel_sp_x = sp->vel_sp_x;
 	_orb_sp.vel_sp_y = sp->vel_sp_y;
 	_orb_sp.vel_sp_z = sp->vel_sp_z;
-
+	
 	orb_publish(ORB_ID(extctl_sp), _orb_sp_topic, &_orb_sp);
-
+	
 #ifdef __EXTCTL_DEBUG_
 	mavlink_log_info(&_extctl_mavlink_log_pub, "[extctl] sp %4.2f %4.2f %4.2f", (double )_orb_sp.sp_x, (double )_orb_sp.sp_y, (double )_orb_sp.sp_z);
 #endif
-
+	
 	return 0;
 }
 

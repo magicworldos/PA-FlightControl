@@ -40,9 +40,9 @@
 #include "ashtech.h"
 
 GPSDriverAshtech::GPSDriverAshtech(GPSCallbackPtr callback, void *callback_user, struct vehicle_gps_position_s *gps_position, struct satellite_info_s *satellite_info) :
-		    GPSHelper(callback, callback_user),
-		    _satellite_info(satellite_info),
-		    _gps_position(gps_position)
+			GPSHelper(callback, callback_user),
+			_satellite_info(satellite_info),
+			_gps_position(gps_position)
 {
 	decodeInit();
 	_decode_state = NME_DECODE_UNINIT;
@@ -919,7 +919,7 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 {
 	if (output_mode != OutputMode::GPS)
 	{
-		GPS_WARN("ASHTECH: Unsupported Output Mode %i", (int )output_mode);
+		GPS_WARN("ASHTECH: Unsupported Output Mode %i", (int) output_mode);
 		return -1;
 	}
 	

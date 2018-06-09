@@ -166,9 +166,9 @@ namespace
 }
 
 # define TAP_ESC_DEVICE_PATH	"/dev/tap_esc"
-        
-        TAP_ESC::TAP_ESC(int channels_count):
-        CDev("tap_esc", TAP_ESC_DEVICE_PATH),
+		
+		TAP_ESC::TAP_ESC(int channels_count):
+		CDev("tap_esc", TAP_ESC_DEVICE_PATH),
 _is_armed(false),
 _poll_fds_num(0),
 _mode(MODE_4PWM), //FIXME: what is this mode used for???
@@ -315,7 +315,8 @@ int TAP_ESC::init()
 			
 			if (parse_tap_esc_feedback(&uartbuf, &_packet))
 			{
-				valid = (_packet.msg_id == ESCBUS_MSG_ID_CONFIG_INFO_BASIC && _packet.d.rspConfigInfoBasic.channelID == cid && 0 == memcmp(&_packet.d.rspConfigInfoBasic.resp, &config, sizeof(ConfigInfoBasicRequest)));
+				valid = (_packet.msg_id == ESCBUS_MSG_ID_CONFIG_INFO_BASIC && _packet.d.rspConfigInfoBasic.channelID == cid
+						&& 0 == memcmp(&_packet.d.rspConfigInfoBasic.resp, &config, sizeof(ConfigInfoBasicRequest)));
 				break;
 				
 			}
@@ -919,7 +920,8 @@ int TAP_ESC::control_callback(uint8_t control_group, uint8_t control_index, floa
 	/* throttle not arming - mark throttle input as invalid */
 	if (_armed.prearmed && !_armed.armed)
 	{
-		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE) && control_index == actuator_controls_s::INDEX_THROTTLE)
+		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE)
+				&& control_index == actuator_controls_s::INDEX_THROTTLE)
 		{
 			/* set the throttle to an invalid value */
 			input = NAN_VALUE;

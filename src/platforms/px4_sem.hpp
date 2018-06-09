@@ -61,7 +61,7 @@ class SmartLock
 {
 public:
 	SmartLock(px4_sem_t &sem) :
-			    _sem(sem)
+				_sem(sem)
 	{
 		do
 		{

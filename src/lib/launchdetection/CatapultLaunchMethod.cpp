@@ -45,11 +45,11 @@ namespace launchdetection
 {
 
 CatapultLaunchMethod::CatapultLaunchMethod(SuperBlock *parent) :
-		    SuperBlock(parent, "CAT"),
-		    thresholdAccel(this, "A"),
-		    thresholdTime(this, "T"),
-		    motorDelay(this, "MDEL"),
-		    pitchMaxPreThrottle(this, "PMAX")
+			SuperBlock(parent, "CAT"),
+			thresholdAccel(this, "A"),
+			thresholdTime(this, "T"),
+			motorDelay(this, "MDEL"),
+			pitchMaxPreThrottle(this, "PMAX")
 {
 	last_timestamp = hrt_absolute_time();
 }

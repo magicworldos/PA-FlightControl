@@ -13,9 +13,9 @@ class TransferListenerEmulator: public IncomingTransferEmulatorBase
 
 public:
 	TransferListenerEmulator(uavcan::TransferListener& target, const uavcan::DataTypeDescriptor& type, uavcan::NodeID dst_node_id = 127) :
-			    IncomingTransferEmulatorBase(dst_node_id),
-			    target_(target),
-			    data_type_(type)
+				IncomingTransferEmulatorBase(dst_node_id),
+				target_(target),
+				data_type_(type)
 	{
 	}
 	

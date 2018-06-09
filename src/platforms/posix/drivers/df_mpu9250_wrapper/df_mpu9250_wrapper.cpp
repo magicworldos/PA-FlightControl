@@ -189,39 +189,39 @@ private:
 };
 
 DfMpu9250Wrapper::DfMpu9250Wrapper(bool mag_enabled, enum Rotation rotation) :
-		    MPU9250(IMU_DEVICE_PATH, mag_enabled),
-		    _accel_topic(nullptr),
-		    _gyro_topic(nullptr),
-		    _mag_topic(nullptr),
-		    _mavlink_log_pub(nullptr),
-		    _param_update_sub(-1),
-		    _accel_calibration { },
-		    _gyro_calibration { },
-		    _mag_calibration { },
-		    _accel_orb_class_instance(-1),
-		    _gyro_orb_class_instance(-1),
-		    _mag_orb_class_instance(-1),
-		    _accel_int(MPU9250_NEVER_AUTOPUBLISH_US, false),
-		    _gyro_int(MPU9250_NEVER_AUTOPUBLISH_US, true),
-		    _accel_filter_x(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_x(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_y(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_z(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _publish_count(0),
-		    _read_counter(perf_alloc(PC_COUNT, "mpu9250_reads")),
-		    _error_counter(perf_alloc(PC_COUNT, "mpu9250_errors")),
-		    _fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu9250_fifo_overflows")),
-		    _fifo_corruption_counter(perf_alloc(PC_COUNT, "mpu9250_fifo_corruptions")),
-		    _gyro_range_hit_counter(perf_alloc(PC_COUNT, "mpu9250_gyro_range_hits")),
-		    _accel_range_hit_counter(perf_alloc(PC_COUNT, "mpu9250_accel_range_hits")),
-		    _mag_fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu9250_mag_fifo_overflows")),
-		    _publish_perf(perf_alloc(PC_ELAPSED, "mpu9250_publish")),
-		    _last_accel_range_hit_time(0),
-		    _last_accel_range_hit_count(0),
-		    _mag_enabled(mag_enabled),
-		    _rotation(rotation)
+			MPU9250(IMU_DEVICE_PATH, mag_enabled),
+			_accel_topic(nullptr),
+			_gyro_topic(nullptr),
+			_mag_topic(nullptr),
+			_mavlink_log_pub(nullptr),
+			_param_update_sub(-1),
+			_accel_calibration { },
+			_gyro_calibration { },
+			_mag_calibration { },
+			_accel_orb_class_instance(-1),
+			_gyro_orb_class_instance(-1),
+			_mag_orb_class_instance(-1),
+			_accel_int(MPU9250_NEVER_AUTOPUBLISH_US, false),
+			_gyro_int(MPU9250_NEVER_AUTOPUBLISH_US, true),
+			_accel_filter_x(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(MPU9250_ACCEL_DEFAULT_RATE, MPU9250_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_x(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_y(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_z(MPU9250_GYRO_DEFAULT_RATE, MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_publish_count(0),
+			_read_counter(perf_alloc(PC_COUNT, "mpu9250_reads")),
+			_error_counter(perf_alloc(PC_COUNT, "mpu9250_errors")),
+			_fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu9250_fifo_overflows")),
+			_fifo_corruption_counter(perf_alloc(PC_COUNT, "mpu9250_fifo_corruptions")),
+			_gyro_range_hit_counter(perf_alloc(PC_COUNT, "mpu9250_gyro_range_hits")),
+			_accel_range_hit_counter(perf_alloc(PC_COUNT, "mpu9250_accel_range_hits")),
+			_mag_fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu9250_mag_fifo_overflows")),
+			_publish_perf(perf_alloc(PC_ELAPSED, "mpu9250_publish")),
+			_last_accel_range_hit_time(0),
+			_last_accel_range_hit_count(0),
+			_mag_enabled(mag_enabled),
+			_rotation(rotation)
 {
 	// Set sane default calibration values
 	_accel_calibration.x_scale = 1.0f;
@@ -763,7 +763,7 @@ int DfMpu9250Wrapper::_publish(struct imu_sensor_data &data)
 		mag_report.x_raw = xraw_f * 1000; // (int16) [Gs * 1000]
 		mag_report.y_raw = yraw_f * 1000; // (int16) [Gs * 1000]
 		mag_report.z_raw = zraw_f * 1000; // (int16) [Gs * 1000]
-		        
+				
 		mag_report.x = (xraw_f - _mag_calibration.x_offset) * _mag_calibration.x_scale;
 		mag_report.y = (yraw_f - _mag_calibration.y_offset) * _mag_calibration.y_scale;
 		mag_report.z = (zraw_f - _mag_calibration.z_offset) * _mag_calibration.z_scale;

@@ -68,7 +68,7 @@ class Lock
 public:
 	
 	Lock(pthread_mutex_t &m) :
-			    thier_mutex_(m)
+				thier_mutex_(m)
 	{
 		(void) pthread_mutex_lock(&m);
 	}
@@ -103,7 +103,7 @@ class Queue
 
 		template<typename ... Args>
 		Item(Args ... args) :
-				    payload(args...)
+					payload(args...)
 		{
 		}
 	};
@@ -113,7 +113,7 @@ class Queue
 
 public:
 	Queue(uavcan::IPoolAllocator &arg_allocator, std::size_t block_allocation_quota) :
-			    allocator_(arg_allocator, block_allocation_quota)
+				allocator_(arg_allocator, block_allocation_quota)
 	{
 		uavcan::IsDynamicallyAllocatable<Item>::check();
 	}
@@ -226,11 +226,11 @@ class VirtualCanIface: public uavcan::ICanIface, uavcan::Noncopyable
 		const uint8_t iface_index;
 
 		RxItem(const uavcan::CanRxFrame &arg_frame, uavcan::CanIOFlags arg_flags) :
-				    uavcan::CanFrame(arg_frame),
-				    ts_mono(arg_frame.ts_mono),
-				    ts_utc(arg_frame.ts_utc),
-				    flags(arg_flags),
-				    iface_index(arg_frame.iface_index)
+					uavcan::CanFrame(arg_frame),
+					ts_mono(arg_frame.ts_mono),
+					ts_utc(arg_frame.ts_utc),
+					flags(arg_flags),
+					iface_index(arg_frame.iface_index)
 		{
 			// Making sure it will fit into a pool block with a pointer prefix
 			static_assert(sizeof(RxItem) <= (uavcan::MemPoolBlockSize - 8), "Bad coder, no coffee");
@@ -284,9 +284,9 @@ class VirtualCanIface: public uavcan::ICanIface, uavcan::Noncopyable
 	
 public:
 	VirtualCanIface(uavcan::IPoolAllocator &allocator, uavcan::ISystemClock &clock, pthread_mutex_t &arg_mutex, unsigned quota_per_queue) :
-			    common_driver_mutex_(arg_mutex),
-			    prioritized_tx_queue_(allocator, clock, quota_per_queue),
-			    rx_queue_(allocator, quota_per_queue)
+				common_driver_mutex_(arg_mutex),
+				prioritized_tx_queue_(allocator, clock, quota_per_queue),
+				rx_queue_(allocator, quota_per_queue)
 	{
 	}
 	
@@ -524,8 +524,8 @@ class VirtualCanDriver: public uavcan::ICanDriver, public uavcan::IRxFrameListen
 	
 public:
 	VirtualCanDriver(unsigned arg_num_ifaces, uavcan::ISystemClock &system_clock, uavcan::IPoolAllocator &allocator, unsigned virtual_iface_block_allocation_quota) :
-			    num_ifaces_(arg_num_ifaces),
-			    clock_(system_clock)
+				num_ifaces_(arg_num_ifaces),
+				clock_(system_clock)
 	{
 		Lock::init(driver_mutex_);
 		event_.init();

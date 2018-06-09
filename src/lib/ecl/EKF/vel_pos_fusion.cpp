@@ -246,7 +246,7 @@ void Ekf::fuseVelPosHeight()
 		}
 		
 		unsigned state_index = obs_index + 4;	// we start with vx and this is the 4. state
-		        
+				
 		// calculate kalman gain K = PHS, where S = 1/innovation variance
 		for (int row = 0; row < _k_num_states; row++)
 		{

@@ -44,11 +44,11 @@
 #include <cfloat>
 
 DataValidatorGroup::DataValidatorGroup(unsigned siblings) :
-		    _first(nullptr),
-		    _curr_best(-1),
-		    _prev_best(-1),
-		    _first_failover_time(0),
-		    _toggle_count(0)
+			_first(nullptr),
+			_curr_best(-1),
+			_prev_best(-1),
+			_first_failover_time(0),
+			_toggle_count(0)
 {
 	DataValidator *next = _first;
 	
@@ -154,7 +154,8 @@ DataValidatorGroup::get_best(uint64_t timestamp, int *index)
 		 * 1) the confidence is higher and priority is equal or higher
 		 * 2) the confidence is no less than 1% different and the priority is higher
 		 */
-		if ((((max_confidence < MIN_REGULAR_CONFIDENCE) && (confidence >= MIN_REGULAR_CONFIDENCE)) || (confidence > max_confidence && (next->priority() >= max_priority)) || (fabsf(confidence - max_confidence) < 0.01f && (next->priority() > max_priority))) && (confidence > 0.0f))
+		if ((((max_confidence < MIN_REGULAR_CONFIDENCE) && (confidence >= MIN_REGULAR_CONFIDENCE)) || (confidence > max_confidence && (next->priority() >= max_priority))
+				|| (fabsf(confidence - max_confidence) < 0.01f && (next->priority() > max_priority))) && (confidence > 0.0f))
 		{
 			max_index = i;
 			max_confidence = confidence;
@@ -280,7 +281,10 @@ void DataValidatorGroup::print()
 		{
 			uint32_t flags = next->state();
 			
-			ECL_INFO("sensor #%u, prio: %d, state:%s%s%s%s%s%s", i, next->priority(), ((flags & DataValidator::ERROR_FLAG_NO_DATA) ? " OFF" : ""), ((flags & DataValidator::ERROR_FLAG_STALE_DATA) ? " STALE" : ""), ((flags & DataValidator::ERROR_FLAG_TIMEOUT) ? " TOUT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRCOUNT) ? " ECNT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRDENSITY) ? " EDNST" : ""), ((flags == DataValidator::ERROR_FLAG_NO_ERROR) ? " OK" : ""));
+			ECL_INFO("sensor #%u, prio: %d, state:%s%s%s%s%s%s", i, next->priority(), ((flags & DataValidator::ERROR_FLAG_NO_DATA) ? " OFF" : ""), (
+					(flags & DataValidator::ERROR_FLAG_STALE_DATA) ? " STALE" : ""), ((flags & DataValidator::ERROR_FLAG_TIMEOUT) ? " TOUT" : ""), (
+					(flags & DataValidator::ERROR_FLAG_HIGH_ERRCOUNT) ? " ECNT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRDENSITY) ? " EDNST" : ""), (
+					(flags == DataValidator::ERROR_FLAG_NO_ERROR) ? " OK" : ""));
 			
 			next->print();
 		}

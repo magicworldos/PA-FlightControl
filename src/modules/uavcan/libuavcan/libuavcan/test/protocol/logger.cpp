@@ -12,7 +12,7 @@ struct LogSink: public uavcan::ILogSink
 	LogLevel level;
 
 	LogSink() :
-			    level(uavcan::protocol::debug::LogLevel::ERROR)
+				level(uavcan::protocol::debug::LogLevel::ERROR)
 	{
 	}
 	

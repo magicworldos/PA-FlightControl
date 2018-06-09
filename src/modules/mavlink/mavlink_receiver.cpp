@@ -93,63 +93,63 @@
 static const float mg2ms2 = CONSTANTS_ONE_G / 1000.0f;
 
 MavlinkReceiver::MavlinkReceiver(Mavlink *parent) :
-		    _mavlink(parent),
-		    _mission_manager(parent),
-		    _parameters_manager(parent),
-		    _mavlink_ftp(parent),
-		    _mavlink_log_handler(parent),
-		    _status { },
-		    _control_mode { },
-		    _global_pos_pub(nullptr),
-		    _local_pos_pub(nullptr),
-		    _attitude_pub(nullptr),
-		    _gps_pub(nullptr),
-		    _gyro_pub(nullptr),
-		    _accel_pub(nullptr),
-		    _mag_pub(nullptr),
-		    _baro_pub(nullptr),
-		    _airspeed_pub(nullptr),
-		    _battery_pub(nullptr),
-		    _cmd_pub(nullptr),
-		    _flow_pub(nullptr),
-		    _flow_distance_sensor_pub(nullptr),
-		    _distance_sensor_pub(nullptr),
-		    _offboard_control_mode_pub(nullptr),
-		    _actuator_controls_pub(nullptr),
-		    _att_sp_pub(nullptr),
-		    _rates_sp_pub(nullptr),
-		    _pos_sp_triplet_pub(nullptr),
-		    _att_pos_mocap_pub(nullptr),
-		    _vision_position_pub(nullptr),
-		    _vision_attitude_pub(nullptr),
-		    _telemetry_status_pub(nullptr),
-		    _rc_pub(nullptr),
-		    _manual_pub(nullptr),
-		    _land_detector_pub(nullptr),
-		    _time_offset_pub(nullptr),
-		    _follow_target_pub(nullptr),
-		    _transponder_report_pub(nullptr),
-		    _collision_report_pub(nullptr),
-		    _debug_key_value_pub(nullptr),
-		    _debug_value_pub(nullptr),
-		    _debug_vect_pub(nullptr),
-		    _gps_inject_data_pub(nullptr),
-		    _command_ack_pub(nullptr),
-		    _control_mode_sub(orb_subscribe(ORB_ID(vehicle_control_mode))),
-		    _actuator_armed_sub(orb_subscribe(ORB_ID(actuator_armed))),
-		    _global_ref_timestamp(0),
-		    _old_timestamp(0),
-		    _offboard_control_mode { },
-		    _att_sp { },
-		    _rates_sp { },
-		    _time_offset_avg_alpha(0.8),
-		    _time_offset(0),
-		    _orb_class_instance(-1),
-		    _mom_switch_pos { },
-		    _mom_switch_state(0),
-		    _p_bat_emergen_thr(param_find("BAT_EMERGEN_THR")),
-		    _p_bat_crit_thr(param_find("BAT_CRIT_THR")),
-		    _p_bat_low_thr(param_find("BAT_LOW_THR"))
+			_mavlink(parent),
+			_mission_manager(parent),
+			_parameters_manager(parent),
+			_mavlink_ftp(parent),
+			_mavlink_log_handler(parent),
+			_status { },
+			_control_mode { },
+			_global_pos_pub(nullptr),
+			_local_pos_pub(nullptr),
+			_attitude_pub(nullptr),
+			_gps_pub(nullptr),
+			_gyro_pub(nullptr),
+			_accel_pub(nullptr),
+			_mag_pub(nullptr),
+			_baro_pub(nullptr),
+			_airspeed_pub(nullptr),
+			_battery_pub(nullptr),
+			_cmd_pub(nullptr),
+			_flow_pub(nullptr),
+			_flow_distance_sensor_pub(nullptr),
+			_distance_sensor_pub(nullptr),
+			_offboard_control_mode_pub(nullptr),
+			_actuator_controls_pub(nullptr),
+			_att_sp_pub(nullptr),
+			_rates_sp_pub(nullptr),
+			_pos_sp_triplet_pub(nullptr),
+			_att_pos_mocap_pub(nullptr),
+			_vision_position_pub(nullptr),
+			_vision_attitude_pub(nullptr),
+			_telemetry_status_pub(nullptr),
+			_rc_pub(nullptr),
+			_manual_pub(nullptr),
+			_land_detector_pub(nullptr),
+			_time_offset_pub(nullptr),
+			_follow_target_pub(nullptr),
+			_transponder_report_pub(nullptr),
+			_collision_report_pub(nullptr),
+			_debug_key_value_pub(nullptr),
+			_debug_value_pub(nullptr),
+			_debug_vect_pub(nullptr),
+			_gps_inject_data_pub(nullptr),
+			_command_ack_pub(nullptr),
+			_control_mode_sub(orb_subscribe(ORB_ID(vehicle_control_mode))),
+			_actuator_armed_sub(orb_subscribe(ORB_ID(actuator_armed))),
+			_global_ref_timestamp(0),
+			_old_timestamp(0),
+			_offboard_control_mode { },
+			_att_sp { },
+			_rates_sp { },
+			_time_offset_avg_alpha(0.8),
+			_time_offset(0),
+			_orb_class_instance(-1),
+			_mom_switch_pos { },
+			_mom_switch_state(0),
+			_p_bat_emergen_thr(param_find("BAT_EMERGEN_THR")),
+			_p_bat_crit_thr(param_find("BAT_CRIT_THR")),
+			_p_bat_low_thr(param_find("BAT_LOW_THR"))
 {
 }
 
@@ -718,7 +718,8 @@ void MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_messa
 	PX4_ISFINITE(set_position_target_local_ned.yaw);
 
 	/* Only accept messages which are intended for this system */
-	if ((mavlink_system.sysid == set_position_target_local_ned.target_system || set_position_target_local_ned.target_system == 0) && (mavlink_system.compid == set_position_target_local_ned.target_component || set_position_target_local_ned.target_component == 0) && values_finite)
+	if ((mavlink_system.sysid == set_position_target_local_ned.target_system || set_position_target_local_ned.target_system == 0)
+			&& (mavlink_system.compid == set_position_target_local_ned.target_component || set_position_target_local_ned.target_component == 0) && values_finite)
 	{
 		
 		/* convert mavlink type (local, NED) to uORB offboard control struct */
@@ -925,7 +926,8 @@ void MavlinkReceiver::handle_message_set_actuator_control_target(mavlink_message
 	PX4_ISFINITE(set_actuator_control_target.controls[6]) &&
 	PX4_ISFINITE(set_actuator_control_target.controls[7]);
 
-	if ((mavlink_system.sysid == set_actuator_control_target.target_system || set_actuator_control_target.target_system == 0) && (mavlink_system.compid == set_actuator_control_target.target_component || set_actuator_control_target.target_component == 0) && values_finite)
+	if ((mavlink_system.sysid == set_actuator_control_target.target_system || set_actuator_control_target.target_system == 0)
+			&& (mavlink_system.compid == set_actuator_control_target.target_component || set_actuator_control_target.target_component == 0) && values_finite)
 	{
 		
 		/* ignore all since we are setting raw actuators here */
@@ -1099,7 +1101,8 @@ void MavlinkReceiver::handle_message_set_attitude_target(mavlink_message_t *msg)
 	PX4_ISFINITE(set_attitude_target.body_yaw_rate);
 
 	/* Only accept messages which are intended for this system */
-	if ((mavlink_system.sysid == set_attitude_target.target_system || set_attitude_target.target_system == 0) && (mavlink_system.compid == set_attitude_target.target_component || set_attitude_target.target_component == 0) && values_finite)
+	if ((mavlink_system.sysid == set_attitude_target.target_system || set_attitude_target.target_system == 0)
+			&& (mavlink_system.compid == set_attitude_target.target_component || set_attitude_target.target_component == 0) && values_finite)
 	{
 		
 		/* set correct ignore flags for thrust field: copy from mavlink message */
@@ -1376,7 +1379,8 @@ void MavlinkReceiver::handle_message_play_tune(mavlink_message_t *msg)
 	
 	char *tune = play_tune.tune;
 	
-	if ((mavlink_system.sysid == play_tune.target_system || play_tune.target_system == 0) && (mavlink_system.compid == play_tune.target_component || play_tune.target_component == 0))
+	if ((mavlink_system.sysid == play_tune.target_system || play_tune.target_system == 0)
+			&& (mavlink_system.compid == play_tune.target_component || play_tune.target_component == 0))
 	{
 		
 		if (*tune == 'M')

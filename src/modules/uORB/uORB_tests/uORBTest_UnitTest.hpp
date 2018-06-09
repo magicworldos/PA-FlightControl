@@ -85,8 +85,8 @@ public:
 
 private:
 	UnitTest() :
-			    pubsubtest_passed(false),
-			    pubsubtest_print(false)
+				pubsubtest_passed(false),
+				pubsubtest_print(false)
 	{
 	}
 	

@@ -62,7 +62,7 @@ bool uORB::Manager::initialize()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 uORB::Manager::Manager() :
-		    _comm_channel(nullptr)
+			_comm_channel(nullptr)
 {
 	for (int i = 0; i < Flavor_count; ++i)
 	{

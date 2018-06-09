@@ -44,7 +44,7 @@ namespace device
 {
 
 VFile::VFile(const char *fname, mode_t mode) :
-		    CDev("vfile", fname)
+			CDev("vfile", fname)
 {
 }
 

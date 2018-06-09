@@ -75,7 +75,7 @@ int dspal_tester_test_posix_file_open_close(void)
 	if (fd == -1)
 	{
 		FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode. "
-		     "Make sure to have test.txt at $ADSP_LIBRARY_PATH");
+				"Make sure to have test.txt at $ADSP_LIBRARY_PATH");
 	}
 	
 	LOG_DEBUG("open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");

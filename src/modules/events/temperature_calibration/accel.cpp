@@ -46,7 +46,7 @@
 #include <drivers/drv_hrt.h>
 
 TemperatureCalibrationAccel::TemperatureCalibrationAccel(float min_temperature_rise, float min_start_temperature, float max_start_temperature) :
-		    TemperatureCalibrationCommon(min_temperature_rise, min_start_temperature, max_start_temperature)
+			TemperatureCalibrationCommon(min_temperature_rise, min_start_temperature, max_start_temperature)
 {
 	
 	//init subscriptions
@@ -67,7 +67,7 @@ TemperatureCalibrationAccel::~TemperatureCalibrationAccel()
 {
 	for (unsigned i = 0; i < _num_sensor_instances; i++)
 	{
-		orb_unsubscribe(_sensor_subs[i]);
+		orb_unsubscribe (_sensor_subs[i]);
 	}
 }
 
@@ -169,10 +169,8 @@ int TemperatureCalibrationAccel::update_sensor_instance(PerSensorData &data, int
 	
 	if (sensor_sub == _sensor_subs[0])   // debug output, but only for the first sensor
 	{
-		TC_DEBUG("\nAccel: %.20f,%.20f,%.20f,%.20f, %.6f, %.6f, %.6f\n\n", (double)data.sensor_sample_filt[0],
-				(double)data.sensor_sample_filt[1],
-				(double)data.sensor_sample_filt[2], (double)data.sensor_sample_filt[3], (double)data.low_temp, (double)data.high_temp,
-				(double)(data.high_temp - data.low_temp));
+		TC_DEBUG("\nAccel: %.20f,%.20f,%.20f,%.20f, %.6f, %.6f, %.6f\n\n", (double) data.sensor_sample_filt[0], (double) data.sensor_sample_filt[1], (double) data.sensor_sample_filt[2], (double) data.sensor_sample_filt[3], (double) data.low_temp, (double) data.high_temp, (double) (data.high_temp
+							- data.low_temp));
 	}
 	
 	//update linear fit matrices

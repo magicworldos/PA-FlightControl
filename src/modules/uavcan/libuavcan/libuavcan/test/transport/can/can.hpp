@@ -25,24 +25,24 @@ public:
 		uavcan::CanIOFlags flags;
 
 		FrameWithTime(const uavcan::CanFrame& frame, uavcan::MonotonicTime time) :
-				    frame(frame),
-				    time(time),
-				    flags(0)
+					frame(frame),
+					time(time),
+					flags(0)
 		{
 		}
 		
 		FrameWithTime(const uavcan::CanFrame& frame, uavcan::MonotonicTime time, uavcan::UtcTime time_utc) :
-				    frame(frame),
-				    time(time),
-				    time_utc(time_utc),
-				    flags(0)
+					frame(frame),
+					time(time),
+					time_utc(time_utc),
+					flags(0)
 		{
 		}
 		
 		FrameWithTime(const uavcan::CanFrame& frame, uint64_t time_usec) :
-				    frame(frame),
-				    time(uavcan::MonotonicTime::fromUSec(time_usec)),
-				    flags(0)
+					frame(frame),
+					time(uavcan::MonotonicTime::fromUSec(time_usec)),
+					flags(0)
 		{
 		}
 	};
@@ -59,12 +59,12 @@ public:
 	uavcan::CanFrame pending_tx;
 
 	CanIfaceMock(uavcan::ISystemClock& iclock) :
-			    writeable(true),
-			    tx_failure(false),
-			    rx_failure(false),
-			    num_errors(0),
-			    iclock(iclock),
-			    enable_utc_timestamping(false)
+				writeable(true),
+				tx_failure(false),
+				rx_failure(false),
+				num_errors(0),
+				iclock(iclock),
+				enable_utc_timestamping(false)
 	{
 	}
 	
@@ -96,7 +96,8 @@ public:
 	{
 		if (pending_tx != frame)
 		{
-			std::cout << "Pending TX mismatch: \n" << "    Expected: " << frame.toString(uavcan::CanFrame::StrAligned) << "\n" << "    Actual:   " << pending_tx.toString(uavcan::CanFrame::StrAligned) << std::endl;
+			std::cout << "Pending TX mismatch: \n" << "    Expected: " << frame.toString(uavcan::CanFrame::StrAligned) << "\n" << "    Actual:   "
+					<< pending_tx.toString(uavcan::CanFrame::StrAligned) << std::endl;
 		}
 		return pending_tx == frame;
 	}
@@ -203,9 +204,9 @@ public:
 	bool select_failure;
 
 	CanDriverMock(unsigned num_ifaces, uavcan::ISystemClock& iclock) :
-			    ifaces(num_ifaces, CanIfaceMock(iclock)),
-			    iclock(iclock),
-			    select_failure(false)
+				ifaces(num_ifaces, CanIfaceMock(iclock)),
+				iclock(iclock),
+				select_failure(false)
 	{
 	}
 	

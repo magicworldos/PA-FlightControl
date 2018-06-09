@@ -541,8 +541,8 @@ void task_main(int argc, char *argv[])
 	
 	if (mpu9x50_register_interrupt(SPI_INT_GPIO, &mpu9x50::data_ready_isr, NULL)
 	//if (mpu9x50_register_interrupt(SPI_INT_GPIO, &mpu9x50::data_ready_isr, NULL)
-	        
-	        != 0)
+			
+			!= 0)
 	{
 		PX4_WARN("error registering data ready interrupt. Quit!");
 		goto exit;

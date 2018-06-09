@@ -34,24 +34,24 @@ public:
 
 	// Constructors
 	Matrix() :
-			    _data()
+				_data()
 	{
 	}
 	
 	Matrix(const Type data_[][N]) :
-			    _data()
+				_data()
 	{
 		memcpy(_data, data_, sizeof(_data));
 	}
 	
 	Matrix(const Type *data_) :
-			    _data()
+				_data()
 	{
 		memcpy(_data, data_, sizeof(_data));
 	}
 	
 	Matrix(const Matrix &other) :
-			    _data()
+				_data()
 	{
 		memcpy(_data, other._data, sizeof(_data));
 	}

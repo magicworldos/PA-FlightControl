@@ -28,7 +28,7 @@ class Queue
 
 		template<typename ... Args>
 		Item(Args ... args) :
-				    payload(args...)
+					payload(args...)
 		{
 		}
 	};
@@ -38,7 +38,7 @@ class Queue
 
 public:
 	Queue(uavcan::IPoolAllocator& arg_allocator, std::size_t block_allocation_quota) :
-			    allocator_(arg_allocator, block_allocation_quota)
+				allocator_(arg_allocator, block_allocation_quota)
 	{
 		uavcan::IsDynamicallyAllocatable<Item>::check();
 	}
@@ -157,8 +157,8 @@ class VirtualCanIface: public uavcan::ICanIface, uavcan::Noncopyable
 		const uavcan::CanIOFlags flags;
 
 		RxItem(const uavcan::CanRxFrame& arg_frame, uavcan::CanIOFlags arg_flags) :
-				    frame(arg_frame),
-				    flags(arg_flags)
+					frame(arg_frame),
+					flags(arg_flags)
 		{
 		}
 	};
@@ -209,9 +209,9 @@ class VirtualCanIface: public uavcan::ICanIface, uavcan::Noncopyable
 	
 public:
 	VirtualCanIface(uavcan::IPoolAllocator& allocator, uavcan::ISystemClock& clock, std::mutex& arg_mutex, unsigned quota_per_queue) :
-			    mutex_(arg_mutex),
-			    prioritized_tx_queue_(allocator, clock, quota_per_queue),
-			    rx_queue_(allocator, quota_per_queue)
+				mutex_(arg_mutex),
+				prioritized_tx_queue_(allocator, clock, quota_per_queue),
+				rx_queue_(allocator, quota_per_queue)
 	{
 	}
 	
@@ -391,7 +391,7 @@ class VirtualCanDriver: public uavcan::ICanDriver, public uavcan::IRxFrameListen
 	
 public:
 	VirtualCanDriver(unsigned arg_num_ifaces) :
-			    num_ifaces_(arg_num_ifaces)
+				num_ifaces_(arg_num_ifaces)
 	{
 		assert(num_ifaces_ > 0 && num_ifaces_ <= uavcan::MaxCanIfaces);
 		
@@ -485,7 +485,7 @@ static void runSubNode(const uavcan_linux::SubNodePtr& node)
 	struct NodeStatusMonitor: public uavcan::NodeStatusMonitor
 	{
 		explicit NodeStatusMonitor(uavcan::INode& node) :
-				    uavcan::NodeStatusMonitor(node)
+					uavcan::NodeStatusMonitor(node)
 		{
 		}
 		

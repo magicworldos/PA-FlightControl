@@ -227,7 +227,8 @@ int hott_sensors_main(int argc, char *argv[])
 		}
 		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd(daemon_name, SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT, 1024, hott_sensors_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) NULL);
+		deamon_task = px4_task_spawn_cmd(daemon_name, SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT, 1024, hott_sensors_thread_main,
+				(argv) ? (char * const *) &argv[2] : (char * const *) NULL);
 		exit(0);
 	}
 	

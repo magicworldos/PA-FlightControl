@@ -431,7 +431,8 @@ int do_gyro_calibration(orb_advert_t *mavlink_log_pub)
 			/* maximum allowable calibration error in radians */
 			const float maxoff = 0.01f;
 			
-			if (!PX4_ISFINITE(worker_data.gyro_scale[0].x_offset) || !PX4_ISFINITE(worker_data.gyro_scale[0].y_offset) || !PX4_ISFINITE(worker_data.gyro_scale[0].z_offset) || fabsf(xdiff) > maxoff || fabsf(ydiff) > maxoff || fabsf(zdiff) > maxoff)
+			if (!PX4_ISFINITE(worker_data.gyro_scale[0].x_offset) || !PX4_ISFINITE(worker_data.gyro_scale[0].y_offset) || !PX4_ISFINITE(worker_data.gyro_scale[0].z_offset)
+					|| fabsf(xdiff) > maxoff || fabsf(ydiff) > maxoff || fabsf(zdiff) > maxoff)
 			{
 				
 				calibration_log_critical(mavlink_log_pub, "motion, retrying..");

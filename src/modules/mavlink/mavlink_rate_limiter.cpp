@@ -41,14 +41,14 @@
 #include "mavlink_rate_limiter.h"
 
 MavlinkRateLimiter::MavlinkRateLimiter() :
-		    _last_sent(0),
-		    _interval(1000000)
+			_last_sent(0),
+			_interval(1000000)
 {
 }
 
 MavlinkRateLimiter::MavlinkRateLimiter(unsigned int interval) :
-		    _last_sent(0),
-		    _interval(interval)
+			_last_sent(0),
+			_interval(interval)
 {
 }
 

@@ -40,9 +40,9 @@
 #include "syslink_main.h"
 
 SyslinkBridge::SyslinkBridge(Syslink *link) :
-		    CDev("SyslinkBridge", "/dev/bridge0"),
-		    _link(link),
-		    _readbuffer(16, sizeof(crtp_message_t))
+			CDev("SyslinkBridge", "/dev/bridge0"),
+			_link(link),
+			_readbuffer(16, sizeof(crtp_message_t))
 {
 	
 }

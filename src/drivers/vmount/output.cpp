@@ -54,7 +54,7 @@ namespace vmount
 {
 
 OutputBase::OutputBase(const OutputConfig &output_config) :
-		    _config(output_config)
+			_config(output_config)
 {
 	_last_update = hrt_absolute_time();
 }

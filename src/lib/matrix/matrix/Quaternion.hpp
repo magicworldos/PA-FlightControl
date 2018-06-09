@@ -62,7 +62,7 @@ public:
 	 * @param data_ array
 	 */
 	Quaternion(const Type *data_) :
-			    Vector<Type, 4>(data_)
+				Vector<Type, 4>(data_)
 	{
 	}
 	
@@ -70,7 +70,7 @@ public:
 	 * Standard constructor
 	 */
 	Quaternion() :
-			    Vector<Type, 4>()
+				Vector<Type, 4>()
 	{
 		Quaternion &q = *this;
 		q(0) = 1;
@@ -85,7 +85,7 @@ public:
 	 * @param other Matrix41 to copy
 	 */
 	Quaternion(const Matrix41 &other) :
-			    Vector<Type, 4>(other)
+				Vector<Type, 4>(other)
 	{
 	}
 	
@@ -98,7 +98,7 @@ public:
 	 * @param dcm dcm to set quaternion to
 	 */
 	Quaternion(const Dcm<Type> &R) :
-			    Vector<Type, 4>()
+				Vector<Type, 4>()
 	{
 		Quaternion &q = *this;
 		Type t = R.trace();
@@ -150,7 +150,7 @@ public:
 	 * @param euler euler angle instance
 	 */
 	Quaternion(const Euler<Type> &euler) :
-			    Vector<Type, 4>()
+				Vector<Type, 4>()
 	{
 		Quaternion &q = *this;
 		Type cosPhi_2 = Type(cos(euler.phi() / Type(2.0)));
@@ -171,7 +171,7 @@ public:
 	 * @param aa axis-angle vector
 	 */
 	Quaternion(const AxisAngle<Type> &aa) :
-			    Vector<Type, 4>()
+				Vector<Type, 4>()
 	{
 		Quaternion &q = *this;
 		Type angle = aa.norm();
@@ -204,7 +204,7 @@ public:
 	 * @param d set quaternion value 3
 	 */
 	Quaternion(Type a, Type b, Type c, Type d) :
-			    Vector<Type, 4>()
+				Vector<Type, 4>()
 	{
 		Quaternion &q = *this;
 		q(0) = a;

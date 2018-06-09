@@ -99,9 +99,9 @@ public:
 	 *                          filters from the CAN driver via @ref ICanIface::getNumFilters().
 	 */
 	explicit CanAcceptanceFilterConfigurator(INode& node, uint16_t filters_number = 0) :
-			    node_(node),
-			    multiset_configs_(node.getAllocator()),
-			    filters_number_(filters_number)
+				node_(node),
+				multiset_configs_(node.getAllocator()),
+				filters_number_(filters_number)
 	{
 	}
 	

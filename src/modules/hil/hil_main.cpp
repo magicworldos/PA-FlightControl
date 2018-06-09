@@ -249,31 +249,31 @@ HilSim *g_control;
 }
 
 HilSim::HilSim() :
-		    SuperBlock(NULL, "MC"),
-		    _task_should_exit(false),
-		    _control_task(-1),
-		    
-		    /* subscriptions */
-		    //_ctrl_state_sub(-1),
-		    _sensors_sub(-1),
-		    _params_sub(-1),
-		    _actuatorsSub(-1),
-		    _actuatorsSub_1(-1),
-		    _manulSub(-1),
-		    _armed_sub(-1),
-		    
-		    /* publications */
-		    _att_pub(nullptr),
-		    _ctrl_state_pub(nullptr),
-		    _global_pos_pub(nullptr),
-		    _local_pos_pub(nullptr),
-		    _gps_pub(nullptr),
-		    _airspeed_pub(nullptr),
-		    _hil_status_pub(nullptr),
-		    _mavlink_log_pub(nullptr),
-		    
-		    /* performance counters */
-		    _loop_perf(perf_alloc(PC_ELAPSED, "hil"))
+			SuperBlock(NULL, "MC"),
+			_task_should_exit(false),
+			_control_task(-1),
+			
+			/* subscriptions */
+			//_ctrl_state_sub(-1),
+			_sensors_sub(-1),
+			_params_sub(-1),
+			_actuatorsSub(-1),
+			_actuatorsSub_1(-1),
+			_manulSub(-1),
+			_armed_sub(-1),
+			
+			/* publications */
+			_att_pub(nullptr),
+			_ctrl_state_pub(nullptr),
+			_global_pos_pub(nullptr),
+			_local_pos_pub(nullptr),
+			_gps_pub(nullptr),
+			_airspeed_pub(nullptr),
+			_hil_status_pub(nullptr),
+			_mavlink_log_pub(nullptr),
+			
+			/* performance counters */
+			_loop_perf(perf_alloc(PC_ELAPSED, "hil"))
 
 {
 	memset(&_actuators, 0, sizeof(_actuators));

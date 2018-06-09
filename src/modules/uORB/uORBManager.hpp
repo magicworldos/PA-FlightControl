@@ -57,11 +57,11 @@ class Manager;
  * uORB nodes for each uORB topics and also implements the behavor of the
  * uORB Api's.
  */
-class uORB::Manager  : public uORBCommunicator::IChannelRxHandler
+class uORB::Manager: public uORBCommunicator::IChannelRxHandler
 {
 public:
 	// public interfaces for this class.
-
+	
 	/**
 	 * Initialize the singleton. Call this before everything else.
 	 * @return true on success
@@ -77,7 +77,7 @@ public:
 	{
 		return _Instance;
 	}
-
+	
 	/**
 	 * Get the DeviceMaster for a given Flavor. If it does not exist,
 	 * it will be created and initialized.
@@ -116,7 +116,7 @@ public:
 	{
 		return orb_advertise_multi(meta, data, nullptr, ORB_PRIO_DEFAULT, queue_size);
 	}
-
+	
 	/**
 	 * Advertise as the publisher of a topic.
 	 *
@@ -151,9 +151,7 @@ public:
 	 *      ORB_DEFINE with no corresponding ORB_DECLARE)
 	 *      this function will return -1 and set errno to ENOENT.
 	 */
-	orb_advert_t orb_advertise_multi(const struct orb_metadata *meta, const void *data, int *instance,
-					 int priority, unsigned int queue_size = 1);
-
+	orb_advert_t orb_advertise_multi(const struct orb_metadata *meta, const void *data, int *instance, int priority, unsigned int queue_size = 1);
 
 	/**
 	 * Unadvertise a topic.
@@ -176,7 +174,7 @@ public:
 	 * @param data    A pointer to the data to be published.
 	 * @return    OK on success, ERROR otherwise with errno set accordingly.
 	 */
-	int  orb_publish(const struct orb_metadata *meta, orb_advert_t handle, const void *data);
+	int orb_publish(const struct orb_metadata *meta, orb_advert_t handle, const void *data);
 
 	/**
 	 * Subscribe to a topic.
@@ -203,7 +201,7 @@ public:
 	 * @return    ERROR on error, otherwise returns a handle
 	 *      that can be used to read and update the topic.
 	 */
-	int  orb_subscribe(const struct orb_metadata *meta);
+	int orb_subscribe(const struct orb_metadata *meta);
 
 	/**
 	 * Subscribe to a multi-instance of a topic.
@@ -238,7 +236,7 @@ public:
 	 *      ORB_DEFINE_OPTIONAL with no corresponding ORB_DECLARE)
 	 *      this function will return -1 and set errno to ENOENT.
 	 */
-	int  orb_subscribe_multi(const struct orb_metadata *meta, unsigned instance);
+	int orb_subscribe_multi(const struct orb_metadata *meta, unsigned instance);
 
 	/**
 	 * Unsubscribe from a topic.
@@ -246,7 +244,7 @@ public:
 	 * @param handle  A handle returned from orb_subscribe.
 	 * @return    OK on success, ERROR otherwise with errno set accordingly.
 	 */
-	int  orb_unsubscribe(int handle);
+	int orb_unsubscribe(int handle);
 
 	/**
 	 * Fetch data from a topic.
@@ -264,7 +262,7 @@ public:
 	 *      using the data.
 	 * @return    OK on success, ERROR otherwise with errno set accordingly.
 	 */
-	int  orb_copy(const struct orb_metadata *meta, int handle, void *buffer);
+	int orb_copy(const struct orb_metadata *meta, int handle, void *buffer);
 
 	/**
 	 * Check whether a topic has been published to since the last orb_copy.
@@ -284,7 +282,7 @@ public:
 	 * @return    OK if the check was successful, ERROR otherwise with
 	 *      errno set accordingly.
 	 */
-	int  orb_check(int handle, bool *updated);
+	int orb_check(int handle, bool *updated);
 
 	/**
 	 * Return the last time that the topic was updated. If a queue is used, it returns
@@ -295,7 +293,7 @@ public:
 	 *      never been updated. Time is measured in microseconds.
 	 * @return    OK on success, ERROR otherwise with errno set accordingly.
 	 */
-	int  orb_stat(int handle, uint64_t *time);
+	int orb_stat(int handle, uint64_t *time);
 
 	/**
 	 * Check if a topic has already been created and published (advertised)
@@ -304,7 +302,7 @@ public:
 	 * @param instance  ORB instance
 	 * @return    OK if the topic exists, ERROR otherwise.
 	 */
-	int  orb_exists(const struct orb_metadata *meta, int instance);
+	int orb_exists(const struct orb_metadata *meta, int instance);
 
 	/**
 	 * Return the priority of the topic
@@ -316,7 +314,7 @@ public:
 	 *      independent of the startup order of the associated publishers.
 	 * @return    OK on success, ERROR otherwise with errno set accordingly.
 	 */
-	int  orb_priority(int handle, int32_t *priority);
+	int orb_priority(int handle, int32_t *priority);
 
 	/**
 	 * Set the minimum interval between which updates are seen for a subscription.
@@ -336,8 +334,7 @@ public:
 	 * @param interval  An interval period in milliseconds.
 	 * @return    OK on success, ERROR otherwise with ERRNO set accordingly.
 	 */
-	int  orb_set_interval(int handle, unsigned interval);
-
+	int orb_set_interval(int handle, unsigned interval);
 
 	/**
 	 * Get the minimum interval between which updates are seen for a subscription.
@@ -348,7 +345,7 @@ public:
 	 * @param interval  The returned interval period in milliseconds.
 	 * @return    OK on success, ERROR otherwise with ERRNO set accordingly.
 	 */
-	int	orb_get_interval(int handle, unsigned *interval);
+	int orb_get_interval(int handle, unsigned *interval);
 
 	/**
 	 * Method to set the uORBCommunicator::IChannel instance.
@@ -371,7 +368,8 @@ public:
 	 */
 	bool is_remote_subscriber_present(const char *messageName);
 
-private: // class methods
+private:
+	// class methods
 	/**
 	 * Advertise a node; don't consider it an error if the node has
 	 * already been advertised.
@@ -380,12 +378,7 @@ private: // class methods
 	 *       we tried to advertise.
 	 */
 	int
-	node_advertise
-	(
-		const struct orb_metadata *meta,
-		int *instance = nullptr,
-		int priority = ORB_PRIO_DEFAULT
-	);
+	node_advertise(const struct orb_metadata *meta, int *instance = nullptr, int priority = ORB_PRIO_DEFAULT);
 
 	/**
 	 * Common implementation for orb_advertise and orb_subscribe.
@@ -394,17 +387,10 @@ private: // class methods
 	 * advertisers.
 	 */
 	int
-	node_open
-	(
-		Flavor f,
-		const struct orb_metadata *meta,
-		const void *data,
-		bool advertiser,
-		int *instance = nullptr,
-		int priority = ORB_PRIO_DEFAULT
-	);
+	node_open(Flavor f, const struct orb_metadata *meta, const void *data, bool advertiser, int *instance = nullptr, int priority = ORB_PRIO_DEFAULT);
 
-private: // data members
+private:
+	// data members
 	static Manager *_Instance;
 	// the communicator channel instance.
 	uORBCommunicator::IChannel *_comm_channel;
@@ -412,8 +398,8 @@ private: // data members
 	ORBSet _remote_topics;
 
 	DeviceMaster *_device_masters[Flavor_count]; ///< Allow at most one DeviceMaster per Flavor
-
-private: //class methods
+	
+private://class methods
 	Manager();
 	~Manager();
 
@@ -432,17 +418,17 @@ private: //class methods
 	virtual int16_t process_remote_topic(const char *topic_name, bool isAdvertisement);
 
 	/**
-	   * Interface to process a received AddSubscription from remote.
-	   * @param messageName
-	   *  This represents the uORB message Name; This message Name should be
-	   *  globally unique.
-	   * @param msgRate
-	   *  The max rate at which the subscriber can accept the messages.
-	   * @return
-	   *  0 = success; This means the messages is successfully handled in the
-	   *    handler.
-	   *  otherwise = failure.
-	   */
+	 * Interface to process a received AddSubscription from remote.
+	 * @param messageName
+	 *  This represents the uORB message Name; This message Name should be
+	 *  globally unique.
+	 * @param msgRate
+	 *  The max rate at which the subscriber can accept the messages.
+	 * @return
+	 *  0 = success; This means the messages is successfully handled in the
+	 *    handler.
+	 *  otherwise = failure.
+	 */
 	virtual int16_t process_add_subscription(const char *messageName,
 			int32_t msgRateInHz);
 
@@ -475,12 +461,12 @@ private: //class methods
 	virtual int16_t process_received_message(const char *messageName,
 			int32_t length, uint8_t *data);
 
-
 #ifdef ORB_USE_PUBLISHER_RULES
-
-	struct PublisherRule {
+	
+	struct PublisherRule
+	{	
 		const char **topics; //null-terminated list of topic names
-		const char *module_name; //only this module is allowed to publish one of the topics
+		const char *module_name;//only this module is allowed to publish one of the topics
 		bool ignore_other_topics;
 	};
 
@@ -514,7 +500,7 @@ private: //class methods
 	bool _has_publisher_rules = false;
 
 #endif /* ORB_USE_PUBLISHER_RULES */
-
+	
 };
 
 #endif /* _uORBManager_hpp_ */

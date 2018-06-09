@@ -43,11 +43,11 @@
 #include <platforms/px4_middleware.h>
 
 ManualInput::ManualInput() :
-		    _n(),
-		    _joy_sub(_n.subscribe("joy", 1, &ManualInput::JoyCallback, this)),
-		    _man_ctrl_sp_pub(_n.advertise < px4::manual_control_setpoint > ("manual_control_setpoint", 1)),
-		    _buttons_state(),
-		    _msg_mc_sp()
+			_n(),
+			_joy_sub(_n.subscribe("joy", 1, &ManualInput::JoyCallback, this)),
+			_man_ctrl_sp_pub(_n.advertise < px4::manual_control_setpoint > ("manual_control_setpoint", 1)),
+			_buttons_state(),
+			_msg_mc_sp()
 {
 	double dz_default = 0.2;
 	/* Load parameters, default values work for Microsoft XBox Controller */

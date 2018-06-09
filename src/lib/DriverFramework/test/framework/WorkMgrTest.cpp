@@ -111,7 +111,7 @@ static bool verifyDelay(WorkHandle &h, uint32_t delay_usec, int *arg)
 		uint64_t time_to_achieve = (delay_usec + tolerance_us) * (i + 1);
 		
 		DF_LOG_INFO("Delay: %uusec Expected: %" PRIu64 " Actual: %" PRIu64 " Delta: %ldusec", delay_usec * (i + 1), starttime + delay_usec * (i + 1), cb_times[i], (long )(cb_times[i] - starttime - (delay_usec * (i + 1))));
-		
+
 		if (elapsedtime > time_to_achieve)
 		{
 			DF_LOG_ERR("Failed %u usec timeout * %d (%" PRIu64 " > %" PRIu64 ")", delay_usec, (i + 1), elapsedtime, time_to_achieve);

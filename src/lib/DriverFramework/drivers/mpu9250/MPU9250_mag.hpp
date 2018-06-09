@@ -89,9 +89,9 @@ class MPU9250_mag
 {
 public:
 	MPU9250_mag(MPU9250 &imu, enum mag_sample_rate_e sample_rate) :
-			    _mag_initialized(false),
-			    _sample_rate(sample_rate),
-			    _imu(imu)
+				_mag_initialized(false),
+				_sample_rate(sample_rate),
+				_imu(imu)
 	{
 	}
 	

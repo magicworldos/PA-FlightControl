@@ -35,7 +35,7 @@ class StorageMarshaller
 	
 public:
 	StorageMarshaller(IStorageBackend& storage) :
-			    storage_(storage)
+				storage_(storage)
 	{
 	}
 	

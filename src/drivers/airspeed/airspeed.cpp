@@ -59,19 +59,19 @@
 #include <drivers/airspeed/airspeed.h>
 
 Airspeed::Airspeed(int bus, int address, unsigned conversion_interval, const char *path) :
-		    I2C("Airspeed", path, bus, address, 100000),
-		    _sensor_ok(false),
-		    _last_published_sensor_ok(true), /* initialize differently to force publication */
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _diff_pres_offset(0.0f),
-		    _airspeed_pub(nullptr),
-		    _airspeed_orb_class_instance(-1),
-		    _subsys_pub(nullptr),
-		    _class_instance(-1),
-		    _conversion_interval(conversion_interval),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "aspd_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "aspd_com_err"))
+			I2C("Airspeed", path, bus, address, 100000),
+			_sensor_ok(false),
+			_last_published_sensor_ok(true), /* initialize differently to force publication */
+			_measure_ticks(0),
+			_collect_phase(false),
+			_diff_pres_offset(0.0f),
+			_airspeed_pub(nullptr),
+			_airspeed_orb_class_instance(-1),
+			_subsys_pub(nullptr),
+			_class_instance(-1),
+			_conversion_interval(conversion_interval),
+			_sample_perf(perf_alloc(PC_ELAPSED, "aspd_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "aspd_com_err"))
 {
 	// enable debug() calls
 	_debug_enabled = false;

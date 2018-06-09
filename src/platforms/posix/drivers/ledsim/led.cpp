@@ -75,7 +75,7 @@ protected:
 };
 
 LED::LED() :
-		    VirtDevObj("led", "/dev/ledsim", LED_BASE_DEVICE_PATH, 0)
+			VirtDevObj("led", "/dev/ledsim", LED_BASE_DEVICE_PATH, 0)
 {
 	// force immediate init/device registration
 	init();

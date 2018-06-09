@@ -91,7 +91,8 @@ void Simulator::pack_actuator_message(mavlink_hil_actuator_controls_t &msg, unsi
 	const float pwm_center = (PWM_DEFAULT_MAX + PWM_DEFAULT_MIN) / 2;
 	
 	/* scale outputs depending on system type */
-	if (_system_type == MAV_TYPE_QUADROTOR || _system_type == MAV_TYPE_HEXAROTOR || _system_type == MAV_TYPE_OCTOROTOR || _system_type == MAV_TYPE_VTOL_DUOROTOR || _system_type == MAV_TYPE_VTOL_QUADROTOR || _system_type == MAV_TYPE_VTOL_RESERVED2)
+	if (_system_type == MAV_TYPE_QUADROTOR || _system_type == MAV_TYPE_HEXAROTOR || _system_type == MAV_TYPE_OCTOROTOR || _system_type == MAV_TYPE_VTOL_DUOROTOR
+			|| _system_type == MAV_TYPE_VTOL_QUADROTOR || _system_type == MAV_TYPE_VTOL_RESERVED2)
 	{
 		
 		/* multirotors: set number of rotor outputs depending on type */
@@ -315,7 +316,8 @@ void Simulator::handle_message(mavlink_message_t *msg, bool publish)
 			hrt_abstime curr_sitl_time = hrt_absolute_time();
 			hrt_abstime curr_sim_time = imu.time_usec;
 			
-			if (compensation_enabled && _initialized && _last_sim_timestamp > 0 && _last_sitl_timestamp > 0 && _last_sitl_timestamp < curr_sitl_time && _last_sim_timestamp < curr_sim_time)
+			if (compensation_enabled && _initialized && _last_sim_timestamp > 0 && _last_sitl_timestamp > 0 && _last_sitl_timestamp < curr_sitl_time
+					&& _last_sim_timestamp < curr_sim_time)
 			{
 				
 				px4_clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -487,7 +489,7 @@ void Simulator::handle_message(mavlink_message_t *msg, bool publish)
 				hil_gpos.lat = hil_state.lat / 1E7;						//1E7
 				hil_gpos.lon = hil_state.lon / 1E7;						//1E7
 				hil_gpos.alt = hil_state.alt / 1E3;						//1E3
-				        
+						
 				hil_gpos.vel_n = hil_state.vx / 100.0f;
 				hil_gpos.vel_e = hil_state.vy / 100.0f;
 				hil_gpos.vel_d = hil_state.vz / 100.0f;

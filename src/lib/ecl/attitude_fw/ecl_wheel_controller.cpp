@@ -48,7 +48,7 @@
 #include <ecl/ecl.h>
 
 ECL_WheelController::ECL_WheelController() :
-		    ECL_Controller("wheel")
+			ECL_Controller("wheel")
 {
 }
 

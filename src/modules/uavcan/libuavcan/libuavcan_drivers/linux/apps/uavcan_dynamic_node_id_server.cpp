@@ -57,10 +57,10 @@ public:
 		const std::int64_t argument;
 
 		RecentEvent(uavcan::MonotonicDuration arg_time_since_startup, uavcan::UtcTime arg_utc_timestamp, uavcan::dynamic_node_id_server::TraceCode arg_code, std::int64_t arg_argument) :
-				    time_since_startup(arg_time_since_startup),
-				    utc_timestamp(arg_utc_timestamp),
-				    code(arg_code),
-				    argument(arg_argument)
+					time_since_startup(arg_time_since_startup),
+					utc_timestamp(arg_utc_timestamp),
+					code(arg_code),
+					argument(arg_argument)
 		{
 		}
 		
@@ -94,7 +94,7 @@ public:
 		uavcan::MonotonicTime last_occurence;
 
 		EventStatisticsRecord() :
-				    count(0)
+					count(0)
 		{
 		}
 		
@@ -145,7 +145,7 @@ private:
 	
 public:
 	EventTracer(unsigned num_last_events_to_keep) :
-			    num_last_events_(num_last_events_to_keep)
+				num_last_events_(num_last_events_to_keep)
 	{
 	}
 	
@@ -234,7 +234,7 @@ class CLIColorizer
 	const CLIColor color_;
 public:
 	explicit CLIColorizer(CLIColor c) :
-			    color_(c)
+				color_(c)
 	{
 		std::printf("\033[%um", static_cast<unsigned>(color_));
 	}
@@ -343,7 +343,8 @@ void redraw(const uavcan_linux::NodePtr& node, const uavcan::MonotonicTime times
 	
 	render_top_int("Node ID", node->getNodeID().get(), CLIColor::Default);
 	
-	render_top_str("State", raft_state_to_string(report.state), (report.state == RaftCore::ServerStateCandidate) ? CLIColor::Magenta : (report.state == RaftCore::ServerStateLeader) ? CLIColor::Green : CLIColor::Default);
+	render_top_str("State", raft_state_to_string(report.state), (report.state == RaftCore::ServerStateCandidate) ? CLIColor::Magenta :
+																(report.state == RaftCore::ServerStateLeader) ? CLIColor::Green : CLIColor::Default);
 	
 	render_top_int("Last log index", report.last_log_index, CLIColor::Default);
 	
@@ -429,7 +430,7 @@ void redraw(const uavcan_linux::NodePtr& node, const uavcan::MonotonicTime times
 	{	return report.followers[i].match_index;}, follower_color_getter);
 	
 	assert(next_relevant_event_index == NumRelevantEvents);     // Ensuring that all events can be printed
-	        
+			
 	// Separator
 	std::printf("--------------------------------------+----------------------------------------\n");
 	
@@ -604,11 +605,11 @@ int main(int argc, const char** argv)
 				"Storage path: " << options.storage_path << "\n"
 				"Num ifaces:   " << options.ifaces.size() << "\n"
 #ifdef NDEBUG
-		        "Build mode:   Release"
+				"Build mode:   Release"
 #else
-				        "Build mode:   Debug"
+						"Build mode:   Debug"
 #endif
-		        << std::endl;
+				<< std::endl;
 		
 		/*
 		 * Preparing the storage directory

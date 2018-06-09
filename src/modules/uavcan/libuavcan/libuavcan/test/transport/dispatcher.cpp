@@ -15,8 +15,8 @@ class DispatcherTransferEmulator: public IncomingTransferEmulatorBase
 
 public:
 	DispatcherTransferEmulator(CanDriverMock& target, uavcan::NodeID dst_node_id = 127) :
-			    IncomingTransferEmulatorBase(dst_node_id),
-			    target_(target)
+				IncomingTransferEmulatorBase(dst_node_id),
+				target_(target)
 	{
 	}
 	
@@ -332,8 +332,8 @@ struct DispatcherTestLoopbackFrameListener: public uavcan::LoopbackFrameListener
 	unsigned count;
 
 	DispatcherTestLoopbackFrameListener(uavcan::Dispatcher& dispatcher) :
-			    uavcan::LoopbackFrameListenerBase(dispatcher),
-			    count(0)
+				uavcan::LoopbackFrameListenerBase(dispatcher),
+				count(0)
 	{
 	}
 	

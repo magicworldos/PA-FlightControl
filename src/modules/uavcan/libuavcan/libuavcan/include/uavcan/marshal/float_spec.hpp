@@ -27,7 +27,8 @@ template<unsigned BitLen>
 struct NativeFloatSelector
 {
 	struct ErrorNoSuchFloat;
-	typedef typename Select<(sizeof(float) * 8 >= BitLen), float, typename Select<(sizeof(double) * 8 >= BitLen), double, typename Select<(sizeof(long double) * 8 >= BitLen), long double, ErrorNoSuchFloat>::Result>::Result>::Result Type;
+	typedef typename Select<(sizeof(float) * 8 >= BitLen), float,
+			typename Select<(sizeof(double) * 8 >= BitLen), double, typename Select<(sizeof(long double) * 8 >= BitLen), long double, ErrorNoSuchFloat>::Result>::Result>::Result Type;
 };
 
 class UAVCAN_EXPORT IEEE754Converter

@@ -156,8 +156,8 @@ class FirmwareUpdateTrigger: public INodeInfoListener, private TimerBase
 		uint8_t output;
 
 		NextNodeIDSearchPredicate(const FirmwareUpdateTrigger& arg_owner) :
-				    owner(arg_owner),
-				    output(DefaultOutput)
+					owner(arg_owner),
+					output(DefaultOutput)
 		{
 		}
 		
@@ -294,7 +294,8 @@ class FirmwareUpdateTrigger: public INodeInfoListener, private TimerBase
 			return;
 		}
 		
-		const bool confirmed = result.getResponse().error == protocol::file::BeginFirmwareUpdate::Response::ERROR_OK || result.getResponse().error == protocol::file::BeginFirmwareUpdate::Response::ERROR_IN_PROGRESS;
+		const bool confirmed = result.getResponse().error == protocol::file::BeginFirmwareUpdate::Response::ERROR_OK
+				|| result.getResponse().error == protocol::file::BeginFirmwareUpdate::Response::ERROR_IN_PROGRESS;
 		
 		if (confirmed)
 		{
@@ -361,13 +362,13 @@ class FirmwareUpdateTrigger: public INodeInfoListener, private TimerBase
 	
 public:
 	FirmwareUpdateTrigger(INode& node, IFirmwareVersionChecker& checker) :
-			    TimerBase(node),
-			    begin_fw_update_client_(node),
-			    checker_(checker),
-			    node_info_retriever_(UAVCAN_NULLPTR),
-			    pending_nodes_(node.getAllocator()),
-			    request_interval_(MonotonicDuration::fromMSec(DefaultRequestIntervalMs)),
-			    last_queried_node_id_(0)
+				TimerBase(node),
+				begin_fw_update_client_(node),
+				checker_(checker),
+				node_info_retriever_(UAVCAN_NULLPTR),
+				pending_nodes_(node.getAllocator()),
+				request_interval_(MonotonicDuration::fromMSec(DefaultRequestIntervalMs)),
+				last_queried_node_id_(0)
 	{
 	}
 	

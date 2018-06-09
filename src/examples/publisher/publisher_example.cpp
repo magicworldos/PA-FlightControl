@@ -43,10 +43,10 @@
 using namespace px4;
 
 PublisherExample::PublisherExample() :
-		    _n(appState),
-		    _rc_channels_pub(_n.advertise<px4_rc_channels>()),
-		    _v_att_pub(_n.advertise<px4_vehicle_attitude>()),
-		    _parameter_update_pub(_n.advertise<px4_parameter_update>())
+			_n(appState),
+			_rc_channels_pub(_n.advertise<px4_rc_channels>()),
+			_v_att_pub(_n.advertise<px4_vehicle_attitude>()),
+			_parameter_update_pub(_n.advertise<px4_parameter_update>())
 {
 }
 

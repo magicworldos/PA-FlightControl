@@ -92,8 +92,8 @@ static void usage(const char *reason)
 	}
 	
 	PRINT_MODULE_DESCRIPTION("Utility to test motors.\n"
-	                         "\n"
-	                         "Note: this can only be used for drivers which support the motor_test uorb topic (currently uavcan and tap_esc)\n");
+								"\n"
+								"Note: this can only be used for drivers which support the motor_test uorb topic (currently uavcan and tap_esc)\n");
 	
 	PRINT_MODULE_USAGE_NAME("motor_test", "command");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("test", "Set motor(s) to a specific output value");

@@ -12,7 +12,7 @@ struct PanicHandler
 	uavcan::protocol::Panic msg;
 
 	PanicHandler() :
-			    msg()
+				msg()
 	{
 	}
 	

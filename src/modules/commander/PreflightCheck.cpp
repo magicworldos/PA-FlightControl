@@ -665,7 +665,10 @@ static bool ekf2Check(orb_advert_t *mavlink_log_pub, bool optional, bool report_
 		else
 		{
 			// The EKF is using GPS so check for bad quality on key performance indicators
-			bool gps_quality_fail = ((status.gps_check_fail_flags & ((1 << estimator_status_s::GPS_CHECK_FAIL_MIN_SAT_COUNT) + (1 << estimator_status_s::GPS_CHECK_FAIL_MIN_GDOP) + (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_HORZ_ERR) + (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_VERT_ERR) + (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_SPD_ERR))) > 0);
+			bool gps_quality_fail = ((status.gps_check_fail_flags
+					& ((1 << estimator_status_s::GPS_CHECK_FAIL_MIN_SAT_COUNT) + (1 << estimator_status_s::GPS_CHECK_FAIL_MIN_GDOP)
+							+ (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_HORZ_ERR) + (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_VERT_ERR)
+							+ (1 << estimator_status_s::GPS_CHECK_FAIL_MAX_SPD_ERR))) > 0);
 			if (gps_quality_fail)
 			{
 				if (report_fail)

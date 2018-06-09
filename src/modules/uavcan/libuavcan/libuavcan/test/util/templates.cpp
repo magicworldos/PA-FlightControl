@@ -14,7 +14,7 @@ struct ConvertibleToBool
 {
 	const bool value;
 	ConvertibleToBool(bool value) :
-			    value(value)
+				value(value)
 	{
 	}
 	operator bool() const

@@ -27,9 +27,9 @@ class StaticTransferBufferImpl: public ITransferBuffer
 
 public:
 	StaticTransferBufferImpl(uint8_t* buf, uint16_t buf_size) :
-			    data_(buf),
-			    size_(buf_size),
-			    max_write_pos_(0)
+				data_(buf),
+				size_(buf_size),
+				max_write_pos_(0)
 	{
 	}
 	
@@ -68,7 +68,7 @@ class UAVCAN_EXPORT StaticTransferBuffer: public StaticTransferBufferImpl
 	uint8_t buffer_[Size];
 public:
 	StaticTransferBuffer() :
-			    StaticTransferBufferImpl(buffer_, Size)
+				StaticTransferBufferImpl(buffer_, Size)
 	{
 		StaticAssert<(Size > 0)>::check();
 	}
@@ -84,14 +84,14 @@ class UAVCAN_EXPORT TransferBufferManagerKey
 
 public:
 	TransferBufferManagerKey() :
-			    transfer_type_(TransferType(0))
+				transfer_type_(TransferType(0))
 	{
 		UAVCAN_ASSERT(isEmpty());
 	}
 	
 	TransferBufferManagerKey(NodeID node_id, TransferType ttype) :
-			    node_id_(node_id),
-			    transfer_type_(ttype)
+				node_id_(node_id),
+				transfer_type_(ttype)
 	{
 		UAVCAN_ASSERT(!isEmpty());
 	}
@@ -150,9 +150,9 @@ class UAVCAN_EXPORT TransferBufferManagerEntry: public ITransferBuffer, public L
 
 public:
 	TransferBufferManagerEntry(IPoolAllocator& allocator, uint16_t max_size) :
-			    allocator_(allocator),
-			    max_write_pos_(0),
-			    max_size_(max_size)
+				allocator_(allocator),
+				max_write_pos_(0),
+				max_size_(max_size)
 	{
 		StaticAssert<(Block::Size > 8)>::check();
 		IsDynamicallyAllocatable<Block>::check();
@@ -195,8 +195,8 @@ class TransferBufferManager: public Noncopyable
 
 public:
 	TransferBufferManager(uint16_t max_buf_size, IPoolAllocator& allocator) :
-			    allocator_(allocator),
-			    max_buf_size_(max_buf_size)
+				allocator_(allocator),
+				max_buf_size_(max_buf_size)
 	{
 	}
 	
@@ -220,8 +220,8 @@ class UAVCAN_EXPORT TransferBufferAccessor
 
 public:
 	TransferBufferAccessor(TransferBufferManager& bufmgr, TransferBufferManagerKey key) :
-			    bufmgr_(bufmgr),
-			    key_(key)
+				bufmgr_(bufmgr),
+				key_(key)
 	{
 		UAVCAN_ASSERT(!key.isEmpty());
 	}

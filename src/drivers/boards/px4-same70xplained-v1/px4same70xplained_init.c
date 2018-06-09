@@ -281,7 +281,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	
 	if (!spi0)
 	{
-		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS); board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS);board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
 	

@@ -173,21 +173,21 @@ bool PWMSim::_lockdown = false;
 bool PWMSim::_failsafe = false;
 
 PWMSim::PWMSim() :
-		    CDev("pwm_out_sim", PWM_OUTPUT0_DEVICE_PATH),
-		    _task(-1),
-		    _mode(MODE_NONE),
-		    _update_rate(50),
-		    _current_update_rate(0),
-		    _poll_fds { },
-		    _poll_fds_num(0),
-		    _armed_sub(-1),
-		    _outputs_pub(nullptr),
-		    _num_outputs(0),
-		    _primary_pwm_device(false),
-		    _groups_required(0),
-		    _groups_subscribed(0),
-		    _task_should_exit(false),
-		    _mixers(nullptr)
+			CDev("pwm_out_sim", PWM_OUTPUT0_DEVICE_PATH),
+			_task(-1),
+			_mode(MODE_NONE),
+			_update_rate(50),
+			_current_update_rate(0),
+			_poll_fds { },
+			_poll_fds_num(0),
+			_armed_sub(-1),
+			_outputs_pub(nullptr),
+			_num_outputs(0),
+			_primary_pwm_device(false),
+			_groups_required(0),
+			_groups_subscribed(0),
+			_task_should_exit(false),
+			_mixers(nullptr)
 {
 	memset(_controls, 0, sizeof(_controls));
 	

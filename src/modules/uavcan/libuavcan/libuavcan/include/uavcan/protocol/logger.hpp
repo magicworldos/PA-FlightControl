@@ -92,8 +92,8 @@ private:
 	
 public:
 	explicit Logger(INode& node) :
-			    logmsg_pub_(node),
-			    external_sink_(UAVCAN_NULLPTR)
+				logmsg_pub_(node),
+				external_sink_(UAVCAN_NULLPTR)
 	{
 		level_ = protocol::debug::LogLevel::ERROR;
 		setTxTimeout(MonotonicDuration::fromMSec(DefaultTxTimeoutMs));

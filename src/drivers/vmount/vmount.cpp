@@ -105,7 +105,11 @@ struct Parameters
 	{
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wfloat-equal"
-		return mnt_mode_in != p.mnt_mode_in || mnt_mode_out != p.mnt_mode_out || mnt_mav_sysid != p.mnt_mav_sysid || mnt_mav_compid != p.mnt_mav_compid || fabsf(mnt_ob_lock_mode - p.mnt_ob_lock_mode) > 1e-6f || fabsf(mnt_ob_norm_mode - p.mnt_ob_norm_mode) > 1e-6f || mnt_man_pitch != p.mnt_man_pitch || mnt_man_roll != p.mnt_man_roll || mnt_man_yaw != p.mnt_man_yaw || mnt_do_stab != p.mnt_do_stab || mnt_range_pitch != p.mnt_range_pitch || mnt_range_roll != p.mnt_range_roll || mnt_range_yaw != p.mnt_range_yaw || mnt_off_pitch != p.mnt_off_pitch || mnt_off_roll != p.mnt_off_roll || mnt_off_yaw != p.mnt_off_yaw;
+		return mnt_mode_in != p.mnt_mode_in || mnt_mode_out != p.mnt_mode_out || mnt_mav_sysid != p.mnt_mav_sysid || mnt_mav_compid != p.mnt_mav_compid
+				|| fabsf(mnt_ob_lock_mode - p.mnt_ob_lock_mode) > 1e-6f || fabsf(mnt_ob_norm_mode - p.mnt_ob_norm_mode) > 1e-6f || mnt_man_pitch != p.mnt_man_pitch
+				|| mnt_man_roll != p.mnt_man_roll || mnt_man_yaw != p.mnt_man_yaw || mnt_do_stab != p.mnt_do_stab || mnt_range_pitch != p.mnt_range_pitch
+				|| mnt_range_roll != p.mnt_range_roll || mnt_range_yaw != p.mnt_range_yaw || mnt_off_pitch != p.mnt_off_pitch || mnt_off_roll != p.mnt_off_roll
+				|| mnt_off_yaw != p.mnt_off_yaw;
 #pragma GCC diagnostic pop
 		
 	}
@@ -630,7 +634,12 @@ bool get_params(ParameterHandles &param_handles, Parameters &params)
 	param_handles.mnt_off_roll = param_find("MNT_OFF_ROLL");
 	param_handles.mnt_off_yaw = param_find("MNT_OFF_YAW");
 	
-	if (param_handles.mnt_mode_in == PARAM_INVALID || param_handles.mnt_mode_out == PARAM_INVALID || param_handles.mnt_mav_sysid == PARAM_INVALID || param_handles.mnt_mav_compid == PARAM_INVALID || param_handles.mnt_ob_lock_mode == PARAM_INVALID || param_handles.mnt_ob_norm_mode == PARAM_INVALID || param_handles.mnt_man_pitch == PARAM_INVALID || param_handles.mnt_man_roll == PARAM_INVALID || param_handles.mnt_man_yaw == PARAM_INVALID || param_handles.mnt_do_stab == PARAM_INVALID || param_handles.mnt_range_pitch == PARAM_INVALID || param_handles.mnt_range_roll == PARAM_INVALID || param_handles.mnt_range_yaw == PARAM_INVALID || param_handles.mnt_off_pitch == PARAM_INVALID || param_handles.mnt_off_roll == PARAM_INVALID || param_handles.mnt_off_yaw == PARAM_INVALID)
+	if (param_handles.mnt_mode_in == PARAM_INVALID || param_handles.mnt_mode_out == PARAM_INVALID || param_handles.mnt_mav_sysid == PARAM_INVALID
+			|| param_handles.mnt_mav_compid == PARAM_INVALID || param_handles.mnt_ob_lock_mode == PARAM_INVALID || param_handles.mnt_ob_norm_mode == PARAM_INVALID
+			|| param_handles.mnt_man_pitch == PARAM_INVALID || param_handles.mnt_man_roll == PARAM_INVALID || param_handles.mnt_man_yaw == PARAM_INVALID
+			|| param_handles.mnt_do_stab == PARAM_INVALID || param_handles.mnt_range_pitch == PARAM_INVALID || param_handles.mnt_range_roll == PARAM_INVALID
+			|| param_handles.mnt_range_yaw == PARAM_INVALID || param_handles.mnt_off_pitch == PARAM_INVALID || param_handles.mnt_off_roll == PARAM_INVALID
+			|| param_handles.mnt_off_yaw == PARAM_INVALID)
 	{
 		return false;
 	}

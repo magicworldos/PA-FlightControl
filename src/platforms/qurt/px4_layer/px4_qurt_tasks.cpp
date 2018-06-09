@@ -79,7 +79,7 @@ struct task_entry
 	std::string name;
 	bool isused;
 	task_entry() :
-			    isused(false)
+				isused(false)
 	{
 	}
 };

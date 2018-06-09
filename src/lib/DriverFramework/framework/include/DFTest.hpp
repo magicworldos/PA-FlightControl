@@ -45,7 +45,7 @@ class DFTestObj
 {
 public:
 	DFTestObj(const char *name) :
-			    m_name(name)
+				m_name(name)
 	{
 	}
 	

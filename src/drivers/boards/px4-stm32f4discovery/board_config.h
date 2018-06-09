@@ -55,7 +55,6 @@
 /* PX4-STM32F4Discovery GPIOs ***********************************************************************************/
 /* LEDs */
 // LED1 green, LED2 orange, LED3 red, LED4 blue
-
 #define GPIO_LED1       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
 			 GPIO_OUTPUT_CLEAR|GPIO_PORTD|GPIO_PIN12)
 #define GPIO_LED2       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\

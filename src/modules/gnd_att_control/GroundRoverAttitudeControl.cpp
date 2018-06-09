@@ -56,11 +56,11 @@ GroundRoverAttitudeControl *g_control = nullptr;
 }
 
 GroundRoverAttitudeControl::GroundRoverAttitudeControl() :
-		    /* performance counters */
-		    _loop_perf(perf_alloc(PC_ELAPSED, "gnda_dt")),
-		    
-		    _nonfinite_input_perf(perf_alloc(PC_COUNT, "gnda_nani")),
-		    _nonfinite_output_perf(perf_alloc(PC_COUNT, "gnda_nano"))
+			/* performance counters */
+			_loop_perf(perf_alloc(PC_ELAPSED, "gnda_dt")),
+			
+			_nonfinite_input_perf(perf_alloc(PC_COUNT, "gnda_nani")),
+			_nonfinite_output_perf(perf_alloc(PC_COUNT, "gnda_nano"))
 {
 	_parameter_handles.w_p = param_find("GND_WR_P");
 	_parameter_handles.w_i = param_find("GND_WR_I");

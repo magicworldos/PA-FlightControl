@@ -330,7 +330,8 @@ static void i2c_tx_setup(void)
 	 * to deal with bailing out of a transaction while the master is still
 	 * babbling at us.
 	 */
-	stm32_dmasetup(tx_dma, (uintptr_t) &rDR, (uintptr_t) &tx_buf[0], tx_len, DMA_CCR_DIR | DMA_CCR_CIRC | DMA_CCR_MINC | DMA_CCR_PSIZE_8BITS | DMA_CCR_MSIZE_8BITS | DMA_CCR_PRIMED);
+	stm32_dmasetup(tx_dma, (uintptr_t) &rDR, (uintptr_t) &tx_buf[0], tx_len, DMA_CCR_DIR | DMA_CCR_CIRC | DMA_CCR_MINC | DMA_CCR_PSIZE_8BITS | DMA_CCR_MSIZE_8BITS
+							| DMA_CCR_PRIMED);
 	
 	stm32_dmastart(tx_dma, NULL, NULL, false);
 }

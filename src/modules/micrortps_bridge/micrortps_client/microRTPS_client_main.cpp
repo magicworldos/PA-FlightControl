@@ -192,7 +192,8 @@ static int micrortps_start(int argc, char *argv[])
 	
 	double elapsed_secs = double(end.tv_sec - begin.tv_sec) + double(end.tv_nsec - begin.tv_nsec) / double(1000000000);
 	
-	printf("RECEIVED: %lu messages in %d LOOPS, %d bytes in %.03f seconds - %.02fKB/s\n\n", (unsigned long) received, loop, total_read, elapsed_secs, (double) total_read / (1000 * elapsed_secs));
+	printf("RECEIVED: %lu messages in %d LOOPS, %d bytes in %.03f seconds - %.02fKB/s\n\n", (unsigned long) received, loop, total_read, elapsed_secs, (double) total_read
+					/ (1000 * elapsed_secs));
 	
 	delete transport_node;
 	

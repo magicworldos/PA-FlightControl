@@ -96,4 +96,4 @@ private:
 };
 
 }
- // namespace math
+        // namespace math

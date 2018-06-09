@@ -89,7 +89,7 @@ struct B
 {
 	long double b;
 	B(long double val = 0.0L) :
-			    b(val)
+				b(val)
 	{
 	}
 };
@@ -98,7 +98,7 @@ struct A
 {
 	float a;
 	explicit A(float val = 0.0F) :
-			    a(val)
+				a(val)
 	{
 	}
 	
@@ -119,7 +119,7 @@ struct C
 {
 	long long c;
 	explicit C(long long val = 0.0L) :
-			    c(val)
+				c(val)
 	{
 	}
 	

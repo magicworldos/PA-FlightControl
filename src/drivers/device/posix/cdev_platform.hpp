@@ -23,15 +23,15 @@ struct file_t
 	void *vdev;
 
 	file_t() :
-			    flags(0),
-			    priv(nullptr),
-			    vdev(nullptr)
+				flags(0),
+				priv(nullptr),
+				vdev(nullptr)
 	{
 	}
 	file_t(int f, void *c) :
-			    flags(f),
-			    priv(nullptr),
-			    vdev(c)
+				flags(f),
+				priv(nullptr),
+				vdev(c)
 	{
 	}
 };

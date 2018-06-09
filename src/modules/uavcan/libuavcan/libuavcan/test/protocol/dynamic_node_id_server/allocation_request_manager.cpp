@@ -18,7 +18,7 @@ public:
 	bool can_followup;
 
 	AllocationRequestHandler() :
-			    can_followup(false)
+				can_followup(false)
 	{
 	}
 	

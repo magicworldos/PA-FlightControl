@@ -19,7 +19,7 @@ int extctl_land_handle(void *data)
 	{
 		return -1;
 	}
-
+	
 	return 0;
 }
 
@@ -28,7 +28,7 @@ int extctl_land_send(void)
 	int land_sub = orb_subscribe(ORB_ID(vehicle_land_detected));
 	struct vehicle_land_detected_s veh_land;
 	land_s land = { 0 };
-
+	
 	while (!_extctl_should_exit)
 	{
 		bool updated = false;
@@ -41,7 +41,7 @@ int extctl_land_send(void)
 		}
 		usleep(DEV_RATE_LAND);
 	}
-
+	
 	return 0;
 }
 

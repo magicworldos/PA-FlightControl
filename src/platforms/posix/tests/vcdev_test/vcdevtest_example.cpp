@@ -96,7 +96,7 @@ class PrivData
 {
 public:
 	PrivData() :
-			    _read_offset(0)
+				_read_offset(0)
 	{
 	}
 	~PrivData()
@@ -110,9 +110,9 @@ class VCDevNode: public CDev
 {
 public:
 	VCDevNode() :
-			    CDev("vcdevtest", TESTDEV),
-			    _is_open_for_write(false),
-			    _write_offset(0)
+				CDev("vcdevtest", TESTDEV),
+				_is_open_for_write(false),
+				_write_offset(0)
 	{
 	}
 	

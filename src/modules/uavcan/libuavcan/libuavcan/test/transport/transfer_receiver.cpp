@@ -37,8 +37,8 @@ struct RxFrameGenerator
 	uavcan::TransferBufferManagerKey bufmgr_key;
 
 	RxFrameGenerator(uint16_t data_type_id, const uavcan::TransferBufferManagerKey& bufmgr_key = DEFAULT_KEY) :
-			    data_type_id(data_type_id),
-			    bufmgr_key(bufmgr_key)
+				data_type_id(data_type_id),
+				bufmgr_key(bufmgr_key)
 	{
 	}
 	
@@ -76,7 +76,7 @@ struct Context
 	uavcan::TransferBufferManager bufmgr;
 
 	Context() :
-			    bufmgr(BufSize, pool)
+				bufmgr(BufSize, pool)
 	{
 	}
 	

@@ -201,20 +201,20 @@ protected:
 extern "C" __EXPORT int mpl3115a2_main(int argc, char *argv[]);
 
 MPL3115A2::MPL3115A2(device::Device *interface, const char *path) :
-		    CDev("MPL3115A2", path),
-		    _interface(interface),
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _collect_phase(false),
-		    _P(0),
-		    _T(0),
-		    _msl_pressure(101325),
-		    _baro_topic(nullptr),
-		    _orb_class_instance(-1),
-		    _class_instance(-1),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "mpl3115a2_read")),
-		    _measure_perf(perf_alloc(PC_ELAPSED, "mpl3115a2_measure")),
-		    _comms_errors(perf_alloc(PC_COUNT, "mpl3115a2_com_err"))
+			CDev("MPL3115A2", path),
+			_interface(interface),
+			_measure_ticks(0),
+			_reports(nullptr),
+			_collect_phase(false),
+			_P(0),
+			_T(0),
+			_msl_pressure(101325),
+			_baro_topic(nullptr),
+			_orb_class_instance(-1),
+			_class_instance(-1),
+			_sample_perf(perf_alloc(PC_ELAPSED, "mpl3115a2_read")),
+			_measure_perf(perf_alloc(PC_ELAPSED, "mpl3115a2_measure")),
+			_comms_errors(perf_alloc(PC_COUNT, "mpl3115a2_com_err"))
 {
 	// work_cancel in stop_cycle called from the dtor will explode if we don't do this...
 	memset(&_work, 0, sizeof(_work));
@@ -782,18 +782,18 @@ struct mpl3115a2_bus_option
 	MPL3115A2 *dev;
 } bus_options[] = {
 #if defined(PX4_SPIDEV_EXT_BARO) && defined(PX4_SPI_BUS_EXT)
-        {	MPL3115A2_BUS_SPI_EXTERNAL, "/dev/mpl3115a2_spi_ext", &MPL3115A2_spi_interface, PX4_SPI_BUS_EXT, NULL},
+		{	MPL3115A2_BUS_SPI_EXTERNAL, "/dev/mpl3115a2_spi_ext", &MPL3115A2_spi_interface, PX4_SPI_BUS_EXT, NULL},
 #endif
 #ifdef PX4_SPIDEV_BARO
-        {	MPL3115A2_BUS_SPI_INTERNAL, "/dev/mpl3115a2_spi_int", &MPL3115A2_spi_interface, PX4_SPI_BUS_BARO, NULL},
+		{	MPL3115A2_BUS_SPI_INTERNAL, "/dev/mpl3115a2_spi_int", &MPL3115A2_spi_interface, PX4_SPI_BUS_BARO, NULL},
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	MPL3115A2_BUS_I2C_INTERNAL, "/dev/mpl3115a2_int", &MPL3115A2_i2c_interface, PX4_I2C_BUS_ONBOARD, NULL},
+		{	MPL3115A2_BUS_I2C_INTERNAL, "/dev/mpl3115a2_int", &MPL3115A2_i2c_interface, PX4_I2C_BUS_ONBOARD, NULL},
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION
-        { MPL3115A2_BUS_I2C_EXTERNAL, "/dev/mpl3115a2_ext", &MPL3115A2_i2c_interface, PX4_I2C_BUS_EXPANSION, NULL },
+		{ MPL3115A2_BUS_I2C_EXTERNAL, "/dev/mpl3115a2_ext", &MPL3115A2_i2c_interface, PX4_I2C_BUS_EXPANSION, NULL },
 #endif
-        };
+		};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 bool start_bus(struct mpl3115a2_bus_option &bus);

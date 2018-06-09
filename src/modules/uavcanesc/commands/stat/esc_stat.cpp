@@ -41,7 +41,7 @@
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-	         "\tstat {yada|yada|yada}");
+				"\tstat {yada|yada|yada}");
 }
 
 extern "C" __EXPORT int stat_main(int argc, char *argv[]);

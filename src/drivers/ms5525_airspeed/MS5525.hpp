@@ -60,7 +60,7 @@ class MS5525: public Airspeed
 {
 public:
 	MS5525(uint8_t bus, uint8_t address = I2C_ADDRESS_1_MS5525DSO, const char *path = PATH_MS5525) :
-			    Airspeed(bus, address, CONVERSION_INTERVAL, path)
+				Airspeed(bus, address, CONVERSION_INTERVAL, path)
 	{
 	}
 	

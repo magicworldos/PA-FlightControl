@@ -33,9 +33,9 @@ namespace uavcan
  */
 template<
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-        typename Callback = std::function<void (const ReceivedDataStructure<protocol::Panic>&)>
+		typename Callback = std::function<void (const ReceivedDataStructure<protocol::Panic>&)>
 #else
-        typename Callback = void (*)(const ReceivedDataStructure<protocol::Panic>&)
+		typename Callback = void (*)(const ReceivedDataStructure<protocol::Panic>&)
 #endif
 >
 class UAVCAN_EXPORT PanicListener: Noncopyable
@@ -91,9 +91,9 @@ class UAVCAN_EXPORT PanicListener: Noncopyable
 	
 public:
 	explicit PanicListener(INode& node) :
-			    sub_(node),
-			    callback_(),
-			    num_subsequent_msgs_(0)
+				sub_(node),
+				callback_(),
+				num_subsequent_msgs_(0)
 	{
 	}
 	

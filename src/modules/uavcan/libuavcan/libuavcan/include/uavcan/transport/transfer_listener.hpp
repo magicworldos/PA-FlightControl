@@ -36,13 +36,13 @@ class UAVCAN_EXPORT IncomingTransfer: public ITransferBuffer
 
 protected:
 	IncomingTransfer(MonotonicTime ts_mono, UtcTime ts_utc, TransferPriority transfer_priority, TransferType transfer_type, TransferID transfer_id, NodeID source_node_id, uint8_t iface_index) :
-			    ts_mono_(ts_mono),
-			    ts_utc_(ts_utc),
-			    transfer_priority_(transfer_priority),
-			    transfer_type_(transfer_type),
-			    transfer_id_(transfer_id),
-			    src_node_id_(source_node_id),
-			    iface_index_(iface_index)
+				ts_mono_(ts_mono),
+				ts_utc_(ts_utc),
+				transfer_priority_(transfer_priority),
+				transfer_type_(transfer_type),
+				transfer_id_(transfer_id),
+				src_node_id_(source_node_id),
+				iface_index_(iface_index)
 	{
 	}
 	
@@ -139,8 +139,8 @@ class UAVCAN_EXPORT TransferListener: public LinkedListNode<TransferListener>
 
 	public:
 		TimedOutReceiverPredicate(MonotonicTime arg_ts, TransferBufferManager& arg_bufmgr) :
-				    ts_(arg_ts),
-				    parent_bufmgr_(arg_bufmgr)
+					ts_(arg_ts),
+					parent_bufmgr_(arg_bufmgr)
 		{
 		}
 		
@@ -157,12 +157,12 @@ protected:
 
 public:
 	TransferListener(TransferPerfCounter& perf, const DataTypeDescriptor& data_type, uint16_t max_buffer_size, IPoolAllocator& allocator) :
-			    data_type_(data_type),
-			    bufmgr_(max_buffer_size, allocator),
-			    receivers_(allocator),
-			    perf_(perf),
-			    crc_base_(data_type.getSignature().toTransferCRC()),
-			    allow_anonymous_transfers_(false)
+				data_type_(data_type),
+				bufmgr_(max_buffer_size, allocator),
+				receivers_(allocator),
+				perf_(perf),
+				crc_base_(data_type.getSignature().toTransferCRC()),
+				allow_anonymous_transfers_(false)
 	{
 	}
 	
@@ -214,8 +214,8 @@ class UAVCAN_EXPORT TransferListenerWithFilter: public TransferListener
 
 public:
 	TransferListenerWithFilter(TransferPerfCounter& perf, const DataTypeDescriptor& data_type, uint16_t max_buffer_size, IPoolAllocator& allocator) :
-			    TransferListener(perf, data_type, max_buffer_size, allocator),
-			    filter_(UAVCAN_NULLPTR)
+				TransferListener(perf, data_type, max_buffer_size, allocator),
+				filter_(UAVCAN_NULLPTR)
 	{
 	}
 	

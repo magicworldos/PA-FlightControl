@@ -42,9 +42,9 @@ class UAVCAN_EXPORT TransferPerfCounter
 
 public:
 	TransferPerfCounter() :
-			    transfers_tx_(0),
-			    transfers_rx_(0),
-			    errors_(0)
+				transfers_tx_(0),
+				transfers_rx_(0),
+				errors_(0)
 	{
 	}
 	

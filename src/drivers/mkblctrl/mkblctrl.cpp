@@ -210,26 +210,26 @@ MK *g_mk;
 } // namespace
 
 MK::MK(int bus, const char *_device_path) :
-		    I2C("mkblctrl", "/dev/mkblctrl0", bus, 0, I2C_BUS_SPEED),
-		    _update_rate(UPDATE_RATE),
-		    _task(-1),
-		    _t_actuators(-1),
-		    _t_actuator_armed(-1),
-		    _motor(-1),
-		    _px4mode(MAPPING_MK),
-		    _frametype(FRAME_PLUS),
-		    _t_outputs(0),
-		    _t_esc_status(0),
-		    _num_outputs(0),
-		    _primary_pwm_device(false),
-		    _motortest(false),
-		    _overrideSecurityChecks(false),
-		    _task_should_exit(false),
-		    _armed(false),
-		    _mixers(nullptr),
-		    _indicate_esc(false),
-		    _rc_min_value(RC_MIN_VALUE),
-		    _rc_max_value(RC_MAX_VALUE)
+			I2C("mkblctrl", "/dev/mkblctrl0", bus, 0, I2C_BUS_SPEED),
+			_update_rate(UPDATE_RATE),
+			_task(-1),
+			_t_actuators(-1),
+			_t_actuator_armed(-1),
+			_motor(-1),
+			_px4mode(MAPPING_MK),
+			_frametype(FRAME_PLUS),
+			_t_outputs(0),
+			_t_esc_status(0),
+			_num_outputs(0),
+			_primary_pwm_device(false),
+			_motortest(false),
+			_overrideSecurityChecks(false),
+			_task_should_exit(false),
+			_armed(false),
+			_mixers(nullptr),
+			_indicate_esc(false),
+			_rc_min_value(RC_MIN_VALUE),
+			_rc_max_value(RC_MAX_VALUE)
 {
 	strncpy(_device, _device_path, sizeof(_device));
 	/* enforce null termination */

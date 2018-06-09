@@ -57,9 +57,9 @@ class TemperatureCalibrationBase
 {
 public:
 	TemperatureCalibrationBase(float min_temperature_rise, float min_start_temperature, float max_start_temperature) :
-			    _min_temperature_rise(min_temperature_rise),
-			    _min_start_temperature(min_start_temperature),
-			    _max_start_temperature(max_start_temperature)
+				_min_temperature_rise(min_temperature_rise),
+				_min_start_temperature(min_start_temperature),
+				_max_start_temperature(max_start_temperature)
 	{
 	}
 	
@@ -123,7 +123,7 @@ class TemperatureCalibrationCommon: public TemperatureCalibrationBase
 {
 public:
 	TemperatureCalibrationCommon(float min_temperature_rise, float min_start_temperature, float max_start_temperature) :
-			    TemperatureCalibrationBase(min_temperature_rise, min_start_temperature, max_start_temperature)
+				TemperatureCalibrationBase(min_temperature_rise, min_start_temperature, max_start_temperature)
 	{
 	}
 	

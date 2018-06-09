@@ -137,11 +137,11 @@ void print_load_buffer(uint64_t t, char *buffer, int buffer_length, print_load_c
 		/* header for task list */
 		snprintf(buffer, buffer_length, "%4s %*-s %8s %6s %11s %10s %-5s %2s", "PID", CONFIG_TASK_NAME_SIZE, "COMMAND", "CPU(ms)", "CPU(%)", "USED/STACK", "PRIO(BASE)",
 #if CONFIG_RR_INTERVAL > 0
-		         "TSLICE",
+					"TSLICE",
 #else
-		         "STATE",
+					"STATE",
 #endif
-		         "FD");
+					"FD");
 		cb(user);
 		
 	}
@@ -276,9 +276,10 @@ void print_load_buffer(uint64_t t, char *buffer, int buffer_length, print_load_c
 		}
 		
 		// print output
-		int print_len = snprintf(buffer, buffer_length, "%4d %*-s %8d %2d.%03d %5u/%5u %3u (%3u) ", tcb_pid, CONFIG_TASK_NAME_SIZE, tcb_name, total_runtime[i], (int) (current_load * 100.0f), (int) ((current_load * 100.0f - (int) (current_load * 100.0f)) * 1000), stack_size - stack_free, stack_size, tcb_sched_priority,
+		int print_len = snprintf(buffer, buffer_length, "%4d %*-s %8d %2d.%03d %5u/%5u %3u (%3u) ", tcb_pid, CONFIG_TASK_NAME_SIZE, tcb_name, total_runtime[i], (int) (current_load
+											* 100.0f), (int) ((current_load * 100.0f - (int) (current_load * 100.0f)) * 1000), stack_size - stack_free, stack_size, tcb_sched_priority,
 #if CONFIG_ARCH_BOARD_SIM || !defined(CONFIG_PRIORITY_INHERITANCE)
-		                         0);
+									0);
 #else
 		tcb_base_priority);
 #endif

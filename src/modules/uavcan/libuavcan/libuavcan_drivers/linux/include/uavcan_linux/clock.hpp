@@ -70,10 +70,10 @@ public:
 	 * By default, the clock adjustment mode will be selected automatically - global if root, private otherwise.
 	 */
 	explicit SystemClock(ClockAdjustmentMode adj_mode = detectPreferredClockAdjustmentMode()) :
-			    gradual_adj_limit_(uavcan::UtcDuration::fromMSec(4000)),
-			    adj_mode_(adj_mode),
-			    step_adj_cnt_(0),
-			    gradual_adj_cnt_(0)
+				gradual_adj_limit_(uavcan::UtcDuration::fromMSec(4000)),
+				adj_mode_(adj_mode),
+				step_adj_cnt_(0),
+				gradual_adj_cnt_(0)
 	{
 	}
 	

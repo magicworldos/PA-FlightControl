@@ -103,10 +103,10 @@ class SocketCanIface: public uavcan::ICanIface
 		std::uint64_t order = 0;
 
 		TxItem(const uavcan::CanFrame& arg_frame, uavcan::MonotonicTime arg_deadline, uavcan::CanIOFlags arg_flags, std::uint64_t arg_order) :
-				    frame(arg_frame),
-				    deadline(arg_deadline),
-				    flags(arg_flags),
-				    order(arg_order)
+					frame(arg_frame),
+					deadline(arg_deadline),
+					flags(arg_flags),
+					order(arg_order)
 		{
 		}
 		
@@ -132,7 +132,7 @@ class SocketCanIface: public uavcan::ICanIface
 		uavcan::CanIOFlags flags;
 
 		RxItem() :
-				    flags(0)
+					flags(0)
 		{
 		}
 	};
@@ -372,9 +372,9 @@ public:
 	 * @ref max_frames_in_socket_tx_queue       See a note in the class comment.
 	 */
 	SocketCanIface(const SystemClock& clock, int socket_fd, int max_frames_in_socket_tx_queue = 2) :
-			    clock_(clock),
-			    fd_(socket_fd),
-			    max_frames_in_socket_tx_queue_(max_frames_in_socket_tx_queue)
+				clock_(clock),
+				fd_(socket_fd),
+				max_frames_in_socket_tx_queue_(max_frames_in_socket_tx_queue)
 	{
 		assert(fd_ >= 0);
 	}
@@ -543,7 +543,7 @@ public:
 			int fd_;
 		public:
 			RaiiCloser(int filedesc) :
-					    fd_(filedesc)
+						fd_(filedesc)
 			{
 				assert(fd_ >= 0);
 			}
@@ -640,7 +640,7 @@ class SocketCanDriver: public uavcan::ICanDriver
 
 	public:
 		IfaceWrapper(const SystemClock& clock, int fd) :
-				    SocketCanIface(clock, fd)
+					SocketCanIface(clock, fd)
 		{
 		}
 		
@@ -673,7 +673,7 @@ public:
 	 * Reference to the clock object shall remain valid.
 	 */
 	explicit SocketCanDriver(const SystemClock& clock) :
-			    clock_(clock)
+				clock_(clock)
 	{
 		ifaces_.reserve(uavcan::MaxCanIfaces);
 	}

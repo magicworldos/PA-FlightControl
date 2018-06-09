@@ -53,8 +53,8 @@ public:
 		const std::size_t bitpos_;
 
 		Reference(BitSet* arg_parent, std::size_t arg_bitpos) :
-				    parent_(arg_parent),
-				    bitpos_(arg_bitpos)
+					parent_(arg_parent),
+					bitpos_(arg_bitpos)
 		{
 		}
 		
@@ -83,7 +83,7 @@ public:
 	};
 
 	BitSet() :
-			    data_()
+				data_()
 	{
 		reset();
 	}

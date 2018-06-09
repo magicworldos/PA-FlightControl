@@ -70,7 +70,7 @@ typedef __sigset_t sigset_t;
 
 typedef struct fd_set
 {
-	__fd_mask	 __fds_bits [_howmany(FD_SETSIZE, _NFDBITS)];
+	__fd_mask	  __fds_bits [_howmany(FD_SETSIZE, _NFDBITS)];
 } fd_set;
 #if __BSD_VISIBLE
 #define	fds_bits	__fds_bits

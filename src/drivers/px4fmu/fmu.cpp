@@ -338,47 +338,47 @@ actuator_armed_s PX4FMU::_armed = { };
 work_s PX4FMU::_work = { };
 
 PX4FMU::PX4FMU(bool run_as_task) :
-		    CDev("fmu", PX4FMU_DEVICE_PATH),
-		    _mode(MODE_NONE),
-		    _pwm_default_rate(50),
-		    _pwm_alt_rate(50),
-		    _pwm_alt_rate_channels(0),
-		    _current_update_rate(0),
-		    _run_as_task(run_as_task),
-		    _vehicle_cmd_sub(-1),
-		    _armed_sub(-1),
-		    _param_sub(-1),
-		    _adc_sub(-1),
-		    _rc_in { },
-		    _analog_rc_rssi_volt(-1.0f),
-		    _analog_rc_rssi_stable(false),
-		    _to_input_rc(nullptr),
-		    _outputs_pub(nullptr),
-		    _num_outputs(0),
-		    _class_instance(0),
-		    _rcs_fd(-1),
-		    _throttle_armed(false),
-		    _pwm_on(false),
-		    _pwm_mask(0),
-		    _pwm_initialized(false),
-		    _mixers(nullptr),
-		    _groups_required(0),
-		    _groups_subscribed(0),
-		    _control_subs { -1 },
-		    _poll_fds_num(0),
-		    raw_rc_count(0),
-		    _failsafe_pwm { 0 },
-		    _disarmed_pwm { 0 },
-		    _reverse_pwm_mask(0),
-		    _num_failsafe_set(0),
-		    _num_disarmed_set(0),
-		    _safety_off(false),
-		    _safety_disabled(false),
-		    _to_safety(nullptr),
-		    _to_mixer_status(nullptr),
-		    _mot_t_max(0.0f),
-		    _thr_mdl_fac(0.0f),
-		    _ctl_latency(perf_alloc(PC_ELAPSED, "ctl_lat"))
+			CDev("fmu", PX4FMU_DEVICE_PATH),
+			_mode(MODE_NONE),
+			_pwm_default_rate(50),
+			_pwm_alt_rate(50),
+			_pwm_alt_rate_channels(0),
+			_current_update_rate(0),
+			_run_as_task(run_as_task),
+			_vehicle_cmd_sub(-1),
+			_armed_sub(-1),
+			_param_sub(-1),
+			_adc_sub(-1),
+			_rc_in { },
+			_analog_rc_rssi_volt(-1.0f),
+			_analog_rc_rssi_stable(false),
+			_to_input_rc(nullptr),
+			_outputs_pub(nullptr),
+			_num_outputs(0),
+			_class_instance(0),
+			_rcs_fd(-1),
+			_throttle_armed(false),
+			_pwm_on(false),
+			_pwm_mask(0),
+			_pwm_initialized(false),
+			_mixers(nullptr),
+			_groups_required(0),
+			_groups_subscribed(0),
+			_control_subs { -1 },
+			_poll_fds_num(0),
+			raw_rc_count(0),
+			_failsafe_pwm { 0 },
+			_disarmed_pwm { 0 },
+			_reverse_pwm_mask(0),
+			_num_failsafe_set(0),
+			_num_disarmed_set(0),
+			_safety_off(false),
+			_safety_disabled(false),
+			_to_safety(nullptr),
+			_to_mixer_status(nullptr),
+			_mot_t_max(0.0f),
+			_thr_mdl_fac(0.0f),
+			_ctl_latency(perf_alloc(PC_ELAPSED, "ctl_lat"))
 {
 	for (unsigned i = 0; i < _max_actuators; i++)
 	{
@@ -1966,7 +1966,8 @@ int PX4FMU::control_callback(uintptr_t handle, uint8_t control_group, uint8_t co
 	/* motor spinup phase - lock throttle to zero */
 	if (_pwm_limit.state == PWM_LIMIT_STATE_RAMP)
 	{
-		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE) && control_index == actuator_controls_s::INDEX_THROTTLE)
+		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE)
+				&& control_index == actuator_controls_s::INDEX_THROTTLE)
 		{
 			/* limit the throttle output to zero during motor spinup,
 			 * as the motors cannot follow any demand yet
@@ -1978,7 +1979,8 @@ int PX4FMU::control_callback(uintptr_t handle, uint8_t control_group, uint8_t co
 	/* throttle not arming - mark throttle input as invalid */
 	if (arm_nothrottle() && !_armed.in_esc_calibration_mode)
 	{
-		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE) && control_index == actuator_controls_s::INDEX_THROTTLE)
+		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE)
+				&& control_index == actuator_controls_s::INDEX_THROTTLE)
 		{
 			/* set the throttle to an invalid value */
 			input = NAN;

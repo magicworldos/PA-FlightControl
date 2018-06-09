@@ -42,9 +42,9 @@ struct CustomType
 	typename uavcan::StorageType<C>::Type c;
 
 	CustomType() :
-			    a(),
-			    b(),
-			    c()
+				a(),
+				b(),
+				c()
 	{
 	}
 	
@@ -393,8 +393,8 @@ struct CustomType2
 	typename uavcan::StorageType<B>::Type b;
 
 	CustomType2() :
-			    a(),
-			    b()
+				a(),
+				b()
 	{
 	}
 	

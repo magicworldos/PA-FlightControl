@@ -118,7 +118,7 @@ int _close_r(struct _reent*, int)
 }
 
 __attribute__((used))
- caddr_t _sbrk_r(struct _reent*, int)
+  caddr_t _sbrk_r(struct _reent*, int)
 {
 	return 0;
 }

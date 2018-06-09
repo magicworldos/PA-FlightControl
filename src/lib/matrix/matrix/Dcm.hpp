@@ -47,7 +47,7 @@ public:
 	 * Initializes to identity
 	 */
 	Dcm() :
-			    SquareMatrix<Type, 3>()
+				SquareMatrix<Type, 3>()
 	{
 		(*this) = eye<Type, 3>();
 	}
@@ -58,7 +58,7 @@ public:
 	 * @param _data pointer to array
 	 */
 	Dcm(const Type *data_) :
-			    SquareMatrix<Type, 3>(data_)
+				SquareMatrix<Type, 3>(data_)
 	{
 	}
 	
@@ -68,7 +68,7 @@ public:
 	 * @param other Matrix33 to set dcm to
 	 */
 	Dcm(const Matrix<Type, 3, 3> &other) :
-			    SquareMatrix<Type, 3>(other)
+				SquareMatrix<Type, 3>(other)
 	{
 	}
 	

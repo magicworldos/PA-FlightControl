@@ -308,7 +308,8 @@ protected:
 								volatile AppDescriptor descriptorC = descriptor;
 								descriptorC.reserved[1]++;
 								
-								if (node_info.software_version.image_crc == 0 || (node_info.software_version.major == 0 && node_info.software_version.minor == 0) || descriptor.image_crc != node_info.software_version.image_crc)
+								if (node_info.software_version.image_crc == 0 || (node_info.software_version.major == 0 && node_info.software_version.minor == 0)
+										|| descriptor.image_crc != node_info.software_version.image_crc)
 								{
 									rv = true;
 									out_firmware_file_path = pfile->d_name;

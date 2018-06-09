@@ -47,8 +47,8 @@ class WQueueTest
 {
 public:
 	WQueueTest() :
-			    _lpwork_done(false),
-			    _hpwork_done(false)
+				_lpwork_done(false),
+				_hpwork_done(false)
 	{
 		memset(&_lpwork, 0, sizeof(_lpwork));
 		memset(&_hpwork, 0, sizeof(_hpwork));

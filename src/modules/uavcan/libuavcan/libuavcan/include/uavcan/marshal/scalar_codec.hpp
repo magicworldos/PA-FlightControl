@@ -89,7 +89,7 @@ class UAVCAN_EXPORT ScalarCodec
 
 public:
 	explicit ScalarCodec(BitStream& stream) :
-			    stream_(stream)
+				stream_(stream)
 	{
 	}
 	

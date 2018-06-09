@@ -271,13 +271,13 @@ static void pwmin_reset(void);
 static PWMIN *g_dev;
 
 PWMIN::PWMIN() :
-		    CDev("pwmin", PWMIN0_DEVICE_PATH),
-		    _error_count(0),
-		    _pulses_captured(0),
-		    _last_period(0),
-		    _last_width(0),
-		    _reports(nullptr),
-		    _timer_started(false)
+			CDev("pwmin", PWMIN0_DEVICE_PATH),
+			_error_count(0),
+			_pulses_captured(0),
+			_last_period(0),
+			_last_width(0),
+			_reports(nullptr),
+			_timer_started(false)
 {
 }
 

@@ -71,12 +71,12 @@ static void usage(const char *reason)
 	}
 	
 	PRINT_MODULE_DESCRIPTION("Tool for ESC calibration\n"
-	                         "\n"
-	                         "Calibration procedure (running the command will guide you through it):\n"
-	                         "- Remove props, power off the ESC's\n"
-	                         "- Stop attitude controllers: mc_att_control stop, fw_att_control stop\n"
-	                         "- Make sure safety is off\n"
-	                         "- Run this command\n");
+								"\n"
+								"Calibration procedure (running the command will guide you through it):\n"
+								"- Remove props, power off the ESC's\n"
+								"- Stop attitude controllers: mc_att_control stop, fw_att_control stop\n"
+								"- Make sure safety is off\n"
+								"- Run this command\n");
 	
 	PRINT_MODULE_USAGE_NAME_SIMPLE("esc_calib", "command");
 	PRINT_MODULE_USAGE_PARAM_STRING('d', "/dev/pwm_output0", "<file:dev>", "Select PWM output device", true);
@@ -171,9 +171,9 @@ int esc_calib_main(int argc, char *argv[])
 				
 				if (*ep != '\0'
 #if PWM_LOWEST_MIN > 0
-				        || pwm_low < PWM_LOWEST_MIN
+						|| pwm_low < PWM_LOWEST_MIN
 #endif
-				        || pwm_low > PWM_HIGHEST_MIN)
+						|| pwm_low > PWM_HIGHEST_MIN)
 				{
 					usage("low PWM invalid");
 					return 1;
@@ -228,19 +228,19 @@ int esc_calib_main(int argc, char *argv[])
 	if (orb_updated)
 	{
 		PX4_ERR("ABORTING! Attitude control still active. Please ensure to shut down all controllers:\n"
-		        "\tmc_att_control stop\n"
-		        "\tfw_att_control stop\n");
+				"\tmc_att_control stop\n"
+				"\tfw_att_control stop\n");
 		return 1;
 	}
 	
 	printf("\nATTENTION, please remove or fix propellers before starting calibration!\n"
-	       "\n"
-	       "Make sure\n"
-	       "\t - that the ESCs are not powered\n"
-	       "\t - that safety is off (two short blinks)\n"
-	       "\t - that the controllers are stopped\n"
-	       "\n"
-	       "Do you want to start calibration now: y or n?\n");
+			"\n"
+			"Make sure\n"
+			"\t - that the ESCs are not powered\n"
+			"\t - that safety is off (two short blinks)\n"
+			"\t - that the controllers are stopped\n"
+			"\n"
+			"Do you want to start calibration now: y or n?\n");
 	
 	/* wait for user input */
 	while (1)
@@ -324,9 +324,9 @@ int esc_calib_main(int argc, char *argv[])
 	
 	/* wait for user confirmation */
 	printf("\nHigh PWM set: %d\n"
-	       "\n"
-	       "Connect battery now and hit ENTER after the ESCs confirm the first calibration step\n"
-	       "\n", pwm_high);
+			"\n"
+			"Connect battery now and hit ENTER after the ESCs confirm the first calibration step\n"
+			"\n", pwm_high);
 	fflush(stdout);
 	
 	while (1)
@@ -374,9 +374,9 @@ int esc_calib_main(int argc, char *argv[])
 	}
 	
 	printf("Low PWM set: %d\n"
-	       "\n"
-	       "Hit ENTER when finished\n"
-	       "\n", pwm_low);
+			"\n"
+			"Hit ENTER when finished\n"
+			"\n", pwm_low);
 	
 	while (1)
 	{

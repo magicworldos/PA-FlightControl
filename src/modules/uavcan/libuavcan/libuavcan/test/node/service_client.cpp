@@ -40,7 +40,8 @@ struct ServiceCallResultHandler
 		}
 		else
 		{
-			std::cout << "MISMATCH: status=" << int(last_status) << ", last_server_node_id=" << int(last_server_node_id.get()) << ", last response:\n" << last_response << std::endl;
+			std::cout << "MISMATCH: status=" << int(last_status) << ", last_server_node_id=" << int(last_server_node_id.get()) << ", last response:\n" << last_response
+					<< std::endl;
 			return false;
 		}
 	}
@@ -53,13 +54,15 @@ struct ServiceCallResultHandler
 	}
 };
 
-static void stringServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>& req, uavcan::ServiceResponseDataStructure<root_ns_a::StringService::Response>& rsp)
+static void stringServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>& req, uavcan::ServiceResponseDataStructure<
+												root_ns_a::StringService::Response>& rsp)
 {
 	rsp.string_response = "Request string: ";
 	rsp.string_response += req.string_request;
 }
 
-static void rejectingStringServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>& req, uavcan::ServiceResponseDataStructure<root_ns_a::StringService::Response>& rsp)
+static void rejectingStringServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>& req, uavcan::ServiceResponseDataStructure<
+															root_ns_a::StringService::Response>& rsp)
 {
 	rsp.string_response = "Request string: ";
 	rsp.string_response += req.string_request;
@@ -68,7 +71,8 @@ static void rejectingStringServiceServerCallback(const uavcan::ReceivedDataStruc
 	ASSERT_FALSE(rsp.isResponseEnabled());
 }
 
-static void emptyServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::EmptyService::Request>&, uavcan::ServiceResponseDataStructure<root_ns_a::EmptyService::Response>&)
+static void emptyServiceServerCallback(const uavcan::ReceivedDataStructure<root_ns_a::EmptyService::Request>&, uavcan::ServiceResponseDataStructure<
+												root_ns_a::EmptyService::Response>&)
 {
 	// Nothing to do - the service is empty
 }

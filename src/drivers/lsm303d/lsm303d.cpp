@@ -532,42 +532,42 @@ private:
 };
 
 LSM303D::LSM303D(int bus, const char *path, uint32_t device, enum Rotation rotation) :
-		    SPI("LSM303D", path, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz, within safety margins for LSM303D */),
-		    _mag(new LSM303D_mag(this)),
-		    _accel_call { },
-		    _mag_call { },
-		    _call_accel_interval(0),
-		    _call_mag_interval(0),
-		    _accel_reports(nullptr),
-		    _mag_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_m_s2(0.0f),
-		    _accel_range_scale(0.0f),
-		    _accel_samplerate(0),
-		    _accel_onchip_filter_bandwith(0),
-		    _mag_scale { },
-		    _mag_range_ga(0.0f),
-		    _mag_range_scale(0.0f),
-		    _mag_samplerate(0),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _accel_read(0),
-		    _mag_read(0),
-		    _accel_sample_perf(perf_alloc(PC_ELAPSED, "lsm303d_acc_read")),
-		    _mag_sample_perf(perf_alloc(PC_ELAPSED, "lsm303d_mag_read")),
-		    _bad_registers(perf_alloc(PC_COUNT, "lsm303d_bad_reg")),
-		    _bad_values(perf_alloc(PC_COUNT, "lsm303d_bad_val")),
-		    _accel_duplicates(perf_alloc(PC_COUNT, "lsm303d_acc_dupe")),
-		    _register_wait(0),
-		    _accel_filter_x(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_int(1000000 / LSM303D_ACCEL_MAX_OUTPUT_RATE, true),
-		    _rotation(rotation),
-		    _constant_accel_count(0),
-		    _last_temperature(0),
-		    _checked_next(0)
+			SPI("LSM303D", path, bus, device, SPIDEV_MODE3, 11 * 1000 * 1000 /* will be rounded to 10.4 MHz, within safety margins for LSM303D */),
+			_mag(new LSM303D_mag(this)),
+			_accel_call { },
+			_mag_call { },
+			_call_accel_interval(0),
+			_call_mag_interval(0),
+			_accel_reports(nullptr),
+			_mag_reports(nullptr),
+			_accel_scale { },
+			_accel_range_m_s2(0.0f),
+			_accel_range_scale(0.0f),
+			_accel_samplerate(0),
+			_accel_onchip_filter_bandwith(0),
+			_mag_scale { },
+			_mag_range_ga(0.0f),
+			_mag_range_scale(0.0f),
+			_mag_samplerate(0),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_accel_read(0),
+			_mag_read(0),
+			_accel_sample_perf(perf_alloc(PC_ELAPSED, "lsm303d_acc_read")),
+			_mag_sample_perf(perf_alloc(PC_ELAPSED, "lsm303d_mag_read")),
+			_bad_registers(perf_alloc(PC_COUNT, "lsm303d_bad_reg")),
+			_bad_values(perf_alloc(PC_COUNT, "lsm303d_bad_val")),
+			_accel_duplicates(perf_alloc(PC_COUNT, "lsm303d_acc_dupe")),
+			_register_wait(0),
+			_accel_filter_x(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(LSM303D_ACCEL_DEFAULT_RATE, LSM303D_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_int(1000000 / LSM303D_ACCEL_MAX_OUTPUT_RATE, true),
+			_rotation(rotation),
+			_constant_accel_count(0),
+			_last_temperature(0),
+			_checked_next(0)
 {
 	_device_id.devid_s.devtype = DRV_ACC_DEVTYPE_LSM303D;
 	
@@ -1611,7 +1611,8 @@ void LSM303D::measure()
 	 large value. We want to detect this and mark the sensor as
 	 being faulty
 	 */
-	if (fabsf(_last_accel[0] - x_in_new) < 0.001f && fabsf(_last_accel[1] - y_in_new) < 0.001f && fabsf(_last_accel[2] - z_in_new) < 0.001f && fabsf(x_in_new) > 20 && fabsf(y_in_new) > 20 && fabsf(z_in_new) > 20)
+	if (fabsf(_last_accel[0] - x_in_new) < 0.001f && fabsf(_last_accel[1] - y_in_new) < 0.001f && fabsf(_last_accel[2] - z_in_new) < 0.001f && fabsf(x_in_new) > 20
+			&& fabsf(y_in_new) > 20 && fabsf(z_in_new) > 20)
 	{
 		_constant_accel_count += 1;
 		
@@ -1807,11 +1808,11 @@ void LSM303D::test_error()
 }
 
 LSM303D_mag::LSM303D_mag(LSM303D *parent) :
-		    CDev("LSM303D_mag", LSM303D_DEVICE_PATH_MAG),
-		    _parent(parent),
-		    _mag_topic(nullptr),
-		    _mag_orb_class_instance(-1),
-		    _mag_class_instance(-1)
+			CDev("LSM303D_mag", LSM303D_DEVICE_PATH_MAG),
+			_parent(parent),
+			_mag_topic(nullptr),
+			_mag_orb_class_instance(-1),
+			_mag_class_instance(-1)
 {
 }
 

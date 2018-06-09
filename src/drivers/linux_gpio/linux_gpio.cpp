@@ -42,8 +42,8 @@
 #define PIN_VALUE_BUFFER_MAX (26 + PIN_INDEX_BUFFER_MAX)
 
 LinuxGPIO::LinuxGPIO(unsigned int pin) :
-		    _pin(pin),
-		    _fd(-1)
+			_pin(pin),
+			_fd(-1)
 {
 }
 

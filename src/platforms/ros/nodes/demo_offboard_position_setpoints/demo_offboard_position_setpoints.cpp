@@ -45,8 +45,8 @@
 #include <geometry_msgs/PoseStamped.h>
 
 DemoOffboardPositionSetpoints::DemoOffboardPositionSetpoints() :
-		    _n(),
-		    _local_position_sp_pub(_n.advertise < geometry_msgs::PoseStamped > ("mavros/setpoint_position/local", 1))
+			_n(),
+			_local_position_sp_pub(_n.advertise < geometry_msgs::PoseStamped > ("mavros/setpoint_position/local", 1))
 {
 }
 

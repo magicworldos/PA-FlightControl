@@ -30,22 +30,22 @@ public:
 	typedef Matrix<Type, 3, 1> Matrix31;
 
 	Vector3() :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 	}
 	
 	Vector3(const Matrix31 & other) :
-			    Vector<Type, 3>(other)
+				Vector<Type, 3>(other)
 	{
 	}
 	
 	Vector3(const Type *data_) :
-			    Vector<Type, 3>(data_)
+				Vector<Type, 3>(data_)
 	{
 	}
 	
 	Vector3(Type x, Type y, Type z) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		Vector3 &v(*this);
 		v(0) = x;

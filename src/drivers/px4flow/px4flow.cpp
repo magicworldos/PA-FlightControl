@@ -189,20 +189,20 @@ private:
 extern "C" __EXPORT int px4flow_main(int argc, char *argv[]);
 
 PX4FLOW::PX4FLOW(int bus, int address, enum Rotation rotation, int conversion_interval, uint8_t sonar_rotation) :
-		    I2C("PX4FLOW", PX4FLOW0_DEVICE_PATH, bus, address, PX4FLOW_I2C_MAX_BUS_SPEED), /* 100-400 KHz */
-		    _sonar_rotation(sonar_rotation),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _px4flow_topic(nullptr),
-		    _distance_sensor_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "px4f_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "px4f_com_err")),
-		    _conversion_interval(conversion_interval),
-		    _sensor_rotation(rotation)
+			I2C("PX4FLOW", PX4FLOW0_DEVICE_PATH, bus, address, PX4FLOW_I2C_MAX_BUS_SPEED), /* 100-400 KHz */
+			_sonar_rotation(sonar_rotation),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_measure_ticks(0),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_px4flow_topic(nullptr),
+			_distance_sensor_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "px4f_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "px4f_com_err")),
+			_conversion_interval(conversion_interval),
+			_sensor_rotation(rotation)
 {
 	// disable debug() calls
 	_debug_enabled = false;
@@ -540,21 +540,21 @@ int PX4FLOW::collect()
 	report.timestamp = hrt_absolute_time();
 	
 	report.pixel_flow_x_integral = static_cast<float>(f_integral.pixel_flow_x_integral) / 10000.0f;	//convert to radians
-	        
+			
 	report.pixel_flow_y_integral = static_cast<float>(f_integral.pixel_flow_y_integral) / 10000.0f;	//convert to radians
-	        
+			
 	report.frame_count_since_last_readout = f_integral.frame_count_since_last_readout;
 	
 	report.ground_distance_m = static_cast<float>(f_integral.ground_distance) / 1000.0f;	//convert to meters
-	        
+			
 	report.quality = f_integral.qual; //0:bad ; 255 max quality
 	
 	report.gyro_x_rate_integral = static_cast<float>(f_integral.gyro_x_rate_integral) / 10000.0f; //convert to radians
-	        
+			
 	report.gyro_y_rate_integral = static_cast<float>(f_integral.gyro_y_rate_integral) / 10000.0f; //convert to radians
-	        
+			
 	report.gyro_z_rate_integral = static_cast<float>(f_integral.gyro_z_rate_integral) / 10000.0f; //convert to radians
-	        
+			
 	report.integration_timespan = f_integral.integration_timespan; //microseconds
 	
 	report.time_since_last_sonar_update = f_integral.sonar_timestamp; //microseconds
@@ -784,12 +784,12 @@ int start(int argc, char *argv[])
 		const int busses_to_try[] = {
 		PX4_I2C_BUS_EXPANSION,
 #ifdef PX4_I2C_BUS_ESC
-		        PX4_I2C_BUS_ESC,
+				PX4_I2C_BUS_ESC,
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-		        PX4_I2C_BUS_ONBOARD,
+				PX4_I2C_BUS_ONBOARD,
 #endif
-		        -1 };
+				-1 };
 		
 		const int *cur_bus = busses_to_try;
 		

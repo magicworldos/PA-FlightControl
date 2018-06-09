@@ -43,8 +43,8 @@ namespace uORB
 {
 
 SubscriptionBase::SubscriptionBase(const struct orb_metadata *meta, unsigned interval, unsigned instance) :
-		    _meta(meta),
-		    _instance(instance)
+			_meta(meta),
+			_instance(instance)
 {
 	if (instance > 0)
 	{
@@ -108,7 +108,7 @@ SubscriptionBase::~SubscriptionBase()
 }
 
 SubscriptionNode::SubscriptionNode(const struct orb_metadata *meta, unsigned interval, unsigned instance, List<SubscriptionNode *> *list) :
-		    SubscriptionBase(meta, interval, instance)
+			SubscriptionBase(meta, interval, instance)
 {
 	if (list != nullptr)
 	{

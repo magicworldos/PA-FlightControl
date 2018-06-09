@@ -35,8 +35,8 @@ struct UAVCAN_EXPORT TimerEvent
 	MonotonicTime real_time;       ///< True time when the timer callback was invoked
 	
 	TimerEvent(MonotonicTime arg_scheduled_time, MonotonicTime arg_real_time) :
-			    scheduled_time(arg_scheduled_time),
-			    real_time(arg_real_time)
+				scheduled_time(arg_scheduled_time),
+				real_time(arg_real_time)
 	{
 	}
 };
@@ -57,8 +57,8 @@ public:
 	using DeadlineHandler::getScheduler;
 
 	explicit TimerBase(INode& node) :
-			    DeadlineHandler(node.getScheduler()),
-			    period_(MonotonicDuration::getInfinite())
+				DeadlineHandler(node.getScheduler()),
+				period_(MonotonicDuration::getInfinite())
 	{
 	}
 	
@@ -120,14 +120,14 @@ private:
 	
 public:
 	explicit TimerEventForwarder(INode& node) :
-			    TimerBase(node),
-			    callback_()
+				TimerBase(node),
+				callback_()
 	{
 	}
 	
 	TimerEventForwarder(INode& node, const Callback& callback) :
-			    TimerBase(node),
-			    callback_(callback)
+				TimerBase(node),
+				callback_(callback)
 	{
 	}
 	

@@ -59,15 +59,15 @@
 #include <uORB/topics/mission_result.h>
 
 Mission::Mission(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _param_onboard_enabled(this, "MIS_ONBOARD_EN", false),
-		    _param_takeoff_alt(this, "MIS_TAKEOFF_ALT", false),
-		    _param_dist_1wp(this, "MIS_DIST_1WP", false),
-		    _param_dist_between_wps(this, "MIS_DIST_WPS", false),
-		    _param_altmode(this, "MIS_ALTMODE", false),
-		    _param_yawmode(this, "MIS_YAWMODE", false),
-		    _param_fw_climbout_diff(this, "FW_CLMBOUT_DIFF", false),
-		    _missionFeasibilityChecker(navigator)
+			MissionBlock(navigator, name),
+			_param_onboard_enabled(this, "MIS_ONBOARD_EN", false),
+			_param_takeoff_alt(this, "MIS_TAKEOFF_ALT", false),
+			_param_dist_1wp(this, "MIS_DIST_1WP", false),
+			_param_dist_between_wps(this, "MIS_DIST_WPS", false),
+			_param_altmode(this, "MIS_ALTMODE", false),
+			_param_yawmode(this, "MIS_YAWMODE", false),
+			_param_fw_climbout_diff(this, "FW_CLMBOUT_DIFF", false),
+			_missionFeasibilityChecker(navigator)
 {
 }
 
@@ -672,7 +672,8 @@ void Mission::set_mission_items()
 			_mission_item.time_inside = 0.0f;
 			
 		}
-		else if (_mission_item.nav_cmd == NAV_CMD_TAKEOFF && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && _navigator->get_vstatus()->is_rotary_wing)
+		else if (_mission_item.nav_cmd == NAV_CMD_TAKEOFF && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& _navigator->get_vstatus()->is_rotary_wing)
 		{
 			
 			/* if there is no need to do a takeoff but we have a takeoff item, treat is as waypoint */
@@ -719,7 +720,8 @@ void Mission::set_mission_items()
 		}
 		
 		/* if we just did a VTOL takeoff, prepare transition */
-		if (_mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF && _work_item_type == WORK_ITEM_TYPE_TAKEOFF && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && _navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed)
+		if (_mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF && _work_item_type == WORK_ITEM_TYPE_TAKEOFF && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& _navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed)
 		{
 			
 			/* check if the vtol_takeoff waypoint is on top of us */
@@ -748,7 +750,8 @@ void Mission::set_mission_items()
 		}
 		
 		/* move to land wp as fixed wing */
-		if (_mission_item.nav_cmd == NAV_CMD_VTOL_LAND && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && !_navigator->get_land_detected()->landed)
+		if (_mission_item.nav_cmd == NAV_CMD_VTOL_LAND && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& !_navigator->get_land_detected()->landed)
 		{
 			
 			new_work_item_type = WORK_ITEM_TYPE_MOVE_TO_LAND;
@@ -773,7 +776,8 @@ void Mission::set_mission_items()
 		}
 		
 		/* transition to MC */
-		if (_mission_item.nav_cmd == NAV_CMD_VTOL_LAND && _work_item_type == WORK_ITEM_TYPE_MOVE_TO_LAND && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && !_navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed)
+		if (_mission_item.nav_cmd == NAV_CMD_VTOL_LAND && _work_item_type == WORK_ITEM_TYPE_MOVE_TO_LAND && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& !_navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed)
 		{
 			
 			_mission_item.nav_cmd = NAV_CMD_DO_VTOL_TRANSITION;
@@ -783,7 +787,8 @@ void Mission::set_mission_items()
 		}
 		
 		/* move to landing waypoint before descent if necessary */
-		if (do_need_move_to_land() && (_work_item_type == WORK_ITEM_TYPE_DEFAULT || _work_item_type == WORK_ITEM_TYPE_MOVE_TO_LAND_AFTER_TRANSITION) && new_work_item_type == WORK_ITEM_TYPE_DEFAULT)
+		if (do_need_move_to_land() && (_work_item_type == WORK_ITEM_TYPE_DEFAULT || _work_item_type == WORK_ITEM_TYPE_MOVE_TO_LAND_AFTER_TRANSITION)
+				&& new_work_item_type == WORK_ITEM_TYPE_DEFAULT)
 		{
 			
 			new_work_item_type = WORK_ITEM_TYPE_MOVE_TO_LAND;
@@ -835,7 +840,8 @@ void Mission::set_mission_items()
 		/* handle non-position mission items such as commands */
 
 		/* turn towards next waypoint before MC to FW transition */
-		if (_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && _navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed && has_next_position_item)
+		if (_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& _navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed && has_next_position_item)
 		{
 			
 			new_work_item_type = WORK_ITEM_TYPE_ALIGN;
@@ -859,7 +865,8 @@ void Mission::set_mission_items()
 		}
 		
 		/* don't advance mission after FW to MC command */
-		if (_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT && !_navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed && pos_sp_triplet->current.valid)
+		if (_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION && _work_item_type == WORK_ITEM_TYPE_DEFAULT && new_work_item_type == WORK_ITEM_TYPE_DEFAULT
+				&& !_navigator->get_vstatus()->is_rotary_wing && !_navigator->get_land_detected()->landed && pos_sp_triplet->current.valid)
 		{
 			
 			new_work_item_type = WORK_ITEM_TYPE_CMD_BEFORE_MOVE;
@@ -957,14 +964,17 @@ bool Mission::do_need_vertical_takeoff()
 			_need_takeoff = false;
 			
 		}
-		else if (_navigator->get_global_position()->alt <= takeoff_alt - _navigator->get_altitude_acceptance_radius() && (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF))
+		else if (_navigator->get_global_position()->alt <= takeoff_alt - _navigator->get_altitude_acceptance_radius()
+				&& (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF))
 		{
 			/* if in-air but below takeoff height and we have a takeoff item */
 			_need_takeoff = true;
 		}
 		
 		/* check if current mission item is one that requires takeoff before */
-		if (_need_takeoff && (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_WAYPOINT || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || _mission_item.nav_cmd == NAV_CMD_LOITER_UNLIMITED))
+		if (_need_takeoff
+				&& (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_WAYPOINT || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF
+						|| _mission_item.nav_cmd == NAV_CMD_LOITER_TIME_LIMIT || _mission_item.nav_cmd == NAV_CMD_LOITER_UNLIMITED))
 		{
 			
 			_need_takeoff = false;
@@ -1053,7 +1063,8 @@ float Mission::calculate_takeoff_altitude(struct mission_item_s *mission_item)
 void Mission::heading_sp_update()
 {
 	/* we don't want to be yawing during takeoff, landing or aligning for a transition */
-	if (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION || _mission_item.nav_cmd == NAV_CMD_LAND || _mission_item.nav_cmd == NAV_CMD_VTOL_LAND || _work_item_type == WORK_ITEM_TYPE_ALIGN)
+	if (_mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_VTOL_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION
+			|| _mission_item.nav_cmd == NAV_CMD_LAND || _mission_item.nav_cmd == NAV_CMD_VTOL_LAND || _work_item_type == WORK_ITEM_TYPE_ALIGN)
 	{
 		
 		return;
@@ -1090,7 +1101,7 @@ void Mission::heading_sp_update()
 		// need to be rotary wing for this but not in a transition
 		// in VTOL mode this will prevent updating yaw during FW flight
 		// (which would result in a wrong yaw setpoint spike during back transition)
-		        && _navigator->get_vstatus()->is_rotary_wing && !(_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION || _navigator->get_vstatus()->in_transition_mode))
+				&& _navigator->get_vstatus()->is_rotary_wing && !(_mission_item.nav_cmd == NAV_CMD_DO_VTOL_TRANSITION || _navigator->get_vstatus()->in_transition_mode))
 		{
 			
 			point_to_latlon[0] = _navigator->get_home_position()->lat;
@@ -1146,7 +1157,9 @@ void Mission::altitude_sp_foh_update()
 	 * if rotary wing since that is handled in the mc_pos_control
 	 */
 
-	if (!pos_sp_triplet->previous.valid || !pos_sp_triplet->current.valid || !PX4_ISFINITE(pos_sp_triplet->previous.alt) || !(pos_sp_triplet->previous.type == position_setpoint_s::SETPOINT_TYPE_POSITION || pos_sp_triplet->previous.type == position_setpoint_s::SETPOINT_TYPE_LOITER) || _navigator->get_vstatus()->is_rotary_wing)
+	if (!pos_sp_triplet->previous.valid || !pos_sp_triplet->current.valid || !PX4_ISFINITE(pos_sp_triplet->previous.alt)
+			|| !(pos_sp_triplet->previous.type == position_setpoint_s::SETPOINT_TYPE_POSITION || pos_sp_triplet->previous.type == position_setpoint_s::SETPOINT_TYPE_LOITER)
+			|| _navigator->get_vstatus()->is_rotary_wing)
 	{
 		
 		return;
@@ -1163,7 +1176,8 @@ void Mission::altitude_sp_foh_update()
 	 *
 	 * NAV_CMD_LOITER_TO_ALT doesn't change altitude until reaching desired lat/lon
 	 * */
-	if (_mission_item.nav_cmd == NAV_CMD_LAND || _mission_item.nav_cmd == NAV_CMD_VTOL_LAND || _mission_item.nav_cmd == NAV_CMD_TAKEOFF || _mission_item.nav_cmd == NAV_CMD_LOITER_TO_ALT || !_navigator->is_planned_mission())
+	if (_mission_item.nav_cmd == NAV_CMD_LAND || _mission_item.nav_cmd == NAV_CMD_VTOL_LAND || _mission_item.nav_cmd == NAV_CMD_TAKEOFF
+			|| _mission_item.nav_cmd == NAV_CMD_LOITER_TO_ALT || !_navigator->is_planned_mission())
 	{
 		
 		return;

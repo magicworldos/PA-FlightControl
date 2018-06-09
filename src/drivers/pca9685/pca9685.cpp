@@ -184,15 +184,15 @@ void pca9685_usage();
 extern "C" __EXPORT int pca9685_main(int argc, char *argv[]);
 
 PCA9685::PCA9685(int bus, uint8_t address) :
-		    I2C("pca9685", PCA9685_DEVICE_PATH, bus, address, 100000),
-		    _mode(IOX_MODE_OFF),
-		    _running(false),
-		    _i2cpwm_interval(SEC2TICK(1.0f / 60.0f)),
-		    _should_run(false),
-		    _comms_errors(perf_alloc(PC_COUNT, "pca9685_com_err")),
-		    _actuator_controls_sub(-1),
-		    _actuator_controls(),
-		    _mode_on_initialized(false)
+			I2C("pca9685", PCA9685_DEVICE_PATH, bus, address, 100000),
+			_mode(IOX_MODE_OFF),
+			_running(false),
+			_i2cpwm_interval(SEC2TICK(1.0f / 60.0f)),
+			_should_run(false),
+			_comms_errors(perf_alloc(PC_COUNT, "pca9685_com_err")),
+			_actuator_controls_sub(-1),
+			_actuator_controls(),
+			_mode_on_initialized(false)
 {
 	memset(&_work, 0, sizeof(_work));
 	memset(_msg, 0, sizeof(_msg));
@@ -459,7 +459,7 @@ int PCA9685::setPWMFreq(float freq)
 	}
 	
 	uint8_t newmode = (oldmode & 0x7F) | 0x10; // sleep
-	        
+			
 	ret = write8(PCA9685_MODE1, newmode); // go to sleep
 	
 	if (ret != OK)
@@ -484,7 +484,7 @@ int PCA9685::setPWMFreq(float freq)
 	usleep(5000); //5ms delay (from arduino driver)
 	
 	ret = write8(PCA9685_MODE1, oldmode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
-	                     
+							
 	if (ret != OK)
 	{
 		return ret;

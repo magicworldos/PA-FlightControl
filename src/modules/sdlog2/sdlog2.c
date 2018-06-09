@@ -287,12 +287,12 @@ static void sdlog2_usage(const char *reason)
 	}
 
 	PX4_WARN("usage: sdlog2 {start|stop|status|on|off} [-r <log rate>] [-b <buffer size>] -e -a -t -x\n"
-	         "\t-r\tLog rate in Hz, 0 means unlimited rate\n"
-	         "\t-b\tLog buffer size in KiB, default is 8\n"
-	         "\t-e\tEnable logging by default (if not, can be started by command)\n"
-	         "\t-a\tLog only when armed (can be still overriden by command)\n"
-	         "\t-t\tUse date/time for naming log directories and files\n"
-	         "\t-x\tExtended logging");
+				"\t-r\tLog rate in Hz, 0 means unlimited rate\n"
+				"\t-b\tLog buffer size in KiB, default is 8\n"
+				"\t-e\tEnable logging by default (if not, can be started by command)\n"
+				"\t-a\tLog only when armed (can be still overriden by command)\n"
+				"\t-t\tUse date/time for naming log directories and files\n"
+				"\t-x\tExtended logging");
 }
 
 /**
@@ -1883,7 +1883,8 @@ int sdlog2_thread_main(int argc, char *argv[])
 				log_msg.body.log_LPOS.ref_lat = buf.local_pos.ref_lat * 1e7;
 				log_msg.body.log_LPOS.ref_lon = buf.local_pos.ref_lon * 1e7;
 				log_msg.body.log_LPOS.ref_alt = buf.local_pos.ref_alt;
-				log_msg.body.log_LPOS.pos_flags = (buf.local_pos.xy_valid ? 1 : 0) | (buf.local_pos.z_valid ? 2 : 0) | (buf.local_pos.v_xy_valid ? 4 : 0) | (buf.local_pos.v_z_valid ? 8 : 0) | (buf.local_pos.xy_global ? 16 : 0) | (buf.local_pos.z_global ? 32 : 0);
+				log_msg.body.log_LPOS.pos_flags = (buf.local_pos.xy_valid ? 1 : 0) | (buf.local_pos.z_valid ? 2 : 0) | (buf.local_pos.v_xy_valid ? 4 : 0)
+						| (buf.local_pos.v_z_valid ? 8 : 0) | (buf.local_pos.xy_global ? 16 : 0) | (buf.local_pos.z_global ? 32 : 0);
 				log_msg.body.log_LPOS.ground_dist_flags = (buf.local_pos.dist_bottom_valid ? 1 : 0);
 				log_msg.body.log_LPOS.eph = buf.local_pos.eph;
 				log_msg.body.log_LPOS.epv = buf.local_pos.epv;
@@ -1979,7 +1980,8 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 			
 			/* --- VISION POSITION --- */
-			if (copy_if_updated(ORB_ID(vehicle_vision_position), &subs.vision_pos_sub, &buf.vision_pos) || copy_if_updated(ORB_ID(vehicle_vision_attitude), &subs.vision_att_sub, &buf.vision_att))
+			if (copy_if_updated(ORB_ID(vehicle_vision_position), &subs.vision_pos_sub, &buf.vision_pos)
+					|| copy_if_updated(ORB_ID(vehicle_vision_attitude), &subs.vision_att_sub, &buf.vision_att))
 			{
 				log_msg.msg_type = LOG_VISN_MSG;
 				log_msg.body.log_VISN.x = buf.vision_pos.x;
@@ -2145,13 +2147,15 @@ int sdlog2_thread_main(int argc, char *argv[])
 				LOGBUFFER_WRITE_AND_COUNT(EST0);
 				
 				log_msg.msg_type = LOG_EST1_MSG;
-				unsigned maxcopy1 = ((sizeof(buf.estimator_status.states) - maxcopy0) < sizeof(log_msg.body.log_EST1.s)) ? (sizeof(buf.estimator_status.states) - maxcopy0) : sizeof(log_msg.body.log_EST1.s);
+				unsigned maxcopy1 =
+						((sizeof(buf.estimator_status.states) - maxcopy0) < sizeof(log_msg.body.log_EST1.s)) ? (sizeof(buf.estimator_status.states) - maxcopy0) : sizeof(log_msg.body.log_EST1.s);
 				memset(&(log_msg.body.log_EST1.s), 0, sizeof(log_msg.body.log_EST1.s));
 				memcpy(&(log_msg.body.log_EST1.s), ((char *) buf.estimator_status.states) + maxcopy0, maxcopy1);
 				LOGBUFFER_WRITE_AND_COUNT(EST1);
 				
 				log_msg.msg_type = LOG_EST2_MSG;
-				unsigned maxcopy2 = (sizeof(buf.estimator_status.covariances) < sizeof(log_msg.body.log_EST2.cov)) ? sizeof(buf.estimator_status.covariances) : sizeof(log_msg.body.log_EST2.cov);
+				unsigned maxcopy2 =
+						(sizeof(buf.estimator_status.covariances) < sizeof(log_msg.body.log_EST2.cov)) ? sizeof(buf.estimator_status.covariances) : sizeof(log_msg.body.log_EST2.cov);
 				memset(&(log_msg.body.log_EST2.cov), 0, sizeof(log_msg.body.log_EST2.cov));
 				memcpy(&(log_msg.body.log_EST2.cov), buf.estimator_status.covariances, maxcopy2);
 				log_msg.body.log_EST2.gps_check_fail_flags = buf.estimator_status.gps_check_fail_flags;
@@ -2161,7 +2165,8 @@ int sdlog2_thread_main(int argc, char *argv[])
 				LOGBUFFER_WRITE_AND_COUNT(EST2);
 				
 				log_msg.msg_type = LOG_EST3_MSG;
-				unsigned maxcopy3 = ((sizeof(buf.estimator_status.covariances) - maxcopy2) < sizeof(log_msg.body.log_EST3.cov)) ? (sizeof(buf.estimator_status.covariances) - maxcopy2) : sizeof(log_msg.body.log_EST3.cov);
+				unsigned maxcopy3 =
+						((sizeof(buf.estimator_status.covariances) - maxcopy2) < sizeof(log_msg.body.log_EST3.cov)) ? (sizeof(buf.estimator_status.covariances) - maxcopy2) : sizeof(log_msg.body.log_EST3.cov);
 				memset(&(log_msg.body.log_EST3.cov), 0, sizeof(log_msg.body.log_EST3.cov));
 				memcpy(&(log_msg.body.log_EST3.cov), ((char *) buf.estimator_status.covariances) + maxcopy2, maxcopy3);
 				LOGBUFFER_WRITE_AND_COUNT(EST3);

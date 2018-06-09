@@ -138,15 +138,15 @@ Radar *g_dev;
 }
 
 Radar::Radar(uint8_t rotation, const char *port) :
-		    CDev("Radar", RANGE_FINDER0_DEVICE_PATH),
-		    _rotation(rotation),
-		    _task_should_exit(false),
-		    _task_handle(-1),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _head(0),
-		    _tail(0)
+			CDev("Radar", RANGE_FINDER0_DEVICE_PATH),
+			_rotation(rotation),
+			_task_should_exit(false),
+			_task_handle(-1),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_head(0),
+			_tail(0)
 
 {
 	/* store port name */

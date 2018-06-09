@@ -42,10 +42,10 @@
 const char * const UavcanBarometerBridge::NAME = "baro";
 
 UavcanBarometerBridge::UavcanBarometerBridge(uavcan::INode &node) :
-		    UavcanCDevSensorBridgeBase("uavcan_baro", "/dev/uavcan/baro", BARO_BASE_DEVICE_PATH, ORB_ID(sensor_baro)),
-		    _sub_air_pressure_data(node),
-		    _sub_air_temperature_data(node),
-		    _reports(2, sizeof(baro_report))
+			UavcanCDevSensorBridgeBase("uavcan_baro", "/dev/uavcan/baro", BARO_BASE_DEVICE_PATH, ORB_ID(sensor_baro)),
+			_sub_air_pressure_data(node),
+			_sub_air_temperature_data(node),
+			_reports(2, sizeof(baro_report))
 {
 }
 
@@ -195,7 +195,7 @@ void UavcanBarometerBridge::air_pressure_sub_cb(const uavcan::ReceivedDataStruct
 	
 	const double p1 = _msl_pressure / 1000.0;      // current pressure at MSL in kPa
 	const double p = double(msg.static_pressure) / 1000.0; // measured pressure in kPa
-	        
+			
 	report.altitude = (((std::pow((p / p1), (-(a * R) / g))) * T1) - T1) / a;
 	
 	// add to the ring buffer

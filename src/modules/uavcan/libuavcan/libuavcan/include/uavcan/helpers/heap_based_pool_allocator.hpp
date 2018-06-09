@@ -66,11 +66,13 @@ public:
 	 *                                      Default value is two times the soft limit.
 	 */
 	HeapBasedPoolAllocator(uint16_t block_capacity_soft_limit, uint16_t block_capacity_hard_limit = 0) :
-			    capacity_soft_limit_(block_capacity_soft_limit),
-			    capacity_hard_limit_((block_capacity_hard_limit > 0) ? block_capacity_hard_limit : static_cast<uint16_t>(min(static_cast<uint32_t>(block_capacity_soft_limit) * 2U, static_cast<uint32_t>(NumericTraits<uint16_t>::max())))),
-			    num_reserved_blocks_(0),
-			    num_allocated_blocks_(0),
-			    reserve_(UAVCAN_NULLPTR)
+				capacity_soft_limit_(block_capacity_soft_limit),
+				capacity_hard_limit_(
+						(block_capacity_hard_limit > 0) ? block_capacity_hard_limit : static_cast<uint16_t>(min(static_cast<uint32_t>(block_capacity_soft_limit) * 2U, static_cast<uint32_t>(NumericTraits<
+																														uint16_t>::max())))),
+				num_reserved_blocks_(0),
+				num_allocated_blocks_(0),
+				reserve_(UAVCAN_NULLPTR)
 	{
 	}
 	

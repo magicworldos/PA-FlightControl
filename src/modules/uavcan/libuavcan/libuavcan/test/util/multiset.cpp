@@ -32,7 +32,7 @@ struct FindPredicate
 {
 	const std::string target;
 	FindPredicate(const std::string& target) :
-			    target(target)
+				target(target)
 	{
 	}
 	bool operator()(const std::string& value) const
@@ -47,12 +47,12 @@ struct NoncopyableWithCounter: uavcan::Noncopyable
 	long long value;
 
 	NoncopyableWithCounter() :
-			    value(0)
+				value(0)
 	{
 		num_objects++;
 	}
 	NoncopyableWithCounter(long long x) :
-			    value(x)
+				value(x)
 	{
 		num_objects++;
 	}
@@ -79,7 +79,7 @@ struct SummationOperator: uavcan::Noncopyable
 {
 	T accumulator;
 	SummationOperator() :
-			    accumulator()
+				accumulator()
 	{
 	}
 	void operator()(const T& x)

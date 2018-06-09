@@ -32,9 +32,9 @@ struct NodeInfoListener: public uavcan::INodeInfoListener
 	unsigned info_unavailable_cnt;
 
 	NodeInfoListener() :
-			    status_message_cnt(0),
-			    status_change_cnt(0),
-			    info_unavailable_cnt(0)
+				status_message_cnt(0),
+				status_change_cnt(0),
+				info_unavailable_cnt(0)
 	{
 	}
 	

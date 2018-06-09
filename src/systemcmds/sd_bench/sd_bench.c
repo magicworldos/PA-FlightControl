@@ -211,7 +211,8 @@ void write_test(int fd, uint8_t *block, int block_size)
 		
 		//report
 		double elapsed = hrt_elapsed_time(&start) / 1.e6;
-		PX4_INFO("  Run %2i: %8.2lf KB/s, max write time: %i ms (=%7.2lf KB/s), fsync: %i ms", run, (double )block_size * num_blocks / elapsed / 1024., max_write_time, (double )block_size / max_write_time * 1000. / 1024., fsync_time);
+		PX4_INFO("  Run %2i: %8.2lf KB/s, max write time: %i ms (=%7.2lf KB/s), fsync: %i ms", run, (double )block_size * num_blocks / elapsed / 1024., max_write_time, (double )block_size
+				/ max_write_time * 1000. / 1024., fsync_time);
 		
 		total_elapsed += elapsed;
 		total_blocks += num_blocks;

@@ -136,15 +136,15 @@ static BAROSIM *g_barosim = nullptr;
 extern "C" __EXPORT int barosim_main(int argc, char *argv[]);
 
 BAROSIM::BAROSIM(const char *path) :
-		    VirtDevObj("BAROSIM", path, BARO_BASE_DEVICE_PATH, BAROSIM_MEASURE_INTERVAL_US),
-		    _reports(nullptr),
-		    report { },
-		    _msl_pressure(101325),
-		    _baro_topic(nullptr),
-		    _orb_class_instance(-1),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "barosim_read")),
-		    _measure_perf(perf_alloc(PC_ELAPSED, "barosim_measure")),
-		    _comms_errors(perf_alloc(PC_COUNT, "barosim_comms_errors"))
+			VirtDevObj("BAROSIM", path, BARO_BASE_DEVICE_PATH, BAROSIM_MEASURE_INTERVAL_US),
+			_reports(nullptr),
+			report { },
+			_msl_pressure(101325),
+			_baro_topic(nullptr),
+			_orb_class_instance(-1),
+			_sample_perf(perf_alloc(PC_ELAPSED, "barosim_read")),
+			_measure_perf(perf_alloc(PC_ELAPSED, "barosim_measure")),
+			_comms_errors(perf_alloc(PC_COUNT, "barosim_comms_errors"))
 {
 	
 }

@@ -77,16 +77,16 @@
  */
 UavcanNode *UavcanNode::_instance;
 UavcanNode::UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &system_clock) :
-		    CDev("uavcan", UAVCAN_DEVICE_PATH),
-		    _node(can_driver, system_clock, _pool_allocator),
-		    _node_mutex(),
-		    _esc_controller(_node),
-		    _hardpoint_controller(_node),
-		    _time_sync_master(_node),
-		    _time_sync_slave(_node),
-		    _node_status_monitor(_node),
-		    _master_timer(_node),
-		    _setget_response(0)
+			CDev("uavcan", UAVCAN_DEVICE_PATH),
+			_node(can_driver, system_clock, _pool_allocator),
+			_node_mutex(),
+			_esc_controller(_node),
+			_hardpoint_controller(_node),
+			_time_sync_master(_node),
+			_time_sync_slave(_node),
+			_node_status_monitor(_node),
+			_master_timer(_node),
+			_setget_response(0)
 
 {
 	_task_should_exit = false;
@@ -957,7 +957,8 @@ int UavcanNode::run()
 			/*
 			 see if we have any direct actuator updates
 			 */
-			if (_actuator_direct_sub != -1 && (_poll_fds[_actuator_direct_poll_fd_num].revents & POLLIN) && orb_copy(ORB_ID(actuator_direct), _actuator_direct_sub, &_actuator_direct) == OK && !_test_in_progress)
+			if (_actuator_direct_sub != -1 && (_poll_fds[_actuator_direct_poll_fd_num].revents & POLLIN)
+					&& orb_copy(ORB_ID(actuator_direct), _actuator_direct_sub, &_actuator_direct) == OK && !_test_in_progress)
 			{
 				if (_actuator_direct.nvalues > actuator_outputs_s::NUM_ACTUATOR_OUTPUTS)
 				{
@@ -1385,9 +1386,9 @@ void UavcanNode::hardpoint_controller_set(uint8_t hardpoint_id, uint16_t command
 static void print_usage()
 {
 	warnx("usage: \n"
-	      "\tuavcan {start [fw]|status|stop [all|fw]|shrink|arm|disarm|update fw|\n"
-	      "\t        param [set|get|list|save] <node-id> <name> <value>|reset <node-id>|\n"
-	      "\t        hardpoint set <id> <command>}");
+			"\tuavcan {start [fw]|status|stop [all|fw]|shrink|arm|disarm|update fw|\n"
+			"\t        param [set|get|list|save] <node-id> <name> <value>|reset <node-id>|\n"
+			"\t        hardpoint set <id> <command>}");
 }
 
 extern "C" __EXPORT int uavcan_main(int argc, char *argv[]);

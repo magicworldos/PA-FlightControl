@@ -39,7 +39,7 @@ namespace logger
 {
 
 LogWriter::LogWriter(Backend configured_backend, size_t file_buffer_size, unsigned int queue_size) :
-		    _backend(configured_backend)
+			_backend(configured_backend)
 {
 	if (configured_backend & BackendFile)
 	{

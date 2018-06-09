@@ -104,13 +104,13 @@ boot_app_shared_section app_descriptor_t AppDescriptor = { .signature = { APP_DE
 UavcanNode *UavcanNode::_instance;
 
 UavcanNode::UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &system_clock) :
-		    CDev("uavcan", UAVCAN_DEVICE_PATH),
-		    active_bitrate(0),
-		    _node(can_driver, system_clock),
-		    _node_mutex(),
-		    _time_sync_slave(_node),
-		    _fw_update_listner(_node),
-		    _reset_timer(_node)
+			CDev("uavcan", UAVCAN_DEVICE_PATH),
+			active_bitrate(0),
+			_node(can_driver, system_clock),
+			_node_mutex(),
+			_time_sync_slave(_node),
+			_fw_update_listner(_node),
+			_reset_timer(_node)
 {
 	const int res = pthread_mutex_init(&_node_mutex, nullptr);
 	
@@ -271,7 +271,8 @@ static void cb_reboot(const uavcan::TimerEvent &)
 	
 }
 
-void UavcanNode::cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<UavcanNode::BeginFirmwareUpdate::Response> &rsp)
+void UavcanNode::cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanNode::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<
+													UavcanNode::BeginFirmwareUpdate::Response> &rsp)
 {
 	static bool inprogress = false;
 	
@@ -462,10 +463,10 @@ int UavcanNode::run()
 			const long msec_since_last_adjustment = (_node.getMonotonicTime() - _time_sync_slave.getLastAdjustmentTime()).toMSec();
 			const uavcan::UtcTime utc = uavcan_stm32::clock::getUtc();
 			syslog(LOG_INFO, "Time:%lld\n"
-			       "            Time sync slave status:\n"
-			       "    Active: %d\n"
-			       "    Master Node ID: %d\n"
-			       "    Last clock adjustment was %ld ms ago\n", utc.toUSec(), int(active), master_node_id, msec_since_last_adjustment);
+					"            Time sync slave status:\n"
+					"    Active: %d\n"
+					"    Master Node ID: %d\n"
+					"    Last clock adjustment was %ld ms ago\n", utc.toUSec(), int(active), master_node_id, msec_since_last_adjustment);
 			syslog(LOG_INFO, "UTC %lu sec   Rate corr: %fPPM   Jumps: %lu   Locked: %i\n\n", static_cast<unsigned long>(utc.toMSec() / 1000), static_cast<double>(uavcan_stm32::clock::getUtcRateCorrectionPPM()), uavcan_stm32::clock::getUtcJumpCount(), int(uavcan_stm32::clock::isUtcLocked()));
 		}
 		
@@ -524,7 +525,7 @@ void UavcanNode::print_info()
 static void print_usage()
 {
 	warnx("usage: \n"
-	      "\tuavcannode {start|status|stop|arm|disarm}");
+			"\tuavcannode {start|status|stop|arm|disarm}");
 }
 
 extern "C" __EXPORT int uavcannode_start(int argc, char *argv[]);

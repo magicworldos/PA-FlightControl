@@ -104,9 +104,9 @@ private:
 };
 
 DfBebopRangeFinderWrapper::DfBebopRangeFinderWrapper(/*enum Rotation rotation*/) :
-		    BebopRangeFinder(BEBOP_RANGEFINDER_DEVICE_PATH),
-		    _range_topic(nullptr),
-		    _orb_class_instance(-1)
+			BebopRangeFinder(BEBOP_RANGEFINDER_DEVICE_PATH),
+			_range_topic(nullptr),
+			_orb_class_instance(-1)
 {
 }
 

@@ -63,7 +63,7 @@ MavlinkCommandSender &MavlinkCommandSender::instance()
 }
 
 MavlinkCommandSender::MavlinkCommandSender() :
-		    _commands(3)
+			_commands(3)
 {
 }
 

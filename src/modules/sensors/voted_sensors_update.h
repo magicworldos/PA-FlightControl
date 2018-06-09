@@ -159,10 +159,10 @@ private:
 	struct SensorData
 	{
 		SensorData() :
-				    last_best_vote(0),
-				    subscription_count(0),
-				    voter(1),
-				    last_failover_count(0)
+					last_best_vote(0),
+					subscription_count(0),
+					voter(1),
+					last_failover_count(0)
 		{
 			for (unsigned i = 0; i < SENSOR_COUNT_MAX; i++)
 			{

@@ -12,7 +12,8 @@
 
 class GetNodeInfoMockServer
 {
-	typedef uavcan::MethodBinder<GetNodeInfoMockServer*, void (GetNodeInfoMockServer::*)(const uavcan::ReceivedDataStructure<uavcan::protocol::GetNodeInfo::Request>&, uavcan::protocol::GetNodeInfo::Response&) const> GetNodeInfoCallback;
+	typedef uavcan::MethodBinder<GetNodeInfoMockServer*,
+			void (GetNodeInfoMockServer::*)(const uavcan::ReceivedDataStructure<uavcan::protocol::GetNodeInfo::Request>&, uavcan::protocol::GetNodeInfo::Response&) const> GetNodeInfoCallback;
 
 	uavcan::ServiceServer<uavcan::protocol::GetNodeInfo, GetNodeInfoCallback> server_;
 
@@ -26,7 +27,7 @@ public:
 	uavcan::protocol::GetNodeInfo::Response response;
 
 	GetNodeInfoMockServer(uavcan::INode& node) :
-			    server_(node)
+				server_(node)
 	{
 	}
 	

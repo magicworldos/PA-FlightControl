@@ -35,25 +35,25 @@ class UAVCAN_EXPORT Frame
 
 public:
 	Frame() :
-			    transfer_type_(TransferType(NumTransferTypes)),                // Invalid value
-			    payload_len_(0),
-			    start_of_transfer_(false),
-			    end_of_transfer_(false),
-			    toggle_(false)
+				transfer_type_(TransferType(NumTransferTypes)),                // Invalid value
+				payload_len_(0),
+				start_of_transfer_(false),
+				end_of_transfer_(false),
+				toggle_(false)
 	{
 	}
 	
 	Frame(DataTypeID data_type_id, TransferType transfer_type, NodeID src_node_id, NodeID dst_node_id, TransferID transfer_id) :
-			    transfer_priority_(TransferPriority::Default),
-			    transfer_type_(transfer_type),
-			    data_type_id_(data_type_id),
-			    payload_len_(0),
-			    src_node_id_(src_node_id),
-			    dst_node_id_(dst_node_id),
-			    transfer_id_(transfer_id),
-			    start_of_transfer_(false),
-			    end_of_transfer_(false),
-			    toggle_(false)
+				transfer_priority_(TransferPriority::Default),
+				transfer_type_(transfer_type),
+				data_type_id_(data_type_id),
+				payload_len_(0),
+				src_node_id_(src_node_id),
+				dst_node_id_(dst_node_id),
+				transfer_id_(transfer_id),
+				start_of_transfer_(false),
+				end_of_transfer_(false),
+				toggle_(false)
 	{
 		UAVCAN_ASSERT((transfer_type == TransferTypeMessageBroadcast) == dst_node_id.isBroadcast());
 		UAVCAN_ASSERT(data_type_id.isValidForDataTypeKind(getDataTypeKindForTransferType(transfer_type)));
@@ -159,14 +159,14 @@ class UAVCAN_EXPORT RxFrame: public Frame
 
 public:
 	RxFrame() :
-			    iface_index_(0)
+				iface_index_(0)
 	{
 	}
 	
 	RxFrame(const Frame& frame, MonotonicTime ts_mono, UtcTime ts_utc, uint8_t iface_index) :
-			    ts_mono_(ts_mono),
-			    ts_utc_(ts_utc),
-			    iface_index_(iface_index)
+				ts_mono_(ts_mono),
+				ts_utc_(ts_utc),
+				iface_index_(iface_index)
 	{
 		*static_cast<Frame*>(this) = frame;
 	}

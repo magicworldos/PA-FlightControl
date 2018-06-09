@@ -108,10 +108,10 @@ private:
 };
 
 DfTROneWrapper::DfTROneWrapper(uint8_t rotation) :
-		    TROne(TRONE_DEVICE_PATH),
-		    _rotation(rotation),
-		    _range_topic(nullptr),
-		    _orb_class_instance(-1)
+			TROne(TRONE_DEVICE_PATH),
+			_rotation(rotation),
+			_range_topic(nullptr),
+			_orb_class_instance(-1)
 {
 }
 

@@ -132,7 +132,7 @@ int dspal_tester_pwm_test(void)
 		
 		// Wait for the ESC's to ARM:
 		usleep(1000000 * 5); // wait 5 seconds
-		        
+				
 		// Change the speed of the motor, every 500 msecs.
 		for (test_count = 0; test_count < 30; test_count++)
 		{

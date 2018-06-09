@@ -60,17 +60,17 @@
 uint8_t RoboClaw::checksum_mask = 0x7f;
 
 RoboClaw::RoboClaw(const char *deviceName, uint16_t address, uint16_t pulsesPerRev) :
-		    _address(address),
-		    _pulsesPerRev(pulsesPerRev),
-		    _uart(0),
-		    _controlPoll(),
-		    _actuators(ORB_ID(actuator_controls_0), 20),
-		    _motor1Position(0),
-		    _motor1Speed(0),
-		    _motor1Overflow(0),
-		    _motor2Position(0),
-		    _motor2Speed(0),
-		    _motor2Overflow(0)
+			_address(address),
+			_pulsesPerRev(pulsesPerRev),
+			_uart(0),
+			_controlPoll(),
+			_actuators(ORB_ID(actuator_controls_0), 20),
+			_motor1Position(0),
+			_motor1Speed(0),
+			_motor1Overflow(0),
+			_motor2Position(0),
+			_motor2Speed(0),
+			_motor2Overflow(0)
 {
 	// setup control polling
 	_controlPoll.fd = _actuators.getHandle();

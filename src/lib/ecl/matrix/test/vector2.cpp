@@ -1,4 +1,3 @@
-
 #include <matrix/math.hpp>
 
 #include "test_macros.hpp"

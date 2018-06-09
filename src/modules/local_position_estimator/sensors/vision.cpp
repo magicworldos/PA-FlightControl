@@ -29,7 +29,7 @@ void BlockLocalPositionEstimator::visionInit()
 	if (_visionStats.getCount() > REQ_VISION_INIT_COUNT)
 	{
 		mavlink_and_console_log_info(&mavlink_log_pub, "[lpe] vision position init: "
-		                             "%5.2f %5.2f %5.2f m std %5.2f %5.2f %5.2f m", double(_visionStats.getMean()(0)), double(_visionStats.getMean()(1)), double(_visionStats.getMean()(2)), double(_visionStats.getStdDev()(0)), double(_visionStats.getStdDev()(1)), double(_visionStats.getStdDev()(2)));
+										"%5.2f %5.2f %5.2f m std %5.2f %5.2f %5.2f m", double(_visionStats.getMean()(0)), double(_visionStats.getMean()(1)), double(_visionStats.getMean()(2)), double(_visionStats.getStdDev()(0)), double(_visionStats.getStdDev()(1)), double(_visionStats.getStdDev()(2)));
 		_sensorTimeout &= ~SENSOR_VISION;
 		_sensorFault &= ~SENSOR_VISION;
 		
@@ -110,7 +110,7 @@ void BlockLocalPositionEstimator::visionCorrect()
 	uint8_t i_hist = 0;
 	
 	float vision_delay = (_timeStamp - _sub_vision_pos.get().timestamp) * 1e-6f;	// measurement delay in seconds
-	        
+			
 	if (vision_delay < 0.0f)
 	{
 		vision_delay = 0.0f;

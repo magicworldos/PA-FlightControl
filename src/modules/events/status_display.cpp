@@ -46,7 +46,7 @@
 using namespace status;
 
 StatusDisplay::StatusDisplay(const events::SubscriberHandler &subscriber_handler) :
-		    _subscriber_handler(subscriber_handler)
+			_subscriber_handler(subscriber_handler)
 {
 	// set the base color
 	_led_control.priority = 0;

@@ -169,20 +169,20 @@ GPSSIM *g_dev = nullptr;
 }
 
 GPSSIM::GPSSIM(const char *uart_path, bool fake_gps, bool enable_sat_info, int fix_type, int num_sat, int noise_multiplier) :
-		    VirtDevObj("gps", GPSSIM_DEVICE_PATH, nullptr, 1e6 / 10),
-		    _task_should_exit(false),
-		    //_healthy(false),
-		    //_mode_changed(false),
-		    //_mode(GPS_DRIVER_MODE_UBX),
-		    //_Helper(nullptr),
-		    _Sat_Info(nullptr),
-		    _report_gps_pos_pub(nullptr),
-		    _p_report_sat_info(nullptr),
-		    _report_sat_info_pub(nullptr),
-		    _rate(0.0f),
-		    _fix_type(fix_type),
-		    _num_sat(num_sat),
-		    _noise_multiplier(noise_multiplier)
+			VirtDevObj("gps", GPSSIM_DEVICE_PATH, nullptr, 1e6 / 10),
+			_task_should_exit(false),
+			//_healthy(false),
+			//_mode_changed(false),
+			//_mode(GPS_DRIVER_MODE_UBX),
+			//_Helper(nullptr),
+			_Sat_Info(nullptr),
+			_report_gps_pos_pub(nullptr),
+			_p_report_sat_info(nullptr),
+			_report_sat_info_pub(nullptr),
+			_rate(0.0f),
+			_fix_type(fix_type),
+			_num_sat(num_sat),
+			_noise_multiplier(noise_multiplier)
 {
 	// /* store port name */
 	// strncpy(_port, uart_path, sizeof(_port));
@@ -377,11 +377,13 @@ void GPSSIM::print_info()
 	PX4_INFO("protocol: SIM");
 	
 	PX4_INFO("port: %s, baudrate: %d, status: %s", _port, _baudrate, (_healthy) ? "OK" : "NOT OK");
-	PX4_INFO("sat info: %s, noise: %d, jamming detected: %s", (_p_report_sat_info != nullptr) ? "enabled" : "disabled", _report_gps_pos.noise_per_ms, _report_gps_pos.jamming_indicator == 255 ? "YES" : "NO");
+	PX4_INFO("sat info: %s, noise: %d, jamming detected: %s", (_p_report_sat_info != nullptr) ? "enabled" : "disabled", _report_gps_pos.noise_per_ms,
+			_report_gps_pos.jamming_indicator == 255 ? "YES" : "NO");
 	
 	if (_report_gps_pos.timestamp != 0)
 	{
-		PX4_INFO("position lock: %dD, satellites: %d, last update: %8.4fms ago", (int )_report_gps_pos.fix_type, _report_gps_pos.satellites_used, (double )(hrt_absolute_time() - _report_gps_pos.timestamp) / 1000.0);
+		PX4_INFO("position lock: %dD, satellites: %d, last update: %8.4fms ago", (int )_report_gps_pos.fix_type, _report_gps_pos.satellites_used, (double )(hrt_absolute_time()
+				- _report_gps_pos.timestamp) / 1000.0);
 		PX4_INFO("lat: %d, lon: %d, alt: %d", _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
 		PX4_INFO("vel: %.2fm/s, %.2fm/s, %.2fm/s", (double )_report_gps_pos.vel_n_m_s, (double )_report_gps_pos.vel_e_m_s, (double )_report_gps_pos.vel_d_m_s);
 		PX4_INFO("eph: %.2fm, epv: %.2fm", (double )_report_gps_pos.eph, (double )_report_gps_pos.epv);

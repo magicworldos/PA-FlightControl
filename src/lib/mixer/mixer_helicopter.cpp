@@ -68,8 +68,8 @@ float constrain(float val, float min, float max)
 } // anonymous namespace
 
 HelicopterMixer::HelicopterMixer(ControlCallback control_cb, uintptr_t cb_handle, mixer_heli_s *mixer_info) :
-		    Mixer(control_cb, cb_handle),
-		    _mixer_info(*mixer_info)
+			Mixer(control_cb, cb_handle),
+			_mixer_info(*mixer_info)
 {
 	
 }
@@ -278,7 +278,8 @@ unsigned HelicopterMixer::mix(float *outputs, unsigned space)
 	
 	for (unsigned i = 0; i < _mixer_info.control_count; i++)
 	{
-		outputs[i + 1] = collective_pitch + cosf(_mixer_info.servos[i].angle) * pitch_cmd * _mixer_info.servos[i].arm_length - sinf(_mixer_info.servos[i].angle) * roll_cmd * _mixer_info.servos[i].arm_length;
+		outputs[i + 1] = collective_pitch + cosf(_mixer_info.servos[i].angle) * pitch_cmd * _mixer_info.servos[i].arm_length
+				- sinf(_mixer_info.servos[i].angle) * roll_cmd * _mixer_info.servos[i].arm_length;
 		outputs[i + 1] *= _mixer_info.servos[i].scale;
 		outputs[i + 1] += _mixer_info.servos[i].offset;
 		outputs[i + 1] = constrain(outputs[i + 1], _mixer_info.servos[i].min_output, _mixer_info.servos[i].max_output);

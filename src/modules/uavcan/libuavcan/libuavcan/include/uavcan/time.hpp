@@ -25,7 +25,7 @@ protected:
 	}
 	
 	DurationBase() :
-			    usec_(0)
+				usec_(0)
 	{
 		StaticAssert<(sizeof(D) == 8)>::check();
 	}
@@ -156,7 +156,7 @@ protected:
 	}
 	
 	TimeBase() :
-			    usec_(0)
+				usec_(0)
 	{
 		StaticAssert<(sizeof(T) == 8)>::check();
 		StaticAssert<(sizeof(D) == 8)>::check();

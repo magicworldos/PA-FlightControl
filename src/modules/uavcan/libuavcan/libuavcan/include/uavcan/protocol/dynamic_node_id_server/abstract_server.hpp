@@ -28,10 +28,10 @@ protected:
 	NodeDiscoverer node_discoverer_;
 
 	AbstractServer(INode& node, IEventTracer& tracer) :
-			    node_(node),
-			    tracer_(tracer),
-			    allocation_request_manager_(node, tracer, *this),
-			    node_discoverer_(node, tracer, *this)
+				node_(node),
+				tracer_(tracer),
+				allocation_request_manager_(node, tracer, *this),
+				node_discoverer_(node, tracer, *this)
 	{
 	}
 	

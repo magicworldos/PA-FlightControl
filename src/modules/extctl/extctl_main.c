@@ -36,10 +36,10 @@ int start(int argc, char *argv[])
 	_recv.tail = 0;
 	_recv.size = SIZE_BUFF;
 	memset(_recv.buff, 0x00, SIZE_BUFF);
-
+	
 	px4_main_t entry_point = (px4_main_t) extctl_read;
 	int task_id = px4_task_spawn_cmd("exctl", SCHED_DEFAULT, SCHED_PRIORITY_FAST_DRIVER, CONFIG_PTHREAD_STACK_DEFAULT, entry_point, (char * const *) argv);
-
+	
 	return task_id;
 }
 
@@ -51,60 +51,60 @@ int extctl_read(int argc, char *argv[])
 		return -1;
 	}
 	set_opt(_serial_fd, DEV_BAUDRATE, 8, 'N', 1);
-
+	
 	extctl_sp_init();
 	extctl_cmd_init();
-
+	
 	pthread_t pthddr;
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_sp_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_pos_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_rc_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_land_send, NULL);
-
+	
 	int (*p_handle)(void *) = NULL;
-
+	
 	while (!_extctl_should_exit)
 	{
 		frame_read_data();
 		if (frame_parse())
 		{
 			p_handle = NULL;
-
+			
 			switch (_buff[_frame_pos_type])
 			{
 				case DATA_TYPE_POS:
 					p_handle = &extctl_pos_handle;
 					break;
-
+					
 				case DATA_TYPE_SP:
 					p_handle = &extctl_sp_handle;
 					break;
-
+					
 				case DATA_TYPE_RC:
 					p_handle = &extctl_rc_handle;
-
+					
 				case DATA_TYPE_CMD:
 					p_handle = &extctl_cmd_handle;
 					break;
-
+					
 				default:
 					break;
 			}
-
+			
 			if (p_handle != NULL)
 			{
 				p_handle(&_buff[_frame_pos_data]);
 			}
 		}
-
+		
 		usleep(DEV_RATE_READ);
 	}
-
+	
 	//wait write thread exit.
 	usleep(DEV_RATE_BASE);
-
+	
 	close(_serial_fd);
-
+	
 	return 0;
 }
 
@@ -156,16 +156,16 @@ int send_data_buff(void *data, int data_type, int data_len)
 	{
 		return -1;
 	}
-
+	
 	sem_wait(&_sem_w);
-
+	
 	int len_frame = frame_pos(data_len);
 	char frame[len_frame];
 	frame_mk_data(frame, len_frame, (char *) data, data_type, data_len);
 	send_frame_write(frame, len_frame);
-
+	
 	sem_post(&_sem_w);
-
+	
 	return 0;
 }
 
@@ -415,6 +415,6 @@ int extctl_main(int argc, char *argv[])
 		stop();
 		return OK;
 	}
-
+	
 	return -1;
 }

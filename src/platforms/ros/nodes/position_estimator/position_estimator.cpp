@@ -49,10 +49,10 @@
 #include <gazebo_msgs/ModelStates.h>
 
 PositionEstimator::PositionEstimator() :
-		    _n(),
-		    _sub_modelstates(_n.subscribe("/gazebo/model_states", 1, &PositionEstimator::ModelStatesCallback, this)),
-		    _vehicle_position_pub(_n.advertise < px4::vehicle_local_position > ("vehicle_local_position", 1)),
-		    _startup_time(1)
+			_n(),
+			_sub_modelstates(_n.subscribe("/gazebo/model_states", 1, &PositionEstimator::ModelStatesCallback, this)),
+			_vehicle_position_pub(_n.advertise < px4::vehicle_local_position > ("vehicle_local_position", 1)),
+			_startup_time(1)
 {
 	_n.getParam("vehicle_model", _model_name);
 }

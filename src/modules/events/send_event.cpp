@@ -65,7 +65,7 @@ int SendEvent::task_spawn(int argc, char *argv[])
 }
 
 SendEvent::SendEvent() :
-		    _status_display(_subscriber_handler)
+			_status_display(_subscriber_handler)
 {
 }
 
@@ -266,7 +266,9 @@ int SendEvent::custom_command(int argc, char *argv[])
 			}
 		}
 		
-		struct vehicle_command_s cmd = { .timestamp = 0, .param5 = (float) ((accel_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .param6 = NAN, .param1 = (float) ((gyro_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .param2 = NAN, .param3 = NAN, .param4 = NAN, .param7 = (float) ((baro_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .command = vehicle_command_s::VEHICLE_CMD_PREFLIGHT_CALIBRATION };
+		struct vehicle_command_s cmd = { .timestamp = 0, .param5 = (float) ((accel_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .param6 = NAN, .param1 = (float) (
+				(gyro_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .param2 = NAN, .param3 = NAN, .param4 = NAN, .param7 = (float) (
+				(baro_calib || calib_all) ? vehicle_command_s::PREFLIGHT_CALIBRATION_TEMPERATURE_CALIBRATION : NAN), .command = vehicle_command_s::VEHICLE_CMD_PREFLIGHT_CALIBRATION };
 		
 		orb_advert_t h = orb_advertise_queue(ORB_ID(vehicle_command), &cmd, vehicle_command_s::ORB_QUEUE_LENGTH);
 		(void) orb_unadvertise(h);

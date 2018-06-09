@@ -321,32 +321,32 @@ private:
 extern "C" __EXPORT int lis3mdl_main(int argc, char *argv[]);
 
 LIS3MDL::LIS3MDL(device::Device *interface, const char *path, enum Rotation rotation) :
-		    CDev("LIS3MDL", path),
-		    _interface(interface),
-		    _work { },
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _scale { },
-		    _range_scale(0), /* default range scale from counts to gauss */
-		    _range_ga(4.0f),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _mag_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "lis3mdl_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "lis3mdl_comms_errors")),
-		    _range_errors(perf_alloc(PC_COUNT, "lis3mdl_range_errors")),
-		    _conf_errors(perf_alloc(PC_COUNT, "lis3mdl_conf_errors")),
-		    _sensor_ok(false),
-		    _calibrated(false),
-		    _rotation(rotation),
-		    _range_bits(0),
-		    _cntl_reg1(0),
-		    _cntl_reg4(0),
-		    _cntl_reg5(0),
-		    _temperature_counter(0),
-		    _temperature_error_count(0),
-		    _check_state_cnt(0)
+			CDev("LIS3MDL", path),
+			_interface(interface),
+			_work { },
+			_measure_ticks(0),
+			_reports(nullptr),
+			_scale { },
+			_range_scale(0), /* default range scale from counts to gauss */
+			_range_ga(4.0f),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_mag_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "lis3mdl_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "lis3mdl_comms_errors")),
+			_range_errors(perf_alloc(PC_COUNT, "lis3mdl_range_errors")),
+			_conf_errors(perf_alloc(PC_COUNT, "lis3mdl_conf_errors")),
+			_sensor_ok(false),
+			_calibrated(false),
+			_rotation(rotation),
+			_range_bits(0),
+			_cntl_reg1(0),
+			_cntl_reg4(0),
+			_cntl_reg5(0),
+			_temperature_counter(0),
+			_temperature_error_count(0),
+			_check_state_cnt(0)
 {
 	// set the device type from the interface
 	_device_id.devid_s.bus_type = _interface->get_device_bus_type();
@@ -1201,7 +1201,8 @@ int LIS3MDL::calibrate(struct file *filp, unsigned enable)
 	sum_excited[1] /= 10.0f;
 	sum_excited[2] /= 10.0f;
 	
-	if (1.0f < fabsf(sum_excited[0] - sum_non_excited[0]) && fabsf(sum_excited[0] - sum_non_excited[0]) < 3.0f && 1.0f < fabsf(sum_excited[1] - sum_non_excited[1]) && fabsf(sum_excited[1] - sum_non_excited[1]) < 3.0f && 0.1f < fabsf(sum_excited[2] - sum_non_excited[2]) && fabsf(sum_excited[2] - sum_non_excited[2]) < 1.0f)
+	if (1.0f < fabsf(sum_excited[0] - sum_non_excited[0]) && fabsf(sum_excited[0] - sum_non_excited[0]) < 3.0f && 1.0f < fabsf(sum_excited[1] - sum_non_excited[1])
+			&& fabsf(sum_excited[1] - sum_non_excited[1]) < 3.0f && 0.1f < fabsf(sum_excited[2] - sum_non_excited[2]) && fabsf(sum_excited[2] - sum_non_excited[2]) < 1.0f)
 	{
 		ret = OK;
 		
@@ -1237,7 +1238,8 @@ int LIS3MDL::check_scale()
 {
 	bool scale_valid;
 	
-	if ((-FLT_EPSILON + 1.0f < _scale.x_scale && _scale.x_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.y_scale && _scale.y_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.z_scale && _scale.z_scale < FLT_EPSILON + 1.0f))
+	if ((-FLT_EPSILON + 1.0f < _scale.x_scale && _scale.x_scale < FLT_EPSILON + 1.0f) && (-FLT_EPSILON + 1.0f < _scale.y_scale && _scale.y_scale < FLT_EPSILON + 1.0f)
+			&& (-FLT_EPSILON + 1.0f < _scale.z_scale && _scale.z_scale < FLT_EPSILON + 1.0f))
 	{
 		/* scale is one */
 		scale_valid = false;
@@ -1256,7 +1258,8 @@ int LIS3MDL::check_offset()
 {
 	bool offset_valid;
 	
-	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
+	if ((-2.0f * FLT_EPSILON < _scale.x_offset && _scale.x_offset < 2.0f * FLT_EPSILON) && (-2.0f * FLT_EPSILON < _scale.y_offset && _scale.y_offset < 2.0f * FLT_EPSILON)
+			&& (-2.0f * FLT_EPSILON < _scale.z_offset && _scale.z_offset < 2.0f * FLT_EPSILON))
 	{
 		/* offset is zero */
 		offset_valid = false;
@@ -1384,12 +1387,12 @@ struct lis3mdl_bus_option
 	LIS3MDL *dev;
 } bus_options[] = { { LIS3MDL_BUS_I2C_EXTERNAL, "/dev/lis3mdl_ext", &LIS3MDL_I2C_interface, PX4_I2C_BUS_EXPANSION, NULL },
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	LIS3MDL_BUS_I2C_INTERNAL, "/dev/lis3mdl_int", &LIS3MDL_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
+		{	LIS3MDL_BUS_I2C_INTERNAL, "/dev/lis3mdl_int", &LIS3MDL_I2C_interface, PX4_I2C_BUS_ONBOARD, NULL},
 #endif
 #ifdef PX4_SPIDEV_LIS
-        {	LIS3MDL_BUS_SPI, "/dev/lis3mdl_spi", &LIS3MDL_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
+		{	LIS3MDL_BUS_SPI, "/dev/lis3mdl_spi", &LIS3MDL_SPI_interface, PX4_SPI_BUS_SENSORS, NULL},
 #endif
-    };
+	};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 void start(enum LIS3MDL_BUS busid, enum Rotation rotation);

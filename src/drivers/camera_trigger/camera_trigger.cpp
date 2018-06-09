@@ -233,30 +233,30 @@ CameraTrigger *g_camera_trigger;
 }
 
 CameraTrigger::CameraTrigger() :
-		    _engagecall { },
-		    _disengagecall { },
-		    _engage_turn_on_off_call { },
-		    _disengage_turn_on_off_call { },
-		    _keepalivecall_up { },
-		    _keepalivecall_down { },
-		    _activation_time(0.5f /* ms */),
-		    _interval(100.0f /* ms */),
-		    _distance(25.0f /* m */),
-		    _trigger_seq(0),
-		    _trigger_enabled(false),
-		    _trigger_paused(false),
-		    _one_shot(false),
-		    _test_shot(false),
-		    _turning_on(false),
-		    _last_shoot_position(0.0f, 0.0f),
-		    _valid_position(false),
-		    _command_sub(-1),
-		    _lpos_sub(-1),
-		    _trigger_pub(nullptr),
-		    _cmd_ack_pub(nullptr),
-		    _trigger_mode(TRIGGER_MODE_NONE),
-		    _camera_interface_mode(CAMERA_INTERFACE_MODE_GPIO),
-		    _camera_interface(nullptr)
+			_engagecall { },
+			_disengagecall { },
+			_engage_turn_on_off_call { },
+			_disengage_turn_on_off_call { },
+			_keepalivecall_up { },
+			_keepalivecall_down { },
+			_activation_time(0.5f /* ms */),
+			_interval(100.0f /* ms */),
+			_distance(25.0f /* m */),
+			_trigger_seq(0),
+			_trigger_enabled(false),
+			_trigger_paused(false),
+			_one_shot(false),
+			_test_shot(false),
+			_turning_on(false),
+			_last_shoot_position(0.0f, 0.0f),
+			_valid_position(false),
+			_command_sub(-1),
+			_lpos_sub(-1),
+			_trigger_pub(nullptr),
+			_cmd_ack_pub(nullptr),
+			_trigger_mode(TRIGGER_MODE_NONE),
+			_camera_interface_mode(CAMERA_INTERFACE_MODE_GPIO),
+			_camera_interface(nullptr)
 {
 	// Initiate camera interface based on camera_interface_mode
 	if (_camera_interface != nullptr)
@@ -437,7 +437,8 @@ void CameraTrigger::shoot_once()
 void CameraTrigger::start()
 {
 	
-	if ((_trigger_mode == TRIGGER_MODE_INTERVAL_ALWAYS_ON || _trigger_mode == TRIGGER_MODE_DISTANCE_ALWAYS_ON) && _camera_interface->has_power_control() && !_camera_interface->is_powered_on())
+	if ((_trigger_mode == TRIGGER_MODE_INTERVAL_ALWAYS_ON || _trigger_mode == TRIGGER_MODE_DISTANCE_ALWAYS_ON) && _camera_interface->has_power_control()
+			&& !_camera_interface->is_powered_on())
 	{
 		
 		// If in always-on mode and the interface supports it, enable power to the camera

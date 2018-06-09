@@ -210,7 +210,7 @@ int MS5611::loadCalibration()
 		memcpy(((uint16_t *) &m_sensor_calibration + i), &cvt.w, sizeof(uint16_t));
 	}
 
-	DF_LOG_DEBUG("factory_setup: %d", m_sensor_calibration.factory_setup); DF_LOG_DEBUG("c1: %d", m_sensor_calibration.c1_pressure_sens); DF_LOG_DEBUG("c2: %d", m_sensor_calibration.c2_pressure_offset); DF_LOG_DEBUG("c3: %d", m_sensor_calibration.c3_temp_coeff_pres_sens); DF_LOG_DEBUG("c4: %d", m_sensor_calibration.c4_temp_coeff_pres_offset); DF_LOG_DEBUG("c5: %d", m_sensor_calibration.c5_reference_temp); DF_LOG_DEBUG("c6: %d", m_sensor_calibration.c6_temp_coeff_temp);
+	DF_LOG_DEBUG("factory_setup: %d", m_sensor_calibration.factory_setup);DF_LOG_DEBUG("c1: %d", m_sensor_calibration.c1_pressure_sens);DF_LOG_DEBUG("c2: %d", m_sensor_calibration.c2_pressure_offset);DF_LOG_DEBUG("c3: %d", m_sensor_calibration.c3_temp_coeff_pres_sens);DF_LOG_DEBUG("c4: %d", m_sensor_calibration.c4_temp_coeff_pres_offset);DF_LOG_DEBUG("c5: %d", m_sensor_calibration.c5_reference_temp);DF_LOG_DEBUG("c6: %d", m_sensor_calibration.c6_temp_coeff_temp);
 	
 	return (crc4((uint16_t *) &m_sensor_calibration) && !bits_stuck) ? 0 : -1;
 }

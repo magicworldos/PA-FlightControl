@@ -43,7 +43,7 @@ public:
 	static const int TEST_FAIL = 1;
 
 	BebopBusTester() :
-			    BebopBus(BEBOP_BUS_DEVICE_PATH)
+				BebopBus(BEBOP_BUS_DEVICE_PATH)
 	{
 	}
 	

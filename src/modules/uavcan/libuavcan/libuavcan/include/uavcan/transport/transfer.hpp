@@ -41,13 +41,13 @@ public:
 	static const TransferPriority Lowest;
 
 	TransferPriority() :
-			    value_(0xFF)
+				value_(0xFF)
 	{
 	}
 	
 	TransferPriority(uint8_t value)   // Implicit
 	:
-			    value_(value)
+				value_(value)
 	{
 		UAVCAN_ASSERT(isValid());
 	}
@@ -95,13 +95,13 @@ public:
 	static const uint8_t Half = (1U << BitLen) / 2U;
 
 	TransferID() :
-			    value_(0)
+				value_(0)
 	{
 	}
 	
 	TransferID(uint8_t value)    // implicit
 	:
-			    value_(value)
+				value_(value)
 	{
 		value_ &= Max;
 		UAVCAN_ASSERT(value == value_);
@@ -146,13 +146,13 @@ public:
 	static const NodeID Broadcast;
 
 	NodeID() :
-			    value_(ValueInvalid)
+				value_(ValueInvalid)
 	{
 	}
 	
 	NodeID(uint8_t value)   // Implicit
 	:
-			    value_(value)
+				value_(value)
 	{
 		UAVCAN_ASSERT(isValid());
 	}

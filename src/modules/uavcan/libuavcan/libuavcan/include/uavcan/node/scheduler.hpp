@@ -22,7 +22,7 @@ protected:
 	Scheduler& scheduler_;
 
 	explicit DeadlineHandler(Scheduler& scheduler) :
-			    scheduler_(scheduler)
+				scheduler_(scheduler)
 	{
 	}
 	
@@ -114,7 +114,7 @@ class UAVCAN_EXPORT Scheduler: Noncopyable
 	{
 		Scheduler& owner;
 		InsideSpinSetter(Scheduler& o) :
-				    owner(o)
+					owner(o)
 		{
 			owner.inside_spin_ = true;
 		}
@@ -129,11 +129,11 @@ class UAVCAN_EXPORT Scheduler: Noncopyable
 
 public:
 	Scheduler(ICanDriver& can_driver, IPoolAllocator& allocator, ISystemClock& sysclock) :
-			    dispatcher_(can_driver, allocator, sysclock),
-			    prev_cleanup_ts_(sysclock.getMonotonic()),
-			    deadline_resolution_(MonotonicDuration::fromMSec(DefaultDeadlineResolutionMs)),
-			    cleanup_period_(MonotonicDuration::fromMSec(DefaultCleanupPeriodMs)),
-			    inside_spin_(false)
+				dispatcher_(can_driver, allocator, sysclock),
+				prev_cleanup_ts_(sysclock.getMonotonic()),
+				deadline_resolution_(MonotonicDuration::fromMSec(DefaultDeadlineResolutionMs)),
+				cleanup_period_(MonotonicDuration::fromMSec(DefaultCleanupPeriodMs)),
+				inside_spin_(false)
 	{
 	}
 	

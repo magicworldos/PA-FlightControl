@@ -83,13 +83,7 @@ static const char reason_no_datalink[] = "no datalink";
 // code for those checks.
 static const bool arming_transitions[vehicle_status_s::ARMING_STATE_MAX][vehicle_status_s::ARMING_STATE_MAX] = {
 //                                                    INIT,  STANDBY, ARMED, ARMED_ERROR, STANDBY_ERROR, REBOOT, IN_AIR_RESTORE
-{ /* vehicle_status_s::ARMING_STATE_INIT */true, true, false, false, true, false, false },
-{ /* vehicle_status_s::ARMING_STATE_STANDBY */true, true, true, true, false, false, false },
-{ /* vehicle_status_s::ARMING_STATE_ARMED */false, true, true, false, false, false, true },
-{ /* vehicle_status_s::ARMING_STATE_ARMED_ERROR */false, false, true, true, false, false, false },
-{ /* vehicle_status_s::ARMING_STATE_STANDBY_ERROR */true, true, true, true, true, false, false },
-{ /* vehicle_status_s::ARMING_STATE_REBOOT */true, true, false, false, true, true, true },
-{ /* vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE */false, false, false, false, false, false, false }, // NYI
+{ /* vehicle_status_s::ARMING_STATE_INIT */true, true, false, false, true, false, false }, { /* vehicle_status_s::ARMING_STATE_STANDBY */true, true, true, true, false, false, false }, { /* vehicle_status_s::ARMING_STATE_ARMED */false, true, true, false, false, false, true }, { /* vehicle_status_s::ARMING_STATE_ARMED_ERROR */false, false, true, true, false, false, false }, { /* vehicle_status_s::ARMING_STATE_STANDBY_ERROR */true, true, true, true, true, false, false }, { /* vehicle_status_s::ARMING_STATE_REBOOT */true, true, false, false, true, true, true }, { /* vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE */false, false, false, false, false, false, false }, // NYI
 };
 
 // You can index into the array with an arming_state_t in order to get its textual representation
@@ -141,7 +135,8 @@ status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_req
 		if (fRunPreArmChecks && new_arming_state == vehicle_status_s::ARMING_STATE_ARMED && status->hil_state == vehicle_status_s::HIL_STATE_OFF)
 		{
 			
-			bool preflight_check = Preflight::preflightCheck(mavlink_log_pub, sensor_checks, checkAirspeed, (status->rc_input_mode == vehicle_status_s::RC_IN_MODE_DEFAULT), arm_requirements & ARM_REQ_GPS_BIT, true, status->is_vtol, true, true, time_since_boot);
+			bool preflight_check = Preflight::preflightCheck(mavlink_log_pub, sensor_checks, checkAirspeed, (status->rc_input_mode == vehicle_status_s::RC_IN_MODE_DEFAULT), arm_requirements
+																		& ARM_REQ_GPS_BIT, true, status->is_vtol, true, true, time_since_boot);
 			
 			prearm_ret = prearm_check(status, mavlink_log_pub, true /* pre-arm */, false /* force_report */, status_flags, battery, arm_requirements, time_since_boot);
 			
@@ -153,13 +148,16 @@ status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_req
 		}
 		
 		/* re-run the pre-flight check as long as sensors are failing */
-		if (!status_flags->condition_system_sensors_initialized && (new_arming_state == vehicle_status_s::ARMING_STATE_ARMED || new_arming_state == vehicle_status_s::ARMING_STATE_STANDBY) && status->hil_state == vehicle_status_s::HIL_STATE_OFF)
+		if (!status_flags->condition_system_sensors_initialized
+				&& (new_arming_state == vehicle_status_s::ARMING_STATE_ARMED || new_arming_state == vehicle_status_s::ARMING_STATE_STANDBY)
+				&& status->hil_state == vehicle_status_s::HIL_STATE_OFF)
 		{
 			
 			if (last_preflight_check == 0 || hrt_absolute_time() - last_preflight_check > 1000 * 1000)
 			{
 				
-				prearm_ret = Preflight::preflightCheck(mavlink_log_pub, sensor_checks, checkAirspeed, (status->rc_input_mode == vehicle_status_s::RC_IN_MODE_DEFAULT), arm_requirements & ARM_REQ_GPS_BIT, true, status->is_vtol, false, false, time_since_boot);
+				prearm_ret = Preflight::preflightCheck(mavlink_log_pub, sensor_checks, checkAirspeed, (status->rc_input_mode == vehicle_status_s::RC_IN_MODE_DEFAULT), arm_requirements
+																& ARM_REQ_GPS_BIT, true, status->is_vtol, false, false, time_since_boot);
 				
 				status_flags->condition_system_sensors_initialized = (prearm_ret == OK);
 				last_preflight_check = hrt_absolute_time();
@@ -320,7 +318,8 @@ status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_req
 			// Sensors need to be initialized for STANDBY state, except for HIL
 			
 		}
-		else if ((status->hil_state != vehicle_status_s::HIL_STATE_ON) && (new_arming_state == vehicle_status_s::ARMING_STATE_STANDBY) && (status->arming_state != vehicle_status_s::ARMING_STATE_STANDBY_ERROR))
+		else if ((status->hil_state != vehicle_status_s::HIL_STATE_ON) && (new_arming_state == vehicle_status_s::ARMING_STATE_STANDBY)
+				&& (status->arming_state != vehicle_status_s::ARMING_STATE_STANDBY_ERROR))
 		{
 			
 			if (!status_flags->condition_system_sensors_initialized)
@@ -416,7 +415,7 @@ transition_result_t main_state_transition(struct vehicle_status_s *status, main_
 		case commander_state_s::MAIN_STATE_EXTCTL:
 			ret = TRANSITION_CHANGED;
 			break;
-
+			
 		case commander_state_s::MAIN_STATE_MANUAL:
 		case commander_state_s::MAIN_STATE_STAB:
 		case commander_state_s::MAIN_STATE_ACRO:
@@ -555,7 +554,8 @@ transition_result_t hil_state_transition(hil_state_t new_state, orb_advert_t sta
 				break;
 				
 			case vehicle_status_s::HIL_STATE_ON:
-				if (current_status->arming_state == vehicle_status_s::ARMING_STATE_INIT || current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY || current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY_ERROR)
+				if (current_status->arming_state == vehicle_status_s::ARMING_STATE_INIT || current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY
+						|| current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY_ERROR)
 				{
 					
 					ret = TRANSITION_CHANGED;
@@ -1295,7 +1295,8 @@ int prearm_check(struct vehicle_status_s *status, orb_advert_t *mavlink_log_pub,
 	}
 	
 	// mission required
-	if ((arm_requirements & ARM_REQ_MISSION_BIT) && (!status_flags->condition_auto_mission_available || !status_flags->condition_home_position_valid || !status_flags->condition_global_position_valid))
+	if ((arm_requirements & ARM_REQ_MISSION_BIT)
+			&& (!status_flags->condition_auto_mission_available || !status_flags->condition_home_position_valid || !status_flags->condition_global_position_valid))
 	{
 		
 		prearm_ok = false;

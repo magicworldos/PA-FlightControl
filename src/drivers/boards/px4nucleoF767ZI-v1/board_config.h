@@ -349,7 +349,8 @@ __BEGIN_DECLS
 
 #define GPIO_3V3_SENSORS_EN   (1<<6)  /**< PE3  - VDD_3V3_SENSORS_EN */
 #define GPIO_BRICK_VALID      (1<<7)  /**< PB10 - !VDD_BRIC
-K_VALID */
+K_V
+ALID */
 
 /* This board provides a DMA pool and APIs */
 

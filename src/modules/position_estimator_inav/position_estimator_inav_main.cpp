@@ -154,7 +154,8 @@ int position_estimator_inav_main(int argc, char *argv[])
 		}
 		
 		thread_should_exit = false;
-		position_estimator_inav_task = px4_task_spawn_cmd("position_estimator_inav", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 4600, position_estimator_inav_thread_main, (argv && argc > 2) ? (char * const *) &argv[2] : (char * const *) nullptr);
+		position_estimator_inav_task = px4_task_spawn_cmd("position_estimator_inav", SCHED_DEFAULT, SCHED_PRIORITY_MAX - 5, 4600, position_estimator_inav_thread_main,
+				(argv && argc > 2) ? (char * const *) &argv[2] : (char * const *) nullptr);
 		return 0;
 	}
 	
@@ -739,25 +740,27 @@ int position_estimator_inav_thread_main(int argc, char *argv[])
 					{
 						//warnx("[inav] test ohne comp");
 						flow_ang[0] = (-flow.pixel_flow_y_integral / (float) flow.integration_timespan * 1000000.0f) * params.flow_k; //for now the flow has to be scaled (to small)
-						        
+								
 					}
 					else
 					{
 						//warnx("[inav] test mit comp");
 						//calculate flow [rad/s] and compensate for rotations (and offset of flow-gyro)
-						flow_ang[0] = (-(flow.pixel_flow_y_integral - flow.gyro_y_rate_integral) / (float) flow.integration_timespan * 1000000.0f + gyro_offset_filtered[0]) * params.flow_k;						//for now the flow has to be scaled (to small)
+						flow_ang[0] = (-(flow.pixel_flow_y_integral - flow.gyro_y_rate_integral) / (float) flow.integration_timespan * 1000000.0f + gyro_offset_filtered[0])
+								* params.flow_k;						//for now the flow has to be scaled (to small)
 					}
 					
 					/* calculate the angular flow rate produced by a negative velocity along the Y body axis */
 					if (fabsf(rates_setpoint.roll) < rate_threshold)
 					{
-						flow_ang[1] = (flow.pixel_flow_x_integral / (float) flow.integration_timespan * 1000000.0f) * params.flow_k;						//for now the flow has to be scaled (to small)
-						        
+						flow_ang[1] = (flow.pixel_flow_x_integral / (float) flow.integration_timespan * 1000000.0f) * params.flow_k;//for now the flow has to be scaled (to small)
+								
 					}
 					else
 					{
 						//calculate flow [rad/s] and compensate for rotations (and offset of flow-gyro)
-						flow_ang[1] = ((flow.pixel_flow_x_integral - flow.gyro_x_rate_integral) / (float) flow.integration_timespan * 1000000.0f + gyro_offset_filtered[1]) * params.flow_k;						//for now the flow has to be scaled (to small)
+						flow_ang[1] = ((flow.pixel_flow_x_integral - flow.gyro_x_rate_integral) / (float) flow.integration_timespan * 1000000.0f + gyro_offset_filtered[1])
+								* params.flow_k;						//for now the flow has to be scaled (to small)
 					}
 					
 					/* flow measurements vector */
@@ -1131,7 +1134,7 @@ int position_estimator_inav_thread_main(int argc, char *argv[])
 		bool use_vision_z = vision_valid && params.w_z_vision_p > MIN_VALID_W;
 		/* use MOCAP if it's valid and has a valid weight parameter */
 		bool use_mocap = mocap_valid && params.w_mocap_p > MIN_VALID_W && params.att_ext_hdg_m == mocap_heading; //check if external heading is mocap
-		        
+				
 		if (params.disable_mocap)   //disable mocap if fake gps is used
 		{
 			use_mocap = false;
@@ -1445,7 +1448,9 @@ int position_estimator_inav_thread_main(int argc, char *argv[])
 			if (t > updates_counter_start + updates_counter_len)
 			{
 				float updates_dt = (t - updates_counter_start) * 0.000001f;
-				warnx("updates rate: accelerometer = %.1f/s, baro = %.1f/s, gps = %.1f/s, attitude = %.1f/s, flow = %.1f/s, vision = %.1f/s, mocap = %.1f/s", (double )(accel_updates / updates_dt), (double )(baro_updates / updates_dt), (double )(gps_updates / updates_dt), (double )(attitude_updates / updates_dt), (double )(flow_updates / updates_dt), (double )(vision_updates / updates_dt), (double )(mocap_updates / updates_dt));
+				warnx("updates rate: accelerometer = %.1f/s, baro = %.1f/s, gps = %.1f/s, attitude = %.1f/s, flow = %.1f/s, vision = %.1f/s, mocap = %.1f/s", (double )(accel_updates
+								/ updates_dt), (double )(baro_updates / updates_dt), (double )(gps_updates / updates_dt), (double )(attitude_updates / updates_dt), (double )(flow_updates
+								/ updates_dt), (double )(vision_updates / updates_dt), (double )(mocap_updates / updates_dt));
 				updates_counter_start = t;
 				accel_updates = 0;
 				baro_updates = 0;

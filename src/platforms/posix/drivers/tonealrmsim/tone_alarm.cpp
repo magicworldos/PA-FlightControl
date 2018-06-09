@@ -217,12 +217,12 @@ const uint8_t ToneAlarm::_note_tab[] = { 9, 11, 0, 2, 4, 5, 7 };
 extern "C" __EXPORT int tone_alarm_main(int argc, char *argv[]);
 
 ToneAlarm::ToneAlarm() :
-		    VirtDevObj("tone_alarm", TONEALARM0_DEVICE_PATH, nullptr, 0),
-		    _default_tune_number(0),
-		    _user_tune(nullptr),
-		    _tune(nullptr),
-		    _next(nullptr),
-		    _note_call { }
+			VirtDevObj("tone_alarm", TONEALARM0_DEVICE_PATH, nullptr, 0),
+			_default_tune_number(0),
+			_user_tune(nullptr),
+			_tune(nullptr),
+			_next(nullptr),
+			_note_call { }
 {
 	_default_tunes[TONE_STARTUP_TUNE] = "MFT240L8 O4aO5dc O4aO5dc O4aO5dc L16dcdcdcdc";		// startup tune
 	_default_tunes[TONE_ERROR_TUNE] = "MBT200a8a8a8PaaaP";						// ERROR tone

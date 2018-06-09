@@ -45,10 +45,10 @@
 #include "mavlink_main.h"
 
 MavlinkStream::MavlinkStream(Mavlink *mavlink) :
-		    next(nullptr),
-		    _mavlink(mavlink),
-		    _interval(1000000),
-		    _last_sent(0 /* 0 means unlimited - updates on every iteration */)
+			next(nullptr),
+			_mavlink(mavlink),
+			_interval(1000000),
+			_last_sent(0 /* 0 means unlimited - updates on every iteration */)
 {
 }
 

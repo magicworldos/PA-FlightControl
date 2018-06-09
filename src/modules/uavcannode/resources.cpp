@@ -117,7 +117,8 @@ void stack_check(void)
 		}
 
 #endif
-			::syslog(LOG_INFO, "%4d %*-s %8lld %5u/%5u %3u (%3u) ", system_load.tasks[i].tcb->pid, CONFIG_TASK_NAME_SIZE, system_load.tasks[i].tcb->name, (system_load.tasks[i].total_runtime / 1000), stack_size - stack_free, stack_size, system_load.tasks[i].tcb->sched_priority, system_load.tasks[i].tcb->base_priority);
+			::syslog(LOG_INFO, "%4d %*-s %8lld %5u/%5u %3u (%3u) ", system_load.tasks[i].tcb->pid, CONFIG_TASK_NAME_SIZE, system_load.tasks[i].tcb->name, (system_load.tasks[i].total_runtime
+								/ 1000), stack_size - stack_free, stack_size, system_load.tasks[i].tcb->sched_priority, system_load.tasks[i].tcb->base_priority);
 			
 #if CONFIG_RR_INTERVAL > 0
 			/* print scheduling info with RR time slice */

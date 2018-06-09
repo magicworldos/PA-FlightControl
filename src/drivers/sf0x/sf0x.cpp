@@ -179,25 +179,25 @@ private:
 extern "C" __EXPORT int sf0x_main(int argc, char *argv[]);
 
 SF0X::SF0X(const char *port, uint8_t rotation) :
-		    CDev("SF0X", RANGE_FINDER0_DEVICE_PATH),
-		    _rotation(rotation),
-		    _min_distance(0.30f),
-		    _max_distance(40.0f),
-		    _conversion_interval(83334),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _fd(-1),
-		    _linebuf_index(0),
-		    _parse_state(SF0X_PARSE_STATE0_UNSYNC),
-		    _last_read(0),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _consecutive_fail_count(0),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "sf0x_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "sf0x_com_err"))
+			CDev("SF0X", RANGE_FINDER0_DEVICE_PATH),
+			_rotation(rotation),
+			_min_distance(0.30f),
+			_max_distance(40.0f),
+			_conversion_interval(83334),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_measure_ticks(0),
+			_collect_phase(false),
+			_fd(-1),
+			_linebuf_index(0),
+			_parse_state(SF0X_PARSE_STATE0_UNSYNC),
+			_last_read(0),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_consecutive_fail_count(0),
+			_sample_perf(perf_alloc(PC_ELAPSED, "sf0x_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "sf0x_com_err"))
 {
 	/* store port name */
 	strncpy(_port, port, sizeof(_port));

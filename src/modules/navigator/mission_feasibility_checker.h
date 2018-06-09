@@ -75,7 +75,7 @@ private:
 
 public:
 	MissionFeasibilityChecker(Navigator *navigator) :
-			    _navigator(navigator)
+				_navigator(navigator)
 	{
 	}
 	~MissionFeasibilityChecker() = default;

@@ -117,8 +117,8 @@ class Server: public AbstractServer
 	
 public:
 	Server(INode& node, IStorageBackend& storage, IEventTracer& tracer) :
-			    AbstractServer(node, tracer),
-			    storage_(storage)
+				AbstractServer(node, tracer),
+				storage_(storage)
 	{
 	}
 	

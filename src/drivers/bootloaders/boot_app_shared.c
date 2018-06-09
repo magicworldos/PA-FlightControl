@@ -188,7 +188,8 @@ int bootloader_app_shared_read(bootloader_app_shared_t *shared, eRole_t role)
 	
 	read(&working);
 	
-	if ((role == App ? working.signature == BOOTLOADER_COMMON_APP_SIGNATURE : working.signature == BOOTLOADER_COMMON_BOOTLOADER_SIGNATURE) && (working.crc.ull == calulate_signature(&working)))
+	if ((role == App ? working.signature == BOOTLOADER_COMMON_APP_SIGNATURE : working.signature == BOOTLOADER_COMMON_BOOTLOADER_SIGNATURE)
+			&& (working.crc.ull == calulate_signature(&working)))
 	{
 		*shared = working;
 		rv = OK;

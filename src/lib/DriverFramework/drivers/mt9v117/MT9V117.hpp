@@ -60,9 +60,9 @@ class MT9V117: public I2CDevObj
 {
 public:
 	MT9V117(const char *device_path) :
-			    I2CDevObj("ImageSensor", device_path, IMAGE_CLASS_PATH, MT9V117_MEASURE_INTERVAL_US),
-			    _sensor_clock(9),
-			    _sensor_reset(129)
+				I2CDevObj("ImageSensor", device_path, IMAGE_CLASS_PATH, MT9V117_MEASURE_INTERVAL_US),
+				_sensor_clock(9),
+				_sensor_reset(129)
 	{
 	}
 	~MT9V117() = default;

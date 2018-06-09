@@ -87,7 +87,7 @@ private:
 			return false;
 		}
 		token.resize(MachineIDSize * 2);        // Truncating
-		        
+				
 		/*
 		 * Parsing the string as hex bytes
 		 */
@@ -106,7 +106,7 @@ public:
 	 * This class can use extra seach locations. If provided, they will be checked first, before default ones.
 	 */
 	MachineIDReader(const std::vector<std::string>& extra_search_locations = { }) :
-			    search_locations_(mergeLists(extra_search_locations, getDefaultSearchLocations()))
+				search_locations_(mergeLists(extra_search_locations, getDefaultSearchLocations()))
 	{
 	}
 	
@@ -153,7 +153,7 @@ inline std::array<std::uint8_t, 16> makeApplicationID(const MachineIDReader::Mac
 		std::uint8_t bytes[8];
 
 		HalfID(std::uint64_t arg_num) :
-				    num(arg_num)
+					num(arg_num)
 		{
 		}
 	};

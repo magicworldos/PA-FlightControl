@@ -576,7 +576,8 @@ static int write_intterupt_stack(int fdin, int fdout, info_s *pi, char *buffer, 
 	{
 		lseek(fdin, offsetof(fullcontext_s, istack), SEEK_SET);
 		ret = write_stack((pi->flags & eInvalidIntStackPrt) != 0,
-		CONFIG_ISTACK_SIZE, pi->stacks.interrupt.sp + CONFIG_ISTACK_SIZE / 2, pi->stacks.interrupt.top, pi->stacks.interrupt.sp, pi->stacks.interrupt.top - pi->stacks.interrupt.size, "Interrupt sp", buffer, sz, fdin, fdout);
+		CONFIG_ISTACK_SIZE, pi->stacks.interrupt.sp + CONFIG_ISTACK_SIZE / 2, pi->stacks.interrupt.top, pi->stacks.interrupt.sp, pi->stacks.interrupt.top
+									- pi->stacks.interrupt.size, "Interrupt sp", buffer, sz, fdin, fdout);
 	}
 	
 	return ret;
@@ -1231,8 +1232,8 @@ __EXPORT int hardfault_write(char *caller, int fd, int format, bool rearm)
 static void print_usage(void)
 {
 	PRINT_MODULE_DESCRIPTION("Hardfault utility\n"
-	                         "\n"
-	                         "Used in startup scripts to handle hardfaults\n");
+								"\n"
+								"Used in startup scripts to handle hardfaults\n");
 	
 	PRINT_MODULE_USAGE_NAME("hardfault_log", "command");
 	PRINT_MODULE_USAGE_COMMAND_DESCR("check", "Check if there's an uncommited hardfault");

@@ -122,11 +122,11 @@ protected:
 extern "C" __EXPORT int measairspeedsim_main(int argc, char *argv[]);
 
 MEASAirspeedSim::MEASAirspeedSim(int bus, int address, const char *path) :
-		    AirspeedSim(bus, address,
-		    CONVERSION_INTERVAL, path),
-		    _filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
-		    _t_system_power(-1),
-		    system_power { }
+			AirspeedSim(bus, address,
+			CONVERSION_INTERVAL, path),
+			_filter(MEAS_RATE, MEAS_DRIVER_FILTER_FREQ),
+			_t_system_power(-1),
+			system_power { }
 {
 }
 
@@ -193,7 +193,7 @@ int MEASAirspeedSim::collect()
 	
 	float temperature = airspeed_report.temperature;
 	float diff_press_pa_raw = airspeed_report.diff_pressure * 100.0f; // convert from millibar to bar
-	        
+			
 	struct differential_pressure_s report;
 	
 	report.timestamp = hrt_absolute_time();

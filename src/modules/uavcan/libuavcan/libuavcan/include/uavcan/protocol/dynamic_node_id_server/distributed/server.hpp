@@ -29,7 +29,7 @@ class UAVCAN_EXPORT Server: public AbstractServer, IRaftLeaderMonitor
 		const UniqueID unique_id;
 
 		UniqueIDLogPredicate(const UniqueID& uid) :
-				    unique_id(uid)
+					unique_id(uid)
 		{
 		}
 		
@@ -44,7 +44,7 @@ class UAVCAN_EXPORT Server: public AbstractServer, IRaftLeaderMonitor
 		const NodeID node_id;
 
 		NodeIDLogPredicate(const NodeID& nid) :
-				    node_id(nid)
+					node_id(nid)
 		{
 		}
 		
@@ -217,8 +217,8 @@ class UAVCAN_EXPORT Server: public AbstractServer, IRaftLeaderMonitor
 	
 public:
 	Server(INode& node, IStorageBackend& storage, IEventTracer& tracer) :
-			    AbstractServer(node, tracer),
-			    raft_core_(node, storage, tracer, *this)
+				AbstractServer(node, tracer),
+				raft_core_(node, storage, tracer, *this)
 	{
 	}
 	
@@ -302,24 +302,24 @@ struct StateReport
 		Log::Index match_index;
 
 		FollowerState() :
-				    next_index(0),
-				    match_index(0)
+					next_index(0),
+					match_index(0)
 		{
 		}
 	} followers[ClusterManager::MaxClusterSize - 1];
 
 	StateReport(const Server& s) :
-			    cluster_size(s.getRaftCore().getClusterManager().getClusterSize()),
-			    state(s.getRaftCore().getServerState()),
-			    last_log_index(s.getRaftCore().getPersistentState().getLog().getLastIndex()),
-			    commit_index(s.getRaftCore().getCommitIndex()),
-			    last_log_term(0)    // See below
-			    ,
-			    current_term(s.getRaftCore().getPersistentState().getCurrentTerm()),
-			    voted_for(s.getRaftCore().getPersistentState().getVotedFor()),
-			    last_activity_timestamp(s.getRaftCore().getLastActivityTimestamp()),
-			    randomized_timeout(s.getRaftCore().getRandomizedTimeout()),
-			    num_unknown_nodes(s.getNodeDiscoverer().getNumUnknownNodes())
+				cluster_size(s.getRaftCore().getClusterManager().getClusterSize()),
+				state(s.getRaftCore().getServerState()),
+				last_log_index(s.getRaftCore().getPersistentState().getLog().getLastIndex()),
+				commit_index(s.getRaftCore().getCommitIndex()),
+				last_log_term(0)    // See below
+				,
+				current_term(s.getRaftCore().getPersistentState().getCurrentTerm()),
+				voted_for(s.getRaftCore().getPersistentState().getVotedFor()),
+				last_activity_timestamp(s.getRaftCore().getLastActivityTimestamp()),
+				randomized_timeout(s.getRaftCore().getRandomizedTimeout()),
+				num_unknown_nodes(s.getNodeDiscoverer().getNumUnknownNodes())
 	{
 		const Entry* const e = s.getRaftCore().getPersistentState().getLog().getEntryAtIndex(last_log_index);
 		UAVCAN_ASSERT(e != UAVCAN_NULLPTR);

@@ -59,26 +59,26 @@
 constexpr float FollowTarget::_follow_position_matricies[4][9];
 
 FollowTarget::FollowTarget(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _navigator(navigator),
-		    _param_min_alt(this, "NAV_MIN_FT_HT", false),
-		    _param_tracking_dist(this, "NAV_FT_DST", false),
-		    _param_tracking_side(this, "NAV_FT_FS", false),
-		    _param_tracking_resp(this, "NAV_FT_RS", false),
-		    _param_yaw_auto_max(this, "MC_YAWRAUTO_MAX", false),
-		    _follow_target_state(SET_WAIT_FOR_TARGET_POSITION),
-		    _follow_target_position(FOLLOW_FROM_BEHIND),
-		    _follow_target_sub(-1),
-		    _step_time_in_ms(0.0f),
-		    _follow_offset(OFFSET_M),
-		    _target_updates(0),
-		    _last_update_time(0),
-		    _current_target_motion(),
-		    _previous_target_motion(),
-		    _yaw_rate(0.0F),
-		    _responsiveness(0.0F),
-		    _yaw_auto_max(0.0F),
-		    _yaw_angle(0.0F)
+			MissionBlock(navigator, name),
+			_navigator(navigator),
+			_param_min_alt(this, "NAV_MIN_FT_HT", false),
+			_param_tracking_dist(this, "NAV_FT_DST", false),
+			_param_tracking_side(this, "NAV_FT_FS", false),
+			_param_tracking_resp(this, "NAV_FT_RS", false),
+			_param_yaw_auto_max(this, "MC_YAWRAUTO_MAX", false),
+			_follow_target_state(SET_WAIT_FOR_TARGET_POSITION),
+			_follow_target_position(FOLLOW_FROM_BEHIND),
+			_follow_target_sub(-1),
+			_step_time_in_ms(0.0f),
+			_follow_offset(OFFSET_M),
+			_target_updates(0),
+			_last_update_time(0),
+			_current_target_motion(),
+			_previous_target_motion(),
+			_yaw_rate(0.0F),
+			_responsiveness(0.0F),
+			_yaw_auto_max(0.0F),
+			_yaw_angle(0.0F)
 {
 	_current_target_motion =
 	{};

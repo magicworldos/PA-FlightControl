@@ -157,27 +157,27 @@ private:
 };
 
 DfMPU6050Wrapper::DfMPU6050Wrapper(enum Rotation rotation) :
-		    MPU6050(IMU_DEVICE_PATH),
-		    _accel_topic(nullptr),
-		    _gyro_topic(nullptr),
-		    _mavlink_log_pub(nullptr),
-		    _param_update_sub(-1),
-		    _accel_calibration { },
-		    _gyro_calibration { },
-		    _accel_orb_class_instance(-1),
-		    _gyro_orb_class_instance(-1),
-		    _accel_int(MPU6050_NEVER_AUTOPUBLISH_US, false),
-		    _gyro_int(MPU6050_NEVER_AUTOPUBLISH_US, true),
-		    _publish_count(0),
-		    _read_counter(perf_alloc(PC_COUNT, "mpu6050_reads")),
-		    _error_counter(perf_alloc(PC_COUNT, "mpu6050_errors")),
-		    _fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu6050_fifo_overflows")),
-		    _fifo_corruption_counter(perf_alloc(PC_COUNT, "mpu6050_fifo_corruptions")),
-		    _gyro_range_hit_counter(perf_alloc(PC_COUNT, "mpu6050_gyro_range_hits")),
-		    _accel_range_hit_counter(perf_alloc(PC_COUNT, "mpu6050_accel_range_hits")),
-		    _publish_perf(perf_alloc(PC_ELAPSED, "mpu6050_publish")),
-		    _last_accel_range_hit_time(0),
-		    _last_accel_range_hit_count(0)
+			MPU6050(IMU_DEVICE_PATH),
+			_accel_topic(nullptr),
+			_gyro_topic(nullptr),
+			_mavlink_log_pub(nullptr),
+			_param_update_sub(-1),
+			_accel_calibration { },
+			_gyro_calibration { },
+			_accel_orb_class_instance(-1),
+			_gyro_orb_class_instance(-1),
+			_accel_int(MPU6050_NEVER_AUTOPUBLISH_US, false),
+			_gyro_int(MPU6050_NEVER_AUTOPUBLISH_US, true),
+			_publish_count(0),
+			_read_counter(perf_alloc(PC_COUNT, "mpu6050_reads")),
+			_error_counter(perf_alloc(PC_COUNT, "mpu6050_errors")),
+			_fifo_overflow_counter(perf_alloc(PC_COUNT, "mpu6050_fifo_overflows")),
+			_fifo_corruption_counter(perf_alloc(PC_COUNT, "mpu6050_fifo_corruptions")),
+			_gyro_range_hit_counter(perf_alloc(PC_COUNT, "mpu6050_gyro_range_hits")),
+			_accel_range_hit_counter(perf_alloc(PC_COUNT, "mpu6050_accel_range_hits")),
+			_publish_perf(perf_alloc(PC_ELAPSED, "mpu6050_publish")),
+			_last_accel_range_hit_time(0),
+			_last_accel_range_hit_count(0)
 {
 	// Set sane default calibration values
 	_accel_calibration.x_scale = 1.0f;

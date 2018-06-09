@@ -56,8 +56,8 @@ class BlockingServiceClient: public uavcan::ServiceClient<DataType>
 	
 public:
 	BlockingServiceClient(uavcan::INode& node) :
-			    uavcan::ServiceClient<DataType>(node),
-			    call_was_successful_(false)
+				uavcan::ServiceClient<DataType>(node),
+				call_was_successful_(false)
 	{
 		setup();
 	}
@@ -124,13 +124,13 @@ struct DriverPack
 	std::shared_ptr<uavcan::ICanDriver> can;
 
 	explicit DriverPack(ClockAdjustmentMode clock_adjustment_mode, const std::shared_ptr<uavcan::ICanDriver>& can_driver) :
-			    clock(clock_adjustment_mode),
-			    can(can_driver)
+				clock(clock_adjustment_mode),
+				can(can_driver)
 	{
 	}
 	
 	explicit DriverPack(ClockAdjustmentMode clock_adjustment_mode, const std::vector<std::string>& iface_names) :
-			    clock(clock_adjustment_mode)
+				clock(clock_adjustment_mode)
 	{
 		std::shared_ptr<SocketCanDriver> socketcan(new SocketCanDriver(clock));
 		can = socketcan;
@@ -166,7 +166,7 @@ template<typename T>
 using BlockingServiceClientPtr = std::shared_ptr<BlockingServiceClient<T>>;
 
 static constexpr std::size_t NodeMemPoolSize = 1024 * 512;  ///< This shall be enough for any possible use case
-        
+		
 /**
  * Generic wrapper for node objects with some additional convenience functions.
  */
@@ -197,7 +197,7 @@ public:
 	 * Simple forwarding constructor, compatible with uavcan::Node.
 	 */
 	NodeBase(uavcan::ICanDriver& can_driver, uavcan::ISystemClock& clock) :
-			    NodeType(can_driver, clock)
+				NodeType(can_driver, clock)
 	{
 	}
 	
@@ -205,8 +205,8 @@ public:
 	 * Takes ownership of the driver container via the shared pointer.
 	 */
 	explicit NodeBase(DriverPackPtr driver_pack) :
-			    NodeType(*driver_pack->can, driver_pack->clock),
-			    driver_pack_(driver_pack)
+				NodeType(*driver_pack->can, driver_pack->clock),
+				driver_pack_(driver_pack)
 	{
 	}
 	
@@ -327,7 +327,7 @@ public:
 	 * Simple forwarding constructor, compatible with uavcan::Node.
 	 */
 	Node(uavcan::ICanDriver& can_driver, uavcan::ISystemClock& clock) :
-			    Base(can_driver, clock)
+				Base(can_driver, clock)
 	{
 		getLogger().setExternalSink(&log_sink_);
 	}
@@ -336,7 +336,7 @@ public:
 	 * Takes ownership of the driver container via the shared pointer.
 	 */
 	explicit Node(DriverPackPtr driver_pack) :
-			    Base(driver_pack)
+				Base(driver_pack)
 	{
 		getLogger().setExternalSink(&log_sink_);
 	}
@@ -355,7 +355,7 @@ public:
 	 * Simple forwarding constructor, compatible with uavcan::Node.
 	 */
 	SubNode(uavcan::ICanDriver& can_driver, uavcan::ISystemClock& clock) :
-			    Base(can_driver, clock)
+				Base(can_driver, clock)
 	{
 	}
 	
@@ -363,7 +363,7 @@ public:
 	 * Takes ownership of the driver container via the shared pointer.
 	 */
 	explicit SubNode(DriverPackPtr driver_pack) :
-			    Base(driver_pack)
+				Base(driver_pack)
 	{
 	}
 };

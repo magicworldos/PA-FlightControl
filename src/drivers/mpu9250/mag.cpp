@@ -71,25 +71,25 @@
 // If interface is non-null, then it will used for interacting with the device.
 // Otherwise, it will passthrough the parent MPU9250
 MPU9250_mag::MPU9250_mag(MPU9250 *parent, device::Device *interface, const char *path) :
-		    CDev("MPU9250_mag", path),
-		    _interface(interface),
-		    _parent(parent),
-		    _mag_topic(nullptr),
-		    _mag_orb_class_instance(-1),
-		    _mag_class_instance(-1),
-		    _mag_reading_data(false),
-		    _mag_reports(nullptr),
-		    _mag_scale { },
-		    _mag_range_scale(),
-		    _mag_reads(perf_alloc(PC_COUNT, "mpu9250_mag_reads")),
-		    _mag_errors(perf_alloc(PC_COUNT, "mpu9250_mag_errors")),
-		    _mag_overruns(perf_alloc(PC_COUNT, "mpu9250_mag_overruns")),
-		    _mag_overflows(perf_alloc(PC_COUNT, "mpu9250_mag_overflows")),
-		    _mag_duplicates(perf_alloc(PC_COUNT, "mpu9250_mag_duplicates")),
-		    _mag_asa_x(1.0),
-		    _mag_asa_y(1.0),
-		    _mag_asa_z(1.0),
-		    _last_mag_data { }
+			CDev("MPU9250_mag", path),
+			_interface(interface),
+			_parent(parent),
+			_mag_topic(nullptr),
+			_mag_orb_class_instance(-1),
+			_mag_class_instance(-1),
+			_mag_reading_data(false),
+			_mag_reports(nullptr),
+			_mag_scale { },
+			_mag_range_scale(),
+			_mag_reads(perf_alloc(PC_COUNT, "mpu9250_mag_reads")),
+			_mag_errors(perf_alloc(PC_COUNT, "mpu9250_mag_errors")),
+			_mag_overruns(perf_alloc(PC_COUNT, "mpu9250_mag_overruns")),
+			_mag_overflows(perf_alloc(PC_COUNT, "mpu9250_mag_overflows")),
+			_mag_duplicates(perf_alloc(PC_COUNT, "mpu9250_mag_duplicates")),
+			_mag_asa_x(1.0),
+			_mag_asa_y(1.0),
+			_mag_asa_z(1.0),
+			_last_mag_data { }
 {
 	// default mag scale factors
 	_mag_scale.x_offset = 0;

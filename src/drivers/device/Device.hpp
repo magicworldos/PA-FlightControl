@@ -231,6 +231,6 @@ protected:
 };
 
 }
- // namespace device
+    // namespace device
 
 #endif /* _DEVICE_DEVICE_HPP */

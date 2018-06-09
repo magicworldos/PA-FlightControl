@@ -252,38 +252,38 @@ void usage()
 } // namespace bmm150
 
 BMM150::BMM150(int bus, const char *path, enum Rotation rotation) :
-		    I2C("BMM150", path, bus, BMM150_SLAVE_ADDRESS, BMM150_BUS_SPEED),
-		    _running(false),
-		    _call_interval(0),
-		    _reports(nullptr),
-		    _collect_phase(false),
-		    _scale { },
-		    _range_scale(0.01), /* default range scale from from uT to gauss */
-		    _topic(nullptr),
-		    _orb_class_instance(-1),
-		    _class_instance(-1),
-		    _power(BMM150_DEFAULT_POWER_MODE),
-		    _output_data_rate(BMM150_DATA_RATE_30HZ),
-		    _calibrated(false),
-		    dig_x1(0),
-		    dig_y1(0),
-		    dig_x2(0),
-		    dig_y2(0),
-		    dig_z1(0),
-		    dig_z2(0),
-		    dig_z3(0),
-		    dig_z4(0),
-		    dig_xy1(0),
-		    dig_xy2(0),
-		    dig_xyz1(0),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "bmm150_read")),
-		    _bad_transfers(perf_alloc(PC_COUNT, "bmm150_bad_transfers")),
-		    _good_transfers(perf_alloc(PC_COUNT, "bmm150_good_transfers")),
-		    _measure_perf(perf_alloc(PC_ELAPSED, "bmp280_measure")),
-		    _comms_errors(perf_alloc(PC_COUNT, "bmp280_comms_errors")),
-		    _duplicates(perf_alloc(PC_COUNT, "bmm150_duplicates")),
-		    _rotation(rotation),
-		    _got_duplicate(false)
+			I2C("BMM150", path, bus, BMM150_SLAVE_ADDRESS, BMM150_BUS_SPEED),
+			_running(false),
+			_call_interval(0),
+			_reports(nullptr),
+			_collect_phase(false),
+			_scale { },
+			_range_scale(0.01), /* default range scale from from uT to gauss */
+			_topic(nullptr),
+			_orb_class_instance(-1),
+			_class_instance(-1),
+			_power(BMM150_DEFAULT_POWER_MODE),
+			_output_data_rate(BMM150_DATA_RATE_30HZ),
+			_calibrated(false),
+			dig_x1(0),
+			dig_y1(0),
+			dig_x2(0),
+			dig_y2(0),
+			dig_z1(0),
+			dig_z2(0),
+			dig_z3(0),
+			dig_z4(0),
+			dig_xy1(0),
+			dig_xy2(0),
+			dig_xyz1(0),
+			_sample_perf(perf_alloc(PC_ELAPSED, "bmm150_read")),
+			_bad_transfers(perf_alloc(PC_COUNT, "bmm150_bad_transfers")),
+			_good_transfers(perf_alloc(PC_COUNT, "bmm150_good_transfers")),
+			_measure_perf(perf_alloc(PC_ELAPSED, "bmp280_measure")),
+			_comms_errors(perf_alloc(PC_COUNT, "bmp280_comms_errors")),
+			_duplicates(perf_alloc(PC_COUNT, "bmm150_duplicates")),
+			_rotation(rotation),
+			_got_duplicate(false)
 {
 	_device_id.devid_s.devtype = DRV_MAG_DEVTYPE_BMM150;
 	
@@ -636,7 +636,8 @@ int BMM150::collect()
 		if ((resistance != 0) && (dig_xyz1 != 0))
 		{
 			mrb.x = ((dig_xyz1 * 16384.0 / resistance) - 16384.0);
-			mrb.x = (((mrb.x_raw * ((((dig_xy2 * ((float) (mrb.x * mrb.x / (float) 268435456.0)) + mrb.x * dig_xy1 / (float) 16384.0)) + (float) 256.0) * (dig_x2 + (float) 160.0))) / (float) 8192.0) + (dig_x1 * (float) 8.0)) / (float) 16.0;
+			mrb.x = (((mrb.x_raw * ((((dig_xy2 * ((float) (mrb.x * mrb.x / (float) 268435456.0)) + mrb.x * dig_xy1 / (float) 16384.0)) + (float) 256.0) * (dig_x2 + (float) 160.0)))
+					/ (float) 8192.0) + (dig_x1 * (float) 8.0)) / (float) 16.0;
 			
 		}
 		else
@@ -658,7 +659,8 @@ int BMM150::collect()
 		{
 			
 			mrb.y = ((((float) dig_xyz1) * (float) 16384.0 / resistance) - (float) 16384.0);
-			mrb.y = (((mrb.y_raw * ((((dig_xy2 * (mrb.y * mrb.y / (float) 268435456.0) + mrb.y * dig_xy1 / (float) 16384.0)) + (float) 256.0) * (dig_y2 + (float) 160.0))) / (float) 8192.0) + (dig_y1 * (float) 8.0)) / (float) 16.0;
+			mrb.y = (((mrb.y_raw * ((((dig_xy2 * (mrb.y * mrb.y / (float) 268435456.0) + mrb.y * dig_xy1 / (float) 16384.0)) + (float) 256.0) * (dig_y2 + (float) 160.0)))
+					/ (float) 8192.0) + (dig_y1 * (float) 8.0)) / (float) 16.0;
 			
 		}
 		else
@@ -679,7 +681,8 @@ int BMM150::collect()
 		/* no overflow */
 		if ((dig_z2 != 0) && (dig_z1 != 0) && (dig_xyz1 != 0) && (resistance != 0))
 		{
-			mrb.z = ((((mrb.z_raw - dig_z4) * (float) 131072.0) - (dig_z3 * (resistance - dig_xyz1))) / ((dig_z2 + dig_z1 * resistance / (float) 32768.0) * (float) 4.0)) / (float) 16.0;
+			mrb.z = ((((mrb.z_raw - dig_z4) * (float) 131072.0) - (dig_z3 * (resistance - dig_xyz1))) / ((dig_z2 + dig_z1 * resistance / (float) 32768.0) * (float) 4.0))
+					/ (float) 16.0;
 		}
 		
 	}

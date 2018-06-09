@@ -64,7 +64,7 @@ bool sim_lockstep = false;
 volatile bool sim_delay = false;
 
 #define PX4_MAX_FD 350
-        static map<string,
+		static map<string,
 void *> devmap;
 static device::file_t filemap[PX4_MAX_FD] = { };
 

@@ -79,8 +79,8 @@ class NodeDiscoverer: TimerBase
 		uint8_t num_get_node_info_attempts;
 
 		NodeData() :
-				    last_seen_uptime(0),
-				    num_get_node_info_attempts(0)
+					last_seen_uptime(0),
+					num_get_node_info_attempts(0)
 		{
 		}
 	};
@@ -310,12 +310,12 @@ class NodeDiscoverer: TimerBase
 	
 public:
 	NodeDiscoverer(INode& node, IEventTracer& tracer, INodeDiscoveryHandler& handler) :
-			    TimerBase(node),
-			    handler_(handler),
-			    tracer_(tracer),
-			    node_map_(node.getAllocator()),
-			    get_node_info_client_(node),
-			    node_status_sub_(node)
+				TimerBase(node),
+				handler_(handler),
+				tracer_(tracer),
+				node_map_(node.getAllocator()),
+				get_node_info_client_(node),
+				node_status_sub_(node)
 	{
 	}
 	

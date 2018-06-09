@@ -291,19 +291,19 @@ private:
 		uint16_t temp;
 
 		ADISReport() :
-				    cmd(0),
-				    status(0),
-				    gyro_x(0),
-				    gyro_y(0),
-				    gyro_z(0),
-				    accel_x(0),
-				    accel_y(0),
-				    accel_z(0),
-				    mag_x(0),
-				    mag_y(0),
-				    mag_z(0),
-				    baro(0),
-				    temp(0)
+					cmd(0),
+					status(0),
+					gyro_x(0),
+					gyro_y(0),
+					gyro_z(0),
+					accel_x(0),
+					accel_y(0),
+					accel_z(0),
+					mag_x(0),
+					mag_y(0),
+					mag_z(0),
+					baro(0),
+					temp(0)
 		{
 		}
 	};
@@ -491,46 +491,46 @@ __EXPORT int adis16448_main(int argc, char *argv[]);
 }
 
 ADIS16448::ADIS16448(int bus, const char *path_accel, const char *path_gyro, const char *path_mag, uint32_t device, enum Rotation rotation) :
-		    SPI("ADIS16448", path_accel, bus, device, SPIDEV_MODE3, SPI_BUS_SPEED),
-		    _gyro(new ADIS16448_gyro(this, path_gyro)),
-		    _mag(new ADIS16448_mag(this, path_mag)),
-		    _product(0),
-		    _call { },
-		    _call_interval(0),
-		    _gyro_reports(nullptr),
-		    _gyro_scale { },
-		    _gyro_range_scale(0.0f),
-		    _gyro_range_rad_s(0.0f),
-		    _accel_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_scale(0.0f),
-		    _accel_range_m_s2(0.0f),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _mag_reports(nullptr),
-		    _mag_scale { },
-		    _mag_range_scale(0.0f),
-		    _mag_range_mgauss(0.0f),
-		    _sample_rate(100), /* Init sampling frequency set to 100Hz */
-		    _accel_reads(perf_alloc(PC_COUNT, "adis16448_accel_read")),
-		    _gyro_reads(perf_alloc(PC_COUNT, "adis16448_gyro_read")),
-		    _mag_reads(perf_alloc(PC_COUNT, "adis16448_mag_read")),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "adis16448_read")),
-		    _bad_transfers(perf_alloc(PC_COUNT, "adis16448_bad_transfers")),
-		    _gyro_filter_x(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_y(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_z(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_x(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _mag_filter_x(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
-		    _mag_filter_y(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
-		    _mag_filter_z(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_int(1000000 / ADIS16448_ACCEL_MAX_OUTPUT_RATE, false),
-		    _gyro_int(1000000 / ADIS16448_GYRO_MAX_OUTPUT_RATE, true),
-		    _rotation(rotation),
-		    _controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency"))
+			SPI("ADIS16448", path_accel, bus, device, SPIDEV_MODE3, SPI_BUS_SPEED),
+			_gyro(new ADIS16448_gyro(this, path_gyro)),
+			_mag(new ADIS16448_mag(this, path_mag)),
+			_product(0),
+			_call { },
+			_call_interval(0),
+			_gyro_reports(nullptr),
+			_gyro_scale { },
+			_gyro_range_scale(0.0f),
+			_gyro_range_rad_s(0.0f),
+			_accel_reports(nullptr),
+			_accel_scale { },
+			_accel_range_scale(0.0f),
+			_accel_range_m_s2(0.0f),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_mag_reports(nullptr),
+			_mag_scale { },
+			_mag_range_scale(0.0f),
+			_mag_range_mgauss(0.0f),
+			_sample_rate(100), /* Init sampling frequency set to 100Hz */
+			_accel_reads(perf_alloc(PC_COUNT, "adis16448_accel_read")),
+			_gyro_reads(perf_alloc(PC_COUNT, "adis16448_gyro_read")),
+			_mag_reads(perf_alloc(PC_COUNT, "adis16448_mag_read")),
+			_sample_perf(perf_alloc(PC_ELAPSED, "adis16448_read")),
+			_bad_transfers(perf_alloc(PC_COUNT, "adis16448_bad_transfers")),
+			_gyro_filter_x(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_y(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_z(ADIS16448_GYRO_DEFAULT_RATE, ADIS16448_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_x(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(ADIS16448_ACCEL_DEFAULT_RATE, ADIS16448_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_mag_filter_x(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
+			_mag_filter_y(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
+			_mag_filter_z(ADIS16448_MAG_DEFAULT_RATE, ADIS16448_MAG_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_int(1000000 / ADIS16448_ACCEL_MAX_OUTPUT_RATE, false),
+			_gyro_int(1000000 / ADIS16448_GYRO_MAX_OUTPUT_RATE, true),
+			_rotation(rotation),
+			_controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency"))
 {
 	// disable debug() calls
 	_debug_enabled = false;
@@ -1471,7 +1471,8 @@ int ADIS16448::measure()
 	report.baro = (int16_t) adis_report.baro;
 	report.temp = convert12BitToINT16(adis_report.temp);
 	
-	if (report.gyro_x == 0 && report.gyro_y == 0 && report.gyro_z == 0 && report.accel_x == 0 && report.accel_y == 0 && report.accel_z == 0 && report.mag_x == 0 && report.mag_y == 0 && report.mag_z == 0 && report.baro == 0 && report.temp == 0)
+	if (report.gyro_x == 0 && report.gyro_y == 0 && report.gyro_z == 0 && report.accel_x == 0 && report.accel_y == 0 && report.accel_z == 0 && report.mag_x == 0
+			&& report.mag_y == 0 && report.mag_z == 0 && report.baro == 0 && report.temp == 0)
 	{
 		perf_count(_bad_transfers);
 		perf_end(_sample_perf);
@@ -1702,11 +1703,11 @@ void ADIS16448::print_info()
 }
 
 ADIS16448_gyro::ADIS16448_gyro(ADIS16448 *parent, const char *path) :
-		    CDev("ADIS16448_gyro", path),
-		    _parent(parent),
-		    _gyro_topic(nullptr),
-		    _gyro_orb_class_instance(-1),
-		    _gyro_class_instance(-1)
+			CDev("ADIS16448_gyro", path),
+			_parent(parent),
+			_gyro_topic(nullptr),
+			_gyro_orb_class_instance(-1),
+			_gyro_class_instance(-1)
 {
 }
 
@@ -1761,11 +1762,11 @@ int ADIS16448_gyro::ioctl(struct file *filp, int cmd, unsigned long arg)
 }
 
 ADIS16448_mag::ADIS16448_mag(ADIS16448 *parent, const char *path) :
-		    CDev("ADIS16448_mag", path),
-		    _parent(parent),
-		    _mag_topic(nullptr),
-		    _mag_orb_class_instance(-1),
-		    _mag_class_instance(-1)
+			CDev("ADIS16448_mag", path),
+			_parent(parent),
+			_mag_topic(nullptr),
+			_mag_orb_class_instance(-1),
+			_mag_class_instance(-1)
 {
 }
 

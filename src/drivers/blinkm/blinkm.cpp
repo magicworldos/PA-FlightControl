@@ -256,37 +256,37 @@ const char * const BlinkM::script_names[] = { "USER", "RGB", "WHITE_FLASH", "RED
 extern "C" __EXPORT int blinkm_main(int argc, char *argv[]);
 
 BlinkM::BlinkM(int bus, int blinkm) :
-		    I2C("blinkm", BLINKM0_DEVICE_PATH, bus, blinkm
+			I2C("blinkm", BLINKM0_DEVICE_PATH, bus, blinkm
 #ifdef __PX4_NUTTX
-		        , 100000
+				, 100000
 #endif
-		        ),
-		    led_color_1(LED_OFF),
-		    led_color_2(LED_OFF),
-		    led_color_3(LED_OFF),
-		    led_color_4(LED_OFF),
-		    led_color_5(LED_OFF),
-		    led_color_6(LED_OFF),
-		    led_color_7(LED_OFF),
-		    led_color_8(LED_OFF),
-		    led_blink(LED_NOBLINK),
-		    systemstate_run(false),
-		    vehicle_status_sub_fd(-1),
-		    battery_status_sub_fd(-1),
-		    vehicle_control_mode_sub_fd(-1),
-		    vehicle_gps_position_sub_fd(-1),
-		    actuator_armed_sub_fd(-1),
-		    safety_sub_fd(-1),
-		    num_of_cells(0),
-		    detected_cells_runcount(0),
-		    t_led_color { 0 },
-		    t_led_blink(0),
-		    led_thread_runcount(0),
-		    led_interval(1000),
-		    topic_initialized(false),
-		    detected_cells_blinked(false),
-		    led_thread_ready(true),
-		    num_of_used_sats(0)
+				),
+			led_color_1(LED_OFF),
+			led_color_2(LED_OFF),
+			led_color_3(LED_OFF),
+			led_color_4(LED_OFF),
+			led_color_5(LED_OFF),
+			led_color_6(LED_OFF),
+			led_color_7(LED_OFF),
+			led_color_8(LED_OFF),
+			led_blink(LED_NOBLINK),
+			systemstate_run(false),
+			vehicle_status_sub_fd(-1),
+			battery_status_sub_fd(-1),
+			vehicle_control_mode_sub_fd(-1),
+			vehicle_gps_position_sub_fd(-1),
+			actuator_armed_sub_fd(-1),
+			safety_sub_fd(-1),
+			num_of_cells(0),
+			detected_cells_runcount(0),
+			t_led_color { 0 },
+			t_led_blink(0),
+			led_thread_runcount(0),
+			led_interval(1000),
+			topic_initialized(false),
+			detected_cells_blinked(false),
+			led_thread_ready(true),
+			num_of_used_sats(0)
 {
 	memset(&_work, 0, sizeof(_work));
 }

@@ -103,20 +103,20 @@ protected:
 			};
 
 			FDCacheItem() :
-					    next_(UAVCAN_NULLPTR),
-					    last_access_(0),
-					    fd_(InvalidFD),
-					    oflags_(0),
-					    path_(UAVCAN_NULLPTR)
+						next_(UAVCAN_NULLPTR),
+						last_access_(0),
+						fd_(InvalidFD),
+						oflags_(0),
+						path_(UAVCAN_NULLPTR)
 			{
 			}
 			
 			FDCacheItem(int fd, const char* path, int oflags) :
-					    next_(UAVCAN_NULLPTR),
-					    last_access_(0),
-					    fd_(fd),
-					    oflags_(oflags),
-					    path_(::strndup(path, uavcan::protocol::file::Path::FieldTypes::path::MaxSize))
+						next_(UAVCAN_NULLPTR),
+						last_access_(0),
+						fd_(fd),
+						oflags_(oflags),
+						path_(::strndup(path, uavcan::protocol::file::Path::FieldTypes::path::MaxSize))
 			{
 			}
 			
@@ -258,8 +258,8 @@ protected:
 		
 	public:
 		FDCache(uavcan::INode& node) :
-				    TimerBase(node),
-				    head_(UAVCAN_NULLPTR)
+					TimerBase(node),
+					head_(UAVCAN_NULLPTR)
 		{
 		}
 		
@@ -454,8 +454,8 @@ protected:
 	
 public:
 	BasicFileServerBackend(uavcan::INode& node) :
-			    fdcache_(UAVCAN_NULLPTR),
-			    node_(node)
+				fdcache_(UAVCAN_NULLPTR),
+				node_(node)
 	{
 	}
 	

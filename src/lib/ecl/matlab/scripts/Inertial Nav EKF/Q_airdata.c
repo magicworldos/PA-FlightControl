@@ -84,6 +84,7 @@ float t85 = t24 * t58;
 float t86 = t12 * t30 * t57;
 float t84 = t85 + t86;
 float t87 = t84 * t84;
-float tas_var = t41 * t47 * vd_var * 0.25f + t41 * t51 * ve_var * 0.25f + t41 * t55 * vn_var * 0.25f + t41 * t47 * vwd_var * 0.25f + t41 * t51 * vwe_var * 0.25f + t41 * t55 * vwn_var * 0.25f;
+float tas_var = t41 * t47 * vd_var * 0.25f + t41 * t51 * ve_var * 0.25f + t41 * t55 * vn_var * 0.25f + t41 * t47 * vwd_var * 0.25f + t41 * t51 * vwe_var * 0.25f
+		+ t41 * t55 * vwn_var * 0.25f;
 float aoa_var = t62 * t65 * vd_var + t62 * t72 * ve_var + t62 * t68 * vn_var + t62 * t65 * vwd_var + t62 * t72 * vwe_var + t62 * t68 * vwn_var;
 float aos_var = t77 * t87 * vd_var + t77 * t80 * ve_var + t77 * t83 * vn_var + t77 * t87 * vwd_var + t77 * t80 * vwe_var + t77 * t83 * vwn_var;

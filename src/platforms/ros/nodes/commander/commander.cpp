@@ -43,20 +43,20 @@
 #include <platforms/px4_middleware.h>
 
 Commander::Commander() :
-		    _n(),
-		    _man_ctrl_sp_sub(_n.subscribe("manual_control_setpoint", 10, &Commander::ManualControlInputCallback, this)),
-		    _offboard_control_mode_sub(_n.subscribe("offboard_control_mode", 10, &Commander::OffboardControlModeCallback, this)),
-		    _vehicle_control_mode_pub(_n.advertise < px4::vehicle_control_mode > ("vehicle_control_mode", 10)),
-		    _actuator_armed_pub(_n.advertise < px4::actuator_armed > ("actuator_armed", 10)),
-		    _vehicle_status_pub(_n.advertise < px4::vehicle_status > ("vehicle_status", 10)),
-		    _commander_state_pub(_n.advertise < px4::commander_state > ("commander_state", 10)),
-		    _parameter_update_pub(_n.advertise < px4::parameter_update > ("parameter_update", 10)),
-		    _msg_parameter_update(),
-		    _msg_actuator_armed(),
-		    _msg_vehicle_control_mode(),
-		    _msg_vehicle_status(),
-		    _msg_offboard_control_mode(),
-		    _got_manual_control(false)
+			_n(),
+			_man_ctrl_sp_sub(_n.subscribe("manual_control_setpoint", 10, &Commander::ManualControlInputCallback, this)),
+			_offboard_control_mode_sub(_n.subscribe("offboard_control_mode", 10, &Commander::OffboardControlModeCallback, this)),
+			_vehicle_control_mode_pub(_n.advertise < px4::vehicle_control_mode > ("vehicle_control_mode", 10)),
+			_actuator_armed_pub(_n.advertise < px4::actuator_armed > ("actuator_armed", 10)),
+			_vehicle_status_pub(_n.advertise < px4::vehicle_status > ("vehicle_status", 10)),
+			_commander_state_pub(_n.advertise < px4::commander_state > ("commander_state", 10)),
+			_parameter_update_pub(_n.advertise < px4::parameter_update > ("parameter_update", 10)),
+			_msg_parameter_update(),
+			_msg_actuator_armed(),
+			_msg_vehicle_control_mode(),
+			_msg_vehicle_status(),
+			_msg_offboard_control_mode(),
+			_got_manual_control(false)
 {
 	
 	/* Default to offboard control: when no joystick is connected offboard control should just work */
@@ -121,9 +121,11 @@ void Commander::SetOffboardControl(const px4::offboard_control_mode &msg_offboar
 	msg_vehicle_control_mode.flag_control_offboard_enabled = true;
 	msg_vehicle_control_mode.flag_control_auto_enabled = false;
 	
-	msg_vehicle_control_mode.flag_control_rates_enabled = !msg_offboard_control_mode.ignore_bodyrate || !msg_offboard_control_mode.ignore_attitude || !msg_offboard_control_mode.ignore_position || !msg_offboard_control_mode.ignore_velocity || !msg_offboard_control_mode.ignore_acceleration_force;
+	msg_vehicle_control_mode.flag_control_rates_enabled = !msg_offboard_control_mode.ignore_bodyrate || !msg_offboard_control_mode.ignore_attitude
+			|| !msg_offboard_control_mode.ignore_position || !msg_offboard_control_mode.ignore_velocity || !msg_offboard_control_mode.ignore_acceleration_force;
 	
-	msg_vehicle_control_mode.flag_control_attitude_enabled = !msg_offboard_control_mode.ignore_attitude || !msg_offboard_control_mode.ignore_position || !msg_offboard_control_mode.ignore_velocity || !msg_offboard_control_mode.ignore_acceleration_force;
+	msg_vehicle_control_mode.flag_control_attitude_enabled = !msg_offboard_control_mode.ignore_attitude || !msg_offboard_control_mode.ignore_position
+			|| !msg_offboard_control_mode.ignore_velocity || !msg_offboard_control_mode.ignore_acceleration_force;
 	
 	msg_vehicle_control_mode.flag_control_velocity_enabled = !msg_offboard_control_mode.ignore_velocity || !msg_offboard_control_mode.ignore_position;
 	

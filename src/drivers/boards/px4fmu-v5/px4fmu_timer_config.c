@@ -56,7 +56,13 @@ __EXPORT const io_timers_t io_timers[MAX_IO_TIMERS] = { { .base = STM32_TIM1_BAS
 
 } };
 
-__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = { { .gpio_out = GPIO_TIM1_CH4OUT, .gpio_in = GPIO_TIM1_CH4IN, .timer_index = 0, .timer_channel = 4, .ccr_offset = STM32_GTIM_CCR4_OFFSET, .masks = GTIM_SR_CC4IF | GTIM_SR_CC4OF }, { .gpio_out = GPIO_TIM1_CH3OUT, .gpio_in = GPIO_TIM1_CH3IN, .timer_index = 0, .timer_channel = 3, .ccr_offset = STM32_GTIM_CCR3_OFFSET, .masks = GTIM_SR_CC3IF | GTIM_SR_CC3OF }, { .gpio_out = GPIO_TIM1_CH2OUT, .gpio_in = GPIO_TIM1_CH2IN, .timer_index = 0, .timer_channel = 2, .ccr_offset = STM32_GTIM_CCR2_OFFSET, .masks = GTIM_SR_CC2IF | GTIM_SR_CC2OF }, { .gpio_out = GPIO_TIM1_CH1OUT, .gpio_in = GPIO_TIM1_CH1IN, .timer_index = 0, .timer_channel = 1, .ccr_offset = STM32_GTIM_CCR1_OFFSET, .masks = GTIM_SR_CC1IF | GTIM_SR_CC1OF }, { .gpio_out = GPIO_TIM4_CH2OUT, .gpio_in = GPIO_TIM4_CH2IN, .timer_index = 1, .timer_channel = 2, .ccr_offset = STM32_GTIM_CCR2_OFFSET, .masks = GTIM_SR_CC2IF | GTIM_SR_CC2OF }, { .gpio_out = GPIO_TIM4_CH3OUT, .gpio_in = GPIO_TIM4_CH3IN, .timer_index = 1, .timer_channel = 3, .ccr_offset = STM32_GTIM_CCR3_OFFSET, .masks = GTIM_SR_CC3IF | GTIM_SR_CC3OF }, { .gpio_out = GPIO_TIM12_CH1OUT, .gpio_in = GPIO_TIM12_CH1IN, .timer_index = 2, .timer_channel = 1, .ccr_offset = STM32_GTIM_CCR1_OFFSET, // TODO: need revision
+__EXPORT const timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = { { .gpio_out = GPIO_TIM1_CH4OUT, .gpio_in = GPIO_TIM1_CH4IN, .timer_index = 0, .timer_channel = 4, .ccr_offset = STM32_GTIM_CCR4_OFFSET, .masks = GTIM_SR_CC4IF
+		| GTIM_SR_CC4OF }, { .gpio_out = GPIO_TIM1_CH3OUT, .gpio_in = GPIO_TIM1_CH3IN, .timer_index = 0, .timer_channel = 3, .ccr_offset = STM32_GTIM_CCR3_OFFSET, .masks = GTIM_SR_CC3IF
+		| GTIM_SR_CC3OF }, { .gpio_out = GPIO_TIM1_CH2OUT, .gpio_in = GPIO_TIM1_CH2IN, .timer_index = 0, .timer_channel = 2, .ccr_offset = STM32_GTIM_CCR2_OFFSET, .masks = GTIM_SR_CC2IF
+		| GTIM_SR_CC2OF }, { .gpio_out = GPIO_TIM1_CH1OUT, .gpio_in = GPIO_TIM1_CH1IN, .timer_index = 0, .timer_channel = 1, .ccr_offset = STM32_GTIM_CCR1_OFFSET, .masks = GTIM_SR_CC1IF
+		| GTIM_SR_CC1OF }, { .gpio_out = GPIO_TIM4_CH2OUT, .gpio_in = GPIO_TIM4_CH2IN, .timer_index = 1, .timer_channel = 2, .ccr_offset = STM32_GTIM_CCR2_OFFSET, .masks = GTIM_SR_CC2IF
+		| GTIM_SR_CC2OF }, { .gpio_out = GPIO_TIM4_CH3OUT, .gpio_in = GPIO_TIM4_CH3IN, .timer_index = 1, .timer_channel = 3, .ccr_offset = STM32_GTIM_CCR3_OFFSET, .masks = GTIM_SR_CC3IF
+		| GTIM_SR_CC3OF }, { .gpio_out = GPIO_TIM12_CH1OUT, .gpio_in = GPIO_TIM12_CH1IN, .timer_index = 2, .timer_channel = 1, .ccr_offset = STM32_GTIM_CCR1_OFFSET, // TODO: need revision
 .masks = GTIM_SR_CC1IF | GTIM_SR_CC1OF // TODO: need revision
 }, { .gpio_out = GPIO_TIM12_CH2OUT, .gpio_in = GPIO_TIM12_CH2IN, .timer_index = 2, .timer_channel = 2, .ccr_offset = STM32_GTIM_CCR2_OFFSET, // TODO: need revision
 .masks = GTIM_SR_CC2IF | GTIM_SR_CC2OF // TODO: need revision
@@ -93,28 +99,28 @@ __EXPORT const struct io_timers_t led_pwm_timers[MAX_LED_TIMERS] = { { .base = S
 
 __EXPORT const struct timer_io_channels_t led_pwm_channels[MAX_TIMER_LED_CHANNELS] = { { .gpio_out = DRIVE_TYPE(LED_TIM3_CH4OUT), .gpio_in = 0, .timer_index = 0, .timer_channel = 4, .masks = POLARITY(4), }, { .gpio_out = DRIVE_TYPE(LED_TIM3_CH1OUT), .gpio_in = 0, .timer_index = 0, .timer_channel = 1, .masks = POLARITY(1), }, { .gpio_out = DRIVE_TYPE(LED_TIM3_CH2OUT), .gpio_in = 0, .timer_index = 0, .timer_channel = 2, .masks = POLARITY(2), },
 #if defined(BOARD_UI_LED_SWAP_RG)
-        {	
-	        .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH2OUT),
-	        .gpio_in = 0,
-	        .timer_index = 1,
-	        .timer_channel = 2,
-	        .masks = UI_POLARITY(2),
-        },
-        {	
-	        .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH1OUT),
-	        .gpio_in = 0,
-	        .timer_index = 1,
-	        .timer_channel = 1,
-	        .masks = UI_POLARITY(1),
-        },
-        {	
-	        .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH3OUT),
-	        .gpio_in = 0,
-	        .timer_index = 1,
-	        .timer_channel = 3,
-	        .masks = UI_POLARITY(3),
-        },
+		{	
+			.gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH2OUT),
+			.gpio_in = 0,
+			.timer_index = 1,
+			.timer_channel = 2,
+			.masks = UI_POLARITY(2),
+		},
+		{	
+			.gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH1OUT),
+			.gpio_in = 0,
+			.timer_index = 1,
+			.timer_channel = 1,
+			.masks = UI_POLARITY(1),
+		},
+		{	
+			.gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH3OUT),
+			.gpio_in = 0,
+			.timer_index = 1,
+			.timer_channel = 3,
+			.masks = UI_POLARITY(3),
+		},
 #else
-        { .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH1OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 1, .masks = UI_POLARITY(1), }, { .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH2OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 2, .masks = UI_POLARITY(2), }, { .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH3OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 3, .masks = UI_POLARITY(3), }
+		{ .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH1OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 1, .masks = UI_POLARITY(1), }, { .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH2OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 2, .masks = UI_POLARITY(2), }, { .gpio_out = UI_DRIVE_TYPE(UI_LED_TIM5_CH3OUT), .gpio_in = 0, .timer_index = 1, .timer_channel = 3, .masks = UI_POLARITY(3), }
 #endif
-        };
+		};

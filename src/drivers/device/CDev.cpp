@@ -48,8 +48,8 @@ namespace device
 {
 
 CDev::CDev(const char *name, const char *devname) :
-		    Device(name),
-		    _devname(devname)
+			Device(name),
+			_devname(devname)
 {
 	DEVICE_DEBUG("CDev::CDev");
 	

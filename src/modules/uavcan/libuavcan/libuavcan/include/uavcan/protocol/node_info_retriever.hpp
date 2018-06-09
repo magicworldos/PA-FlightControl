@@ -113,10 +113,10 @@ private:
 		bool updated_since_last_attempt;        ///< Always false for unknown nodes
 		
 		Entry() :
-				    uptime_sec(0),
-				    num_attempts_made(0),
-				    request_needed(false),
-				    updated_since_last_attempt(false)
+					uptime_sec(0),
+					num_attempts_made(0),
+					request_needed(false),
+					updated_since_last_attempt(false)
 		{
 #if UAVCAN_DEBUG
 			StaticAssert<sizeof(Entry) <= 8>::check();
@@ -130,8 +130,8 @@ private:
 		const protocol::GetNodeInfo::Response& node_info;
 
 		NodeInfoRetrievedHandlerCaller(NodeID arg_node_id, const protocol::GetNodeInfo::Response& arg_node_info) :
-				    node_id(arg_node_id),
-				    node_info(arg_node_info)
+					node_id(arg_node_id),
+					node_info(arg_node_info)
 		{
 		}
 		
@@ -150,8 +150,8 @@ private:
 		Event event;
 
 		GenericHandlerCaller(void (INodeInfoListener::*arg_method)(Event), Event arg_event) :
-				    method(arg_method),
-				    event(arg_event)
+					method(arg_method),
+					event(arg_event)
 		{
 		}
 		
@@ -338,13 +338,13 @@ private:
 	
 public:
 	NodeInfoRetriever(INode& node) :
-			    NodeStatusMonitor(node),
-			    TimerBase(node),
-			    listeners_(node.getAllocator()),
-			    get_node_info_client_(node),
-			    request_interval_(MonotonicDuration::fromMSec(DefaultTimerIntervalMSec)),
-			    last_picked_node_(1),
-			    num_attempts_(DefaultNumRequestAttempts)
+				NodeStatusMonitor(node),
+				TimerBase(node),
+				listeners_(node.getAllocator()),
+				get_node_info_client_(node),
+				request_interval_(MonotonicDuration::fromMSec(DefaultTimerIntervalMSec)),
+				last_picked_node_(1),
+				num_attempts_(DefaultNumRequestAttempts)
 	{
 	}
 	

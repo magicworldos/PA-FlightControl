@@ -235,7 +235,13 @@ bool Ekf::gps_is_good(struct gps_message *gps)
 	}
 	
 	// if any user selected checks have failed, record the fail time
-	if (_gps_check_fail_status.flags.fix || (_gps_check_fail_status.flags.nsats && (_params.gps_check_mask & MASK_GPS_NSATS)) || (_gps_check_fail_status.flags.gdop && (_params.gps_check_mask & MASK_GPS_GDOP)) || (_gps_check_fail_status.flags.hacc && (_params.gps_check_mask & MASK_GPS_HACC)) || (_gps_check_fail_status.flags.vacc && (_params.gps_check_mask & MASK_GPS_VACC)) || (_gps_check_fail_status.flags.sacc && (_params.gps_check_mask & MASK_GPS_SACC)) || (_gps_check_fail_status.flags.hdrift && (_params.gps_check_mask & MASK_GPS_HDRIFT)) || (_gps_check_fail_status.flags.vdrift && (_params.gps_check_mask & MASK_GPS_VDRIFT)) || (_gps_check_fail_status.flags.hspeed && (_params.gps_check_mask & MASK_GPS_HSPD)) || (_gps_check_fail_status.flags.vspeed && (_params.gps_check_mask & MASK_GPS_VSPD)))
+	if (_gps_check_fail_status.flags.fix || (_gps_check_fail_status.flags.nsats && (_params.gps_check_mask & MASK_GPS_NSATS))
+			|| (_gps_check_fail_status.flags.gdop && (_params.gps_check_mask & MASK_GPS_GDOP)) || (_gps_check_fail_status.flags.hacc && (_params.gps_check_mask & MASK_GPS_HACC))
+			|| (_gps_check_fail_status.flags.vacc && (_params.gps_check_mask & MASK_GPS_VACC)) || (_gps_check_fail_status.flags.sacc && (_params.gps_check_mask & MASK_GPS_SACC))
+			|| (_gps_check_fail_status.flags.hdrift && (_params.gps_check_mask & MASK_GPS_HDRIFT))
+			|| (_gps_check_fail_status.flags.vdrift && (_params.gps_check_mask & MASK_GPS_VDRIFT))
+			|| (_gps_check_fail_status.flags.hspeed && (_params.gps_check_mask & MASK_GPS_HSPD))
+			|| (_gps_check_fail_status.flags.vspeed && (_params.gps_check_mask & MASK_GPS_VSPD)))
 	{
 		_last_gps_fail_us = _time_last_imu;
 	}

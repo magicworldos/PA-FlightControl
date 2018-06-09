@@ -491,22 +491,22 @@ void usage()
 } //namespace ends
 
 BMI055::BMI055(const char *name, const char *devname, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency, enum Rotation rotation) :
-		    SPI(name, devname, bus, device, mode, frequency),
-		    _whoami(0),
-		    _call { },
-		    _call_interval(0),
-		    _dlpf_freq(0),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "bmi055_read")),
-		    _bad_transfers(perf_alloc(PC_COUNT, "bmi055_bad_transfers")),
-		    _bad_registers(perf_alloc(PC_COUNT, "bmi055_bad_registers")),
-		    _good_transfers(perf_alloc(PC_COUNT, "bmi055_good_transfers")),
-		    _reset_retries(perf_alloc(PC_COUNT, "bmi055_reset_retries")),
-		    _duplicates(perf_alloc(PC_COUNT, "bmi055_duplicates")),
-		    _controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency")),
-		    _register_wait(0),
-		    _reset_wait(0),
-		    _rotation(rotation),
-		    _checked_next(0)
+			SPI(name, devname, bus, device, mode, frequency),
+			_whoami(0),
+			_call { },
+			_call_interval(0),
+			_dlpf_freq(0),
+			_sample_perf(perf_alloc(PC_ELAPSED, "bmi055_read")),
+			_bad_transfers(perf_alloc(PC_COUNT, "bmi055_bad_transfers")),
+			_bad_registers(perf_alloc(PC_COUNT, "bmi055_bad_registers")),
+			_good_transfers(perf_alloc(PC_COUNT, "bmi055_good_transfers")),
+			_reset_retries(perf_alloc(PC_COUNT, "bmi055_reset_retries")),
+			_duplicates(perf_alloc(PC_COUNT, "bmi055_duplicates")),
+			_controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency")),
+			_register_wait(0),
+			_reset_wait(0),
+			_rotation(rotation),
+			_checked_next(0)
 {
 	
 }

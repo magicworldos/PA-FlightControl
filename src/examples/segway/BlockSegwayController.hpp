@@ -11,11 +11,11 @@ class BlockSegwayController: public control::BlockUorbEnabledAutopilot
 {
 public:
 	BlockSegwayController() :
-			    BlockUorbEnabledAutopilot(nullptr, "SEG"),
-			    th2v(this, "TH2V"),
-			    q2v(this, "Q2V"),
-			    _attPoll(),
-			    _timeStamp(0)
+				BlockUorbEnabledAutopilot(nullptr, "SEG"),
+				th2v(this, "TH2V"),
+				q2v(this, "Q2V"),
+				_attPoll(),
+				_timeStamp(0)
 	{
 		_attPoll.fd = _att.getHandle();
 		_attPoll.events = POLLIN;

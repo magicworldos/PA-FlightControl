@@ -43,7 +43,7 @@ class UAVCAN_EXPORT TransportStatsProvider: Noncopyable
 	
 public:
 	explicit TransportStatsProvider(INode& node) :
-			    srv_(node)
+				srv_(node)
 	{
 	}
 	

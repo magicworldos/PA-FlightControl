@@ -286,7 +286,7 @@ static int getopt_internal(int argc, char **argv, const char *shortopts, const G
 						/* we have ambiguous options */
 						if (opterr)
 							fprintf(stderr, "%s: option `%s' is ambiguous "
-							        "(could be `--%s' or `--%s')\n", argv[0], argv[optind], longopts[longopt_match].name, longopts[optindex].name);
+									"(could be `--%s' or `--%s')\n", argv[0], argv[optind], longopts[longopt_match].name, longopts[optindex].name);
 						
 						return (optopt = '?');
 					}

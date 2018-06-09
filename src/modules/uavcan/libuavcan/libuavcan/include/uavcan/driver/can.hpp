@@ -31,7 +31,7 @@ struct UAVCAN_EXPORT CanFrame
 	static const uint32_t FlagEFF = 1U << 31;                  ///< Extended frame format
 	static const uint32_t FlagRTR = 1U << 30;                  ///< Remote transmission request
 	static const uint32_t FlagERR = 1U << 29;                  ///< Error frame
-	        
+			
 	static const uint8_t MaxDataLen = 8;
 
 	uint32_t id;                ///< CAN ID with flags (above)
@@ -39,15 +39,15 @@ struct UAVCAN_EXPORT CanFrame
 	uint8_t dlc;                ///< Data Length Code
 	
 	CanFrame() :
-			    id(0),
-			    dlc(0)
+				id(0),
+				dlc(0)
 	{
 		fill(data, data + MaxDataLen, uint8_t(0));
 	}
 	
 	CanFrame(uint32_t can_id, const uint8_t* can_data, uint8_t data_len) :
-			    id(can_id),
-			    dlc((data_len > MaxDataLen) ? MaxDataLen : data_len)
+				id(can_id),
+				dlc((data_len > MaxDataLen) ? MaxDataLen : data_len)
 	{
 		UAVCAN_ASSERT(can_data != UAVCAN_NULLPTR);
 		UAVCAN_ASSERT(data_len == dlc);
@@ -115,8 +115,8 @@ struct UAVCAN_EXPORT CanFilterConfig
 	}
 	
 	CanFilterConfig() :
-			    id(0),
-			    mask(0)
+				id(0),
+				mask(0)
 	{
 	}
 };
@@ -131,8 +131,8 @@ struct UAVCAN_EXPORT CanSelectMasks
 	uint8_t write;
 
 	CanSelectMasks() :
-			    read(0),
-			    write(0)
+				read(0),
+				write(0)
 	{
 	}
 };

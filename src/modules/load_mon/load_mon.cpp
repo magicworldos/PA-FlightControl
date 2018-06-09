@@ -124,17 +124,17 @@ private:
 
 LoadMon::LoadMon() :
 #ifdef __PX4_NUTTX
-		    _task_stack_info
-		    {},
-		    _stack_task_index(0),
-		    _task_stack_info_pub(nullptr),
+			_task_stack_info
+			{},
+			_stack_task_index(0),
+			_task_stack_info_pub(nullptr),
 #endif
-		    _work { },
-		    _cpuload { },
-		    _cpuload_pub(nullptr),
-		    _last_idle_time(0),
-		    _stack_perf(perf_alloc(PC_ELAPSED, "stack_check")),
-		    _stack_check_enabled(false)
+			_work { },
+			_cpuload { },
+			_cpuload_pub(nullptr),
+			_last_idle_time(0),
+			_stack_perf(perf_alloc(PC_ELAPSED, "stack_check")),
+			_stack_check_enabled(false)
 {
 	// Enable stack checking by param
 	param_t param_stack_check = param_find("SYS_STCK_EN");

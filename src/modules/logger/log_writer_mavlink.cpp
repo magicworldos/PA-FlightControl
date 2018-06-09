@@ -45,7 +45,7 @@ namespace logger
 {
 
 LogWriterMavlink::LogWriterMavlink(unsigned int queue_size) :
-		    _queue_size(queue_size)
+			_queue_size(queue_size)
 {
 	_ulog_stream_data.length = 0;
 }

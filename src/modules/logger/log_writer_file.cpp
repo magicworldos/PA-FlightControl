@@ -49,9 +49,9 @@ namespace logger
 constexpr size_t LogWriterFile::_min_write_chunk;
 
 LogWriterFile::LogWriterFile(size_t buffer_size) :
-		    //We always write larger chunks (orb messages) to the buffer, so the buffer
-		    //needs to be larger than the minimum write chunk (300 is somewhat arbitrary)
-		    _buffer_size(math::max(buffer_size, _min_write_chunk + 300))
+			//We always write larger chunks (orb messages) to the buffer, so the buffer
+			//needs to be larger than the minimum write chunk (300 is somewhat arbitrary)
+			_buffer_size(math::max(buffer_size, _min_write_chunk + 300))
 {
 	pthread_mutex_init(&_mtx, nullptr);
 	pthread_cond_init(&_cv, nullptr);
@@ -392,7 +392,7 @@ int LogWriterFile::write(void *ptr, size_t size, uint64_t dropout_start)
 void LogWriterFile::write_no_check(void *ptr, size_t size)
 {
 	size_t n = _buffer_size - _head;	// bytes to end of the buffer
-	        
+			
 	uint8_t *buffer_c = reinterpret_cast<uint8_t *>(ptr);
 	
 	if (size > n)

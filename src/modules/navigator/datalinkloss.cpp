@@ -57,18 +57,18 @@
 #define DELAY_SIGMA	0.01f
 
 DataLinkLoss::DataLinkLoss(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _param_commsholdwaittime(this, "CH_T"),
-		    _param_commsholdlat(this, "CH_LAT"),
-		    _param_commsholdlon(this, "CH_LON"),
-		    _param_commsholdalt(this, "CH_ALT"),
-		    _param_airfieldhomelat(this, "NAV_AH_LAT", false),
-		    _param_airfieldhomelon(this, "NAV_AH_LON", false),
-		    _param_airfieldhomealt(this, "NAV_AH_ALT", false),
-		    _param_airfieldhomewaittime(this, "AH_T"),
-		    _param_numberdatalinklosses(this, "N"),
-		    _param_skipcommshold(this, "CHSK"),
-		    _dll_state(DLL_STATE_NONE)
+			MissionBlock(navigator, name),
+			_param_commsholdwaittime(this, "CH_T"),
+			_param_commsholdlat(this, "CH_LAT"),
+			_param_commsholdlon(this, "CH_LON"),
+			_param_commsholdalt(this, "CH_ALT"),
+			_param_airfieldhomelat(this, "NAV_AH_LAT", false),
+			_param_airfieldhomelon(this, "NAV_AH_LON", false),
+			_param_airfieldhomealt(this, "NAV_AH_ALT", false),
+			_param_airfieldhomewaittime(this, "AH_T"),
+			_param_numberdatalinklosses(this, "N"),
+			_param_skipcommshold(this, "CHSK"),
+			_dll_state(DLL_STATE_NONE)
 {
 	/* initial reset */
 	on_inactive();

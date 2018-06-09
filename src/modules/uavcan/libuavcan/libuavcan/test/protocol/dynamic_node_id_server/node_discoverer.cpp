@@ -28,7 +28,7 @@ public:
 		bool committed;
 
 		NodeInfo() :
-				    committed(false)
+					committed(false)
 		{
 		}
 	};
@@ -37,7 +37,7 @@ public:
 	std::vector<NodeInfo> nodes;
 
 	NodeDiscoveryHandler() :
-			    can_discover(false)
+				can_discover(false)
 	{
 	}
 	

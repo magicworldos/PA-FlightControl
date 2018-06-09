@@ -59,8 +59,8 @@
 //#define debug(fmt, args...)	syslog(fmt "\n", ##args)
 
 MixerGroup::MixerGroup(ControlCallback control_cb, uintptr_t cb_handle) :
-		    Mixer(control_cb, cb_handle),
-		    _first(nullptr)
+			Mixer(control_cb, cb_handle),
+			_first(nullptr)
 {
 }
 

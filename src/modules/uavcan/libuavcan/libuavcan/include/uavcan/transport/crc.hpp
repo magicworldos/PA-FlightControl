@@ -40,7 +40,7 @@ public:
 	};
 
 	TransferCRC() :
-			    value_(0xFFFFU)
+				value_(0xFFFFU)
 	{
 	}
 	

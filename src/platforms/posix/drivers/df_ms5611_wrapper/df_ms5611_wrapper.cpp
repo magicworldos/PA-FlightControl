@@ -99,10 +99,10 @@ private:
 };
 
 DfMS5611Wrapper::DfMS5611Wrapper() :
-		    MS5611(BARO_DEVICE_PATH),
-		    _baro_topic(nullptr),
-		    _baro_orb_class_instance(-1),
-		    _baro_sample_perf(perf_alloc(PC_ELAPSED, "df_baro_read"))
+			MS5611(BARO_DEVICE_PATH),
+			_baro_topic(nullptr),
+			_baro_orb_class_instance(-1),
+			_baro_sample_perf(perf_alloc(PC_ELAPSED, "df_baro_read"))
 {
 }
 

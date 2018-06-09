@@ -228,7 +228,8 @@ int AK8963::run_self_test()
 	// Check if the measurements are in reasonable range (see the data sheet)
 	int passed_test = -1;
 	
-	if (in_range(ak8963_report.x * _mag_sens_adj[0], -200.0, 200.0) && in_range(ak8963_report.y * _mag_sens_adj[1], -200.0, 200.0) && in_range(ak8963_report.z * _mag_sens_adj[2], -3200.0, -800.0))
+	if (in_range(ak8963_report.x * _mag_sens_adj[0], -200.0, 200.0) && in_range(ak8963_report.y * _mag_sens_adj[1], -200.0, 200.0)
+			&& in_range(ak8963_report.z * _mag_sens_adj[2], -3200.0, -800.0))
 	{
 		DF_LOG_INFO("Selftest passed!");
 		passed_test = 0;

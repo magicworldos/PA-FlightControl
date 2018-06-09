@@ -170,22 +170,22 @@ extern "C" __EXPORT int oreoled_main(int argc, char *argv[]);
 
 /* constructor */
 OREOLED::OREOLED(int bus, int i2c_addr, bool autoupdate, bool alwaysupdate) :
-		    I2C("oreoled", OREOLED0_DEVICE_PATH, bus, i2c_addr, 100000),
-		    _work { },
-		    _num_healthy(0),
-		    _num_inboot(0),
-		    _cmd_queue(nullptr),
-		    _last_gencall(0),
-		    _autoupdate(autoupdate),
-		    _alwaysupdate(alwaysupdate),
-		    _is_bootloading(false),
-		    _is_ready(false),
-		    _fw_checksum(0x0000),
-		    _call_perf(perf_alloc(PC_ELAPSED, "oreoled_call")),
-		    _gcall_perf(perf_alloc(PC_ELAPSED, "oreoled_gcall")),
-		    _probe_perf(perf_alloc(PC_ELAPSED, "oreoled_probe")),
-		    _comms_errors(perf_alloc(PC_COUNT, "oreoled_comms_errors")),
-		    _reply_errors(perf_alloc(PC_COUNT, "oreoled_reply_errors"))
+			I2C("oreoled", OREOLED0_DEVICE_PATH, bus, i2c_addr, 100000),
+			_work { },
+			_num_healthy(0),
+			_num_inboot(0),
+			_cmd_queue(nullptr),
+			_last_gencall(0),
+			_autoupdate(autoupdate),
+			_alwaysupdate(alwaysupdate),
+			_is_bootloading(false),
+			_is_ready(false),
+			_fw_checksum(0x0000),
+			_call_perf(perf_alloc(PC_ELAPSED, "oreoled_call")),
+			_gcall_perf(perf_alloc(PC_ELAPSED, "oreoled_gcall")),
+			_probe_perf(perf_alloc(PC_ELAPSED, "oreoled_probe")),
+			_comms_errors(perf_alloc(PC_COUNT, "oreoled_comms_errors")),
+			_reply_errors(perf_alloc(PC_COUNT, "oreoled_reply_errors"))
 {
 	/* initialise to unhealthy */
 	memset(_healthy, 0, sizeof(_healthy));
@@ -776,7 +776,8 @@ int OREOLED::bootloader_ping(int led_num)
 		transfer(boot_cmd.buff, boot_cmd.num_bytes, reply, 5);
 		
 		/* Check the response */
-		if (reply[1] == OREOLED_BASE_I2C_ADDR + boot_cmd.led_num && reply[2] == OREOLED_BOOT_CMD_PING && reply[3] == OREOLED_BOOT_CMD_PING_NONCE && reply[4] == boot_cmd.buff[boot_cmd.num_bytes - 1])
+		if (reply[1] == OREOLED_BASE_I2C_ADDR + boot_cmd.led_num && reply[2] == OREOLED_BOOT_CMD_PING && reply[3] == OREOLED_BOOT_CMD_PING_NONCE
+				&& reply[4] == boot_cmd.buff[boot_cmd.num_bytes - 1])
 		{
 			warnx("bl ping OK from LED %i", boot_cmd.led_num);
 			ret = OK;
@@ -837,7 +838,8 @@ uint8_t OREOLED::bootloader_version(int led_num)
 		transfer(boot_cmd.buff, boot_cmd.num_bytes, reply, 5);
 		
 		/* Check the response */
-		if (reply[1] == OREOLED_BASE_I2C_ADDR + boot_cmd.led_num && reply[2] == OREOLED_BOOT_CMD_BL_VER && reply[3] == OREOLED_BOOT_SUPPORTED_VER && reply[4] == boot_cmd.buff[boot_cmd.num_bytes - 1])
+		if (reply[1] == OREOLED_BASE_I2C_ADDR + boot_cmd.led_num && reply[2] == OREOLED_BOOT_CMD_BL_VER && reply[3] == OREOLED_BOOT_SUPPORTED_VER
+				&& reply[4] == boot_cmd.buff[boot_cmd.num_bytes - 1])
 		{
 			warnx("bl ver from LED %i = %i", boot_cmd.led_num, reply[3]);
 			ret = reply[3];

@@ -51,7 +51,7 @@ class AK8963: public MagSensor
 {
 public:
 	AK8963(const char *device_path) :
-			    MagSensor(device_path, AK8963_MEASURE_INTERVAL_US)
+				MagSensor(device_path, AK8963_MEASURE_INTERVAL_US)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_AK8963;
 		m_id.dev_id_s.address = AK8963_SLAVE_ADDRESS;

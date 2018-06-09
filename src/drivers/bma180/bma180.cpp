@@ -232,16 +232,16 @@ private:
 };
 
 BMA180::BMA180(int bus, uint32_t device) :
-		    SPI("BMA180", ACCEL_DEVICE_PATH, bus, device, SPIDEV_MODE3, 8000000),
-		    _call_interval(0),
-		    _reports(nullptr),
-		    _accel_range_scale(0.0f),
-		    _accel_range_m_s2(0.0f),
-		    _accel_topic(nullptr),
-		    _class_instance(-1),
-		    _current_lowpass(0),
-		    _current_range(0),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "bma180_read"))
+			SPI("BMA180", ACCEL_DEVICE_PATH, bus, device, SPIDEV_MODE3, 8000000),
+			_call_interval(0),
+			_reports(nullptr),
+			_accel_range_scale(0.0f),
+			_accel_range_m_s2(0.0f),
+			_accel_topic(nullptr),
+			_class_instance(-1),
+			_current_lowpass(0),
+			_current_range(0),
+			_sample_perf(perf_alloc(PC_ELAPSED, "bma180_read"))
 {
 	_device_id.devid_s.devtype = DRV_ACC_DEVTYPE_BMA180;
 	

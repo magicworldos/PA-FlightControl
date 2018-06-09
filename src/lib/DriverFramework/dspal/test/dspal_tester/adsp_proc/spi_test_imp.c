@@ -136,7 +136,7 @@ int mpu_spi_get_reg(int fd, int reg, uint8_t* val)
 	}
 	
 	spiTxBuf[0] = reg | 0x80; //register high bit=1 for read
-	        
+			
 	read_write.read_buffer = spiRxBuf;
 	read_write.read_buffer_length = 2;
 	read_write.write_buffer = spiTxBuf;
@@ -323,7 +323,7 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	if (result == SUCCESS)
 	{
 		LOG_ERR("error: SPI_IOCTL_RDWR transfer overly large data should "
-		        "have failed but didn't. ");
+				"have failed but didn't. ");
 		goto exit;
 	}
 	

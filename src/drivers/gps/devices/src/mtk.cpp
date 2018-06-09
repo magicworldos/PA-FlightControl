@@ -46,8 +46,8 @@
 #include <ctime>
 
 GPSDriverMTK::GPSDriverMTK(GPSCallbackPtr callback, void *callback_user, struct vehicle_gps_position_s *gps_position) :
-		    GPSHelper(callback, callback_user),
-		    _gps_position(gps_position)
+			GPSHelper(callback, callback_user),
+			_gps_position(gps_position)
 {
 	decodeInit();
 }
@@ -56,7 +56,7 @@ int GPSDriverMTK::configure(unsigned &baudrate, OutputMode output_mode)
 {
 	if (output_mode != OutputMode::GPS)
 	{
-		GPS_WARN("MTK: Unsupported Output Mode %i", (int )output_mode);
+		GPS_WARN("MTK: Unsupported Output Mode %i", (int) output_mode);
 		return -1;
 	}
 	
@@ -104,8 +104,7 @@ int GPSDriverMTK::configure(unsigned &baudrate, OutputMode output_mode)
 	
 	return 0;
 	
-	errout:
-	GPS_WARN("mtk: config write failed");
+	errout: GPS_WARN("mtk: config write failed");
 	return -1;
 }
 
@@ -240,7 +239,7 @@ void GPSDriverMTK::handleMessage(gps_mtk_packet_t &packet)
 	{
 		_gps_position->lat = packet.latitude * 10; // from degrees*1e6 to degrees*1e7
 		_gps_position->lon = packet.longitude * 10; // from degrees*1e6 to degrees*1e7
-		        
+				
 	}
 	else if (_mtk_revision == 19)
 	{

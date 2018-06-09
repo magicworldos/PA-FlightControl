@@ -44,7 +44,8 @@ float t44 = t17 - t36;
 P[0][0] = rotVarX * t2 * t9 * t10 * 0.25f + rotVarY * t4 * t9 * t10 * 0.25f + rotVarZ * t5 * t9 * t10 * 0.25f;
 P[0][1] = t22;
 P[0][2] = t35 + rotX * rotVarX * t3 * t11 * (t15 - rotX * rotY * t10 * t12 * 0.5f) * 0.5f - rotY * rotVarY * t3 * t11 * t30 * 0.5f;
-P[0][3] = rotX * rotVarX * t3 * t11 * (t16 - rotX * rotZ * t10 * t12 * 0.5f) * 0.5f + rotY * rotVarY * t3 * t11 * (t17 - rotY * rotZ * t10 * t12 * 0.5f) * 0.5f - rotZ * rotVarZ * t3 * t11 * t33 * 0.5f;
+P[0][3] = rotX * rotVarX * t3 * t11 * (t16 - rotX * rotZ * t10 * t12 * 0.5f) * 0.5f + rotY * rotVarY * t3 * t11 * (t17 - rotY * rotZ * t10 * t12 * 0.5f) * 0.5f
+		- rotZ * rotVarZ * t3 * t11 * t33 * 0.5f;
 P[1][0] = t22;
 P[1][1] = rotVarX * (t19 * t19) + rotVarY * (t24 * t24) + rotVarZ * (t26 * t26);
 P[1][2] = rotVarZ * (t16 - t25) * (t17 - rotY * rotZ * t10 * t12 * 0.5f) - rotVarX * t19 * t28 - rotVarY * t28 * t30;

@@ -85,10 +85,10 @@ class Replay;
 char *Replay::_replay_file = nullptr;
 
 Replay::CompatSensorCombinedDtType::CompatSensorCombinedDtType(int gyro_integral_dt_offset_log, int gyro_integral_dt_offset_intern, int accelerometer_integral_dt_offset_log, int accelerometer_integral_dt_offset_intern) :
-		    _gyro_integral_dt_offset_log(gyro_integral_dt_offset_log),
-		    _gyro_integral_dt_offset_intern(gyro_integral_dt_offset_intern),
-		    _accelerometer_integral_dt_offset_log(accelerometer_integral_dt_offset_log),
-		    _accelerometer_integral_dt_offset_intern(accelerometer_integral_dt_offset_intern)
+			_gyro_integral_dt_offset_log(gyro_integral_dt_offset_log),
+			_gyro_integral_dt_offset_intern(gyro_integral_dt_offset_intern),
+			_accelerometer_integral_dt_offset_log(accelerometer_integral_dt_offset_log),
+			_accelerometer_integral_dt_offset_intern(accelerometer_integral_dt_offset_intern)
 {
 }
 
@@ -387,7 +387,10 @@ bool Replay::readAndAddSubscription(std::ifstream &file, uint16_t msg_size)
 				int accelerometer_integral_dt_offset_intern;
 				int unused;
 				
-				if (findFieldOffset(file_format, "gyro_integral_dt", gyro_integral_dt_offset_log, unused) && findFieldOffset(orb_meta->o_fields, "gyro_integral_dt", gyro_integral_dt_offset_intern, unused) && findFieldOffset(file_format, "accelerometer_integral_dt", accelerometer_integral_dt_offset_log, unused) && findFieldOffset(orb_meta->o_fields, "accelerometer_integral_dt", accelerometer_integral_dt_offset_intern, unused))
+				if (findFieldOffset(file_format, "gyro_integral_dt", gyro_integral_dt_offset_log, unused)
+						&& findFieldOffset(orb_meta->o_fields, "gyro_integral_dt", gyro_integral_dt_offset_intern, unused)
+						&& findFieldOffset(file_format, "accelerometer_integral_dt", accelerometer_integral_dt_offset_log, unused)
+						&& findFieldOffset(orb_meta->o_fields, "accelerometer_integral_dt", accelerometer_integral_dt_offset_intern, unused))
 				{
 					compat = new CompatSensorCombinedDtType(gyro_integral_dt_offset_log, gyro_integral_dt_offset_intern, accelerometer_integral_dt_offset_log, accelerometer_integral_dt_offset_intern);
 				}
@@ -635,7 +638,8 @@ bool Replay::nextDataMessage(std::ifstream &file, Subscription &subscription, in
 						}
 						else     //sanity check failed!
 						{
-							PX4_ERR("data message %s has wrong size %i (expected %i). Skipping", subscription.orb_meta->o_name, message_header.msg_size, subscription.orb_meta->o_size_no_padding + 2);
+							PX4_ERR("data message %s has wrong size %i (expected %i). Skipping", subscription.orb_meta->o_name, message_header.msg_size, subscription.orb_meta->o_size_no_padding
+											+ 2);
 							file.seekg(message_header.msg_size - sizeof(file_msg_id), ios::cur);
 						}
 						

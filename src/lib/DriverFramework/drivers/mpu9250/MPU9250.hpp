@@ -241,16 +241,16 @@ class MPU9250: public ImuSensor
 {
 public:
 	MPU9250(const char *device_path, bool mag_enabled = false) :
-			    ImuSensor(device_path, MPU9250_MEASURE_INTERVAL_US, mag_enabled), // true = mag is enabled
-			    _last_temp_c(0.0f),
-			    _temp_initialized(false),
-			    _mag_enabled(mag_enabled),
+				ImuSensor(device_path, MPU9250_MEASURE_INTERVAL_US, mag_enabled), // true = mag is enabled
+				_last_temp_c(0.0f),
+				_temp_initialized(false),
+				_mag_enabled(mag_enabled),
 #if defined(__DF_EDISON)
-			    _packets_per_cycle_filtered(4.0f), // The FIFO is supposed to run at 1kHz and we sample at 250Hz.
+				_packets_per_cycle_filtered(4.0f), // The FIFO is supposed to run at 1kHz and we sample at 250Hz.
 #else
-			    _packets_per_cycle_filtered(8.0f), // The FIFO is supposed to run at 8kHz and we sample at 1kHz.
+				_packets_per_cycle_filtered(8.0f), // The FIFO is supposed to run at 8kHz and we sample at 1kHz.
 #endif
-			    _mag(nullptr)
+				_mag(nullptr)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_MPU9250;
 		// TODO: does the WHOAMI make sense as an address?

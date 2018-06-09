@@ -150,19 +150,19 @@ private:
 extern "C" __EXPORT int bmp280_main(int argc, char *argv[]);
 
 BMP280::BMP280(bmp280::IBMP280 *interface, const char *path) :
-		    CDev("BMP280", path),
-		    _interface(interface),
-		    _running(false),
-		    _report_ticks(0),
-		    _reports(nullptr),
-		    _collect_phase(false),
-		    _msl_pressure(101325),
-		    _baro_topic(nullptr),
-		    _orb_class_instance(-1),
-		    _class_instance(-1),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "bmp280_read")),
-		    _measure_perf(perf_alloc(PC_ELAPSED, "bmp280_measure")),
-		    _comms_errors(perf_alloc(PC_COUNT, "bmp280_comms_errors"))
+			CDev("BMP280", path),
+			_interface(interface),
+			_running(false),
+			_report_ticks(0),
+			_reports(nullptr),
+			_collect_phase(false),
+			_msl_pressure(101325),
+			_baro_topic(nullptr),
+			_orb_class_instance(-1),
+			_class_instance(-1),
+			_sample_perf(perf_alloc(PC_ELAPSED, "bmp280_read")),
+			_measure_perf(perf_alloc(PC_ELAPSED, "bmp280_measure")),
+			_comms_errors(perf_alloc(PC_COUNT, "bmp280_comms_errors"))
 {
 	// work_cancel in stop_cycle called from the dtor will explode if we don't do this...
 	memset(&_work, 0, sizeof(_work));
@@ -570,7 +570,7 @@ int BMP280::collect()
 	
 	report.temperature = _T;
 	report.pressure = _P / 100.0f; // to mbar
-	        
+			
 	/* altitude calculations based on http://www.kansasflyer.org/index.asp?nav=Avi&sec=Alti&tab=Theory&pg=1 */
 
 	/* tropospheric properties (0-11km) for standard atmosphere */
@@ -640,18 +640,18 @@ struct bmp280_bus_option
 	BMP280 *dev;
 } bus_options[] = {
 #if defined(PX4_SPIDEV_EXT_BARO) && defined(PX4_SPI_BUS_EXT)
-        {	BMP280_BUS_SPI_EXTERNAL, "/dev/bmp280_spi_ext", &bmp280_spi_interface, PX4_SPI_BUS_EXT, PX4_SPIDEV_EXT_BARO, true, NULL},
+		{	BMP280_BUS_SPI_EXTERNAL, "/dev/bmp280_spi_ext", &bmp280_spi_interface, PX4_SPI_BUS_EXT, PX4_SPIDEV_EXT_BARO, true, NULL},
 #endif
 #ifdef PX4_SPIDEV_BARO
-        {	BMP280_BUS_SPI_INTERNAL, "/dev/bmp280_spi_int", &bmp280_spi_interface, PX4_SPI_BUS_SENSORS, PX4_SPIDEV_BARO, false, NULL},
+		{	BMP280_BUS_SPI_INTERNAL, "/dev/bmp280_spi_int", &bmp280_spi_interface, PX4_SPI_BUS_SENSORS, PX4_SPIDEV_BARO, false, NULL},
 #endif
 #ifdef PX4_I2C_OBDEV_BMP280
-        {	BMP280_BUS_I2C_INTERNAL, "/dev/bmp280_i2c_int", &bmp280_i2c_interface, PX4_I2C_BUS_EXPANSION, PX4_I2C_OBDEV_BMP280, false, NULL},
+		{	BMP280_BUS_I2C_INTERNAL, "/dev/bmp280_i2c_int", &bmp280_i2c_interface, PX4_I2C_BUS_EXPANSION, PX4_I2C_OBDEV_BMP280, false, NULL},
 #endif
 #if defined(PX4_I2C_BUS_EXPANSION) && defined(PX4_I2C_EXT_OBDEV_BMP280)
-        {	BMP280_BUS_I2C_EXTERNAL, "/dev/bmp280_i2c_ext", &bmp280_i2c_interface, PX4_I2C_BUS_EXPANSION, PX4_I2C_EXT_OBDEV_BMP280, true, NULL},
+		{	BMP280_BUS_I2C_EXTERNAL, "/dev/bmp280_i2c_ext", &bmp280_i2c_interface, PX4_I2C_BUS_EXPANSION, PX4_I2C_EXT_OBDEV_BMP280, true, NULL},
 #endif
-    };
+	};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 bool start_bus(struct bmp280_bus_option &bus);

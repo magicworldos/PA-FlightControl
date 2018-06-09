@@ -134,7 +134,7 @@ int test_file(int argc, char *argv[])
 			
 int fd = px4_open(PX4_ROOTFSDIR "/fs/microsd/testfile", O_TRUNC | O_WRONLY | O_CREAT);
 
-						warnx("testing unaligned writes - please wait..");
+									warnx("testing unaligned writes - please wait..");
 			
 			start = hrt_absolute_time();
 			
@@ -215,7 +215,7 @@ int fd = px4_open(PX4_ROOTFSDIR "/fs/microsd/testfile", O_TRUNC | O_WRONLY | O_C
 int ret = unlink(PX4_ROOTFSDIR "/fs/microsd/testfile");
 			fd = px4_open(PX4_ROOTFSDIR "/fs/microsd/testfile", O_TRUNC | O_WRONLY | O_CREAT);
 
-						warnx("testing aligned writes - please wait.. (CTRL^C to abort)");
+									warnx("testing aligned writes - please wait.. (CTRL^C to abort)");
 			
 			for (unsigned i = 0; i < iterations; i++)
 			{

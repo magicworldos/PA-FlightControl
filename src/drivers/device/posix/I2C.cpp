@@ -59,7 +59,7 @@ namespace device
 {
 
 I2C::I2C(const char *name, const char *devname, int bus, uint16_t address, uint32_t frequency) :
-		    CDev(name, devname)
+			CDev(name, devname)
 {
 	DEVICE_DEBUG("I2C::I2C name = %s devname = %s", name, devname);
 	// fill in _device_id fields for a I2C device

@@ -42,25 +42,25 @@
 #include "battery.h"
 
 Battery::Battery() :
-		    SuperBlock(nullptr, "BAT"),
-		    _param_v_empty(this, "V_EMPTY"),
-		    _param_v_full(this, "V_CHARGED"),
-		    _param_n_cells(this, "N_CELLS"),
-		    _param_capacity(this, "CAPACITY"),
-		    _param_v_load_drop(this, "V_LOAD_DROP"),
-		    _param_r_internal(this, "R_INTERNAL"),
-		    _param_low_thr(this, "LOW_THR"),
-		    _param_crit_thr(this, "CRIT_THR"),
-		    _param_emergency_thr(this, "EMERGEN_THR"),
-		    _voltage_filtered_v(-1.0f),
-		    _current_filtered_a(-1.0f),
-		    _discharged_mah(0.0f),
-		    _remaining_voltage(1.0f),
-		    _remaining_capacity(1.0f),
-		    _remaining(1.0f),
-		    _scale(1.0f),
-		    _warning(battery_status_s::BATTERY_WARNING_NONE),
-		    _last_timestamp(0)
+			SuperBlock(nullptr, "BAT"),
+			_param_v_empty(this, "V_EMPTY"),
+			_param_v_full(this, "V_CHARGED"),
+			_param_n_cells(this, "N_CELLS"),
+			_param_capacity(this, "CAPACITY"),
+			_param_v_load_drop(this, "V_LOAD_DROP"),
+			_param_r_internal(this, "R_INTERNAL"),
+			_param_low_thr(this, "LOW_THR"),
+			_param_crit_thr(this, "CRIT_THR"),
+			_param_emergency_thr(this, "EMERGEN_THR"),
+			_voltage_filtered_v(-1.0f),
+			_current_filtered_a(-1.0f),
+			_discharged_mah(0.0f),
+			_remaining_voltage(1.0f),
+			_remaining_capacity(1.0f),
+			_remaining(1.0f),
+			_scale(1.0f),
+			_warning(battery_status_s::BATTERY_WARNING_NONE),
+			_last_timestamp(0)
 {
 	/* load initial params */
 	updateParams();

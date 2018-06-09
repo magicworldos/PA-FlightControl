@@ -49,19 +49,19 @@
 #include <drivers/drv_pwm_input.h>
 
 LidarLitePWM::LidarLitePWM(const char *path, uint8_t rotation) :
-		    CDev("LidarLitePWM", path),
-		    _rotation(rotation),
-		    _work { },
-		    _reports(nullptr),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _pwmSub(-1),
-		    _pwm { },
-		    _distance_sensor_topic(nullptr),
-		    _range { },
-		    _sample_perf(perf_alloc(PC_ELAPSED, "ll40ls_pwm_read")),
-		    _read_errors(perf_alloc(PC_COUNT, "ll40ls_pwm_read_errors")),
-		    _sensor_zero_resets(perf_alloc(PC_COUNT, "ll40ls_pwm_zero_resets"))
+			CDev("LidarLitePWM", path),
+			_rotation(rotation),
+			_work { },
+			_reports(nullptr),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_pwmSub(-1),
+			_pwm { },
+			_distance_sensor_topic(nullptr),
+			_range { },
+			_sample_perf(perf_alloc(PC_ELAPSED, "ll40ls_pwm_read")),
+			_read_errors(perf_alloc(PC_COUNT, "ll40ls_pwm_read_errors")),
+			_sensor_zero_resets(perf_alloc(PC_COUNT, "ll40ls_pwm_zero_resets"))
 {
 }
 

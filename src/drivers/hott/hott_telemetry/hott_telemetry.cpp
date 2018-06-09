@@ -368,7 +368,8 @@ int hott_telemetry_main(int argc, char *argv[])
 		}
 		
 		thread_should_exit = false;
-		deamon_task = px4_task_spawn_cmd(daemon_name, SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT, 1500, hott_telemetry_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) NULL);
+		deamon_task = px4_task_spawn_cmd(daemon_name, SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT, 1500, hott_telemetry_thread_main,
+				(argv) ? (char * const *) &argv[2] : (char * const *) NULL);
 		exit(0);
 	}
 	

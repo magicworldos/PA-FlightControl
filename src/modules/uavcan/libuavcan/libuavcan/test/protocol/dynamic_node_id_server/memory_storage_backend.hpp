@@ -16,7 +16,7 @@ class MemoryStorageBackend: public uavcan::dynamic_node_id_server::IStorageBacke
 
 public:
 	MemoryStorageBackend() :
-			    fail_(false)
+				fail_(false)
 	{
 	}
 	

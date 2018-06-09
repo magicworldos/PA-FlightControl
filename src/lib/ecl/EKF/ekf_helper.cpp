@@ -1031,7 +1031,8 @@ void Ekf::get_ekf_gpos_accuracy(float *ekf_eph, float *ekf_epv, bool *dead_recko
 	// TODO - allow for baro drift in vertical position error
 	float hpos_err;
 	float vpos_err;
-	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos || (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
+	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos
+			|| (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
 	
 	if (vel_pos_aiding && _NED_origin_initialised)
 	{
@@ -1066,7 +1067,8 @@ void Ekf::get_ekf_lpos_accuracy(float *ekf_eph, float *ekf_epv, bool *dead_recko
 	// TODO - allow for baro drift in vertical position error
 	float hpos_err;
 	float vpos_err;
-	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos || (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
+	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos
+			|| (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
 	
 	if (vel_pos_aiding && _NED_origin_initialised)
 	{
@@ -1100,7 +1102,8 @@ void Ekf::get_ekf_vel_accuracy(float *ekf_evh, float *ekf_evv, bool *dead_reckon
 {
 	float hvel_err;
 	float vvel_err;
-	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos || (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
+	bool vel_pos_aiding = (_control_status.flags.gps || _control_status.flags.opt_flow || _control_status.flags.ev_pos
+			|| (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd));
 	
 	if (vel_pos_aiding && _NED_origin_initialised)
 	{
@@ -1242,8 +1245,10 @@ void Ekf::get_ekf_soln_status(uint16_t *status)
 {
 	ekf_solution_status soln_status { };
 	soln_status.flags.attitude = _control_status.flags.tilt_align && _control_status.flags.yaw_align && (_fault_status.value == 0);
-	soln_status.flags.velocity_horiz = (_control_status.flags.gps || _control_status.flags.ev_pos || _control_status.flags.opt_flow || (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd)) && (_fault_status.value == 0);
-	soln_status.flags.velocity_vert = (_control_status.flags.baro_hgt || _control_status.flags.ev_hgt || _control_status.flags.gps_hgt || _control_status.flags.rng_hgt) && (_fault_status.value == 0);
+	soln_status.flags.velocity_horiz = (_control_status.flags.gps || _control_status.flags.ev_pos || _control_status.flags.opt_flow
+			|| (_control_status.flags.fuse_beta && _control_status.flags.fuse_aspd)) && (_fault_status.value == 0);
+	soln_status.flags.velocity_vert = (_control_status.flags.baro_hgt || _control_status.flags.ev_hgt || _control_status.flags.gps_hgt || _control_status.flags.rng_hgt)
+			&& (_fault_status.value == 0);
 	soln_status.flags.pos_horiz_rel = (_control_status.flags.gps || _control_status.flags.ev_pos || _control_status.flags.opt_flow) && (_fault_status.value == 0);
 	soln_status.flags.pos_horiz_abs = (_control_status.flags.gps || _control_status.flags.ev_pos) && (_fault_status.value == 0);
 	soln_status.flags.pos_vert_abs = soln_status.flags.velocity_vert;
@@ -1372,9 +1377,12 @@ bool Ekf::global_position_is_valid()
 // return true if we are totally reliant on inertial dead-reckoning for position
 bool Ekf::inertial_dead_reckoning()
 {
-	bool velPosAiding = (_control_status.flags.gps || _control_status.flags.ev_pos) && ((_time_last_imu - _time_last_pos_fuse <= _params.no_aid_timeout_max) || (_time_last_imu - _time_last_vel_fuse <= _params.no_aid_timeout_max) || (_time_last_imu - _time_last_delpos_fuse <= _params.no_aid_timeout_max));
+	bool velPosAiding = (_control_status.flags.gps || _control_status.flags.ev_pos)
+			&& ((_time_last_imu - _time_last_pos_fuse <= _params.no_aid_timeout_max) || (_time_last_imu - _time_last_vel_fuse <= _params.no_aid_timeout_max)
+					|| (_time_last_imu - _time_last_delpos_fuse <= _params.no_aid_timeout_max));
 	bool optFlowAiding = _control_status.flags.opt_flow && (_time_last_imu - _time_last_of_fuse <= _params.no_aid_timeout_max);
-	bool airDataAiding = _control_status.flags.wind && (_time_last_imu - _time_last_arsp_fuse <= _params.no_aid_timeout_max) && (_time_last_imu - _time_last_beta_fuse <= _params.no_aid_timeout_max);
+	bool airDataAiding = _control_status.flags.wind && (_time_last_imu - _time_last_arsp_fuse <= _params.no_aid_timeout_max)
+			&& (_time_last_imu - _time_last_beta_fuse <= _params.no_aid_timeout_max);
 	
 	return !velPosAiding && !optFlowAiding && !airDataAiding;
 }
@@ -1551,7 +1559,8 @@ void Ekf::initialiseQuatCovariances(Vector3f &rot_vec_var)
 		P[0][0] = rot_vec_var(0) * t2 * t9 * t10 * 0.25f + rot_vec_var(1) * t4 * t9 * t10 * 0.25f + rot_vec_var(2) * t5 * t9 * t10 * 0.25f;
 		P[0][1] = t22;
 		P[0][2] = t35 + rotX * rot_vec_var(0) * t3 * t11 * (t15 - rotX * rotY * t10 * t12 * 0.5f) * 0.5f - rotY * rot_vec_var(1) * t3 * t11 * t30 * 0.5f;
-		P[0][3] = rotX * rot_vec_var(0) * t3 * t11 * (t16 - rotX * rotZ * t10 * t12 * 0.5f) * 0.5f + rotY * rot_vec_var(1) * t3 * t11 * (t17 - rotY * rotZ * t10 * t12 * 0.5f) * 0.5f - rotZ * rot_vec_var(2) * t3 * t11 * t33 * 0.5f;
+		P[0][3] = rotX * rot_vec_var(0) * t3 * t11 * (t16 - rotX * rotZ * t10 * t12 * 0.5f) * 0.5f
+				+ rotY * rot_vec_var(1) * t3 * t11 * (t17 - rotY * rotZ * t10 * t12 * 0.5f) * 0.5f - rotZ * rot_vec_var(2) * t3 * t11 * t33 * 0.5f;
 		P[1][0] = t22;
 		P[1][1] = rot_vec_var(0) * (t19 * t19) + rot_vec_var(1) * (t24 * t24) + rot_vec_var(2) * (t26 * t26);
 		P[1][2] = rot_vec_var(2) * (t16 - t25) * (t17 - rotY * rotZ * t10 * t12 * 0.5f) - rot_vec_var(0) * t19 * t28 - rot_vec_var(1) * t28 * t30;

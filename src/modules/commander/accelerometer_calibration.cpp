@@ -751,7 +751,8 @@ calibrate_return read_accelerometer_avg(int sensor_correction_sub, int (&subs)[m
 
 int mat_invert3(float src[3][3], float dst[3][3])
 {
-	float det = src[0][0] * (src[1][1] * src[2][2] - src[1][2] * src[2][1]) - src[0][1] * (src[1][0] * src[2][2] - src[1][2] * src[2][0]) + src[0][2] * (src[1][0] * src[2][1] - src[1][1] * src[2][0]);
+	float det = src[0][0] * (src[1][1] * src[2][2] - src[1][2] * src[2][1]) - src[0][1] * (src[1][0] * src[2][2] - src[1][2] * src[2][0])
+			+ src[0][2] * (src[1][0] * src[2][1] - src[1][1] * src[2][0]);
 	
 	if (fabsf(det) < FLT_EPSILON)
 	{

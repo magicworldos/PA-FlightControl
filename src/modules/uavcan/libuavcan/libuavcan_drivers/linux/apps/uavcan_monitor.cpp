@@ -27,7 +27,7 @@ class CLIColorizer
 	const CLIColor color_;
 public:
 	explicit CLIColorizer(CLIColor c) :
-			    color_(c)
+				color_(c)
 	{
 		std::printf("\033[%um", static_cast<unsigned>(color_));
 	}
@@ -116,8 +116,8 @@ class Monitor: public uavcan::NodeStatusMonitor
 	
 public:
 	explicit Monitor(uavcan_linux::NodePtr node) :
-			    uavcan::NodeStatusMonitor(*node),
-			    timer_(node->makeTimer(uavcan::MonotonicDuration::fromMSec(500), std::bind(&Monitor::redraw, this, std::placeholders::_1)))
+				uavcan::NodeStatusMonitor(*node),
+				timer_(node->makeTimer(uavcan::MonotonicDuration::fromMSec(500), std::bind(&Monitor::redraw, this, std::placeholders::_1)))
 	{
 	}
 };

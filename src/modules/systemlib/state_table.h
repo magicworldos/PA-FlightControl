@@ -52,9 +52,9 @@ public:
 	};
 
 	StateTable(Tran const *table, unsigned nStates, unsigned nSignals) :
-			    myState(0),
-			    myTable(table),
-			    myNsignals(nSignals)
+				myState(0),
+				myTable(table),
+				myNsignals(nSignals)
 	{
 	}
 	

@@ -47,7 +47,7 @@ namespace vmount
 {
 
 OutputRC::OutputRC(const OutputConfig &output_config) :
-		    OutputBase(output_config)
+			OutputBase(output_config)
 {
 }
 OutputRC::~OutputRC()

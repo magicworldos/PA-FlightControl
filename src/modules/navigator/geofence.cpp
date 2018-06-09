@@ -54,14 +54,14 @@
 #define GEOFENCE_RANGE_WARNING_LIMIT 5000000
 
 Geofence::Geofence(Navigator *navigator) :
-		    SuperBlock(navigator, "GF"),
-		    _navigator(navigator),
-		    _param_action(this, "GF_ACTION", false),
-		    _param_altitude_mode(this, "GF_ALTMODE", false),
-		    _param_source(this, "GF_SOURCE", false),
-		    _param_counter_threshold(this, "GF_COUNT", false),
-		    _param_max_hor_distance(this, "GF_MAX_HOR_DIST", false),
-		    _param_max_ver_distance(this, "GF_MAX_VER_DIST", false)
+			SuperBlock(navigator, "GF"),
+			_navigator(navigator),
+			_param_action(this, "GF_ACTION", false),
+			_param_altitude_mode(this, "GF_ALTMODE", false),
+			_param_source(this, "GF_SOURCE", false),
+			_param_counter_threshold(this, "GF_COUNT", false),
+			_param_max_hor_distance(this, "GF_MAX_HOR_DIST", false),
+			_param_max_ver_distance(this, "GF_MAX_VER_DIST", false)
 {
 	// we assume there's no concurrent fence update on startup
 	_updateFence();
@@ -430,14 +430,18 @@ bool Geofence::insidePolygon(const PolygonInfo &polygon, double lat, double lon,
 			break;
 		}
 		
-		if (temp_vertex_i.frame != MAV_FRAME_GLOBAL && temp_vertex_i.frame != MAV_FRAME_GLOBAL_INT && temp_vertex_i.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT && temp_vertex_i.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)
+		if (temp_vertex_i.frame != MAV_FRAME_GLOBAL && temp_vertex_i.frame != MAV_FRAME_GLOBAL_INT && temp_vertex_i.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT
+				&& temp_vertex_i.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)
 		{
 			// TODO: handle different frames
 			PX4_ERR("Frame type %i not supported", (int )temp_vertex_i.frame);
 			break;
 		}
 		
-		if (((double) temp_vertex_i.lon >= lon) != ((double) temp_vertex_j.lon >= lon) && (lat <= (double) (temp_vertex_j.lat - temp_vertex_i.lat) * (lon - (double) temp_vertex_i.lon) / (double) (temp_vertex_j.lon - temp_vertex_i.lon) + (double) temp_vertex_i.lat))
+		if (((double) temp_vertex_i.lon >= lon) != ((double) temp_vertex_j.lon >= lon)
+				&& (lat
+						<= (double) (temp_vertex_j.lat - temp_vertex_i.lat) * (lon - (double) temp_vertex_i.lon) / (double) (temp_vertex_j.lon - temp_vertex_i.lon)
+								+ (double) temp_vertex_i.lat))
 		{
 			c = !c;
 		}
@@ -457,7 +461,8 @@ bool Geofence::insideCircle(const PolygonInfo &polygon, double lat, double lon, 
 		return false;
 	}
 	
-	if (circle_point.frame != MAV_FRAME_GLOBAL && circle_point.frame != MAV_FRAME_GLOBAL_INT && circle_point.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT && circle_point.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)
+	if (circle_point.frame != MAV_FRAME_GLOBAL && circle_point.frame != MAV_FRAME_GLOBAL_INT && circle_point.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT
+			&& circle_point.frame != MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)
 	{
 		// TODO: handle different frames
 		PX4_ERR("Frame type %i not supported", (int )circle_point.frame);

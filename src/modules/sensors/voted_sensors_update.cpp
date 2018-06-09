@@ -52,8 +52,8 @@ using namespace DriverFramework;
 const double VotedSensorsUpdate::_msl_pressure = 101.325;
 
 VotedSensorsUpdate::VotedSensorsUpdate(const Parameters &parameters, bool hil_enabled) :
-		    _parameters(parameters),
-		    _hil_enabled(hil_enabled)
+			_parameters(parameters),
+			_hil_enabled(hil_enabled)
 {
 	memset(&_last_sensor_data, 0, sizeof(_last_sensor_data));
 	memset(&_last_accel_timestamp, 0, sizeof(_last_accel_timestamp));
@@ -1050,7 +1050,9 @@ bool VotedSensorsUpdate::check_failover(SensorData &sensor, const char *sensor_n
 			
 			if (failover_index != -1)
 			{
-				mavlink_log_emergency(&_mavlink_log_pub, "%s #%i fail: %s%s%s%s%s!", sensor_name, failover_index, ((flags & DataValidator::ERROR_FLAG_NO_DATA) ? " OFF" : ""), ((flags & DataValidator::ERROR_FLAG_STALE_DATA) ? " STALE" : ""), ((flags & DataValidator::ERROR_FLAG_TIMEOUT) ? " TIMEOUT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRCOUNT) ? " ERR CNT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRDENSITY) ? " ERR DNST" : ""));
+				mavlink_log_emergency(&_mavlink_log_pub, "%s #%i fail: %s%s%s%s%s!", sensor_name, failover_index, ((flags & DataValidator::ERROR_FLAG_NO_DATA) ? " OFF" : ""), (
+						(flags & DataValidator::ERROR_FLAG_STALE_DATA) ? " STALE" : ""), ((flags & DataValidator::ERROR_FLAG_TIMEOUT) ? " TIMEOUT" : ""), (
+						(flags & DataValidator::ERROR_FLAG_HIGH_ERRCOUNT) ? " ERR CNT" : ""), ((flags & DataValidator::ERROR_FLAG_HIGH_ERRDENSITY) ? " ERR DNST" : ""));
 				
 				// reduce priority of failed sensor to the minimum
 				sensor.priority[failover_index] = 1;
@@ -1240,7 +1242,8 @@ void VotedSensorsUpdate::calc_accel_inconsistency(sensor_preflight_s &preflt)
 			// calculate accel_diff_sum_sq for the specified sensor against the primary
 			for (unsigned axis_index = 0; axis_index < 3; axis_index++)
 			{
-				_accel_diff[axis_index][check_index] = 0.95f * _accel_diff[axis_index][check_index] + 0.05f * (_last_sensor_data[_accel.last_best_vote].accelerometer_m_s2[axis_index] - _last_sensor_data[sensor_index].accelerometer_m_s2[axis_index]);
+				_accel_diff[axis_index][check_index] = 0.95f * _accel_diff[axis_index][check_index]
+						+ 0.05f * (_last_sensor_data[_accel.last_best_vote].accelerometer_m_s2[axis_index] - _last_sensor_data[sensor_index].accelerometer_m_s2[axis_index]);
 				accel_diff_sum_sq += _accel_diff[axis_index][check_index] * _accel_diff[axis_index][check_index];
 				
 			}
@@ -1295,7 +1298,8 @@ void VotedSensorsUpdate::calc_gyro_inconsistency(sensor_preflight_s &preflt)
 			// calculate gyro_diff_sum_sq for the specified sensor against the primary
 			for (unsigned axis_index = 0; axis_index < 3; axis_index++)
 			{
-				_gyro_diff[axis_index][check_index] = 0.95f * _gyro_diff[axis_index][check_index] + 0.05f * (_last_sensor_data[_gyro.last_best_vote].gyro_rad[axis_index] - _last_sensor_data[sensor_index].gyro_rad[axis_index]);
+				_gyro_diff[axis_index][check_index] = 0.95f * _gyro_diff[axis_index][check_index]
+						+ 0.05f * (_last_sensor_data[_gyro.last_best_vote].gyro_rad[axis_index] - _last_sensor_data[sensor_index].gyro_rad[axis_index]);
 				gyro_diff_sum_sq += _gyro_diff[axis_index][check_index] * _gyro_diff[axis_index][check_index];
 				
 			}
@@ -1350,7 +1354,8 @@ void VotedSensorsUpdate::calc_mag_inconsistency(sensor_preflight_s &preflt)
 			// calculate mag_diff_sum_sq for the specified sensor against the primary
 			for (unsigned axis_index = 0; axis_index < 3; axis_index++)
 			{
-				_mag_diff[axis_index][check_index] = 0.95f * _mag_diff[axis_index][check_index] + 0.05f * (_last_sensor_data[_mag.last_best_vote].magnetometer_ga[axis_index] - _last_sensor_data[sensor_index].magnetometer_ga[axis_index]);
+				_mag_diff[axis_index][check_index] = 0.95f * _mag_diff[axis_index][check_index]
+						+ 0.05f * (_last_sensor_data[_mag.last_best_vote].magnetometer_ga[axis_index] - _last_sensor_data[sensor_index].magnetometer_ga[axis_index]);
 				mag_diff_sum_sq += _mag_diff[axis_index][check_index] * _mag_diff[axis_index][check_index];
 				
 			}

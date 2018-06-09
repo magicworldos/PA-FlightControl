@@ -49,9 +49,9 @@ void rc_channels_callback_function(const px4_rc_channels &msg)
 }
 
 SubscriberExample::SubscriberExample() :
-		    _n(_appState),
-		    _p_sub_interv("SUB_INTERV", PARAM_SUB_INTERV_DEFAULT),
-		    _p_test_float("SUB_TESTF", PARAM_SUB_TESTF_DEFAULT)
+			_n(_appState),
+			_p_sub_interv("SUB_INTERV", PARAM_SUB_INTERV_DEFAULT),
+			_p_test_float("SUB_TESTF", PARAM_SUB_TESTF_DEFAULT)
 {
 	/* Read the parameter back as example */
 	_p_sub_interv.update();

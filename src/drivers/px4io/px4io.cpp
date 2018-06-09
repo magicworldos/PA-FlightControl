@@ -458,57 +458,57 @@ PX4IO *g_dev = nullptr;
 }
 
 PX4IO::PX4IO(device::Device *interface) :
-		    CDev("px4io", PX4IO_DEVICE_PATH),
-		    _interface(interface),
-		    _hardware(0),
-		    _max_actuators(0),
-		    _max_controls(0),
-		    _max_rc_input(0),
-		    _max_relays(0),
-		    _max_transfer(16), /* sensible default */
-		    _update_interval(0),
-		    _rc_handling_disabled(false),
-		    _rc_chan_count(0),
-		    _rc_last_valid(0),
-		    _task(-1),
-		    _task_should_exit(false),
-		    _mavlink_log_pub(nullptr),
-		    _perf_update(perf_alloc(PC_ELAPSED, "io update")),
-		    _perf_write(perf_alloc(PC_ELAPSED, "io write")),
-		    _perf_sample_latency(perf_alloc(PC_ELAPSED, "io latency")),
-		    _status(0),
-		    _alarms(0),
-		    _last_written_arming_s(0),
-		    _last_written_arming_c(0),
-		    _t_actuator_controls_0(-1),
-		    _t_actuator_controls_1(-1),
-		    _t_actuator_controls_2(-1),
-		    _t_actuator_controls_3(-1),
-		    _t_actuator_armed(-1),
-		    _t_vehicle_control_mode(-1),
-		    _t_param(-1),
-		    _param_update_force(false),
-		    _t_vehicle_command(-1),
-		    _to_input_rc(nullptr),
-		    _to_outputs(nullptr),
-		    _to_servorail(nullptr),
-		    _to_safety(nullptr),
-		    _to_mixer_status(nullptr),
-		    _outputs { },
-		    _servorail_status { },
-		    _primary_pwm_device(false),
-		    _lockdown_override(false),
-		    _armed(false),
-		    _override_available(false),
-		    _cb_flighttermination(true),
-		    _in_esc_calibration_mode(false),
-		    _rssi_pwm_chan(0),
-		    _rssi_pwm_max(0),
-		    _rssi_pwm_min(0),
-		    _thermal_control(-1),
-		    _analog_rc_rssi_stable(false),
-		    _analog_rc_rssi_volt(-1.0f),
-		    _test_fmu_fail(false)
+			CDev("px4io", PX4IO_DEVICE_PATH),
+			_interface(interface),
+			_hardware(0),
+			_max_actuators(0),
+			_max_controls(0),
+			_max_rc_input(0),
+			_max_relays(0),
+			_max_transfer(16), /* sensible default */
+			_update_interval(0),
+			_rc_handling_disabled(false),
+			_rc_chan_count(0),
+			_rc_last_valid(0),
+			_task(-1),
+			_task_should_exit(false),
+			_mavlink_log_pub(nullptr),
+			_perf_update(perf_alloc(PC_ELAPSED, "io update")),
+			_perf_write(perf_alloc(PC_ELAPSED, "io write")),
+			_perf_sample_latency(perf_alloc(PC_ELAPSED, "io latency")),
+			_status(0),
+			_alarms(0),
+			_last_written_arming_s(0),
+			_last_written_arming_c(0),
+			_t_actuator_controls_0(-1),
+			_t_actuator_controls_1(-1),
+			_t_actuator_controls_2(-1),
+			_t_actuator_controls_3(-1),
+			_t_actuator_armed(-1),
+			_t_vehicle_control_mode(-1),
+			_t_param(-1),
+			_param_update_force(false),
+			_t_vehicle_command(-1),
+			_to_input_rc(nullptr),
+			_to_outputs(nullptr),
+			_to_servorail(nullptr),
+			_to_safety(nullptr),
+			_to_mixer_status(nullptr),
+			_outputs { },
+			_servorail_status { },
+			_primary_pwm_device(false),
+			_lockdown_override(false),
+			_armed(false),
+			_override_available(false),
+			_cb_flighttermination(true),
+			_in_esc_calibration_mode(false),
+			_rssi_pwm_chan(0),
+			_rssi_pwm_max(0),
+			_rssi_pwm_min(0),
+			_thermal_control(-1),
+			_analog_rc_rssi_stable(false),
+			_analog_rc_rssi_volt(-1.0f),
+			_test_fmu_fail(false)
 {
 	/* we need this potentially before it could be set in task_main */
 	g_dev = this;
@@ -2323,16 +2323,27 @@ int PX4IO::mixer_send(const char *buf, unsigned buflen, unsigned retries)
 void PX4IO::print_status(bool extended_status)
 {
 	/* basic configuration */
-	printf("protocol %u hardware %u bootloader %u buffer %uB crc 0x%04x%04x\n", io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_PROTOCOL_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_HARDWARE_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_BOOTLOADER_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_MAX_TRANSFER), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_CRC), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_CRC + 1));
+	printf("protocol %u hardware %u bootloader %u buffer %uB crc 0x%04x%04x\n", io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_PROTOCOL_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_HARDWARE_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_BOOTLOADER_VERSION), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_MAX_TRANSFER), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_CRC), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_CRC
+																																																																																																					+ 1));
 	printf("%u controls %u actuators %u R/C inputs %u analog inputs %u relays\n", io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_CONTROL_COUNT), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_ACTUATOR_COUNT), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_RC_INPUT_COUNT), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_ADC_INPUT_COUNT), io_reg_get(PX4IO_PAGE_CONFIG, PX4IO_P_CONFIG_RELAY_COUNT));
 	
 	/* status */
 	printf("%u bytes free\n", io_reg_get(PX4IO_PAGE_STATUS, PX4IO_P_STATUS_FREEMEM));
 	uint16_t flags = io_reg_get(PX4IO_PAGE_STATUS, PX4IO_P_STATUS_FLAGS);
 	uint16_t io_status_flags = flags;
-	printf("status 0x%04hx%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n", flags, ((flags & PX4IO_P_STATUS_FLAGS_OUTPUTS_ARMED) ? " OUTPUTS_ARMED" : ""), ((flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF) ? " SAFETY_OFF" : " SAFETY_SAFE"), ((flags & PX4IO_P_STATUS_FLAGS_OVERRIDE) ? " OVERRIDE" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_OK) ? " RC_OK" : " RC_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_RC_PPM) ? " PPM" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_DSM) ? " DSM" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_ST24) ? " ST24" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_SBUS) ? " SBUS" : ""), ((flags & PX4IO_P_STATUS_FLAGS_FMU_OK) ? " FMU_OK" : " FMU_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_RAW_PWM) ? " RAW_PWM_PASSTHROUGH" : ""), ((flags & PX4IO_P_STATUS_FLAGS_MIXER_OK) ? " MIXER_OK" : " MIXER_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_ARM_SYNC) ? " ARM_SYNC" : " ARM_NO_SYNC"), ((flags & PX4IO_P_STATUS_FLAGS_INIT_OK) ? " INIT_OK" : " INIT_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_FAILSAFE) ? " FAILSAFE" : ""));
+	printf("status 0x%04hx%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n", flags, ((flags & PX4IO_P_STATUS_FLAGS_OUTPUTS_ARMED) ? " OUTPUTS_ARMED" : ""), (
+			(flags & PX4IO_P_STATUS_FLAGS_SAFETY_OFF) ? " SAFETY_OFF" : " SAFETY_SAFE"), ((flags & PX4IO_P_STATUS_FLAGS_OVERRIDE) ? " OVERRIDE" : ""), (
+			(flags & PX4IO_P_STATUS_FLAGS_RC_OK) ? " RC_OK" : " RC_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_RC_PPM) ? " PPM" : ""), (
+			(flags & PX4IO_P_STATUS_FLAGS_RC_DSM) ? " DSM" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_ST24) ? " ST24" : ""), ((flags & PX4IO_P_STATUS_FLAGS_RC_SBUS) ? " SBUS" : ""), (
+			(flags & PX4IO_P_STATUS_FLAGS_FMU_OK) ? " FMU_OK" : " FMU_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_RAW_PWM) ? " RAW_PWM_PASSTHROUGH" : ""), (
+			(flags & PX4IO_P_STATUS_FLAGS_MIXER_OK) ? " MIXER_OK" : " MIXER_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_ARM_SYNC) ? " ARM_SYNC" : " ARM_NO_SYNC"), (
+			(flags & PX4IO_P_STATUS_FLAGS_INIT_OK) ? " INIT_OK" : " INIT_FAIL"), ((flags & PX4IO_P_STATUS_FLAGS_FAILSAFE) ? " FAILSAFE" : ""));
 	uint16_t alarms = io_reg_get(PX4IO_PAGE_STATUS, PX4IO_P_STATUS_ALARMS);
-	printf("alarms 0x%04hx%s%s%s%s%s%s%s%s\n", alarms, ((alarms & PX4IO_P_STATUS_ALARMS_VBATT_LOW) ? " VBATT_LOW" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_TEMPERATURE) ? " TEMPERATURE" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_SERVO_CURRENT) ? " SERVO_CURRENT" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_ACC_CURRENT) ? " ACC_CURRENT" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_FMU_LOST) ? " FMU_LOST" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_RC_LOST) ? " RC_LOST" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_PWM_ERROR) ? " PWM_ERROR" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_VSERVO_FAULT) ? " VSERVO_FAULT" : ""));
+	printf("alarms 0x%04hx%s%s%s%s%s%s%s%s\n", alarms, ((alarms & PX4IO_P_STATUS_ALARMS_VBATT_LOW) ? " VBATT_LOW" : ""), (
+			(alarms & PX4IO_P_STATUS_ALARMS_TEMPERATURE) ? " TEMPERATURE" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_SERVO_CURRENT) ? " SERVO_CURRENT" : ""), (
+			(alarms & PX4IO_P_STATUS_ALARMS_ACC_CURRENT) ? " ACC_CURRENT" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_FMU_LOST) ? " FMU_LOST" : ""), (
+			(alarms & PX4IO_P_STATUS_ALARMS_RC_LOST) ? " RC_LOST" : ""), ((alarms & PX4IO_P_STATUS_ALARMS_PWM_ERROR) ? " PWM_ERROR" : ""), (
+			(alarms & PX4IO_P_STATUS_ALARMS_VSERVO_FAULT) ? " VSERVO_FAULT" : ""));
 	/* now clear alarms */
 	io_reg_set(PX4IO_PAGE_STATUS, PX4IO_P_STATUS_ALARMS, 0xFFFF);
 	
@@ -2386,7 +2397,10 @@ void PX4IO::print_status(bool extended_status)
 	printf("\n");
 	
 	flags = io_reg_get(PX4IO_PAGE_RAW_RC_INPUT, PX4IO_P_RAW_RC_FLAGS);
-	printf("R/C flags: 0x%04hx%s%s%s%s%s\n", flags, (((io_status_flags & PX4IO_P_STATUS_FLAGS_RC_DSM) && (!(flags & PX4IO_P_RAW_RC_FLAGS_RC_DSM11))) ? " DSM10" : ""), (((io_status_flags & PX4IO_P_STATUS_FLAGS_RC_DSM) && (flags & PX4IO_P_RAW_RC_FLAGS_RC_DSM11)) ? " DSM11" : ""), ((flags & PX4IO_P_RAW_RC_FLAGS_FRAME_DROP) ? " FRAME_DROP" : ""), ((flags & PX4IO_P_RAW_RC_FLAGS_FAILSAFE) ? " FAILSAFE" : ""), ((flags & PX4IO_P_RAW_RC_FLAGS_MAPPING_OK) ? " MAPPING_OK" : ""));
+	printf("R/C flags: 0x%04hx%s%s%s%s%s\n", flags, (((io_status_flags & PX4IO_P_STATUS_FLAGS_RC_DSM) && (!(flags & PX4IO_P_RAW_RC_FLAGS_RC_DSM11))) ? " DSM10" : ""), (
+			((io_status_flags & PX4IO_P_STATUS_FLAGS_RC_DSM) && (flags & PX4IO_P_RAW_RC_FLAGS_RC_DSM11)) ? " DSM11" : ""), (
+			(flags & PX4IO_P_RAW_RC_FLAGS_FRAME_DROP) ? " FRAME_DROP" : ""), ((flags & PX4IO_P_RAW_RC_FLAGS_FAILSAFE) ? " FAILSAFE" : ""), (
+			(flags & PX4IO_P_RAW_RC_FLAGS_MAPPING_OK) ? " MAPPING_OK" : ""));
 	
 	if ((io_status_flags & PX4IO_P_STATUS_FLAGS_RC_PPM))
 	{
@@ -2423,9 +2437,16 @@ void PX4IO::print_status(bool extended_status)
 	
 	/* setup and state */
 	uint16_t features = io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_FEATURES);
-	printf("features 0x%04hx%s%s%s%s\n", features, ((features & PX4IO_P_SETUP_FEATURES_SBUS1_OUT) ? " S.BUS1_OUT" : ""), ((features & PX4IO_P_SETUP_FEATURES_SBUS2_OUT) ? " S.BUS2_OUT" : ""), ((features & PX4IO_P_SETUP_FEATURES_PWM_RSSI) ? " RSSI_PWM" : ""), ((features & PX4IO_P_SETUP_FEATURES_ADC_RSSI) ? " RSSI_ADC" : ""));
+	printf("features 0x%04hx%s%s%s%s\n", features, ((features & PX4IO_P_SETUP_FEATURES_SBUS1_OUT) ? " S.BUS1_OUT" : ""), (
+			(features & PX4IO_P_SETUP_FEATURES_SBUS2_OUT) ? " S.BUS2_OUT" : ""), ((features & PX4IO_P_SETUP_FEATURES_PWM_RSSI) ? " RSSI_PWM" : ""), (
+			(features & PX4IO_P_SETUP_FEATURES_ADC_RSSI) ? " RSSI_ADC" : ""));
 	uint16_t arming = io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_ARMING);
-	printf("arming 0x%04hx%s%s%s%s%s%s%s%s%s%s\n", arming, ((arming & PX4IO_P_SETUP_ARMING_FMU_ARMED) ? " FMU_ARMED" : " FMU_DISARMED"), ((arming & PX4IO_P_SETUP_ARMING_IO_ARM_OK) ? " IO_ARM_OK" : " IO_ARM_DENIED"), ((arming & PX4IO_P_SETUP_ARMING_MANUAL_OVERRIDE_OK) ? " MANUAL_OVERRIDE_OK" : ""), ((arming & PX4IO_P_SETUP_ARMING_FAILSAFE_CUSTOM) ? " FAILSAFE_CUSTOM" : ""), ((arming & PX4IO_P_SETUP_ARMING_INAIR_RESTART_OK) ? " INAIR_RESTART_OK" : ""), ((arming & PX4IO_P_SETUP_ARMING_ALWAYS_PWM_ENABLE) ? " ALWAYS_PWM_ENABLE" : ""), ((arming & PX4IO_P_SETUP_ARMING_LOCKDOWN) ? " LOCKDOWN" : ""), ((arming & PX4IO_P_SETUP_ARMING_FORCE_FAILSAFE) ? " FORCE_FAILSAFE" : ""), ((arming & PX4IO_P_SETUP_ARMING_TERMINATION_FAILSAFE) ? " TERM_FAILSAFE" : ""), ((arming & PX4IO_P_SETUP_ARMING_OVERRIDE_IMMEDIATE) ? " OVERRIDE_IMMEDIATE" : ""));
+	printf("arming 0x%04hx%s%s%s%s%s%s%s%s%s%s\n", arming, ((arming & PX4IO_P_SETUP_ARMING_FMU_ARMED) ? " FMU_ARMED" : " FMU_DISARMED"), (
+			(arming & PX4IO_P_SETUP_ARMING_IO_ARM_OK) ? " IO_ARM_OK" : " IO_ARM_DENIED"), ((arming & PX4IO_P_SETUP_ARMING_MANUAL_OVERRIDE_OK) ? " MANUAL_OVERRIDE_OK" : ""), (
+			(arming & PX4IO_P_SETUP_ARMING_FAILSAFE_CUSTOM) ? " FAILSAFE_CUSTOM" : ""), ((arming & PX4IO_P_SETUP_ARMING_INAIR_RESTART_OK) ? " INAIR_RESTART_OK" : ""), (
+			(arming & PX4IO_P_SETUP_ARMING_ALWAYS_PWM_ENABLE) ? " ALWAYS_PWM_ENABLE" : ""), ((arming & PX4IO_P_SETUP_ARMING_LOCKDOWN) ? " LOCKDOWN" : ""), (
+			(arming & PX4IO_P_SETUP_ARMING_FORCE_FAILSAFE) ? " FORCE_FAILSAFE" : ""), ((arming & PX4IO_P_SETUP_ARMING_TERMINATION_FAILSAFE) ? " TERM_FAILSAFE" : ""), (
+			(arming & PX4IO_P_SETUP_ARMING_OVERRIDE_IMMEDIATE) ? " OVERRIDE_IMMEDIATE" : ""));
 	printf("rates 0x%04x default %u alt %u sbus %u\n", io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_PWM_RATES), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_PWM_DEFAULTRATE), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_PWM_ALTRATE), io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_SBUS_RATE));
 	printf("debuglevel %u\n", io_reg_get(PX4IO_PAGE_SETUP, PX4IO_P_SETUP_SET_DEBUG));
 	
@@ -2447,7 +2468,12 @@ void PX4IO::print_status(bool extended_status)
 		{
 			unsigned base = PX4IO_P_RC_CONFIG_STRIDE * i;
 			uint16_t options = io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_OPTIONS);
-			printf("input %u min %u center %u max %u deadzone %u assigned %u options 0x%04hx%s%s\n", i, io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_MIN), io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_CENTER), io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_MAX), io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_DEADZONE), io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_ASSIGNMENT), options, ((options & PX4IO_P_RC_CONFIG_OPTIONS_ENABLED) ? " ENABLED" : ""), ((options & PX4IO_P_RC_CONFIG_OPTIONS_REVERSE) ? " REVERSED" : ""));
+			printf("input %u min %u center %u max %u deadzone %u assigned %u options 0x%04hx%s%s\n", i, io_reg_get(PX4IO_PAGE_RC_CONFIG, base + PX4IO_P_RC_CONFIG_MIN), io_reg_get(PX4IO_PAGE_RC_CONFIG, base
+																																															+ PX4IO_P_RC_CONFIG_CENTER), io_reg_get(PX4IO_PAGE_RC_CONFIG, base
+																																																											+ PX4IO_P_RC_CONFIG_MAX), io_reg_get(PX4IO_PAGE_RC_CONFIG, base
+																																																																							+ PX4IO_P_RC_CONFIG_DEADZONE), io_reg_get(PX4IO_PAGE_RC_CONFIG, base
+																																																																																				+ PX4IO_P_RC_CONFIG_ASSIGNMENT), options, (
+					(options & PX4IO_P_RC_CONFIG_OPTIONS_ENABLED) ? " ENABLED" : ""), ((options & PX4IO_P_RC_CONFIG_OPTIONS_REVERSE) ? " REVERSED" : ""));
 		}
 	}
 	
@@ -3962,7 +3988,7 @@ int px4io_main(int argc, char *argv[])
 	
 	out:
 	errx(1, "need a command, try 'start', 'stop', 'status', 'test', 'monitor', 'debug <level>',\n"
-	     "'recovery', 'limit <rate>', 'bind', 'checkcrc', 'safety_on', 'safety_off',\n"
-	     "'forceupdate', 'update', 'sbus1_out', 'sbus2_out', 'rssi_analog' or 'rssi_pwm',\n"
-	     "'test_fmu_fail', 'test_fmu_ok'");
+			"'recovery', 'limit <rate>', 'bind', 'checkcrc', 'safety_on', 'safety_off',\n"
+			"'forceupdate', 'update', 'sbus1_out', 'sbus2_out', 'rssi_analog' or 'rssi_pwm',\n"
+			"'test_fmu_fail', 'test_fmu_ok'");
 }

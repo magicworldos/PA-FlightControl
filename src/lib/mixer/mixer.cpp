@@ -59,9 +59,9 @@
 //#define debug(fmt, args...)	do { printf("[mixer] " fmt "\n", ##args); } while(0)
 
 Mixer::Mixer(ControlCallback control_cb, uintptr_t cb_handle) :
-		    _next(nullptr),
-		    _control_cb(control_cb),
-		    _cb_handle(cb_handle)
+			_next(nullptr),
+			_control_cb(control_cb),
+			_cb_handle(cb_handle)
 {
 }
 
@@ -191,7 +191,7 @@ bool Mixer::string_well_formed(const char *buf, unsigned &buflen)
 /****************************************************************************/
 
 NullMixer::NullMixer() :
-		    Mixer(nullptr, 0)
+			Mixer(nullptr, 0)
 {
 }
 

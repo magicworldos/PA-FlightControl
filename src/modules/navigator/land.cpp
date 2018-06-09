@@ -54,7 +54,7 @@
 #include "navigator.h"
 
 Land::Land(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name)
+			MissionBlock(navigator, name)
 {
 }
 

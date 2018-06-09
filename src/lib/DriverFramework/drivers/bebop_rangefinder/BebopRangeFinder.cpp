@@ -54,8 +54,8 @@
 using namespace DriverFramework;
 
 BebopRangeFinder::BebopRangeFinder(const char *device_path) :
-		    SPIDevObj("BebopRangeFinder", device_path, BEBOP_RANGEFINDER_CLASS_PATH, BEBOP_RANGEFINDER_MEASURE_INTERVAL_US),
-		    m_sonar_pin(0, 2, BEBOP_RANGEFINDER_BUFFER_LEN)
+			SPIDevObj("BebopRangeFinder", device_path, BEBOP_RANGEFINDER_CLASS_PATH, BEBOP_RANGEFINDER_MEASURE_INTERVAL_US),
+			m_sonar_pin(0, 2, BEBOP_RANGEFINDER_BUFFER_LEN)
 {
 	m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_BEBOP_RANGEFINDER;
 	m_id.dev_id_s.address = DRV_DF_DEVTYPE_BEBOP_RANGEFINDER;

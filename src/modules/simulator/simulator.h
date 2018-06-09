@@ -139,9 +139,9 @@ template<typename RType> class Report
 {
 public:
 	Report(int readers) :
-			    _readidx(0),
-			    _max_readers(readers),
-			    _report_len(sizeof(RType))
+				_readidx(0),
+				_max_readers(readers),
+				_report_len(sizeof(RType))
 	{
 		memset(_buf, 0, sizeof(_buf));
 		px4_sem_init(&_lock, 0, _max_readers);
@@ -223,15 +223,15 @@ public:
 		float y;
 		float z;
 		sample() :
-				    x(0),
-				    y(0),
-				    z(0)
+					x(0),
+					y(0),
+					z(0)
 		{
 		}
 		sample(float a, float b, float c) :
-				    x(a),
-				    y(b),
-				    z(c)
+					x(a),
+					y(b),
+					z(c)
 		{
 		}
 	};
@@ -259,56 +259,56 @@ public:
 	
 private:
 	Simulator() :
-			    SuperBlock(nullptr, "SIM"),
-			    _accel(1),
-			    _mpu(1),
-			    _baro(1),
-			    _mag(1),
-			    _gps(1),
-			    _airspeed(1),
-			    _perf_accel(perf_alloc_once(PC_ELAPSED, "sim_accel_delay")),
-			    _perf_mpu(perf_alloc_once(PC_ELAPSED, "sim_mpu_delay")),
-			    _perf_baro(perf_alloc_once(PC_ELAPSED, "sim_baro_delay")),
-			    _perf_mag(perf_alloc_once(PC_ELAPSED, "sim_mag_delay")),
-			    _perf_gps(perf_alloc_once(PC_ELAPSED, "sim_gps_delay")),
-			    _perf_airspeed(perf_alloc_once(PC_ELAPSED, "sim_airspeed_delay")),
-			    _perf_sim_delay(perf_alloc_once(PC_ELAPSED, "sim_network_delay")),
-			    _perf_sim_interval(perf_alloc(PC_INTERVAL, "sim_network_interval")),
-			    _accel_pub(nullptr),
-			    _baro_pub(nullptr),
-			    _gyro_pub(nullptr),
-			    _mag_pub(nullptr),
-			    _flow_pub(nullptr),
-			    _vision_position_pub(nullptr),
-			    _vision_attitude_pub(nullptr),
-			    _dist_pub(nullptr),
-			    _battery_pub(nullptr),
-			    _param_sub(-1),
-			    _initialized(false),
-			    _realtime_factor(1.0),
-			    _system_type(0)
+				SuperBlock(nullptr, "SIM"),
+				_accel(1),
+				_mpu(1),
+				_baro(1),
+				_mag(1),
+				_gps(1),
+				_airspeed(1),
+				_perf_accel(perf_alloc_once(PC_ELAPSED, "sim_accel_delay")),
+				_perf_mpu(perf_alloc_once(PC_ELAPSED, "sim_mpu_delay")),
+				_perf_baro(perf_alloc_once(PC_ELAPSED, "sim_baro_delay")),
+				_perf_mag(perf_alloc_once(PC_ELAPSED, "sim_mag_delay")),
+				_perf_gps(perf_alloc_once(PC_ELAPSED, "sim_gps_delay")),
+				_perf_airspeed(perf_alloc_once(PC_ELAPSED, "sim_airspeed_delay")),
+				_perf_sim_delay(perf_alloc_once(PC_ELAPSED, "sim_network_delay")),
+				_perf_sim_interval(perf_alloc(PC_INTERVAL, "sim_network_interval")),
+				_accel_pub(nullptr),
+				_baro_pub(nullptr),
+				_gyro_pub(nullptr),
+				_mag_pub(nullptr),
+				_flow_pub(nullptr),
+				_vision_position_pub(nullptr),
+				_vision_attitude_pub(nullptr),
+				_dist_pub(nullptr),
+				_battery_pub(nullptr),
+				_param_sub(-1),
+				_initialized(false),
+				_realtime_factor(1.0),
+				_system_type(0)
 #ifndef __PX4_QURT
-			                 ,
-			    _rc_channels_pub(nullptr),
-			    _attitude_pub(nullptr),
-			    _gpos_pub(nullptr),
-			    _lpos_pub(nullptr),
-			    _actuator_outputs_sub { },
-			    _vehicle_attitude_sub(-1),
-			    _manual_sub(-1),
-			    _vehicle_status_sub(-1),
-			    _hil_local_proj_ref(),
-			    _hil_local_proj_inited(false),
-			    _hil_ref_lat(0),
-			    _hil_ref_lon(0),
-			    _hil_ref_alt(0),
-			    _hil_ref_timestamp(0),
-			    _rc_input { },
-			    _actuators { },
-			    _attitude { },
-			    _manual { },
-			    _vehicle_status { },
-			    _battery_drain_interval_s(this, "BAT_DRAIN")
+								,
+				_rc_channels_pub(nullptr),
+				_attitude_pub(nullptr),
+				_gpos_pub(nullptr),
+				_lpos_pub(nullptr),
+				_actuator_outputs_sub { },
+				_vehicle_attitude_sub(-1),
+				_manual_sub(-1),
+				_vehicle_status_sub(-1),
+				_hil_local_proj_ref(),
+				_hil_local_proj_inited(false),
+				_hil_ref_lat(0),
+				_hil_ref_lon(0),
+				_hil_ref_alt(0),
+				_hil_ref_timestamp(0),
+				_rc_input { },
+				_actuators { },
+				_attitude { },
+				_manual { },
+				_vehicle_status { },
+				_battery_drain_interval_s(this, "BAT_DRAIN")
 #endif
 	{
 		// We need to know the type for the correct mapping from

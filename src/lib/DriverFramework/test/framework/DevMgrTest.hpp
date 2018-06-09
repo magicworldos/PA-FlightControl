@@ -45,7 +45,7 @@ class DevMgrTest: public DFTestObj
 {
 public:
 	DevMgrTest() :
-			    DFTestObj("DevMgr Test")
+				DFTestObj("DevMgr Test")
 	{
 	}
 	~DevMgrTest()

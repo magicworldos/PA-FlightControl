@@ -18,7 +18,7 @@ class Scalar
 {
 public:
 	Scalar() :
-			    _value()
+				_value()
 	{
 	}
 	

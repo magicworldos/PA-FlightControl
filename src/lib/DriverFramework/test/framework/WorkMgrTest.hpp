@@ -46,7 +46,7 @@ class WorkMgrTest: public DFTestObj
 {
 public:
 	WorkMgrTest() :
-			    DFTestObj("WorkMgr Test")
+				DFTestObj("WorkMgr Test")
 	{
 	}
 	~WorkMgrTest()

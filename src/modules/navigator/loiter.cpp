@@ -57,8 +57,8 @@
 #include "navigator.h"
 
 Loiter::Loiter(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _param_min_alt(this, "MIS_LTRMIN_ALT", false)
+			MissionBlock(navigator, name),
+			_param_min_alt(this, "MIS_LTRMIN_ALT", false)
 {
 }
 

@@ -167,18 +167,18 @@ void (* const VectorTable[64])(void) =
 {	
 	__stack_end,                            // The initial stack pointer
 	Reset_Handler,// The reset handler
-	NMI_Handler,// The NMI handler
+	NMI_Handler,  // The NMI handler
 	HardFault_Handler,// The hard fault handler
-	0,// Reserved
-	0,// Reserved
-	0,// Reserved
-	0,// Reserved
-	0,// Reserved
-	0,// Reserved
-	0,// Reserved
-	SVC_Handler,// SVCall handler
-	0,// Reserved
-	0,// Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	0,			  // Reserved
+	SVC_Handler,  // SVCall handler
+	0,			  // Reserved
+	0,			  // Reserved
 	PendSV_Handler,// The PendSV handler
 	SysTick_Handler,// The SysTick handler
 	
@@ -206,13 +206,13 @@ void (* const VectorTable[64])(void) =
 	SSP0_IRQHandler,// SPI/SSP0 Interrupt
 	UART_IRQHandler,// UART0
 	
-	0,// Reserved
-	0,// Reserved
+	0,			  // Reserved
+	0,			  // Reserved
 	
 	ADC_IRQHandler,// ADC   (A/D Converter)
 	WDT_IRQHandler,// WDT   (Watchdog Timer)
 	BOD_IRQHandler,// BOD   (Brownout Detect)
-	0,// Reserved
+	0,			  // Reserved
 	PIOINT3_IRQHandler,// PIO INT3
 	PIOINT2_IRQHandler,// PIO INT2
 	PIOINT1_IRQHandler,// PIO INT1

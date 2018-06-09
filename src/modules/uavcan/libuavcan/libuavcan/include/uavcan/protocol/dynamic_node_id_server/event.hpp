@@ -99,7 +99,7 @@ public:
 	{
 		// import re;m = lambda s:',\n'.join('"%s"' % x for x in re.findall(r'\ {4}Trace[0-9]*([A-Za-z0-9]*),',s))
 		static const char* const Strings[] = { "Error", "RaftLogLastIndexRestored", "RaftLogAppend", "RaftLogRemove", "RaftCurrentTermRestored", "RaftCurrentTermUpdate", "RaftVotedForRestored", "RaftVotedForUpdate", "RaftDiscoveryBroadcast", "RaftNewServerDiscovered", "RaftDiscoveryReceived", "RaftClusterSizeInited", "RaftBadClusterSizeReceived", "RaftCoreInited", "RaftStateSwitch", "", "RaftNewLogEntry", "RaftRequestIgnored", "RaftVoteRequestReceived", "RaftVoteRequestSucceeded", "RaftVoteRequestInitiation", "RaftPersistStateUpdateError", "RaftCommitIndexUpdate", "RaftNewerTermInResponse", "RaftNewEntryCommitted", "RaftAppendEntriesCallFailure", "RaftElectionComplete", "RaftAppendEntriesRespUnsucfl", "", "", "AllocationFollowupResponse", "AllocationFollowupDenied", "AllocationFollowupTimeout", "AllocationBadRequest", "AllocationUnexpectedStage", "AllocationRequestAccepted", "AllocationExchangeComplete", "AllocationResponse", "AllocationActivity", "", "DiscoveryNewNodeFound", "DiscoveryCommitCacheUpdated", "DiscoveryNodeFinalized", "DiscoveryGetNodeInfoFailure", "DiscoveryTimerStart", "DiscoveryTimerStop", "DiscoveryGetNodeInfoRequest", "DiscoveryNodeRestartDetected", "DiscoveryNodeRemoved", "" };
-		uavcan::StaticAssert < sizeof(Strings) / sizeof(Strings[0]) == NumTraceCodes > ::check();
+		uavcan::StaticAssert<sizeof(Strings) / sizeof(Strings[0]) == NumTraceCodes>::check();
 		UAVCAN_ASSERT(code < NumTraceCodes);
 		// coverity[dead_error_line]
 		return (code < NumTraceCodes) ? Strings[static_cast<unsigned>(code)] : "INVALID_EVENT_CODE";

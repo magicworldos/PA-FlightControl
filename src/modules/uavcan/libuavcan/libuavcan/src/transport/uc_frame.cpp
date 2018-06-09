@@ -250,7 +250,9 @@ bool Frame::isValid() const
 
 bool Frame::operator==(const Frame& rhs) const
 {
-	return (transfer_priority_ == rhs.transfer_priority_) && (transfer_type_ == rhs.transfer_type_) && (data_type_id_ == rhs.data_type_id_) && (src_node_id_ == rhs.src_node_id_) && (dst_node_id_ == rhs.dst_node_id_) && (transfer_id_ == rhs.transfer_id_) && (toggle_ == rhs.toggle_) && (start_of_transfer_ == rhs.start_of_transfer_) && (end_of_transfer_ == rhs.end_of_transfer_) && (payload_len_ == rhs.payload_len_) && equal(payload_, payload_ + payload_len_, rhs.payload_);
+	return (transfer_priority_ == rhs.transfer_priority_) && (transfer_type_ == rhs.transfer_type_) && (data_type_id_ == rhs.data_type_id_) && (src_node_id_ == rhs.src_node_id_)
+			&& (dst_node_id_ == rhs.dst_node_id_) && (transfer_id_ == rhs.transfer_id_) && (toggle_ == rhs.toggle_) && (start_of_transfer_ == rhs.start_of_transfer_)
+			&& (end_of_transfer_ == rhs.end_of_transfer_) && (payload_len_ == rhs.payload_len_) && equal(payload_, payload_ + payload_len_, rhs.payload_);
 }
 
 #if UAVCAN_TOSTRING

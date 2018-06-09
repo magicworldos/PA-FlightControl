@@ -199,22 +199,22 @@ __EXPORT int srf02_i2c_main(int argc, char *argv[]);
 }
 
 SRF02_I2C::SRF02_I2C(uint8_t rotation, int bus, int address) :
-		    I2C("MB12xx", SRF02_DEVICE_PATH, bus, address, 100000),
-		    _rotation(rotation),
-		    _min_distance(SRF02_MIN_DISTANCE),
-		    _max_distance(SRF02_MAX_DISTANCE),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "srf02_i2c_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "srf02_i2c_comms_errors")),
-		    _cycle_counter(0), /* initialising counter for cycling function to zero */
-		    _cycling_rate(0), /* initialising cycling rate (which can differ depending on one sonar or multiple) */
-		    _index_counter(0) /* initialising temp sonar i2c address to zero */
+			I2C("MB12xx", SRF02_DEVICE_PATH, bus, address, 100000),
+			_rotation(rotation),
+			_min_distance(SRF02_MIN_DISTANCE),
+			_max_distance(SRF02_MAX_DISTANCE),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_measure_ticks(0),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "srf02_i2c_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "srf02_i2c_comms_errors")),
+			_cycle_counter(0), /* initialising counter for cycling function to zero */
+			_cycling_rate(0), /* initialising cycling rate (which can differ depending on one sonar or multiple) */
+			_index_counter(0) /* initialising temp sonar i2c address to zero */
 
 {
 	/* enable debug() calls */

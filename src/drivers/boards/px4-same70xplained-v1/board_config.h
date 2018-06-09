@@ -220,7 +220,6 @@ __BEGIN_DECLS
 
 /* Define the follwoing to output the clock on J500-1 */
 //#define GPIO_PCK1			(GPIO_PERIPHB | GPIO_CFG_DEFAULT | GPIO_PORT_PIOA | GPIO_PIN17)
-
 /*
  * ADC channels
  *

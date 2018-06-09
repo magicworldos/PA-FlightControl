@@ -24,14 +24,14 @@ class UAVCAN_EXPORT OutgoingTransferRegistryKey
 	
 public:
 	OutgoingTransferRegistryKey() :
-			    transfer_type_(0xFF)
+				transfer_type_(0xFF)
 	{
 	}
 	
 	OutgoingTransferRegistryKey(DataTypeID data_type_id, TransferType transfer_type, NodeID destination_node_id) :
-			    data_type_id_(data_type_id),
-			    transfer_type_(transfer_type),
-			    destination_node_id_(destination_node_id)
+				data_type_id_(data_type_id),
+				transfer_type_(transfer_type),
+				destination_node_id_(destination_node_id)
 	{
 		UAVCAN_ASSERT((transfer_type == TransferTypeMessageBroadcast) == destination_node_id.isBroadcast());
 		/*
@@ -79,7 +79,7 @@ class UAVCAN_EXPORT OutgoingTransferRegistry: Noncopyable
 
 	public:
 		explicit DeadlineExpiredPredicate(MonotonicTime ts) :
-				    ts_(ts)
+					ts_(ts)
 		{
 		}
 		
@@ -103,8 +103,8 @@ class UAVCAN_EXPORT OutgoingTransferRegistry: Noncopyable
 
 	public:
 		ExistenceCheckingPredicate(DataTypeID dtid, TransferType tt) :
-				    dtid_(dtid),
-				    tt_(tt)
+					dtid_(dtid),
+					tt_(tt)
 		{
 		}
 		
@@ -120,7 +120,7 @@ public:
 	static const MonotonicDuration MinEntryLifetime;
 
 	explicit OutgoingTransferRegistry(IPoolAllocator& allocator) :
-			    map_(allocator)
+				map_(allocator)
 	{
 	}
 	

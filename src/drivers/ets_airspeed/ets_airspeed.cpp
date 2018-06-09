@@ -95,8 +95,8 @@ protected:
 extern "C" __EXPORT int ets_airspeed_main(int argc, char *argv[]);
 
 ETSAirspeed::ETSAirspeed(int bus, int address, const char *path) :
-		    Airspeed(bus, address,
-		    CONVERSION_INTERVAL, path)
+			Airspeed(bus, address,
+			CONVERSION_INTERVAL, path)
 {
 	_device_id.devid_s.devtype = DRV_DIFF_PRESS_DEVTYPE_MS4525;
 }

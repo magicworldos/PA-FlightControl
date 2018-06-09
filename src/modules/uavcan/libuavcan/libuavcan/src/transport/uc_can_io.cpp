@@ -281,9 +281,9 @@ int CanIOManager::callSelect(CanSelectMasks& inout_masks, const CanFrame* (&pend
 }
 
 CanIOManager::CanIOManager(ICanDriver& driver, IPoolAllocator& allocator, ISystemClock& sysclock, std::size_t mem_blocks_per_iface) :
-		    driver_(driver),
-		    sysclock_(sysclock),
-		    num_ifaces_(driver.getNumIfaces())
+			driver_(driver),
+			sysclock_(sysclock),
+			num_ifaces_(driver.getNumIfaces())
 {
 	if (num_ifaces_ < 1 || num_ifaces_ > MaxCanIfaces)
 	{

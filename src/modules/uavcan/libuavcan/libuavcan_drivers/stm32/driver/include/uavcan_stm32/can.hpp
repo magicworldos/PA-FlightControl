@@ -35,8 +35,8 @@ struct CanRxItem
 	uavcan::CanFrame frame;
 	uavcan::CanIOFlags flags;
 	CanRxItem() :
-			    utc_usec(0),
-			    flags(0)
+				utc_usec(0),
+				flags(0)
 	{
 	}
 };
@@ -60,12 +60,12 @@ class CanIface: public uavcan::ICanIface, uavcan::Noncopyable
 
 	public:
 		RxQueue(CanRxItem* buf, uavcan::uint8_t capacity) :
-				    buf_(buf),
-				    capacity_(capacity),
-				    in_(0),
-				    out_(0),
-				    len_(0),
-				    overflow_cnt_(0)
+					buf_(buf),
+					capacity_(capacity),
+					in_(0),
+					out_(0),
+					len_(0),
+					overflow_cnt_(0)
 		{
 		}
 		
@@ -93,10 +93,10 @@ class CanIface: public uavcan::ICanIface, uavcan::Noncopyable
 		uavcan::uint8_t bs2;
 
 		Timings() :
-				    prescaler(0),
-				    sjw(0),
-				    bs1(0),
-				    bs2(0)
+					prescaler(0),
+					sjw(0),
+					bs1(0),
+					bs2(0)
 		{
 		}
 	};
@@ -110,9 +110,9 @@ class CanIface: public uavcan::ICanIface, uavcan::Noncopyable
 		bool abort_on_error;
 
 		TxItem() :
-				    pending(false),
-				    loopback(false),
-				    abort_on_error(false)
+					pending(false),
+					loopback(false),
+					abort_on_error(false)
 		{
 		}
 	};
@@ -168,14 +168,14 @@ public:
 	};
 
 	CanIface(bxcan::CanType* can, BusEvent& update_event, uavcan::uint8_t self_index, CanRxItem* rx_queue_buffer, uavcan::uint8_t rx_queue_capacity) :
-			    rx_queue_(rx_queue_buffer, rx_queue_capacity),
-			    can_(can),
-			    error_cnt_(0),
-			    served_aborts_cnt_(0),
-			    update_event_(update_event),
-			    peak_tx_mailbox_index_(0),
-			    self_index_(self_index),
-			    had_activity_(false)
+				rx_queue_(rx_queue_buffer, rx_queue_capacity),
+				can_(can),
+				error_cnt_(0),
+				served_aborts_cnt_(0),
+				update_event_(update_event),
+				peak_tx_mailbox_index_(0),
+				self_index_(self_index),
+				had_activity_(false)
 	{
 		UAVCAN_ASSERT(self_index_ < UAVCAN_STM32_NUM_IFACES);
 	}
@@ -273,8 +273,8 @@ class CanDriver: public uavcan::ICanDriver, uavcan::Noncopyable
 public:
 	template<unsigned RxQueueCapacity>
 	CanDriver(CanRxItem (&rx_queue_storage)[UAVCAN_STM32_NUM_IFACES][RxQueueCapacity]) :
-			    update_event_(*this),
-			    if0_(bxcan::Can[0], update_event_, 0, rx_queue_storage[0], RxQueueCapacity)
+				update_event_(*this),
+				if0_(bxcan::Can[0], update_event_, 0, rx_queue_storage[0], RxQueueCapacity)
 #if UAVCAN_STM32_NUM_IFACES > 1
 	, if1_(bxcan::Can[1], update_event_, 1, rx_queue_storage[1], RxQueueCapacity)
 #endif
@@ -331,7 +331,7 @@ public:
 	CanDriver driver;
 
 	CanInitHelper() :
-			    driver(queue_storage_)
+				driver(queue_storage_)
 	{
 	}
 	

@@ -219,7 +219,8 @@ int motor_ramp_main(int argc, char *argv[])
 	}
 	
 	_thread_should_exit = false;
-	_motor_ramp_task = px4_task_spawn_cmd("motor_ramp", SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT + 40, 2000, motor_ramp_thread_main, (argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
+	_motor_ramp_task = px4_task_spawn_cmd("motor_ramp", SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT + 40, 2000, motor_ramp_thread_main,
+			(argv) ? (char * const *) &argv[2] : (char * const *) nullptr);
 	return 0;
 }
 
@@ -297,8 +298,8 @@ int prepare(int fd, unsigned long *max_channels)
 	if (orb_updated)
 	{
 		PX4_ERR("ABORTING! Attitude control still active. Please ensure to shut down all controllers:\n"
-		        "\tmc_att_control stop\n"
-		        "\tfw_att_control stop\n");
+				"\tmc_att_control stop\n"
+				"\tfw_att_control stop\n");
 		return 1;
 	}
 	

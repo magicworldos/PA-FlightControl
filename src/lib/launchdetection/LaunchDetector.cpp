@@ -44,8 +44,8 @@ namespace launchdetection
 {
 
 LaunchDetector::LaunchDetector() :
-		    SuperBlock(nullptr, "LAUN"),
-		    launchdetection_on(this, "ALL_ON")
+			SuperBlock(nullptr, "LAUN"),
+			launchdetection_on(this, "ALL_ON")
 {
 	/* init all detectors */
 	launchMethods[0] = new CatapultLaunchMethod(this);

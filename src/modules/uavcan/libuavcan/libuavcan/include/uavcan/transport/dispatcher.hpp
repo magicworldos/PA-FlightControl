@@ -30,7 +30,7 @@ class UAVCAN_EXPORT LoopbackFrameListenerBase: public LinkedListNode<LoopbackFra
 
 protected:
 	explicit LoopbackFrameListenerBase(Dispatcher& dispatcher) :
-			    dispatcher_(dispatcher)
+				dispatcher_(dispatcher)
 	{
 	}
 	
@@ -104,7 +104,7 @@ class UAVCAN_EXPORT Dispatcher: Noncopyable
 			const DataTypeID id_;
 		public:
 			explicit DataTypeIDInsertionComparator(DataTypeID id) :
-					    id_(id)
+						id_(id)
 			{
 			}
 			bool operator()(const TransferListener* listener) const
@@ -158,17 +158,17 @@ class UAVCAN_EXPORT Dispatcher: Noncopyable
 
 public:
 	Dispatcher(ICanDriver& driver, IPoolAllocator& allocator, ISystemClock& sysclock) :
-			    canio_(driver, allocator, sysclock),
-			    sysclock_(sysclock),
-			    outgoing_transfer_reg_(allocator)
+				canio_(driver, allocator, sysclock),
+				sysclock_(sysclock),
+				outgoing_transfer_reg_(allocator)
 #if !UAVCAN_TINY
-			                           ,
-			    rx_listener_(UAVCAN_NULLPTR)
+										,
+				rx_listener_(UAVCAN_NULLPTR)
 #endif
-			                 ,
-			    self_node_id_(NodeID::Broadcast)  // Default
-			    ,
-			    self_node_id_is_set_(false)
+								,
+				self_node_id_(NodeID::Broadcast)  // Default
+				,
+				self_node_id_is_set_(false)
 	{
 	}
 	

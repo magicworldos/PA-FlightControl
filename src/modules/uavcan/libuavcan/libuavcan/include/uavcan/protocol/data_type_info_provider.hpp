@@ -106,7 +106,7 @@ class UAVCAN_EXPORT DataTypeInfoProvider: Noncopyable
 	
 public:
 	explicit DataTypeInfoProvider(INode& node) :
-			    gdti_srv_(node)
+				gdti_srv_(node)
 	{
 	}
 	

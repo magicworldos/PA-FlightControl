@@ -60,14 +60,14 @@ class UAVCAN_EXPORT LazyConstructor
 	
 public:
 	LazyConstructor() :
-			    ptr_(UAVCAN_NULLPTR)
+				ptr_(UAVCAN_NULLPTR)
 	{
 		fill(data_.pool, data_.pool + sizeof(T), uint8_t(0));
 	}
 	
 	LazyConstructor(const LazyConstructor<T>& rhs)   // Implicit
 	:
-			    ptr_(UAVCAN_NULLPTR)
+				ptr_(UAVCAN_NULLPTR)
 	{
 		fill(data_.pool, data_.pool + sizeof(T), uint8_t(0));
 		if (rhs)
@@ -183,14 +183,16 @@ public:
 	}
 	
 	template<typename P1, typename P2, typename P3, typename P4, typename P5>
-	void construct(typename ParameterType<P1>::Type p1, typename ParameterType<P2>::Type p2, typename ParameterType<P3>::Type p3, typename ParameterType<P4>::Type p4, typename ParameterType<P5>::Type p5)
+	void construct(typename ParameterType<P1>::Type p1, typename ParameterType<P2>::Type p2, typename ParameterType<P3>::Type p3, typename ParameterType<P4>::Type p4, typename ParameterType<
+							P5>::Type p5)
 	{
 		ensureNotConstructed();
 		ptr_ = new (static_cast<void*>(data_.pool)) T(p1, p2, p3, p4, p5);
 	}
 	
 	template<typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
-	void construct(typename ParameterType<P1>::Type p1, typename ParameterType<P2>::Type p2, typename ParameterType<P3>::Type p3, typename ParameterType<P4>::Type p4, typename ParameterType<P5>::Type p5, typename ParameterType<P6>::Type p6)
+	void construct(typename ParameterType<P1>::Type p1, typename ParameterType<P2>::Type p2, typename ParameterType<P3>::Type p3, typename ParameterType<P4>::Type p4, typename ParameterType<
+							P5>::Type p5, typename ParameterType<P6>::Type p6)
 	{
 		ensureNotConstructed();
 		ptr_ = new (static_cast<void*>(data_.pool)) T(p1, p2, p3, p4, p5, p6);

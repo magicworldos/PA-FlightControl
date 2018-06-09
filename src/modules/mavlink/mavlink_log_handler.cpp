@@ -85,8 +85,8 @@ static bool stat_file(const char *file, time_t *date = nullptr, uint32_t *size =
 
 //-------------------------------------------------------------------
 MavlinkLogHandler::MavlinkLogHandler(Mavlink *mavlink) :
-		    _pLogHandlerHelper(nullptr),
-		    _mavlink(mavlink)
+			_pLogHandlerHelper(nullptr),
+			_mavlink(mavlink)
 {
 	
 }
@@ -350,15 +350,15 @@ size_t MavlinkLogHandler::_log_send_data()
 
 //-------------------------------------------------------------------
 LogListHelper::LogListHelper() :
-		    next_entry(0),
-		    last_entry(0),
-		    log_count(0),
-		    current_status(LOG_HANDLER_IDLE),
-		    current_log_index(UINT16_MAX),
-		    current_log_size(0),
-		    current_log_data_offset(0),
-		    current_log_data_remaining(0),
-		    current_log_filep(nullptr)
+			next_entry(0),
+			last_entry(0),
+			log_count(0),
+			current_status(LOG_HANDLER_IDLE),
+			current_log_index(UINT16_MAX),
+			current_log_size(0),
+			current_log_data_offset(0),
+			current_log_data_remaining(0),
+			current_log_filep(nullptr)
 {
 	_init();
 }

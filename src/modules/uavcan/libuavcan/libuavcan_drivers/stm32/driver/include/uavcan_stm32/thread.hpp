@@ -227,7 +227,7 @@ class MutexLocker
 
 public:
 	MutexLocker(Mutex& mutex) :
-			    mutex_(mutex)
+				mutex_(mutex)
 	{
 		mutex_.lock();
 	}

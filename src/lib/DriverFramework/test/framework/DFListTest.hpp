@@ -59,7 +59,7 @@ public:
 	};
 
 	DFListTest() :
-			    DFTestObj("List Tests")
+				DFTestObj("List Tests")
 	{
 	}
 	~DFListTest()

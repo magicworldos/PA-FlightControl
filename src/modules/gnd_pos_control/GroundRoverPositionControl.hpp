@@ -135,7 +135,7 @@ private:
 	{
 		UGV_POSCTRL_MODE_AUTO,
 		UGV_POSCTRL_MODE_OTHER
-	} _control_mode_current { UGV_POSCTRL_MODE_OTHER };			///< used to check the mode in the last control loop iteration. Use to check if the last iteration was in the same mode.
+	} _control_mode_current { UGV_POSCTRL_MODE_OTHER };		///< used to check the mode in the last control loop iteration. Use to check if the last iteration was in the same mode.
 	
 	struct
 	{

@@ -488,7 +488,9 @@ void perf_print_counter_fd(int fd, perf_counter_t handle)
 		{
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *) handle;
 			float rms = sqrtf(pce->M2 / (pce->event_count - 1));
-			dprintf(fd, "%s: %llu events, %lluus elapsed, %lluus avg, min %lluus max %lluus %5.3fus rms\n", handle->name, (unsigned long long) pce->event_count, (unsigned long long) pce->time_total, (pce->event_count == 0) ? 0 : (unsigned long long) pce->time_total / pce->event_count, (unsigned long long) pce->time_least, (unsigned long long) pce->time_most, (double) (1e6f * rms));
+			dprintf(fd, "%s: %llu events, %lluus elapsed, %lluus avg, min %lluus max %lluus %5.3fus rms\n", handle->name, (unsigned long long) pce->event_count, (unsigned long long) pce->time_total,
+					(pce->event_count == 0) ? 0 : (unsigned long long) pce->time_total / pce->event_count, (unsigned long long) pce->time_least, (unsigned long long) pce->time_most, (double) (1e6f
+							* rms));
 			break;
 		}
 			
@@ -497,7 +499,9 @@ void perf_print_counter_fd(int fd, perf_counter_t handle)
 			struct perf_ctr_interval *pci = (struct perf_ctr_interval *) handle;
 			float rms = sqrtf(pci->M2 / (pci->event_count - 1));
 			
-			dprintf(fd, "%s: %llu events, %lluus avg, min %lluus max %lluus %5.3fus rms\n", handle->name, (unsigned long long) pci->event_count, (pci->event_count == 0) ? 0 : (unsigned long long) (pci->time_last - pci->time_first) / pci->event_count, (unsigned long long) pci->time_least, (unsigned long long) pci->time_most, (double) (1e6f * rms));
+			dprintf(fd, "%s: %llu events, %lluus avg, min %lluus max %lluus %5.3fus rms\n", handle->name, (unsigned long long) pci->event_count,
+					(pci->event_count == 0) ? 0 : (unsigned long long) (pci->time_last - pci->time_first) / pci->event_count, (unsigned long long) pci->time_least, (unsigned long long) pci->time_most, (double) (1e6f
+							* rms));
 			break;
 		}
 			
@@ -525,7 +529,9 @@ int perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 		{
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *) handle;
 			float rms = sqrtf(pce->M2 / (pce->event_count - 1));
-			num_written = snprintf(buffer, length, "%s: %llu events, %lluus elapsed, %lluus avg, min %lluus max %lluus %5.3fus rms", handle->name, (unsigned long long) pce->event_count, (unsigned long long) pce->time_total, (pce->event_count == 0) ? 0 : (unsigned long long) pce->time_total / pce->event_count, (unsigned long long) pce->time_least, (unsigned long long) pce->time_most, (double) (1e6f * rms));
+			num_written = snprintf(buffer, length, "%s: %llu events, %lluus elapsed, %lluus avg, min %lluus max %lluus %5.3fus rms", handle->name, (unsigned long long) pce->event_count, (unsigned long long) pce->time_total,
+					(pce->event_count == 0) ? 0 : (unsigned long long) pce->time_total / pce->event_count, (unsigned long long) pce->time_least, (unsigned long long) pce->time_most, (double) (1e6f
+											* rms));
 			break;
 		}
 			
@@ -534,7 +540,9 @@ int perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 			struct perf_ctr_interval *pci = (struct perf_ctr_interval *) handle;
 			float rms = sqrtf(pci->M2 / (pci->event_count - 1));
 			
-			num_written = snprintf(buffer, length, "%s: %llu events, %lluus avg, min %lluus max %lluus %5.3fus rms", handle->name, (unsigned long long) pci->event_count, (pci->event_count == 0) ? 0 : (unsigned long long) (pci->time_last - pci->time_first) / pci->event_count, (unsigned long long) pci->time_least, (unsigned long long) pci->time_most, (double) (1e6f * rms));
+			num_written = snprintf(buffer, length, "%s: %llu events, %lluus avg, min %lluus max %lluus %5.3fus rms", handle->name, (unsigned long long) pci->event_count,
+					(pci->event_count == 0) ? 0 : (unsigned long long) (pci->time_last - pci->time_first) / pci->event_count, (unsigned long long) pci->time_least, (unsigned long long) pci->time_most, (double) (1e6f
+											* rms));
 			break;
 		}
 			

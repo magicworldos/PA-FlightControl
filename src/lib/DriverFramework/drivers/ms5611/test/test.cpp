@@ -84,7 +84,7 @@ public:
 	static const int TEST_FAIL = 1;
 
 	PressureTester() :
-			    m_sensor(BARO_DEVICE_PATH)
+				m_sensor(BARO_DEVICE_PATH)
 	{
 	}
 	

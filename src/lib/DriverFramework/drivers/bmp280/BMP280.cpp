@@ -85,7 +85,8 @@ int32_t BMP280::convertTemperature(int32_t adc_T)
 {
 	int32_t var1, var2, T;
 	var1 = ((((adc_T >> 3) - ((int32_t) m_sensor_calibration.dig_T1 << 1))) * ((int32_t) m_sensor_calibration.dig_T2)) >> 11;
-	var2 = (((((adc_T >> 4) - ((int32_t) m_sensor_calibration.dig_T1)) * ((adc_T >> 4) - ((int32_t) m_sensor_calibration.dig_T1))) >> 12) * ((int32_t) m_sensor_calibration.dig_T3)) >> 14;
+	var2 = (((((adc_T >> 4) - ((int32_t) m_sensor_calibration.dig_T1)) * ((adc_T >> 4) - ((int32_t) m_sensor_calibration.dig_T1))) >> 12) * ((int32_t) m_sensor_calibration.dig_T3))
+			>> 14;
 	m_sensor_data.t_fine = var1 + var2;
 	T = (m_sensor_data.t_fine * 5 + 128) >> 8;
 	

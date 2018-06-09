@@ -39,7 +39,7 @@ struct SubscriberWithCollector
 	Subscriber subscriber;
 
 	SubscriberWithCollector(uavcan::INode& node) :
-			    subscriber(node)
+				subscriber(node)
 	{
 	}
 	
@@ -63,9 +63,9 @@ public:
 
 	public:
 		Result(typename ServiceCallResult::Status arg_status, uavcan::ServiceCallID arg_call_id, const typename DataType::Response& arg_response) :
-				    status_(arg_status),
-				    call_id_(arg_call_id),
-				    response_(arg_response)
+					status_(arg_status),
+					call_id_(arg_call_id),
+					response_(arg_response)
 		{
 		}
 		
@@ -122,7 +122,7 @@ struct ServiceClientWithCollector
 	ServiceClient client;
 
 	ServiceClientWithCollector(uavcan::INode& node) :
-			    client(node)
+				client(node)
 	{
 	}
 	
@@ -138,8 +138,8 @@ struct BackgroundSpinner: uavcan::TimerBase
 	uavcan::INode& spinning_node;
 
 	BackgroundSpinner(uavcan::INode& spinning_node, uavcan::INode& running_node) :
-			    uavcan::TimerBase(running_node),
-			    spinning_node(spinning_node)
+				uavcan::TimerBase(running_node),
+				spinning_node(spinning_node)
 	{
 	}
 	

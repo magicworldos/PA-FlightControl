@@ -16,7 +16,7 @@ struct StringServerImpl
 	const char* string_response;
 
 	StringServerImpl(const char* string_response) :
-			    string_response(string_response)
+				string_response(string_response)
 	{
 	}
 	
@@ -29,7 +29,8 @@ struct StringServerImpl
 		std::cout << response << std::endl;
 	}
 	
-	typedef uavcan::MethodBinder<StringServerImpl*, void (StringServerImpl::*)(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>&, root_ns_a::StringService::Response&)> Binder;
+	typedef uavcan::MethodBinder<StringServerImpl*,
+			void (StringServerImpl::*)(const uavcan::ReceivedDataStructure<root_ns_a::StringService::Request>&, root_ns_a::StringService::Response&)> Binder;
 
 	Binder bind()
 	{
@@ -44,7 +45,8 @@ struct EmptyServerImpl
 		std::cout << request << std::endl;
 	}
 	
-	typedef uavcan::MethodBinder<EmptyServerImpl*, void (EmptyServerImpl::*)(const uavcan::ReceivedDataStructure<root_ns_a::EmptyService::Request>&, root_ns_a::EmptyService::Response&)> Binder;
+	typedef uavcan::MethodBinder<EmptyServerImpl*,
+			void (EmptyServerImpl::*)(const uavcan::ReceivedDataStructure<root_ns_a::EmptyService::Request>&, root_ns_a::EmptyService::Response&)> Binder;
 
 	Binder bind()
 	{

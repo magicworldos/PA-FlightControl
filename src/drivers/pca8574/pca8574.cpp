@@ -121,17 +121,17 @@ void pca8574_usage();
 extern "C" __EXPORT int pca8574_main(int argc, char *argv[]);
 
 PCA8574::PCA8574(int bus, int pca8574) :
-		    I2C("pca8574", PCA8574_DEVICE_PATH, bus, pca8574, 100000),
-		    _values_out(0),
-		    _values_in(0),
-		    _blinking(0),
-		    _blink_phase(0),
-		    _mode(IOX_MODE_OFF),
-		    _running(false),
-		    _led_interval(80),
-		    _should_run(false),
-		    _update_out(false),
-		    _counter(0)
+			I2C("pca8574", PCA8574_DEVICE_PATH, bus, pca8574, 100000),
+			_values_out(0),
+			_values_in(0),
+			_blinking(0),
+			_blink_phase(0),
+			_mode(IOX_MODE_OFF),
+			_running(false),
+			_led_interval(80),
+			_should_run(false),
+			_update_out(false),
+			_counter(0)
 {
 	memset(&_work, 0, sizeof(_work));
 }

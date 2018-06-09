@@ -53,8 +53,8 @@ public:
 	};
 
 	ORBMap() :
-			    _top(nullptr),
-			    _end(nullptr)
+				_top(nullptr),
+				_end(nullptr)
 	{
 	}
 	~ORBMap()

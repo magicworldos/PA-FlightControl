@@ -14,21 +14,21 @@ BMI055_GYR_INT_EN_1,
 BMI055_GYR_INT_MAP_1 };
 
 BMI055_gyro::BMI055_gyro(int bus, const char *path_gyro, uint32_t device, enum Rotation rotation) :
-		    BMI055("BMI055_GYRO", path_gyro, bus, device, SPIDEV_MODE3, BMI055_BUS_SPEED, rotation),
-		    _gyro_reports(nullptr),
-		    _gyro_scale { },
-		    _gyro_range_scale(0.0f),
-		    _gyro_range_rad_s(0.0f),
-		    _gyro_topic(nullptr),
-		    _gyro_orb_class_instance(-1),
-		    _gyro_class_instance(-1),
-		    _gyro_sample_rate(BMI055_GYRO_DEFAULT_RATE),
-		    _gyro_reads(perf_alloc(PC_COUNT, "bmi055_gyro_read")),
-		    _gyro_filter_x(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_y(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_filter_z(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
-		    _gyro_int(1000000 / BMI055_GYRO_MAX_PUBLISH_RATE, true),
-		    _last_temperature(0)
+			BMI055("BMI055_GYRO", path_gyro, bus, device, SPIDEV_MODE3, BMI055_BUS_SPEED, rotation),
+			_gyro_reports(nullptr),
+			_gyro_scale { },
+			_gyro_range_scale(0.0f),
+			_gyro_range_rad_s(0.0f),
+			_gyro_topic(nullptr),
+			_gyro_orb_class_instance(-1),
+			_gyro_class_instance(-1),
+			_gyro_sample_rate(BMI055_GYRO_DEFAULT_RATE),
+			_gyro_reads(perf_alloc(PC_COUNT, "bmi055_gyro_read")),
+			_gyro_filter_x(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_y(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_filter_z(BMI055_GYRO_DEFAULT_RATE, BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ),
+			_gyro_int(1000000 / BMI055_GYRO_MAX_PUBLISH_RATE, true),
+			_last_temperature(0)
 {
 	// disable debug() calls
 	_debug_enabled = false;

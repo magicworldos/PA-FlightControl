@@ -39,7 +39,8 @@ public:
  */
 class UAVCAN_EXPORT RestartRequestServer: Noncopyable
 {
-	typedef MethodBinder<const RestartRequestServer*, void (RestartRequestServer::*)(const ReceivedDataStructure<protocol::RestartNode::Request>&, protocol::RestartNode::Response&) const> RestartNodeCallback;
+	typedef MethodBinder<const RestartRequestServer*,
+			void (RestartRequestServer::*)(const ReceivedDataStructure<protocol::RestartNode::Request>&, protocol::RestartNode::Response&) const> RestartNodeCallback;
 
 	ServiceServer<protocol::RestartNode, RestartNodeCallback> srv_;
 	IRestartRequestHandler* handler_;
@@ -64,8 +65,8 @@ class UAVCAN_EXPORT RestartRequestServer: Noncopyable
 	
 public:
 	explicit RestartRequestServer(INode& node) :
-			    srv_(node),
-			    handler_(UAVCAN_NULLPTR)
+				srv_(node),
+				handler_(UAVCAN_NULLPTR)
 	{
 	}
 	

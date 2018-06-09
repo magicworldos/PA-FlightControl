@@ -47,11 +47,11 @@
 #include <float.h>
 
 Standard::Standard(VtolAttitudeControl *attc) :
-		    VtolType(attc),
-		    _flag_enable_mc_motors(true),
-		    _pusher_throttle(0.0f),
-		    _reverse_output(0.0f),
-		    _airspeed_trans_blend_margin(0.0f)
+			VtolType(attc),
+			_flag_enable_mc_motors(true),
+			_pusher_throttle(0.0f),
+			_reverse_output(0.0f),
+			_airspeed_trans_blend_margin(0.0f)
 {
 	_vtol_schedule.flight_mode = MC_MODE;
 	_vtol_schedule.transition_start = 0;
@@ -221,7 +221,8 @@ void Standard::update_vtol_state()
 			
 			float x_vel = vel(0);
 			
-			if (hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.back_trans_dur * 1000000.0f) || (_local_pos->v_xy_valid && x_vel <= _params_standard.mpc_xy_cruise))
+			if (hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.back_trans_dur * 1000000.0f)
+					|| (_local_pos->v_xy_valid && x_vel <= _params_standard.mpc_xy_cruise))
 			{
 				_vtol_schedule.flight_mode = MC_MODE;
 			}
@@ -254,7 +255,8 @@ void Standard::update_vtol_state()
 		else if (_vtol_schedule.flight_mode == TRANSITION_TO_FW)
 		{
 			// continue the transition to fw mode while monitoring airspeed for a final switch to fw mode
-			if (((_params_standard.airspeed_disabled == 1 || _airspeed->indicated_airspeed_m_s >= _params_standard.airspeed_trans) && (float) hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.front_trans_time_min * 1000000.0f)) || can_transition_on_ground())
+			if (((_params_standard.airspeed_disabled == 1 || _airspeed->indicated_airspeed_m_s >= _params_standard.airspeed_trans)
+					&& (float) hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.front_trans_time_min * 1000000.0f)) || can_transition_on_ground())
 			{
 				
 				_vtol_schedule.flight_mode = FW_MODE;
@@ -310,7 +312,8 @@ void Standard::update_transition_state()
 		}
 		
 		// do blending of mc and fw controls if a blending airspeed has been provided and the minimum transition time has passed
-		if (_airspeed_trans_blend_margin > 0.0f && _airspeed->indicated_airspeed_m_s >= _params_standard.airspeed_blend && (float) hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.front_trans_time_min * 1000000.0f))
+		if (_airspeed_trans_blend_margin > 0.0f && _airspeed->indicated_airspeed_m_s >= _params_standard.airspeed_blend
+				&& (float) hrt_elapsed_time(&_vtol_schedule.transition_start) > (_params_standard.front_trans_time_min * 1000000.0f))
 		{
 			float weight = 1.0f - fabsf(_airspeed->indicated_airspeed_m_s - _params_standard.airspeed_blend) / _airspeed_trans_blend_margin;
 			_mc_roll_weight = weight;
@@ -321,9 +324,12 @@ void Standard::update_transition_state()
 			// time based blending when no airspeed sensor is set
 			
 		}
-		else if (_params_standard.airspeed_disabled && hrt_elapsed_time(&_vtol_schedule.transition_start) < (_params_standard.front_trans_time_min * 1e6f) && hrt_elapsed_time(&_vtol_schedule.transition_start) > ((_params_standard.front_trans_time_min / 2.0f) * 1e6f))
+		else if (_params_standard.airspeed_disabled && hrt_elapsed_time(&_vtol_schedule.transition_start) < (_params_standard.front_trans_time_min * 1e6f)
+				&& hrt_elapsed_time(&_vtol_schedule.transition_start) > ((_params_standard.front_trans_time_min / 2.0f) * 1e6f))
 		{
-			float weight = 1.0f - ((hrt_elapsed_time(&_vtol_schedule.transition_start) - ((_params_standard.front_trans_time_min / 2.0f) * 1e6f)) / ((_params_standard.front_trans_time_min / 2.0f) * 1e6f));
+			float weight = 1.0f
+					- ((hrt_elapsed_time(&_vtol_schedule.transition_start) - ((_params_standard.front_trans_time_min / 2.0f) * 1e6f))
+							/ ((_params_standard.front_trans_time_min / 2.0f) * 1e6f));
 			
 			weight = math::constrain(weight, 0.0f, 1.0f);
 			

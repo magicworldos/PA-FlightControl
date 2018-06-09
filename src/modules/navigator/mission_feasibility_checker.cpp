@@ -273,8 +273,16 @@ bool MissionFeasibilityChecker::checkMissionItemValidity(dm_item_t dm_current, s
 		}
 		
 		// check if we find unsupported items and reject mission if so
-		if (missionitem.nav_cmd != NAV_CMD_IDLE && missionitem.nav_cmd != NAV_CMD_WAYPOINT && missionitem.nav_cmd != NAV_CMD_LOITER_UNLIMITED && missionitem.nav_cmd != NAV_CMD_LOITER_TIME_LIMIT && missionitem.nav_cmd != NAV_CMD_RETURN_TO_LAUNCH && missionitem.nav_cmd != NAV_CMD_LAND && missionitem.nav_cmd != NAV_CMD_TAKEOFF && missionitem.nav_cmd != NAV_CMD_LOITER_TO_ALT && missionitem.nav_cmd != NAV_CMD_VTOL_TAKEOFF && missionitem.nav_cmd != NAV_CMD_VTOL_LAND && missionitem.nav_cmd != NAV_CMD_DELAY && missionitem.nav_cmd != NAV_CMD_DO_JUMP && missionitem.nav_cmd != NAV_CMD_DO_CHANGE_SPEED && missionitem.nav_cmd != NAV_CMD_DO_SET_HOME && missionitem.nav_cmd != NAV_CMD_DO_SET_SERVO && missionitem.nav_cmd != NAV_CMD_DO_LAND_START && missionitem.nav_cmd != NAV_CMD_DO_TRIGGER_CONTROL && missionitem.nav_cmd != NAV_CMD_DO_DIGICAM_CONTROL && missionitem.nav_cmd != NAV_CMD_IMAGE_START_CAPTURE && missionitem.nav_cmd != NAV_CMD_IMAGE_STOP_CAPTURE && missionitem.nav_cmd != NAV_CMD_VIDEO_START_CAPTURE && missionitem.nav_cmd != NAV_CMD_VIDEO_STOP_CAPTURE && missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONFIGURE && missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONTROL
-		        && missionitem.nav_cmd != NAV_CMD_DO_SET_ROI && missionitem.nav_cmd != NAV_CMD_DO_SET_CAM_TRIGG_DIST && missionitem.nav_cmd != NAV_CMD_DO_SET_CAM_TRIGG_INTERVAL && missionitem.nav_cmd != NAV_CMD_SET_CAMERA_MODE && missionitem.nav_cmd != NAV_CMD_DO_VTOL_TRANSITION)
+		if (missionitem.nav_cmd != NAV_CMD_IDLE && missionitem.nav_cmd != NAV_CMD_WAYPOINT && missionitem.nav_cmd != NAV_CMD_LOITER_UNLIMITED
+				&& missionitem.nav_cmd != NAV_CMD_LOITER_TIME_LIMIT && missionitem.nav_cmd != NAV_CMD_RETURN_TO_LAUNCH && missionitem.nav_cmd != NAV_CMD_LAND
+				&& missionitem.nav_cmd != NAV_CMD_TAKEOFF && missionitem.nav_cmd != NAV_CMD_LOITER_TO_ALT && missionitem.nav_cmd != NAV_CMD_VTOL_TAKEOFF
+				&& missionitem.nav_cmd != NAV_CMD_VTOL_LAND && missionitem.nav_cmd != NAV_CMD_DELAY && missionitem.nav_cmd != NAV_CMD_DO_JUMP
+				&& missionitem.nav_cmd != NAV_CMD_DO_CHANGE_SPEED && missionitem.nav_cmd != NAV_CMD_DO_SET_HOME && missionitem.nav_cmd != NAV_CMD_DO_SET_SERVO
+				&& missionitem.nav_cmd != NAV_CMD_DO_LAND_START && missionitem.nav_cmd != NAV_CMD_DO_TRIGGER_CONTROL && missionitem.nav_cmd != NAV_CMD_DO_DIGICAM_CONTROL
+				&& missionitem.nav_cmd != NAV_CMD_IMAGE_START_CAPTURE && missionitem.nav_cmd != NAV_CMD_IMAGE_STOP_CAPTURE && missionitem.nav_cmd != NAV_CMD_VIDEO_START_CAPTURE
+				&& missionitem.nav_cmd != NAV_CMD_VIDEO_STOP_CAPTURE && missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONFIGURE && missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONTROL
+				&& missionitem.nav_cmd != NAV_CMD_DO_SET_ROI && missionitem.nav_cmd != NAV_CMD_DO_SET_CAM_TRIGG_DIST && missionitem.nav_cmd != NAV_CMD_DO_SET_CAM_TRIGG_INTERVAL
+				&& missionitem.nav_cmd != NAV_CMD_SET_CAMERA_MODE && missionitem.nav_cmd != NAV_CMD_DO_VTOL_TRANSITION)
 		{
 			
 			mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Mission rejected: item %i: unsupported cmd: %d", (int )(i + 1), (int )missionitem.nav_cmd);
@@ -425,7 +433,8 @@ bool MissionFeasibilityChecker::checkFixedWingLanding(dm_item_t dm_current, size
 							{
 								/* Landing waypoint is above altitude of slope at the given waypoint distance */
 								mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Mission rejected: adjust landing approach.");
-								mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Move down %.1fm or move further away by %.1fm.", (double )(slope_alt_req - missionitem_previous.altitude), (double )(wp_distance_req - wp_distance));
+								mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Move down %.1fm or move further away by %.1fm.", (double )(slope_alt_req
+																- missionitem_previous.altitude), (double )(wp_distance_req - wp_distance));
 								
 								return false;
 							}

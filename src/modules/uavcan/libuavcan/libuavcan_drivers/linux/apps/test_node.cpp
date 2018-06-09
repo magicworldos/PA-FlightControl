@@ -54,7 +54,7 @@ static void runForever(const uavcan_linux::NodePtr& node)
 	struct NodeStatusMonitor: public uavcan::NodeStatusMonitor
 	{
 		explicit NodeStatusMonitor(uavcan::INode& node) :
-				    uavcan::NodeStatusMonitor(node)
+					uavcan::NodeStatusMonitor(node)
 		{
 		}
 		

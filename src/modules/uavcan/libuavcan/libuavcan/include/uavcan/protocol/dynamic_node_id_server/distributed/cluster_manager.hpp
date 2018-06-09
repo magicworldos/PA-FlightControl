@@ -45,8 +45,8 @@ private:
 		Log::Index match_index;
 
 		Server() :
-				    next_index(0),
-				    match_index(0)
+					next_index(0),
+					match_index(0)
 		{
 		}
 		
@@ -205,14 +205,14 @@ public:
 	 * @param log           Needed to initialize nextIndex[] values after elections
 	 */
 	ClusterManager(INode& node, IStorageBackend& storage, const Log& log, IEventTracer& tracer) :
-			    TimerBase(node),
-			    storage_(storage),
-			    tracer_(tracer),
-			    log_(log),
-			    discovery_sub_(node),
-			    discovery_pub_(node),
-			    cluster_size_(0),
-			    num_known_servers_(0)
+				TimerBase(node),
+				storage_(storage),
+				tracer_(tracer),
+				log_(log),
+				discovery_sub_(node),
+				discovery_pub_(node),
+				cluster_size_(0),
+				num_known_servers_(0)
 	{
 	}
 	

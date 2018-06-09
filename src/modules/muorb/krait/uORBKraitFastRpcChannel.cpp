@@ -59,9 +59,9 @@ static hrt_abstime _log_check_time = 0;
 static hrt_abstime _log_check_interval = 10000000;
 
 uORB::KraitFastRpcChannel::KraitFastRpcChannel() :
-		    _RxHandler(nullptr),
-		    _ThreadStarted(false),
-		    _ThreadShouldExit(false)
+			_RxHandler(nullptr),
+			_ThreadStarted(false),
+			_ThreadShouldExit(false)
 {
 	_KraitWrapper.Initialize();
 }

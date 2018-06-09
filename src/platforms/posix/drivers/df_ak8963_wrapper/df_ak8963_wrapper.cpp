@@ -121,12 +121,12 @@ private:
 };
 
 DfAK8963Wrapper::DfAK8963Wrapper(enum Rotation rotation) :
-		    AK8963(MAG_DEVICE_PATH),
-		    _mag_topic(nullptr),
-		    _param_update_sub(-1),
-		    _mag_calibration { },
-		    _mag_orb_class_instance(-1),
-		    _mag_sample_perf(perf_alloc(PC_ELAPSED, "df_mag_read"))
+			AK8963(MAG_DEVICE_PATH),
+			_mag_topic(nullptr),
+			_param_update_sub(-1),
+			_mag_calibration { },
+			_mag_orb_class_instance(-1),
+			_mag_sample_perf(perf_alloc(PC_ELAPSED, "df_mag_read"))
 {
 	// Set sane default calibration values
 	_mag_calibration.x_scale = 1.0f;

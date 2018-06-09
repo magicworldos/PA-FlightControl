@@ -53,11 +53,11 @@ static unsigned long _bulk_topic_count_max = 0;
 //==============================================================================
 //==============================================================================
 uORB::FastRpcChannel::FastRpcChannel() :
-		    _RxHandler(0),
-		    _DataQInIndex(0),
-		    _DataQOutIndex(0),
-		    _ControlQInIndex(0),
-		    _ControlQOutIndex(0)
+			_RxHandler(0),
+			_DataQInIndex(0),
+			_DataQOutIndex(0),
+			_ControlQInIndex(0),
+			_ControlQOutIndex(0)
 {
 	for (int32_t i = 0; i < _MAX_MSG_QUEUE_SIZE; ++i)
 	{

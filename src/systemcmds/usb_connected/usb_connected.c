@@ -52,7 +52,7 @@ static void print_usage(void)
 {
 	
 	PRINT_MODULE_DESCRIPTION("Utility to check if USB is connected. Was previously used in startup scripts.\n"
-	                         "A return value of 0 means USB is connected, 1 otherwise.");
+								"A return value of 0 means USB is connected, 1 otherwise.");
 	
 	PRINT_MODULE_USAGE_NAME_SIMPLE("usb_connected", "command");
 }

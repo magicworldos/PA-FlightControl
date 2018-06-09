@@ -132,11 +132,11 @@ int main(int argc, const char** argv)
 		std::cout << "Self node ID: " << int(options.node_id.get()) << "\n"
 				"Num ifaces:   " << options.ifaces.size() << "\n"
 #ifdef NDEBUG
-		        "Build mode:   Release"
+				"Build mode:   Release"
 #else
-				        "Build mode:   Debug"
+						"Build mode:   Debug"
 #endif
-		        << std::endl;
+				<< std::endl;
 		
 		auto node = initNode(options.ifaces, options.node_id, "org.uavcan.linux_test_file_server");
 		runForever(node);

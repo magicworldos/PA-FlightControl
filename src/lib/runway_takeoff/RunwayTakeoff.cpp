@@ -52,23 +52,23 @@ namespace runwaytakeoff
 {
 
 RunwayTakeoff::RunwayTakeoff() :
-		    SuperBlock(nullptr, "RWTO"),
-		    _state(),
-		    _initialized(false),
-		    _initialized_time(0),
-		    _init_yaw(0),
-		    _climbout(false),
-		    _throttle_ramp_time(2 * 1e6),
-		    _runway_takeoff_enabled(this, "TKOFF"),
-		    _heading_mode(this, "HDG"),
-		    _nav_alt(this, "NAV_ALT"),
-		    _takeoff_throttle(this, "MAX_THR"),
-		    _runway_pitch_sp(this, "PSP"),
-		    _max_takeoff_pitch(this, "MAX_PITCH"),
-		    _max_takeoff_roll(this, "MAX_ROLL"),
-		    _min_airspeed_scaling(this, "AIRSPD_SCL"),
-		    _airspeed_min(this, "FW_AIRSPD_MIN", false),
-		    _climbout_diff(this, "FW_CLMBOUT_DIFF", false)
+			SuperBlock(nullptr, "RWTO"),
+			_state(),
+			_initialized(false),
+			_initialized_time(0),
+			_init_yaw(0),
+			_climbout(false),
+			_throttle_ramp_time(2 * 1e6),
+			_runway_takeoff_enabled(this, "TKOFF"),
+			_heading_mode(this, "HDG"),
+			_nav_alt(this, "NAV_ALT"),
+			_takeoff_throttle(this, "MAX_THR"),
+			_runway_pitch_sp(this, "PSP"),
+			_max_takeoff_pitch(this, "MAX_PITCH"),
+			_max_takeoff_roll(this, "MAX_ROLL"),
+			_min_airspeed_scaling(this, "AIRSPD_SCL"),
+			_airspeed_min(this, "FW_AIRSPD_MIN", false),
+			_climbout_diff(this, "FW_CLMBOUT_DIFF", false)
 {
 	
 	updateParams();

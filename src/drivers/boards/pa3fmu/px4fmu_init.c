@@ -412,7 +412,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 				hw_type[2] = 'M';
 				break;
 		}
-
+		
 		PX4_INFO("Ver 0x%1X : Rev %x %s", hw_version, hw_revision, hw_type);
 	}
 	
@@ -604,7 +604,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	
 	if (!spi1)
 	{
-		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS); board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_SENSORS);board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
 	
@@ -620,7 +620,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	
 	if (!spi2)
 	{
-		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_RAMTRON); board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_RAMTRON);board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
 	
@@ -636,7 +636,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	
 	if (!spi4)
 	{
-		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_EXT); board_autoled_on(LED_AMBER);
+		message("[boot] FAILED to initialize SPI port %d\n", PX4_SPI_BUS_EXT);board_autoled_on(LED_AMBER);
 		return -ENODEV;
 	}
 	

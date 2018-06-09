@@ -74,7 +74,8 @@ class AllocationRequestManager
 	{
 		const uint8_t max_bytes_per_request = Allocation::MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST;
 		
-		if ((msg.unique_id.size() != max_bytes_per_request) && (msg.unique_id.size() != (msg.unique_id.capacity() - max_bytes_per_request * 2U)) && (msg.unique_id.size() != msg.unique_id.capacity()))     // Future proofness for CAN FD
+		if ((msg.unique_id.size() != max_bytes_per_request) && (msg.unique_id.size() != (msg.unique_id.capacity() - max_bytes_per_request * 2U))
+				&& (msg.unique_id.size() != msg.unique_id.capacity()))     // Future proofness for CAN FD
 		{
 			return InvalidStage;
 		}
@@ -233,11 +234,11 @@ class AllocationRequestManager
 	
 public:
 	AllocationRequestManager(INode& node, IEventTracer& tracer, IAllocationRequestHandler& handler) :
-			    stage_timeout_(MonotonicDuration::fromMSec(Allocation::FOLLOWUP_TIMEOUT_MS)),
-			    handler_(handler),
-			    tracer_(tracer),
-			    allocation_sub_(node),
-			    allocation_pub_(node)
+				stage_timeout_(MonotonicDuration::fromMSec(Allocation::FOLLOWUP_TIMEOUT_MS)),
+				handler_(handler),
+				tracer_(tracer),
+				allocation_sub_(node),
+				allocation_pub_(node)
 	{
 	}
 	

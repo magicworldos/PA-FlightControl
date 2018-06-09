@@ -96,10 +96,10 @@ __EXPORT int test_ppm_main(int argc, char *argv[]);
 }
 
 TEST_PPM::TEST_PPM(unsigned channels) :
-		    _channels(channels),
-		    _plus_width(400),
-		    _call { },
-		    _call_times(0)
+			_channels(channels),
+			_plus_width(400),
+			_call { },
+			_call_times(0)
 {
 	memset(&_call, 0, sizeof(_call));
 	

@@ -27,13 +27,13 @@ struct SubscriptionListener
 		DataType msg;
 
 		ReceivedDataStructureCopy(const ReceivedDataStructure& s) :
-				    ts_monotonic(s.getMonotonicTimestamp()),
-				    ts_utc(s.getUtcTimestamp()),
-				    transfer_type(s.getTransferType()),
-				    transfer_id(s.getTransferID()),
-				    src_node_id(s.getSrcNodeID()),
-				    iface_index(s.getIfaceIndex()),
-				    msg(s)
+					ts_monotonic(s.getMonotonicTimestamp()),
+					ts_utc(s.getUtcTimestamp()),
+					transfer_type(s.getTransferType()),
+					transfer_id(s.getTransferID()),
+					src_node_id(s.getSrcNodeID()),
+					iface_index(s.getIfaceIndex()),
+					msg(s)
 		{
 		}
 	};

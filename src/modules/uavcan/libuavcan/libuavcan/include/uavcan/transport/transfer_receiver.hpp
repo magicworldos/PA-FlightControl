@@ -95,12 +95,12 @@ private:
 
 public:
 	TransferReceiver() :
-			    transfer_interval_msec_(DefaultTransferIntervalMSec),
-			    this_transfer_crc_(0),
-			    buffer_write_pos_(0),
-			    next_toggle_(false),
-			    iface_index_(IfaceIndexNotSet),
-			    error_cnt_(0)
+				transfer_interval_msec_(DefaultTransferIntervalMSec),
+				this_transfer_crc_(0),
+				buffer_write_pos_(0),
+				next_toggle_(false),
+				iface_index_(IfaceIndexNotSet),
+				error_cnt_(0)
 	{
 	}
 	

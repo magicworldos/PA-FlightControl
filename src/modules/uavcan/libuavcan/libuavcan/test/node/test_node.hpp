@@ -32,9 +32,9 @@ struct TestNode: public uavcan::INode
 	uint64_t internal_failure_count;
 
 	TestNode(uavcan::ICanDriver& can_driver, uavcan::ISystemClock& clock_driver, uavcan::NodeID self_node_id) :
-			    pool(1024),
-			    scheduler(can_driver, pool, clock_driver),
-			    internal_failure_count(0)
+				pool(1024),
+				scheduler(can_driver, pool, clock_driver),
+				internal_failure_count(0)
 	{
 		setNodeID(self_node_id);
 	}
@@ -68,8 +68,8 @@ struct PairableCanDriver: public uavcan::ICanDriver, public uavcan::ICanIface
 	uint64_t error_count;
 
 	PairableCanDriver(uavcan::ISystemClock& clock) :
-			    clock(clock),
-			    error_count(0)
+				clock(clock),
+				error_count(0)
 	{
 	}
 	
@@ -175,19 +175,19 @@ struct InterlinkedTestNodes
 	TestNode b;
 
 	InterlinkedTestNodes(uavcan::NodeID nid_first, uavcan::NodeID nid_second) :
-			    can_a(clock_a),
-			    can_b(clock_b),
-			    a(can_a, clock_a, nid_first),
-			    b(can_b, clock_b, nid_second)
+				can_a(clock_a),
+				can_b(clock_b),
+				a(can_a, clock_a, nid_first),
+				b(can_b, clock_b, nid_second)
 	{
 		can_a.linkTogether(&can_b);
 	}
 	
 	InterlinkedTestNodes() :
-			    can_a(clock_a),
-			    can_b(clock_b),
-			    a(can_a, clock_a, 1),
-			    b(can_b, clock_b, 2)
+				can_a(clock_a),
+				can_b(clock_b),
+				a(can_a, clock_a, 1),
+				b(can_b, clock_b, 2)
 	{
 		can_a.linkTogether(&can_b);
 	}
@@ -227,8 +227,8 @@ struct TestNetwork
 		TestNode node;
 
 		NodeEnvironment(uavcan::NodeID node_id) :
-				    can_driver(clock),
-				    node(can_driver, clock, node_id)
+					can_driver(clock),
+					node(can_driver, clock, node_id)
 		{
 		}
 	};

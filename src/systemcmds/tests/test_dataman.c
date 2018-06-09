@@ -110,7 +110,7 @@ static int task_main(int argc, char *argv[])
 		
 		if (i % (NUM_MISSIONS_TEST / 10) == 0)
 		{
-			PX4_INFO("task %d: %.0f%%", my_id, (double)i * 100.0f / NUM_MISSIONS_TEST);
+			PX4_INFO("task %d: %.0f%%", my_id, (double) i * 100.0f / NUM_MISSIONS_TEST);
 		}
 		
 		usleep(rand() & ((64 * 1024) - 1));
@@ -155,12 +155,12 @@ static int task_main(int argc, char *argv[])
 	}
 	
 	hrt_abstime rend = hrt_absolute_time();
-	PX4_INFO("task %d pass, hit %d, miss %d, io time read %llums. write %llums.", my_id, hit, miss, (rend - rstart) / NUM_MISSIONS_TEST / 1000, (wend - wstart) / NUM_MISSIONS_TEST / 1000);
+	PX4_INFO("task %d pass, hit %d, miss %d, io time read %llums. write %llums.", my_id, hit, miss, (rend - rstart) / NUM_MISSIONS_TEST / 1000, (wend - wstart) / NUM_MISSIONS_TEST
+						/ 1000);
 	px4_sem_post(sems + my_id);
 	return 0;
 	
-	fail:
-	PX4_ERR("test_dataman FAILED: task %d, buffer %02x %02x %02x %02x %02x %02x", my_id, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
+	fail: PX4_ERR("test_dataman FAILED: task %d, buffer %02x %02x %02x %02x %02x %02x", my_id, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
 	px4_sem_post(sems + my_id);
 	task_returned_error[my_id] = true;
 	return -1;

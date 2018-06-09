@@ -83,16 +83,16 @@ uORB::DeviceNode::SubscriberData *uORB::DeviceNode::filp_to_sd(device::file_t *f
 }
 
 uORB::DeviceNode::DeviceNode(const struct orb_metadata *meta, const char *name, const char *path, int priority, unsigned int queue_size) :
-		    CDev(name, path),
-		    _meta(meta),
-		    _data(nullptr),
-		    _last_update(0),
-		    _generation(0),
-		    _priority((uint8_t) priority),
-		    _published(false),
-		    _queue_size(queue_size),
-		    _subscriber_count(0),
-		    _publisher(0)
+			CDev(name, path),
+			_meta(meta),
+			_data(nullptr),
+			_last_update(0),
+			_generation(0),
+			_priority((uint8_t) priority),
+			_published(false),
+			_queue_size(queue_size),
+			_subscriber_count(0),
+			_publisher(0)
 {
 }
 
@@ -900,8 +900,8 @@ int16_t uORB::DeviceNode::process_received_message(int32_t length, uint8_t *data
 }
 
 uORB::DeviceMaster::DeviceMaster(Flavor f) :
-		    CDev((f == PUBSUB) ? "obj_master" : "param_master", (f == PUBSUB) ? TOPIC_MASTER_DEVICE_PATH : PARAM_MASTER_DEVICE_PATH),
-		    _flavor(f)
+			CDev((f == PUBSUB) ? "obj_master" : "param_master", (f == PUBSUB) ? TOPIC_MASTER_DEVICE_PATH : PARAM_MASTER_DEVICE_PATH),
+			_flavor(f)
 {
 	_last_statistics_output = hrt_absolute_time();
 }
@@ -1277,7 +1277,7 @@ void uORB::DeviceMaster::showTop(char **topic_filter, int num_filters)
 #else
 					printf(CLEAR_LINE "%*s %2i %4i %4i %5i %i\n", -(int) max_topic_name_length,
 #endif
-					       cur_node->node->get_meta()->o_name, (int) cur_node->instance, (int) cur_node->node->subscriber_count(), cur_node->pub_msg_delta, (int) cur_node->lost_msg_delta, cur_node->node->get_queue_size());
+							cur_node->node->get_meta()->o_name, (int) cur_node->instance, (int) cur_node->node->subscriber_count(), cur_node->pub_msg_delta, (int) cur_node->lost_msg_delta, cur_node->node->get_queue_size());
 				}
 				
 				cur_node = cur_node->next;

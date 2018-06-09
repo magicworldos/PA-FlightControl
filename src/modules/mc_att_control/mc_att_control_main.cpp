@@ -330,51 +330,51 @@ MulticopterAttitudeControl *g_control;
 }
 
 MulticopterAttitudeControl::MulticopterAttitudeControl() :
-		    
-		    _task_should_exit(false),
-		    _control_task(-1),
-		    
-		    /* subscriptions */
-		    _v_att_sub(-1),
-		    _v_att_sp_sub(-1),
-		    _v_control_mode_sub(-1),
-		    _params_sub(-1),
-		    _manual_control_sp_sub(-1),
-		    _vehicle_status_sub(-1),
-		    _motor_limits_sub(-1),
-		    _battery_status_sub(-1),
-		    _sensor_correction_sub(-1),
-		    _sensor_bias_sub(-1),
-		    
-		    /* gyro selection */
-		    _gyro_count(1),
-		    _selected_gyro(0),
-		    
-		    /* publications */
-		    _v_rates_sp_pub(nullptr),
-		    _actuators_0_pub(nullptr),
-		    _controller_status_pub(nullptr),
-		    _rates_sp_id(nullptr),
-		    _actuators_id(nullptr),
-		    
-		    _actuators_0_circuit_breaker_enabled(false),
-		    
-		    _v_att { },
-		    _v_att_sp { },
-		    _v_rates_sp { },
-		    _manual_control_sp { },
-		    _v_control_mode { },
-		    _actuators { },
-		    _vehicle_status { },
-		    _controller_status { },
-		    _battery_status { },
-		    _sensor_gyro { },
-		    _sensor_correction { },
-		    _sensor_bias { },
-		    _saturation_status { },
-		    /* performance counters */
-		    _loop_perf(perf_alloc(PC_ELAPSED, "mc_att_control")),
-		    _controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency"))
+			
+			_task_should_exit(false),
+			_control_task(-1),
+			
+			/* subscriptions */
+			_v_att_sub(-1),
+			_v_att_sp_sub(-1),
+			_v_control_mode_sub(-1),
+			_params_sub(-1),
+			_manual_control_sp_sub(-1),
+			_vehicle_status_sub(-1),
+			_motor_limits_sub(-1),
+			_battery_status_sub(-1),
+			_sensor_correction_sub(-1),
+			_sensor_bias_sub(-1),
+			
+			/* gyro selection */
+			_gyro_count(1),
+			_selected_gyro(0),
+			
+			/* publications */
+			_v_rates_sp_pub(nullptr),
+			_actuators_0_pub(nullptr),
+			_controller_status_pub(nullptr),
+			_rates_sp_id(nullptr),
+			_actuators_id(nullptr),
+			
+			_actuators_0_circuit_breaker_enabled(false),
+			
+			_v_att { },
+			_v_att_sp { },
+			_v_rates_sp { },
+			_manual_control_sp { },
+			_v_control_mode { },
+			_actuators { },
+			_vehicle_status { },
+			_controller_status { },
+			_battery_status { },
+			_sensor_gyro { },
+			_sensor_correction { },
+			_sensor_bias { },
+			_saturation_status { },
+			/* performance counters */
+			_loop_perf(perf_alloc(PC_ELAPSED, "mc_att_control")),
+			_controller_latency_perf(perf_alloc_once(PC_ELAPSED, "ctrl_latency"))
 {
 	for (uint8_t i = 0; i < MAX_GYRO_COUNT; i++)
 	{
@@ -848,7 +848,7 @@ void MulticopterAttitudeControl::control_attitude(float dt)
 	/* calculate angle error */
 	float e_R_z_sin = e_R.length(); // == sin(tilt angle error)
 	float e_R_z_cos = R_z * R_sp_z; // == cos(tilt angle error) == (R.transposed() * R_sp)(2, 2)
-	        
+			
 	/* calculate rotation matrix after roll/pitch only rotation */
 	math::Matrix < 3, 3 > R_rp;
 	
@@ -1039,10 +1039,12 @@ void MulticopterAttitudeControl::control_attitude_rates(float dt)
 		for (int i = AXIS_INDEX_ROLL; i < AXIS_COUNT; i++)
 		{
 			// Check for positive control saturation
-			bool positive_saturation = ((i == AXIS_INDEX_ROLL) && _saturation_status.flags.roll_pos) || ((i == AXIS_INDEX_PITCH) && _saturation_status.flags.pitch_pos) || ((i == AXIS_INDEX_YAW) && _saturation_status.flags.yaw_pos);
+			bool positive_saturation = ((i == AXIS_INDEX_ROLL) && _saturation_status.flags.roll_pos) || ((i == AXIS_INDEX_PITCH) && _saturation_status.flags.pitch_pos)
+					|| ((i == AXIS_INDEX_YAW) && _saturation_status.flags.yaw_pos);
 			
 			// Check for negative control saturation
-			bool negative_saturation = ((i == AXIS_INDEX_ROLL) && _saturation_status.flags.roll_neg) || ((i == AXIS_INDEX_PITCH) && _saturation_status.flags.pitch_neg) || ((i == AXIS_INDEX_YAW) && _saturation_status.flags.yaw_neg);
+			bool negative_saturation = ((i == AXIS_INDEX_ROLL) && _saturation_status.flags.roll_neg) || ((i == AXIS_INDEX_PITCH) && _saturation_status.flags.pitch_neg)
+					|| ((i == AXIS_INDEX_YAW) && _saturation_status.flags.yaw_neg);
 			
 			// prevent further positive control saturation
 			if (positive_saturation)

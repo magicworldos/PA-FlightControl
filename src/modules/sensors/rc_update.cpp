@@ -50,11 +50,11 @@
 using namespace sensors;
 
 RCUpdate::RCUpdate(const Parameters &parameters) :
-		    _parameters(parameters),
-		    _filter_roll(50.0f, 10.f), /* get replaced by parameter */
-		    _filter_pitch(50.0f, 10.f),
-		    _filter_yaw(50.0f, 10.f),
-		    _filter_throttle(50.0f, 10.f)
+			_parameters(parameters),
+			_filter_roll(50.0f, 10.f), /* get replaced by parameter */
+			_filter_pitch(50.0f, 10.f),
+			_filter_yaw(50.0f, 10.f),
+			_filter_throttle(50.0f, 10.f)
 {
 	memset(&_rc, 0, sizeof(_rc));
 	memset(&_rc_parameter_map, 0, sizeof(_rc_parameter_map));
@@ -169,7 +169,7 @@ void RCUpdate::rc_parameter_map_poll(ParameterHandles &parameter_handles, bool f
 		
 		for (int i = 0; i < rc_parameter_map_s::RC_PARAM_MAP_NCHAN; i++)
 		{
-			PX4_DEBUG("\ti %d param_id %s scale %.3f value0 %.3f, min %.3f, max %.3f", i, &_rc_parameter_map.param_id[i * (rc_parameter_map_s::PARAM_ID_LEN + 1)], (double )_rc_parameter_map.scale[i], (double )_rc_parameter_map.value0[i], (double )_rc_parameter_map.value_min[i], (double )_rc_parameter_map.value_max[i]);
+			PX4_DEBUG("\ti %d param_id %s scale %.3f value0 %.3f, min %.3f, max %.3f", i, &_rc_parameter_map.param_id[i * (rc_parameter_map_s::PARAM_ID_LEN + 1)], (double) _rc_parameter_map.scale[i], (double) _rc_parameter_map.value0[i], (double) _rc_parameter_map.value_min[i], (double) _rc_parameter_map.value_max[i]);
 		}
 	}
 }
@@ -302,7 +302,8 @@ void RCUpdate::rc_poll(const ParameterHandles &parameter_handles)
 			if (_parameters.rc_fails_thr > 0 && fs_ch >= 0)
 			{
 				/* failsafe configured */
-				if ((_parameters.rc_fails_thr < _parameters.min[fs_ch] && rc_input.values[fs_ch] < _parameters.rc_fails_thr) || (_parameters.rc_fails_thr > _parameters.max[fs_ch] && rc_input.values[fs_ch] > _parameters.rc_fails_thr))
+				if ((_parameters.rc_fails_thr < _parameters.min[fs_ch] && rc_input.values[fs_ch] < _parameters.rc_fails_thr)
+						|| (_parameters.rc_fails_thr > _parameters.max[fs_ch] && rc_input.values[fs_ch] > _parameters.rc_fails_thr))
 				{
 					/* failsafe triggered, signal is lost by receiver */
 					signal_lost = true;

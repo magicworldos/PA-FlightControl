@@ -176,7 +176,7 @@ private:
 };
 
 DevCommon::DevCommon(const char *device_name, const char *device_path) :
-		    CDev(device_name, device_path)
+			CDev(device_name, device_path)
 {
 }
 
@@ -256,8 +256,8 @@ protected:
 };
 
 Mavlink2Dev::Mavlink2Dev(ReadBuffer *read_buffer) :
-		    DevCommon("Mavlink2", "/dev/mavlink"),
-		    _read_buffer { read_buffer }
+			DevCommon("Mavlink2", "/dev/mavlink"),
+			_read_buffer { read_buffer }
 {
 }
 
@@ -461,8 +461,8 @@ protected:
 };
 
 RtpsDev::RtpsDev(ReadBuffer *read_buffer) :
-		    DevCommon("Rtps", "/dev/rtps"),
-		    _read_buffer { read_buffer }
+			DevCommon("Rtps", "/dev/rtps"),
+			_read_buffer { read_buffer }
 {
 }
 

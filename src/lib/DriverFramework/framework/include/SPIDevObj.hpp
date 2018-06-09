@@ -57,7 +57,7 @@ class SPIDevObj: public DevObj
 {
 public:
 	SPIDevObj(const char *name, const char *dev_path, const char *dev_class_path, unsigned int sample_interval_usec) :
-			    DevObj(name, dev_path, dev_class_path, DeviceBusType_SPI, sample_interval_usec)
+				DevObj(name, dev_path, dev_class_path, DeviceBusType_SPI, sample_interval_usec)
 	{
 		m_id.dev_id_s.bus = DeviceBusType_SPI;
 	}

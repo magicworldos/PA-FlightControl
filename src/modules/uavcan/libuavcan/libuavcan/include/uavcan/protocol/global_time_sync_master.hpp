@@ -40,8 +40,8 @@ class UAVCAN_EXPORT GlobalTimeSyncMaster: protected LoopbackFrameListenerBase
 
 	public:
 		IfaceMaster(INode& node, uint8_t iface_index) :
-				    pub_(node),
-				    iface_index_(iface_index)
+					pub_(node),
+					iface_index_(iface_index)
 		{
 			UAVCAN_ASSERT(iface_index < MaxCanIfaces);
 		}
@@ -104,7 +104,8 @@ class UAVCAN_EXPORT GlobalTimeSyncMaster: protected LoopbackFrameListenerBase
 		const uint8_t iface = frame.getIfaceIndex();
 		if (initialized_ && iface < MaxCanIfaces)
 		{
-			if (frame.getDataTypeID() == dtid_ && frame.getTransferType() == TransferTypeMessageBroadcast && frame.isStartOfTransfer() && frame.isEndOfTransfer() && frame.getSrcNodeID() == node_.getNodeID())
+			if (frame.getDataTypeID() == dtid_ && frame.getTransferType() == TransferTypeMessageBroadcast && frame.isStartOfTransfer() && frame.isEndOfTransfer()
+					&& frame.getSrcNodeID() == node_.getNodeID())
 			{
 				iface_masters_[iface]->setTxTimestamp(frame.getUtcTimestamp());
 			}
@@ -134,9 +135,9 @@ class UAVCAN_EXPORT GlobalTimeSyncMaster: protected LoopbackFrameListenerBase
 	
 public:
 	explicit GlobalTimeSyncMaster(INode& node) :
-			    LoopbackFrameListenerBase(node.getDispatcher()),
-			    node_(node),
-			    initialized_(false)
+				LoopbackFrameListenerBase(node.getDispatcher()),
+				node_(node),
+				initialized_(false)
 	{
 	}
 	

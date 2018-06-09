@@ -509,7 +509,8 @@ static int mixer_callback(uintptr_t handle, uint8_t control_group, uint8_t contr
 	/* motor spinup phase - lock throttle to zero */
 	if ((pwm_limit.state == PWM_LIMIT_STATE_RAMP) || (should_arm_nothrottle && !should_arm))
 	{
-		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE) && control_index == actuator_controls_s::INDEX_THROTTLE)
+		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE)
+				&& control_index == actuator_controls_s::INDEX_THROTTLE)
 		{
 			/* limit the throttle output to zero during motor spinup,
 			 * as the motors cannot follow any demand yet
@@ -521,7 +522,8 @@ static int mixer_callback(uintptr_t handle, uint8_t control_group, uint8_t contr
 	/* only safety off, but not armed - set throttle as invalid */
 	if (should_arm_nothrottle && !should_arm)
 	{
-		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE) && control_index == actuator_controls_s::INDEX_THROTTLE)
+		if ((control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE || control_group == actuator_controls_s::GROUP_INDEX_ATTITUDE_ALTERNATE)
+				&& control_index == actuator_controls_s::INDEX_THROTTLE)
 		{
 			/* mark the throttle as invalid */
 			control = NAN_VALUE;

@@ -47,12 +47,12 @@
 using namespace px4;
 
 Mavlink::Mavlink(std::string mavlink_fcu_url) :
-		    _n(),
-		    _v_att_sub(_n.subscribe("vehicle_attitude", 1, &Mavlink::VehicleAttitudeCallback, this)),
-		    _v_local_pos_sub(_n.subscribe("vehicle_local_position", 1, &Mavlink::VehicleLocalPositionCallback, this)),
-		    _v_att_sp_pub(_n.advertise < vehicle_attitude_setpoint > ("vehicle_attitude_setpoint", 1)),
-		    _pos_sp_triplet_pub(_n.advertise < position_setpoint_triplet > ("position_setpoint_triplet", 1)),
-		    _offboard_control_mode_pub(_n.advertise < offboard_control_mode > ("offboard_control_mode", 1))
+			_n(),
+			_v_att_sub(_n.subscribe("vehicle_attitude", 1, &Mavlink::VehicleAttitudeCallback, this)),
+			_v_local_pos_sub(_n.subscribe("vehicle_local_position", 1, &Mavlink::VehicleLocalPositionCallback, this)),
+			_v_att_sp_pub(_n.advertise < vehicle_attitude_setpoint > ("vehicle_attitude_setpoint", 1)),
+			_pos_sp_triplet_pub(_n.advertise < position_setpoint_triplet > ("position_setpoint_triplet", 1)),
+			_offboard_control_mode_pub(_n.advertise < offboard_control_mode > ("offboard_control_mode", 1))
 {
 	_link = mavconn::MAVConnInterface::open_url(mavlink_fcu_url);
 	_link->message_received.connect(boost::bind(&Mavlink::handle_msg, this, _1, _2, _3));

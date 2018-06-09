@@ -168,26 +168,26 @@ BottleDrop *g_bottle_drop;
 }
 
 BottleDrop::BottleDrop() :
-		    
-		    _task_should_exit(false),
-		    _main_task(-1),
-		    _mavlink_log_pub(nullptr),
-		    _command_sub(-1),
-		    _wind_estimate_sub(-1),
-		    _command { },
-		    _global_pos { },
-		    ref { },
-		    _actuator_pub(nullptr),
-		    _actuators { },
-		    _drop_approval(false),
-		    _doors_opened(0),
-		    _drop_time(0),
-		    _alt_clearance(70.0f),
-		    _target_position { },
-		    _drop_position { },
-		    _drop_state(DROP_STATE_INIT),
-		    _onboard_mission { },
-		    _onboard_mission_pub(nullptr)
+			
+			_task_should_exit(false),
+			_main_task(-1),
+			_mavlink_log_pub(nullptr),
+			_command_sub(-1),
+			_wind_estimate_sub(-1),
+			_command { },
+			_global_pos { },
+			ref { },
+			_actuator_pub(nullptr),
+			_actuators { },
+			_drop_approval(false),
+			_doors_opened(0),
+			_drop_time(0),
+			_alt_clearance(70.0f),
+			_target_position { },
+			_drop_position { },
+			_drop_state(DROP_STATE_INIT),
+			_onboard_mission { },
+			_onboard_mission_pub(nullptr)
 {
 }
 

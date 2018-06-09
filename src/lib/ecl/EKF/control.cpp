@@ -147,7 +147,8 @@ void Ekf::controlFusionModes()
 	controlAuxVelFusion();
 	
 	// report dead reckoning if we are no longer fusing measurements that directly constrain velocity drift
-	_is_dead_reckoning = (_time_last_imu - _time_last_pos_fuse > _params.no_aid_timeout_max) && (_time_last_imu - _time_last_delpos_fuse > _params.no_aid_timeout_max) && (_time_last_imu - _time_last_vel_fuse > _params.no_aid_timeout_max) && (_time_last_imu - _time_last_of_fuse > _params.no_aid_timeout_max);
+	_is_dead_reckoning = (_time_last_imu - _time_last_pos_fuse > _params.no_aid_timeout_max) && (_time_last_imu - _time_last_delpos_fuse > _params.no_aid_timeout_max)
+			&& (_time_last_imu - _time_last_vel_fuse > _params.no_aid_timeout_max) && (_time_last_imu - _time_last_of_fuse > _params.no_aid_timeout_max);
 	
 }
 
@@ -363,8 +364,8 @@ void Ekf::controlOpticalFlowFusion()
 		// optical flow fusion mode selection logic
 		if ((_params.fusion_mode & MASK_USE_OF) // optical flow has been selected by the user
 		&& !_control_status.flags.opt_flow // we are not yet using flow data
-		        && _control_status.flags.tilt_align // we know our tilt attitude
-		        && (_time_last_imu - _time_last_hagl_fuse) < (uint64_t) 5e5) // we have a valid distance to ground estimate
+				&& _control_status.flags.tilt_align // we know our tilt attitude
+				&& (_time_last_imu - _time_last_hagl_fuse) < (uint64_t) 5e5) // we have a valid distance to ground estimate
 		{
 			
 			// If the heading is not aligned, reset the yaw and magnetic field states
@@ -539,7 +540,8 @@ void Ekf::controlGpsFusion()
 		{
 			// We are relying on aiding to constrain drift so after a specified time
 			// with no aiding we need to do something
-			bool do_reset = (_time_last_imu - _time_last_pos_fuse > _params.no_gps_timeout_max) && (_time_last_imu - _time_last_delpos_fuse > _params.no_gps_timeout_max) && (_time_last_imu - _time_last_vel_fuse > _params.no_gps_timeout_max) && (_time_last_imu - _time_last_of_fuse > _params.no_gps_timeout_max);
+			bool do_reset = (_time_last_imu - _time_last_pos_fuse > _params.no_gps_timeout_max) && (_time_last_imu - _time_last_delpos_fuse > _params.no_gps_timeout_max)
+					&& (_time_last_imu - _time_last_vel_fuse > _params.no_gps_timeout_max) && (_time_last_imu - _time_last_of_fuse > _params.no_gps_timeout_max);
 			
 			// We haven't had an absolute position fix for a longer time so need to do something
 			do_reset = do_reset || (_time_last_imu - _time_last_pos_fuse > 2 * _params.no_gps_timeout_max);
@@ -624,10 +626,10 @@ void Ekf::controlHeightSensorTimeouts()
 	// Clipping causes the average accel reading to move towards zero which makes the INS think it is falling and produces positive vertical innovations
 	float var_product_lim = sq(_params.vert_innov_test_lim) * sq(_params.vert_innov_test_lim);
 	bool bad_vert_accel = (_control_status.flags.baro_hgt && // we can only run this check if vertical position and velocity observations are indepedant
-	        (sq(_vel_pos_innov[5] * _vel_pos_innov[2]) > var_product_lim * (_vel_pos_innov_var[5] * _vel_pos_innov_var[2])) && // vertical position and velocity sensors are in agreement that we have a significant error
-	        (_vel_pos_innov[2] > 0.0f) && // positive innovation indicates that the inertial nav thinks it is falling
-	        ((_imu_sample_delayed.time_us - _baro_sample_delayed.time_us) < 2 * BARO_MAX_INTERVAL ) && // vertical position data is fresh
-	        ((_imu_sample_delayed.time_us - _gps_sample_delayed.time_us) < 2 * GPS_MAX_INTERVAL )); // vertical velocity data is fresh
+			(sq(_vel_pos_innov[5] * _vel_pos_innov[2]) > var_product_lim * (_vel_pos_innov_var[5] * _vel_pos_innov_var[2])) && // vertical position and velocity sensors are in agreement that we have a significant error
+			(_vel_pos_innov[2] > 0.0f) && // positive innovation indicates that the inertial nav thinks it is falling
+			((_imu_sample_delayed.time_us - _baro_sample_delayed.time_us) < 2 * BARO_MAX_INTERVAL ) && // vertical position data is fresh
+			((_imu_sample_delayed.time_us - _gps_sample_delayed.time_us) < 2 * GPS_MAX_INTERVAL )); // vertical velocity data is fresh
 	
 	// record time of last bad vert accel
 	if (bad_vert_accel)
@@ -946,7 +948,8 @@ void Ekf::controlHeightFusion()
 			// since takeoff.
 			if (_control_status.flags.gnd_effect)
 			{
-				if ((_time_last_imu - _time_last_gnd_effect_on > GNDEFFECT_TIMEOUT) || (((_last_on_ground_posD - _state.pos(2)) > _params.gnd_effect_max_hgt) && _control_status.flags.in_air))
+				if ((_time_last_imu - _time_last_gnd_effect_on > GNDEFFECT_TIMEOUT)
+						|| (((_last_on_ground_posD - _state.pos(2)) > _params.gnd_effect_max_hgt) && _control_status.flags.in_air))
 				{
 					_control_status.flags.gnd_effect = false;
 				}
@@ -1382,10 +1385,10 @@ void Ekf::controlMagFusion()
 			
 			// decide whether 3-axis magnetomer fusion can be used
 			bool use_3D_fusion = _control_status.flags.tilt_align && // Use of 3D fusion requires valid tilt estimates
-			        _control_status.flags.in_air && // don't use when on the ground becasue of magnetic anomalies
-			        (_flt_mag_align_complete || height_achieved) && // once in-flight field alignment has been performed, ignore relative height
-			        ((_imu_sample_delayed.time_us - _time_last_movement) < 2 * 1000 * 1000); // Using 3-axis fusion for a minimum period after to allow for false negatives
-			        
+					_control_status.flags.in_air && // don't use when on the ground becasue of magnetic anomalies
+					(_flt_mag_align_complete || height_achieved) && // once in-flight field alignment has been performed, ignore relative height
+					((_imu_sample_delayed.time_us - _time_last_movement) < 2 * 1000 * 1000); // Using 3-axis fusion for a minimum period after to allow for false negatives
+					
 			// perform switch-over
 			if (use_3D_fusion)
 			{
@@ -1536,7 +1539,8 @@ void Ekf::controlVelPosFusion()
 {
 	// if we aren't doing any aiding, fake GPS measurements at the last known position to constrain drift
 	// Coincide fake measurements with baro data for efficiency with a minimum fusion rate of 5Hz
-	if (!_control_status.flags.gps && !_control_status.flags.opt_flow && !_control_status.flags.ev_pos && !(_control_status.flags.fuse_aspd && _control_status.flags.fuse_beta) && ((_time_last_imu - _time_last_fake_gps > (uint64_t) 2e5) || _fuse_height))
+	if (!_control_status.flags.gps && !_control_status.flags.opt_flow && !_control_status.flags.ev_pos && !(_control_status.flags.fuse_aspd && _control_status.flags.fuse_beta)
+			&& ((_time_last_imu - _time_last_fake_gps > (uint64_t) 2e5) || _fuse_height))
 	{
 		// Reset position and velocity states if we re-commence this aiding method
 		if ((_time_last_imu - _time_last_fake_gps) > (uint64_t) 4e5)

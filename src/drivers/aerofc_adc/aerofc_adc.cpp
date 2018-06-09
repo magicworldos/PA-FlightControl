@@ -69,15 +69,15 @@ static struct aerofc_adc_bus_option
 	uint8_t busnum;
 } bus_options[] = {
 #ifdef PX4_I2C_BUS_EXPANSION
-        { AEROFC_ADC_BUS_I2C_EXTERNAL, PX4_I2C_BUS_EXPANSION },
+		{ AEROFC_ADC_BUS_I2C_EXTERNAL, PX4_I2C_BUS_EXPANSION },
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION1
-        {	AEROFC_ADC_BUS_I2C_EXTERNAL, PX4_I2C_BUS_EXPANSION1},
+		{	AEROFC_ADC_BUS_I2C_EXTERNAL, PX4_I2C_BUS_EXPANSION1},
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	AEROFC_ADC_BUS_I2C_INTERNAL, PX4_I2C_BUS_ONBOARD},
+		{	AEROFC_ADC_BUS_I2C_INTERNAL, PX4_I2C_BUS_ONBOARD},
 #endif
-    };
+	};
 
 extern "C"
 {
@@ -231,8 +231,8 @@ int aerofc_adc_main(int argc, char *argv[])
 }
 
 AEROFC_ADC::AEROFC_ADC(uint8_t bus) :
-		    I2C("AEROFC_ADC", ADC0_DEVICE_PATH, bus, SLAVE_ADDR, 400000),
-		    _sample { }
+			I2C("AEROFC_ADC", ADC0_DEVICE_PATH, bus, SLAVE_ADDR, 400000),
+			_sample { }
 {
 	_sample.am_channel = 1;
 	pthread_mutex_init(&_sample_mutex, NULL);

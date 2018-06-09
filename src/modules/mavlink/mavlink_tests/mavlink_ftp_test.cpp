@@ -48,18 +48,19 @@
 #endif
 
 /// @brief Test case file name for Read command. File are generated using mavlink_ftp_test_data.py
-const MavlinkFtpTest::DownloadTestCase MavlinkFtpTest::_rgDownloadTestCases[] = { { PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_238.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN - sizeof(MavlinkFTP::PayloadHeader) - 1, true, false },	// Read takes less than single packet
-{ PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_239.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN - sizeof(MavlinkFTP::PayloadHeader), true, true },	// Read completely fills single packet
-{ PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_240.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN - sizeof(MavlinkFTP::PayloadHeader) + 1, false, false },	// Read take two packets
+const MavlinkFtpTest::DownloadTestCase MavlinkFtpTest::_rgDownloadTestCases[] = { { PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_238.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN
+		- sizeof(MavlinkFTP::PayloadHeader) - 1, true, false },	// Read takes less than single packet
+{ PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_239.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN - sizeof(MavlinkFTP::PayloadHeader), true, true },// Read completely fills single packet
+{ PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests/test_240.data", MAVLINK_MSG_FILE_TRANSFER_PROTOCOL_FIELD_PAYLOAD_LEN - sizeof(MavlinkFTP::PayloadHeader) + 1, false, false },// Read take two packets
 };
 
 const char MavlinkFtpTest::_unittest_microsd_dir[] = PX4_ROOTFSDIR "/fs/microsd/ftp_unit_test_dir";
 const char MavlinkFtpTest::_unittest_microsd_file[] = PX4_ROOTFSDIR "/fs/microsd/ftp_unit_test_dir/file";
 
 MavlinkFtpTest::MavlinkFtpTest() :
-		    _ftp_server(nullptr),
-		    _expected_seq_number(0),
-		    _reply_msg { }
+			_ftp_server(nullptr),
+			_expected_seq_number(0),
+			_reply_msg { }
 {
 }
 
@@ -184,10 +185,10 @@ bool MavlinkFtpTest::_list_test()
 	};
 	struct _testCase rgTestCases[] = { { "/bogus", nullptr, 0, false }, { PX4_MAVLINK_TEST_DATA_DIR "/unit_test_data/mavlink_tests", response1, 4, true },
 #ifdef __PX4_NUTTX
-	        // expected directory layout only valid on nuttx
-	        {	"/", response2, 4, true},
+			// expected directory layout only valid on nuttx
+			{	"/", response2, 4, true},
 #endif /* __PX4_NUTTX */
-        };
+		};
 	
 	for (size_t i = 0; i < sizeof(rgTestCases) / sizeof(rgTestCases[0]); i++)
 	{
@@ -782,10 +783,10 @@ bool MavlinkFtpTest::_removefile_test()
 	};
 	static const struct _testCase rgTestCases[] = { { "/bogus", false },
 #ifdef __PX4_NUTTX
-	        // file can actually be deleted on linux
-	        {	_rgDownloadTestCases[0].file, false},
+			// file can actually be deleted on linux
+			{	_rgDownloadTestCases[0].file, false},
 #endif /* __PX4_NUTTX */
-	        { _unittest_microsd_dir, false }, { _unittest_microsd_file, true }, { _unittest_microsd_file, false }, };
+			{ _unittest_microsd_dir, false }, { _unittest_microsd_file, true }, { _unittest_microsd_file, false }, };
 	
 	ut_compare("mkdir failed", ::mkdir(_unittest_microsd_dir, S_IRWXU | S_IRWXG | S_IRWXO), 0);
 	ut_assert("open failed", (fd = ::open(_unittest_microsd_file, O_CREAT | O_EXCL, S_IRWXU | S_IRWXG | S_IRWXO)) != -1);

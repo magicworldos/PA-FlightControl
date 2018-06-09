@@ -106,11 +106,11 @@ protected:
 	static constexpr unsigned DEFAULT_MAX_CHANNELS = 5; // 640 KB ought to be enough for anybody
 	
 	UavcanCDevSensorBridgeBase(const char *name, const char *devname, const char *class_devname, const orb_id_t orb_topic_sensor, const unsigned max_channels = DEFAULT_MAX_CHANNELS) :
-			    device::CDev(name, devname),
-			    _max_channels(max_channels),
-			    _class_devname(class_devname),
-			    _orb_topic(orb_topic_sensor),
-			    _channels(new Channel[max_channels])
+				device::CDev(name, devname),
+				_max_channels(max_channels),
+				_class_devname(class_devname),
+				_orb_topic(orb_topic_sensor),
+				_channels(new Channel[max_channels])
 	{
 		_device_id.devid_s.bus_type = DeviceBusType_UAVCAN;
 		_device_id.devid_s.bus = 0;

@@ -147,9 +147,9 @@ class UAVCAN_EXPORT ParamServer
 	
 public:
 	explicit ParamServer(INode& node) :
-			    get_set_srv_(node),
-			    save_erase_srv_(node),
-			    manager_(UAVCAN_NULLPTR)
+				get_set_srv_(node),
+				save_erase_srv_(node),
+				manager_(UAVCAN_NULLPTR)
 	{
 	}
 	

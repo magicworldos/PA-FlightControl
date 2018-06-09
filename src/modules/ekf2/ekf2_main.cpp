@@ -159,7 +159,7 @@ private:
 	static constexpr float _yaw_innov_test_lim = 0.52f;	///< Maximum permissible yaw innovation to pass pre-flight checks when not aiding inertial nav using NE frame observations (rad)
 	const float _vel_innov_spike_lim = 2.0f * _vel_innov_test_lim;	///< preflight velocity innovation spike limit (m/sec)
 	const float _hgt_innov_spike_lim = 2.0f * _hgt_innov_test_lim;	///< preflight position innovation spike limit (m)
-	        
+			
 	orb_advert_t _att_pub { nullptr };
 	orb_advert_t _wind_pub { nullptr };
 	orb_advert_t _estimator_status_pub { nullptr };
@@ -319,116 +319,116 @@ private:
 };
 
 Ekf2::Ekf2() :
-		    SuperBlock(nullptr, "EKF2"),
-		    _vehicle_local_position_pub(ORB_ID(vehicle_local_position), -1, &getPublications()),
-		    _vehicle_global_position_pub(ORB_ID(vehicle_global_position), -1, &getPublications()),
-		    _params(_ekf.getParamHandle()),
-		    _obs_dt_min_ms(this, "MIN_OBS_DT", true, _params->sensor_interval_min_ms),
-		    _mag_delay_ms(this, "MAG_DELAY", true, _params->mag_delay_ms),
-		    _baro_delay_ms(this, "BARO_DELAY", true, _params->baro_delay_ms),
-		    _gps_delay_ms(this, "GPS_DELAY", true, _params->gps_delay_ms),
-		    _flow_delay_ms(this, "OF_DELAY", true, _params->flow_delay_ms),
-		    _rng_delay_ms(this, "RNG_DELAY", true, _params->range_delay_ms),
-		    _airspeed_delay_ms(this, "ASP_DELAY", true, _params->airspeed_delay_ms),
-		    _ev_delay_ms(this, "EV_DELAY", true, _params->ev_delay_ms),
-		    _gyro_noise(this, "GYR_NOISE", true, _params->gyro_noise),
-		    _accel_noise(this, "ACC_NOISE", true, _params->accel_noise),
-		    _gyro_bias_p_noise(this, "GYR_B_NOISE", true, _params->gyro_bias_p_noise),
-		    _accel_bias_p_noise(this, "ACC_B_NOISE", true, _params->accel_bias_p_noise),
-		    _mage_p_noise(this, "MAG_E_NOISE", true, _params->mage_p_noise),
-		    _magb_p_noise(this, "MAG_B_NOISE", true, _params->magb_p_noise),
-		    _wind_vel_p_noise(this, "WIND_NOISE", true, _params->wind_vel_p_noise),
-		    _terrain_p_noise(this, "TERR_NOISE", true, _params->terrain_p_noise),
-		    _terrain_gradient(this, "TERR_GRAD", true, _params->terrain_gradient),
-		    _gps_vel_noise(this, "GPS_V_NOISE", true, _params->gps_vel_noise),
-		    _gps_pos_noise(this, "GPS_P_NOISE", true, _params->gps_pos_noise),
-		    _pos_noaid_noise(this, "NOAID_NOISE", true, _params->pos_noaid_noise),
-		    _baro_noise(this, "BARO_NOISE", true, _params->baro_noise),
-		    _baro_innov_gate(this, "BARO_GATE", true, _params->baro_innov_gate),
-		    _posNE_innov_gate(this, "GPS_P_GATE", true, _params->posNE_innov_gate),
-		    _vel_innov_gate(this, "GPS_V_GATE", true, _params->vel_innov_gate),
-		    _tas_innov_gate(this, "TAS_GATE", true, _params->tas_innov_gate),
-		    _mag_heading_noise(this, "HEAD_NOISE", true, _params->mag_heading_noise),
-		    _mag_noise(this, "MAG_NOISE", true, _params->mag_noise),
-		    _eas_noise(this, "EAS_NOISE", true, _params->eas_noise),
-		    _beta_innov_gate(this, "BETA_GATE", true, _params->beta_innov_gate),
-		    _beta_noise(this, "BETA_NOISE", true, _params->beta_noise),
-		    _mag_declination_deg(this, "MAG_DECL", true, _params->mag_declination_deg),
-		    _heading_innov_gate(this, "HDG_GATE", true, _params->heading_innov_gate),
-		    _mag_innov_gate(this, "MAG_GATE", true, _params->mag_innov_gate),
-		    _mag_decl_source(this, "DECL_TYPE", true, _params->mag_declination_source),
-		    _mag_fuse_type(this, "MAG_TYPE", true, _params->mag_fusion_type),
-		    _mag_acc_gate(this, "MAG_ACCLIM", true, _params->mag_acc_gate),
-		    _mag_yaw_rate_gate(this, "MAG_YAWLIM", true, _params->mag_yaw_rate_gate),
-		    _gps_check_mask(this, "GPS_CHECK", true, _params->gps_check_mask),
-		    _requiredEph(this, "REQ_EPH", true, _params->req_hacc),
-		    _requiredEpv(this, "REQ_EPV", true, _params->req_vacc),
-		    _requiredSacc(this, "REQ_SACC", true, _params->req_sacc),
-		    _requiredNsats(this, "REQ_NSATS", true, _params->req_nsats),
-		    _requiredGDoP(this, "REQ_GDOP", true, _params->req_gdop),
-		    _requiredHdrift(this, "REQ_HDRIFT", true, _params->req_hdrift),
-		    _requiredVdrift(this, "REQ_VDRIFT", true, _params->req_vdrift),
-		    _fusion_mode(this, "AID_MASK", true, _params->fusion_mode),
-		    _vdist_sensor_type(this, "HGT_MODE", true, _params->vdist_sensor_type),
-		    _range_noise(this, "RNG_NOISE", true, _params->range_noise),
-		    _range_noise_scaler(this, "RNG_SFE", true, _params->range_noise_scaler),
-		    _range_innov_gate(this, "RNG_GATE", true, _params->range_innov_gate),
-		    _rng_gnd_clearance(this, "MIN_RNG", true, _params->rng_gnd_clearance),
-		    _rng_pitch_offset(this, "RNG_PITCH", true, _params->rng_sens_pitch),
-		    _rng_aid(this, "RNG_AID", true, _params->range_aid),
-		    _rng_aid_hor_vel_max(this, "RNG_A_VMAX", true, _params->max_vel_for_range_aid),
-		    _rng_aid_height_max(this, "RNG_A_HMAX", true, _params->max_hagl_for_range_aid),
-		    _rng_aid_innov_gate(this, "RNG_A_IGATE", true, _params->range_aid_innov_gate),
-		    _ev_pos_noise(this, "EVP_NOISE"),
-		    _ev_ang_noise(this, "EVA_NOISE"),
-		    _ev_innov_gate(this, "EV_GATE", true, _params->ev_innov_gate),
-		    _flow_noise(this, "OF_N_MIN", true, _params->flow_noise),
-		    _flow_noise_qual_min(this, "OF_N_MAX", true, _params->flow_noise_qual_min),
-		    _flow_qual_min(this, "OF_QMIN", true, _params->flow_qual_min),
-		    _flow_innov_gate(this, "OF_GATE", true, _params->flow_innov_gate),
-		    _flow_rate_max(this, "OF_RMAX", true, _params->flow_rate_max),
-		    _imu_pos_x(this, "IMU_POS_X", true, _params->imu_pos_body(0)),
-		    _imu_pos_y(this, "IMU_POS_Y", true, _params->imu_pos_body(1)),
-		    _imu_pos_z(this, "IMU_POS_Z", true, _params->imu_pos_body(2)),
-		    _gps_pos_x(this, "GPS_POS_X", true, _params->gps_pos_body(0)),
-		    _gps_pos_y(this, "GPS_POS_Y", true, _params->gps_pos_body(1)),
-		    _gps_pos_z(this, "GPS_POS_Z", true, _params->gps_pos_body(2)),
-		    _rng_pos_x(this, "RNG_POS_X", true, _params->rng_pos_body(0)),
-		    _rng_pos_y(this, "RNG_POS_Y", true, _params->rng_pos_body(1)),
-		    _rng_pos_z(this, "RNG_POS_Z", true, _params->rng_pos_body(2)),
-		    _flow_pos_x(this, "OF_POS_X", true, _params->flow_pos_body(0)),
-		    _flow_pos_y(this, "OF_POS_Y", true, _params->flow_pos_body(1)),
-		    _flow_pos_z(this, "OF_POS_Z", true, _params->flow_pos_body(2)),
-		    _ev_pos_x(this, "EV_POS_X", true, _params->ev_pos_body(0)),
-		    _ev_pos_y(this, "EV_POS_Y", true, _params->ev_pos_body(1)),
-		    _ev_pos_z(this, "EV_POS_Z", true, _params->ev_pos_body(2)),
-		    _arspFusionThreshold(this, "ARSP_THR"),
-		    _fuseBeta(this, "FUSE_BETA"),
-		    _tau_vel(this, "TAU_VEL", true, _params->vel_Tau),
-		    _tau_pos(this, "TAU_POS", true, _params->pos_Tau),
-		    _gyr_bias_init(this, "GBIAS_INIT", true, _params->switch_on_gyro_bias),
-		    _acc_bias_init(this, "ABIAS_INIT", true, _params->switch_on_accel_bias),
-		    _ang_err_init(this, "ANGERR_INIT", true, _params->initial_tilt_err),
-		    _mag_bias_x(this, "MAGBIAS_X"),
-		    _mag_bias_y(this, "MAGBIAS_Y"),
-		    _mag_bias_z(this, "MAGBIAS_Z"),
-		    _mag_bias_id(this, "MAGBIAS_ID"),
-		    _mag_bias_saved_variance(this, "MAGB_VREF"),
-		    _mag_bias_alpha(this, "MAGB_K"),
-		    _acc_bias_lim(this, "ABL_LIM", true, _params->acc_bias_lim),
-		    _acc_bias_learn_acc_lim(this, "ABL_ACCLIM", true, _params->acc_bias_learn_acc_lim),
-		    _acc_bias_learn_gyr_lim(this, "ABL_GYRLIM", true, _params->acc_bias_learn_gyr_lim),
-		    _acc_bias_learn_tc(this, "ABL_TAU", true, _params->acc_bias_learn_tc),
-		    _drag_noise(this, "DRAG_NOISE", true, _params->drag_noise),
-		    _bcoef_x(this, "BCOEF_X", true, _params->bcoef_x),
-		    _bcoef_y(this, "BCOEF_Y", true, _params->bcoef_y),
-		    _aspd_max(this, "ASPD_MAX"),
-		    _K_pstatic_coef_xp(this, "PCOEF_XP"),
-		    _K_pstatic_coef_xn(this, "PCOEF_XN"),
-		    _K_pstatic_coef_y(this, "PCOEF_Y"),
-		    _K_pstatic_coef_z(this, "PCOEF_Z"),
-		    // non EKF2 parameters
-		    _airspeed_disabled(this, "FW_ARSP_MODE", false)
+			SuperBlock(nullptr, "EKF2"),
+			_vehicle_local_position_pub(ORB_ID(vehicle_local_position), -1, &getPublications()),
+			_vehicle_global_position_pub(ORB_ID(vehicle_global_position), -1, &getPublications()),
+			_params(_ekf.getParamHandle()),
+			_obs_dt_min_ms(this, "MIN_OBS_DT", true, _params->sensor_interval_min_ms),
+			_mag_delay_ms(this, "MAG_DELAY", true, _params->mag_delay_ms),
+			_baro_delay_ms(this, "BARO_DELAY", true, _params->baro_delay_ms),
+			_gps_delay_ms(this, "GPS_DELAY", true, _params->gps_delay_ms),
+			_flow_delay_ms(this, "OF_DELAY", true, _params->flow_delay_ms),
+			_rng_delay_ms(this, "RNG_DELAY", true, _params->range_delay_ms),
+			_airspeed_delay_ms(this, "ASP_DELAY", true, _params->airspeed_delay_ms),
+			_ev_delay_ms(this, "EV_DELAY", true, _params->ev_delay_ms),
+			_gyro_noise(this, "GYR_NOISE", true, _params->gyro_noise),
+			_accel_noise(this, "ACC_NOISE", true, _params->accel_noise),
+			_gyro_bias_p_noise(this, "GYR_B_NOISE", true, _params->gyro_bias_p_noise),
+			_accel_bias_p_noise(this, "ACC_B_NOISE", true, _params->accel_bias_p_noise),
+			_mage_p_noise(this, "MAG_E_NOISE", true, _params->mage_p_noise),
+			_magb_p_noise(this, "MAG_B_NOISE", true, _params->magb_p_noise),
+			_wind_vel_p_noise(this, "WIND_NOISE", true, _params->wind_vel_p_noise),
+			_terrain_p_noise(this, "TERR_NOISE", true, _params->terrain_p_noise),
+			_terrain_gradient(this, "TERR_GRAD", true, _params->terrain_gradient),
+			_gps_vel_noise(this, "GPS_V_NOISE", true, _params->gps_vel_noise),
+			_gps_pos_noise(this, "GPS_P_NOISE", true, _params->gps_pos_noise),
+			_pos_noaid_noise(this, "NOAID_NOISE", true, _params->pos_noaid_noise),
+			_baro_noise(this, "BARO_NOISE", true, _params->baro_noise),
+			_baro_innov_gate(this, "BARO_GATE", true, _params->baro_innov_gate),
+			_posNE_innov_gate(this, "GPS_P_GATE", true, _params->posNE_innov_gate),
+			_vel_innov_gate(this, "GPS_V_GATE", true, _params->vel_innov_gate),
+			_tas_innov_gate(this, "TAS_GATE", true, _params->tas_innov_gate),
+			_mag_heading_noise(this, "HEAD_NOISE", true, _params->mag_heading_noise),
+			_mag_noise(this, "MAG_NOISE", true, _params->mag_noise),
+			_eas_noise(this, "EAS_NOISE", true, _params->eas_noise),
+			_beta_innov_gate(this, "BETA_GATE", true, _params->beta_innov_gate),
+			_beta_noise(this, "BETA_NOISE", true, _params->beta_noise),
+			_mag_declination_deg(this, "MAG_DECL", true, _params->mag_declination_deg),
+			_heading_innov_gate(this, "HDG_GATE", true, _params->heading_innov_gate),
+			_mag_innov_gate(this, "MAG_GATE", true, _params->mag_innov_gate),
+			_mag_decl_source(this, "DECL_TYPE", true, _params->mag_declination_source),
+			_mag_fuse_type(this, "MAG_TYPE", true, _params->mag_fusion_type),
+			_mag_acc_gate(this, "MAG_ACCLIM", true, _params->mag_acc_gate),
+			_mag_yaw_rate_gate(this, "MAG_YAWLIM", true, _params->mag_yaw_rate_gate),
+			_gps_check_mask(this, "GPS_CHECK", true, _params->gps_check_mask),
+			_requiredEph(this, "REQ_EPH", true, _params->req_hacc),
+			_requiredEpv(this, "REQ_EPV", true, _params->req_vacc),
+			_requiredSacc(this, "REQ_SACC", true, _params->req_sacc),
+			_requiredNsats(this, "REQ_NSATS", true, _params->req_nsats),
+			_requiredGDoP(this, "REQ_GDOP", true, _params->req_gdop),
+			_requiredHdrift(this, "REQ_HDRIFT", true, _params->req_hdrift),
+			_requiredVdrift(this, "REQ_VDRIFT", true, _params->req_vdrift),
+			_fusion_mode(this, "AID_MASK", true, _params->fusion_mode),
+			_vdist_sensor_type(this, "HGT_MODE", true, _params->vdist_sensor_type),
+			_range_noise(this, "RNG_NOISE", true, _params->range_noise),
+			_range_noise_scaler(this, "RNG_SFE", true, _params->range_noise_scaler),
+			_range_innov_gate(this, "RNG_GATE", true, _params->range_innov_gate),
+			_rng_gnd_clearance(this, "MIN_RNG", true, _params->rng_gnd_clearance),
+			_rng_pitch_offset(this, "RNG_PITCH", true, _params->rng_sens_pitch),
+			_rng_aid(this, "RNG_AID", true, _params->range_aid),
+			_rng_aid_hor_vel_max(this, "RNG_A_VMAX", true, _params->max_vel_for_range_aid),
+			_rng_aid_height_max(this, "RNG_A_HMAX", true, _params->max_hagl_for_range_aid),
+			_rng_aid_innov_gate(this, "RNG_A_IGATE", true, _params->range_aid_innov_gate),
+			_ev_pos_noise(this, "EVP_NOISE"),
+			_ev_ang_noise(this, "EVA_NOISE"),
+			_ev_innov_gate(this, "EV_GATE", true, _params->ev_innov_gate),
+			_flow_noise(this, "OF_N_MIN", true, _params->flow_noise),
+			_flow_noise_qual_min(this, "OF_N_MAX", true, _params->flow_noise_qual_min),
+			_flow_qual_min(this, "OF_QMIN", true, _params->flow_qual_min),
+			_flow_innov_gate(this, "OF_GATE", true, _params->flow_innov_gate),
+			_flow_rate_max(this, "OF_RMAX", true, _params->flow_rate_max),
+			_imu_pos_x(this, "IMU_POS_X", true, _params->imu_pos_body(0)),
+			_imu_pos_y(this, "IMU_POS_Y", true, _params->imu_pos_body(1)),
+			_imu_pos_z(this, "IMU_POS_Z", true, _params->imu_pos_body(2)),
+			_gps_pos_x(this, "GPS_POS_X", true, _params->gps_pos_body(0)),
+			_gps_pos_y(this, "GPS_POS_Y", true, _params->gps_pos_body(1)),
+			_gps_pos_z(this, "GPS_POS_Z", true, _params->gps_pos_body(2)),
+			_rng_pos_x(this, "RNG_POS_X", true, _params->rng_pos_body(0)),
+			_rng_pos_y(this, "RNG_POS_Y", true, _params->rng_pos_body(1)),
+			_rng_pos_z(this, "RNG_POS_Z", true, _params->rng_pos_body(2)),
+			_flow_pos_x(this, "OF_POS_X", true, _params->flow_pos_body(0)),
+			_flow_pos_y(this, "OF_POS_Y", true, _params->flow_pos_body(1)),
+			_flow_pos_z(this, "OF_POS_Z", true, _params->flow_pos_body(2)),
+			_ev_pos_x(this, "EV_POS_X", true, _params->ev_pos_body(0)),
+			_ev_pos_y(this, "EV_POS_Y", true, _params->ev_pos_body(1)),
+			_ev_pos_z(this, "EV_POS_Z", true, _params->ev_pos_body(2)),
+			_arspFusionThreshold(this, "ARSP_THR"),
+			_fuseBeta(this, "FUSE_BETA"),
+			_tau_vel(this, "TAU_VEL", true, _params->vel_Tau),
+			_tau_pos(this, "TAU_POS", true, _params->pos_Tau),
+			_gyr_bias_init(this, "GBIAS_INIT", true, _params->switch_on_gyro_bias),
+			_acc_bias_init(this, "ABIAS_INIT", true, _params->switch_on_accel_bias),
+			_ang_err_init(this, "ANGERR_INIT", true, _params->initial_tilt_err),
+			_mag_bias_x(this, "MAGBIAS_X"),
+			_mag_bias_y(this, "MAGBIAS_Y"),
+			_mag_bias_z(this, "MAGBIAS_Z"),
+			_mag_bias_id(this, "MAGBIAS_ID"),
+			_mag_bias_saved_variance(this, "MAGB_VREF"),
+			_mag_bias_alpha(this, "MAGB_K"),
+			_acc_bias_lim(this, "ABL_LIM", true, _params->acc_bias_lim),
+			_acc_bias_learn_acc_lim(this, "ABL_ACCLIM", true, _params->acc_bias_learn_acc_lim),
+			_acc_bias_learn_gyr_lim(this, "ABL_GYRLIM", true, _params->acc_bias_learn_gyr_lim),
+			_acc_bias_learn_tc(this, "ABL_TAU", true, _params->acc_bias_learn_tc),
+			_drag_noise(this, "DRAG_NOISE", true, _params->drag_noise),
+			_bcoef_x(this, "BCOEF_X", true, _params->bcoef_x),
+			_bcoef_y(this, "BCOEF_Y", true, _params->bcoef_y),
+			_aspd_max(this, "ASPD_MAX"),
+			_K_pstatic_coef_xp(this, "PCOEF_XP"),
+			_K_pstatic_coef_xn(this, "PCOEF_XN"),
+			_K_pstatic_coef_y(this, "PCOEF_Y"),
+			_K_pstatic_coef_z(this, "PCOEF_Z"),
+			// non EKF2 parameters
+			_airspeed_disabled(this, "FW_ARSP_MODE", false)
 {
 }
 
@@ -742,7 +742,8 @@ void Ekf2::run()
 				{
 					const float mag_sample_count_inv = 1.0f / _mag_sample_count;
 					// calculate mean of measurements and correct for learned bias offsets
-					float mag_data_avg_ga[3] = { _mag_data_sum[0] * mag_sample_count_inv - _mag_bias_x.get(), _mag_data_sum[1] * mag_sample_count_inv - _mag_bias_y.get(), _mag_data_sum[2] * mag_sample_count_inv - _mag_bias_z.get() };
+					float mag_data_avg_ga[3] = { _mag_data_sum[0] * mag_sample_count_inv - _mag_bias_x.get(), _mag_data_sum[1] * mag_sample_count_inv - _mag_bias_y.get(), _mag_data_sum[2]
+							* mag_sample_count_inv - _mag_bias_z.get() };
 					
 					_ekf.setMagData(1000 * (uint64_t) mag_time_ms, mag_data_avg_ga);
 					
@@ -802,7 +803,10 @@ void Ekf2::run()
 						K_pstatic_coef_x = _K_pstatic_coef_xn.get();
 					}
 					
-					float pstatic_err = 0.5f * rho * (K_pstatic_coef_x * fminf(_vel_body_wind(0) * _vel_body_wind(0), max_airspeed_sq) + _K_pstatic_coef_y.get() * fminf(_vel_body_wind(1) * _vel_body_wind(1), max_airspeed_sq) + _K_pstatic_coef_z.get() * fminf(_vel_body_wind(2) * _vel_body_wind(2), max_airspeed_sq));
+					float pstatic_err = 0.5f * rho
+							* (K_pstatic_coef_x * fminf(_vel_body_wind(0) * _vel_body_wind(0), max_airspeed_sq)
+									+ _K_pstatic_coef_y.get() * fminf(_vel_body_wind(1) * _vel_body_wind(1), max_airspeed_sq)
+									+ _K_pstatic_coef_z.get() * fminf(_vel_body_wind(2) * _vel_body_wind(2), max_airspeed_sq));
 					
 					// correct baro measurement using pressure error estimate and assuming sea level gravity
 					balt_data_avg += pstatic_err / (rho * CONSTANTS_ONE_G);
@@ -843,7 +847,8 @@ void Ekf2::run()
 		}
 		
 		// only set airspeed data if condition for airspeed fusion are met
-		bool fuse_airspeed = airspeed_updated && !vehicle_status.is_rotary_wing && (_arspFusionThreshold.get() > FLT_EPSILON) && (airspeed.true_airspeed_m_s > _arspFusionThreshold.get());
+		bool fuse_airspeed = airspeed_updated && !vehicle_status.is_rotary_wing && (_arspFusionThreshold.get() > FLT_EPSILON)
+				&& (airspeed.true_airspeed_m_s > _arspFusionThreshold.get());
 		
 		if (fuse_airspeed)
 		{
@@ -1023,7 +1028,7 @@ void Ekf2::run()
 			float terrain_vpos;
 			_ekf.get_terrain_vert_pos(&terrain_vpos);
 			lpos.dist_bottom = terrain_vpos - lpos.z; // Distance to bottom surface (ground) in meters
-			        
+					
 			// constrain the distance to ground to _rng_gnd_clearance
 			if (lpos.dist_bottom < _rng_gnd_clearance.get())
 			{
@@ -1060,7 +1065,7 @@ void Ekf2::run()
 				global_pos.lat_lon_reset_counter = lpos.xy_reset_counter;
 				
 				global_pos.alt = -lpos.z + lpos.ref_alt; // Altitude AMSL in meters
-				        
+						
 				// global altitude has opposite sign of local down position
 				global_pos.delta_alt = -lpos.delta_z;
 				
@@ -1081,7 +1086,7 @@ void Ekf2::run()
 				if (global_pos.terrain_alt_valid)
 				{
 					global_pos.terrain_alt = lpos.ref_alt - terrain_vpos; // Terrain altitude in m, WGS84
-					        
+							
 				}
 				else
 				{
@@ -1115,7 +1120,7 @@ void Ekf2::run()
 				bias.mag_x = sensors.magnetometer_ga[0] - (_last_valid_mag_cal[0] / 1000.0f); // mGauss -> Gauss
 				bias.mag_y = sensors.magnetometer_ga[1] - (_last_valid_mag_cal[1] / 1000.0f); // mGauss -> Gauss
 				bias.mag_z = sensors.magnetometer_ga[2] - (_last_valid_mag_cal[2] / 1000.0f); // mGauss -> Gauss
-				        
+						
 				bias.gyro_x_bias = gyro_bias[0];
 				bias.gyro_y_bias = gyro_bias[1];
 				bias.gyro_z_bias = gyro_bias[2];
@@ -1174,9 +1179,9 @@ void Ekf2::run()
 
 				// Check if conditions are OK to for learning of magnetometer bias values
 				if (!vehicle_land_detected.landed && // not on ground
-				        (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) && // vehicle is armed
-				        (status.filter_fault_flags == 0) && // there are no filter faults
-				        (status.control_mode_flags & (1 << 5)))   // the EKF is operating in the correct mode
+						(vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) && // vehicle is armed
+						(status.filter_fault_flags == 0) && // there are no filter faults
+						(status.control_mode_flags & (1 << 5)))   // the EKF is operating in the correct mode
 				{
 					
 					if (_last_magcal_us == 0)
@@ -1235,7 +1240,8 @@ void Ekf2::run()
 				}
 				
 				// Check and save the last valid calibration when we are disarmed
-				if ((vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_STANDBY) && (status.filter_fault_flags == 0) && (sensor_selection.mag_device_id == _mag_bias_id.get()))
+				if ((vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_STANDBY) && (status.filter_fault_flags == 0)
+						&& (sensor_selection.mag_device_id == _mag_bias_id.get()))
 				{
 					
 					BlockParamFloat *mag_biases[] = { &_mag_bias_x, &_mag_bias_y, &_mag_bias_z };
@@ -1280,7 +1286,7 @@ void Ekf2::run()
 					v_wind_comp(0) -= velNE_wind[0];
 					v_wind_comp(1) -= velNE_wind[1];
 					_vel_body_wind = R_to_body * v_wind_comp; // TODO: move this elsewhere
-					        
+							
 					// Publish wind estimate
 					wind_estimate_s wind_estimate;
 					wind_estimate.timestamp = now;
@@ -1364,10 +1370,12 @@ void Ekf2::run()
 					
 					// check the yaw and horizontal velocity innovations
 					float vel_ne_innov_length = sqrtf(innovations.vel_pos_innov[0] * innovations.vel_pos_innov[0] + innovations.vel_pos_innov[1] * innovations.vel_pos_innov[1]);
-					_preflt_horiz_fail = (_vel_ne_innov_lpf.norm() > _vel_innov_test_lim) || (vel_ne_innov_length > 2.0f * _vel_innov_test_lim) || (_yaw_innov_magnitude_lpf > yaw_test_limit);
+					_preflt_horiz_fail = (_vel_ne_innov_lpf.norm() > _vel_innov_test_lim) || (vel_ne_innov_length > 2.0f * _vel_innov_test_lim)
+							|| (_yaw_innov_magnitude_lpf > yaw_test_limit);
 					
 					// check the vertical velocity and position innovations
-					_preflt_vert_fail = (fabsf(_vel_d_innov_lpf) > _vel_innov_test_lim) || (fabsf(innovations.vel_pos_innov[2]) > 2.0f * _vel_innov_test_lim) || (fabsf(_hgt_innov_lpf) > _hgt_innov_test_lim);
+					_preflt_vert_fail = (fabsf(_vel_d_innov_lpf) > _vel_innov_test_lim) || (fabsf(innovations.vel_pos_innov[2]) > 2.0f * _vel_innov_test_lim)
+							|| (fabsf(_hgt_innov_lpf) > _hgt_innov_test_lim);
 					
 					// master pass-fail status
 					_preflt_fail = _preflt_horiz_fail || _preflt_vert_fail;

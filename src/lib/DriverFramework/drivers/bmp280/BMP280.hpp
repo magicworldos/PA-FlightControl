@@ -74,7 +74,7 @@ class BMP280: public BaroSensor
 {
 public:
 	BMP280(const char *device_path) :
-			    BaroSensor(device_path, BMP280_MEASURE_INTERVAL_US)
+				BaroSensor(device_path, BMP280_MEASURE_INTERVAL_US)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_BMP280;
 		m_id.dev_id_s.address = BMP280_SLAVE_ADDRESS;

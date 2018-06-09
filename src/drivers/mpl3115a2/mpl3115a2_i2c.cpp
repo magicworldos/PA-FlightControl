@@ -95,7 +95,7 @@ MPL3115A2_i2c_interface(uint8_t busnum)
 }
 
 MPL3115A2_I2C::MPL3115A2_I2C(uint8_t bus) :
-		    I2C("MPL3115A2_I2C", nullptr, bus, 0, 400000)
+			I2C("MPL3115A2_I2C", nullptr, bus, 0, 400000)
 {
 }
 

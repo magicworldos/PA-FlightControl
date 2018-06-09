@@ -72,20 +72,20 @@
 #include "airspeedsim.h"
 
 AirspeedSim::AirspeedSim(int bus, int address, unsigned conversion_interval, const char *path) :
-		    CDev("AIRSPEEDSIM", path),
-		    _reports(nullptr),
-		    _retries(0),
-		    _sensor_ok(false),
-		    _last_published_sensor_ok(true), /* initialize differently to force publication */
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _diff_pres_offset(0.0f),
-		    _airspeed_pub(nullptr),
-		    _subsys_pub(nullptr),
-		    _class_instance(-1),
-		    _conversion_interval(conversion_interval),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "airspeed_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "airspeed_comms_errors"))
+			CDev("AIRSPEEDSIM", path),
+			_reports(nullptr),
+			_retries(0),
+			_sensor_ok(false),
+			_last_published_sensor_ok(true), /* initialize differently to force publication */
+			_measure_ticks(0),
+			_collect_phase(false),
+			_diff_pres_offset(0.0f),
+			_airspeed_pub(nullptr),
+			_subsys_pub(nullptr),
+			_class_instance(-1),
+			_conversion_interval(conversion_interval),
+			_sample_perf(perf_alloc(PC_ELAPSED, "airspeed_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "airspeed_comms_errors"))
 {
 	// enable debug() calls
 	_debug_enabled = false;

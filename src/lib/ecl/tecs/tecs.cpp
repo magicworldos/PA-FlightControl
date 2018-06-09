@@ -338,15 +338,15 @@ void TECS::_update_energy_estimates()
 	// Calculate specific energy demands in units of (m**2/sec**2)
 	_SPE_setpoint = _hgt_setpoint_adj * CONSTANTS_ONE_G; // potential energy
 	_SKE_setpoint = 0.5f * _TAS_setpoint_adj * _TAS_setpoint_adj; // kinetic energy
-	        
+			
 	// Calculate specific energy rate demands in units of (m**2/sec**3)
 	_SPE_rate_setpoint = _hgt_rate_setpoint * CONSTANTS_ONE_G; // potential energy rate of change
 	_SKE_rate_setpoint = _tas_state * _TAS_rate_setpoint; // kinetic energy rate of change
-	        
+			
 	// Calculate specific energies in units of (m**2/sec**2)
 	_SPE_estimate = _vert_pos_state * CONSTANTS_ONE_G; // potential energy
 	_SKE_estimate = 0.5f * _tas_state * _tas_state; // kinetic energy
-	        
+			
 	// Calculate specific energy rates in units of (m**2/sec**3)
 	_SPE_rate = _vert_vel_state * CONSTANTS_ONE_G; // potential energy rate of change
 	_SKE_rate = _tas_state * _speed_derivative; // kinetic energy rate of change
@@ -467,7 +467,8 @@ void TECS::_detect_uncommanded_descent()
 	float STE_rate = _SPE_rate + _SKE_rate;
 	
 	// If total energy is very low and reducing, throttle is high, and we are not in an underspeed condition, then enter uncommanded descent recovery mode
-	bool enter_mode = !_uncommanded_descent_recovery && !_underspeed_detected && (_STE_error > 200.0f) && (STE_rate < 0.0f) && (_throttle_setpoint >= _throttle_setpoint_max * 0.9f);
+	bool enter_mode = !_uncommanded_descent_recovery && !_underspeed_detected && (_STE_error > 200.0f) && (STE_rate < 0.0f)
+			&& (_throttle_setpoint >= _throttle_setpoint_max * 0.9f);
 	
 	// If we enter an underspeed condition or recover the required total energy, then exit uncommanded descent recovery mode
 	bool exit_mode = _uncommanded_descent_recovery && (_underspeed_detected || (_STE_error < 0.0f));

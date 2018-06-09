@@ -43,8 +43,8 @@ namespace uORB
 {
 
 PublicationBase::PublicationBase(const struct orb_metadata *meta, int priority) :
-		    _meta(meta),
-		    _priority(priority)
+			_meta(meta),
+			_priority(priority)
 {
 }
 
@@ -100,7 +100,7 @@ bool PublicationBase::update(void *data)
 }
 
 PublicationNode::PublicationNode(const struct orb_metadata *meta, int priority, List<PublicationNode *> *list) :
-		    PublicationBase(meta, priority)
+			PublicationBase(meta, priority)
 {
 	if (list != nullptr)
 	{

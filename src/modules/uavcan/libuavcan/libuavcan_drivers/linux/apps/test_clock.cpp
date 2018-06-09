@@ -61,7 +61,8 @@ int main()
 	}
 	const auto after = std::chrono::system_clock::now();
 	
-	std::cout << "Time before: " << systime2str(before) << "\n" << "Time after:  " << systime2str(after) << "\n" << "Millisecond diff (after - before): " << std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count() << std::endl;
+	std::cout << "Time before: " << systime2str(before) << "\n" << "Time after:  " << systime2str(after) << "\n" << "Millisecond diff (after - before): "
+			<< std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count() << std::endl;
 	
 	return 0;
 }

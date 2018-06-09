@@ -10,7 +10,7 @@ struct ListItem: uavcan::LinkedListNode<ListItem>
 	int value;
 
 	ListItem(int value = 0) :
-			    value(value)
+				value(value)
 	{
 	}
 	
@@ -19,7 +19,7 @@ struct ListItem: uavcan::LinkedListNode<ListItem>
 		const int compare_with;
 
 		GreaterThanComparator(int compare_with) :
-				    compare_with(compare_with)
+					compare_with(compare_with)
 		{
 		}
 		

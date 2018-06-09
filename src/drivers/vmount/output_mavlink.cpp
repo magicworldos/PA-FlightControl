@@ -47,7 +47,7 @@ namespace vmount
 {
 
 OutputMavlink::OutputMavlink(const OutputConfig &output_config) :
-		    OutputBase(output_config)
+			OutputBase(output_config)
 {
 }
 

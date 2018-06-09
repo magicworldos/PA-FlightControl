@@ -48,13 +48,13 @@
 constexpr const char MavlinkFTP::_root_dir[];
 
 MavlinkFTP::MavlinkFTP(Mavlink *mavlink) :
-		    _session_info { },
-		    _utRcvMsgFunc { },
-		    _worker_data { },
-		    _mavlink(mavlink),
-		    _work_buffer1 { nullptr },
-		    _work_buffer2 { nullptr },
-		    _last_work_buffer_access { 0 }
+			_session_info { },
+			_utRcvMsgFunc { },
+			_worker_data { },
+			_mavlink(mavlink),
+			_work_buffer1 { nullptr },
+			_work_buffer2 { nullptr },
+			_last_work_buffer_access { 0 }
 {
 	// initialize session
 	_session_info.fd = -1;
@@ -987,9 +987,9 @@ int MavlinkFTP::_copy_file(const char *src_path, const char *dst_path, size_t le
 	dst_fd = ::open(dst_path, O_CREAT | O_TRUNC | O_WRONLY
 	// POSIX requires the permissions to be supplied if O_CREAT passed
 #ifdef __PX4_POSIX
-	                , 0666
+					, 0666
 #endif
-	                );
+					);
 	
 	if (dst_fd < 0)
 	{

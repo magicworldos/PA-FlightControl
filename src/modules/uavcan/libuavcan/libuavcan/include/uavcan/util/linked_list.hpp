@@ -23,7 +23,7 @@ class UAVCAN_EXPORT LinkedListNode: Noncopyable
 
 protected:
 	LinkedListNode() :
-			    next_(UAVCAN_NULLPTR)
+				next_(UAVCAN_NULLPTR)
 	{
 	}
 	
@@ -53,7 +53,7 @@ class UAVCAN_EXPORT LinkedListRoot: Noncopyable
 
 public:
 	LinkedListRoot() :
-			    root_(UAVCAN_NULLPTR)
+				root_(UAVCAN_NULLPTR)
 	{
 	}
 	

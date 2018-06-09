@@ -19,137 +19,137 @@ static const float LAND_RATE = 10.0f;	// rate of land detector correction
 static const char *msg_label = "[lpe] ";	// rate of land detector correction
 
 BlockLocalPositionEstimator::BlockLocalPositionEstimator() :
-		    // this block has no parent, and has name LPE
-		    SuperBlock(nullptr, "LPE"),
-		    // subscriptions, set rate, add to list
-		    _sub_armed(ORB_ID(actuator_armed), 1000 / 2, 0, &getSubscriptions()),
-		    _sub_land(ORB_ID(vehicle_land_detected), 1000 / 2, 0, &getSubscriptions()),
-		    _sub_att(ORB_ID(vehicle_attitude), 1000 / 100, 0, &getSubscriptions()),
-		    // set flow max update rate higher than expected to we don't lose packets
-		    _sub_flow(ORB_ID(optical_flow), 1000 / 100, 0, &getSubscriptions()),
-		    // main prediction loop, 100 hz
-		    _sub_sensor(ORB_ID(sensor_combined), 1000 / 100, 0, &getSubscriptions()),
-		    // status updates 2 hz
-		    _sub_param_update(ORB_ID(parameter_update), 1000 / 2, 0, &getSubscriptions()),
-		    // gps 10 hz
-		    _sub_gps(ORB_ID(vehicle_gps_position), 1000 / 10, 0, &getSubscriptions()),
-		    // vision 50 hz
-		    _sub_vision_pos(ORB_ID(vehicle_vision_position), 1000 / 50, 0, &getSubscriptions()),
-		    // mocap 50 hz
-		    _sub_mocap(ORB_ID(att_pos_mocap), 1000 / 50, 0, &getSubscriptions()),
-		    // all distance sensors, 10 hz
-		    _sub_dist0(ORB_ID(distance_sensor), 1000 / 10, 0, &getSubscriptions()),
-		    _sub_dist1(ORB_ID(distance_sensor), 1000 / 10, 1, &getSubscriptions()),
-		    _sub_dist2(ORB_ID(distance_sensor), 1000 / 10, 2, &getSubscriptions()),
-		    _sub_dist3(ORB_ID(distance_sensor), 1000 / 10, 3, &getSubscriptions()),
-		    _dist_subs(),
-		    _sub_lidar(nullptr),
-		    _sub_sonar(nullptr),
-		    
-		    // publications
-		    _pub_lpos(ORB_ID(vehicle_local_position), -1, &getPublications()),
-		    _pub_gpos(ORB_ID(vehicle_global_position), -1, &getPublications()),
-		    _pub_est_status(ORB_ID(estimator_status), -1, &getPublications()),
-		    _pub_innov(ORB_ID(ekf2_innovations), -1, &getPublications()),
-		    
-		    // map projection
-		    _map_ref(),
-		    
-		    // block parameters
-		    _fusion(this, "FUSION"),
-		    _vxy_pub_thresh(this, "VXY_PUB"),
-		    _z_pub_thresh(this, "Z_PUB"),
-		    _sonar_z_stddev(this, "SNR_Z"),
-		    _sonar_z_offset(this, "SNR_OFF_Z"),
-		    _lidar_z_stddev(this, "LDR_Z"),
-		    _lidar_z_offset(this, "LDR_OFF_Z"),
-		    _accel_xy_stddev(this, "ACC_XY"),
-		    _accel_z_stddev(this, "ACC_Z"),
-		    _baro_stddev(this, "BAR_Z"),
-		    _gps_delay(this, "GPS_DELAY"),
-		    _gps_xy_stddev(this, "GPS_XY"),
-		    _gps_z_stddev(this, "GPS_Z"),
-		    _gps_vxy_stddev(this, "GPS_VXY"),
-		    _gps_vz_stddev(this, "GPS_VZ"),
-		    _gps_eph_max(this, "EPH_MAX"),
-		    _gps_epv_max(this, "EPV_MAX"),
-		    _vision_xy_stddev(this, "VIS_XY"),
-		    _vision_z_stddev(this, "VIS_Z"),
-		    _vision_delay(this, "VIS_DELAY"),
-		    _mocap_p_stddev(this, "VIC_P"),
-		    _flow_z_offset(this, "FLW_OFF_Z"),
-		    _flow_scale(this, "FLW_SCALE"),
-		    //_flow_board_x_offs(NULL, "SENS_FLW_XOFF"),
-		    //_flow_board_y_offs(NULL, "SENS_FLW_YOFF"),
-		    _flow_min_q(this, "FLW_QMIN"),
-		    _flow_r(this, "FLW_R"),
-		    _flow_rr(this, "FLW_RR"),
-		    _land_z_stddev(this, "LAND_Z"),
-		    _land_vxy_stddev(this, "LAND_VXY"),
-		    _pn_p_noise_density(this, "PN_P"),
-		    _pn_v_noise_density(this, "PN_V"),
-		    _pn_b_noise_density(this, "PN_B"),
-		    _pn_t_noise_density(this, "PN_T"),
-		    _t_max_grade(this, "T_MAX_GRADE"),
-		    
-		    // init origin
-		    _fake_origin(this, "FAKE_ORIGIN"),
-		    _init_origin_lat(this, "LAT"),
-		    _init_origin_lon(this, "LON"),
-		    
-		    // flow gyro
-		    _flow_gyro_x_high_pass(this, "FGYRO_HP"),
-		    _flow_gyro_y_high_pass(this, "FGYRO_HP"),
-		    
-		    // stats
-		    _baroStats(this, ""),
-		    _sonarStats(this, ""),
-		    _lidarStats(this, ""),
-		    _flowQStats(this, ""),
-		    _visionStats(this, ""),
-		    _mocapStats(this, ""),
-		    _gpsStats(this, ""),
-		    
-		    // low pass
-		    _xLowPass(this, "X_LP"),
-		    // use same lp constant for agl
-		    _aglLowPass(this, "X_LP"),
-		    
-		    // delay
-		    _xDelay(this, ""),
-		    _tDelay(this, ""),
-		    
-		    // misc
-		    _polls(),
-		    _timeStamp(hrt_absolute_time()),
-		    _time_origin(0),
-		    _timeStampLastBaro(hrt_absolute_time()),
-		    _time_last_hist(0),
-		    _time_last_flow(0),
-		    _time_last_baro(0),
-		    _time_last_gps(0),
-		    _time_last_lidar(0),
-		    _time_last_sonar(0),
-		    _time_init_sonar(0),
-		    _time_last_vision_p(0),
-		    _time_last_mocap(0),
-		    _time_last_land(0),
-		    
-		    // reference altitudes
-		    _altOrigin(0),
-		    _altOriginInitialized(false),
-		    _altOriginGlobal(false),
-		    _baroAltOrigin(0),
-		    _gpsAltOrigin(0),
-		    
-		    // status
-		    _receivedGps(false),
-		    _lastArmedState(false),
-		    
-		    // masks
-		    _sensorTimeout(UINT16_MAX),
-		    _sensorFault(0),
-		    _estimatorInitialized(0)
+			// this block has no parent, and has name LPE
+			SuperBlock(nullptr, "LPE"),
+			// subscriptions, set rate, add to list
+			_sub_armed(ORB_ID(actuator_armed), 1000 / 2, 0, &getSubscriptions()),
+			_sub_land(ORB_ID(vehicle_land_detected), 1000 / 2, 0, &getSubscriptions()),
+			_sub_att(ORB_ID(vehicle_attitude), 1000 / 100, 0, &getSubscriptions()),
+			// set flow max update rate higher than expected to we don't lose packets
+			_sub_flow(ORB_ID(optical_flow), 1000 / 100, 0, &getSubscriptions()),
+			// main prediction loop, 100 hz
+			_sub_sensor(ORB_ID(sensor_combined), 1000 / 100, 0, &getSubscriptions()),
+			// status updates 2 hz
+			_sub_param_update(ORB_ID(parameter_update), 1000 / 2, 0, &getSubscriptions()),
+			// gps 10 hz
+			_sub_gps(ORB_ID(vehicle_gps_position), 1000 / 10, 0, &getSubscriptions()),
+			// vision 50 hz
+			_sub_vision_pos(ORB_ID(vehicle_vision_position), 1000 / 50, 0, &getSubscriptions()),
+			// mocap 50 hz
+			_sub_mocap(ORB_ID(att_pos_mocap), 1000 / 50, 0, &getSubscriptions()),
+			// all distance sensors, 10 hz
+			_sub_dist0(ORB_ID(distance_sensor), 1000 / 10, 0, &getSubscriptions()),
+			_sub_dist1(ORB_ID(distance_sensor), 1000 / 10, 1, &getSubscriptions()),
+			_sub_dist2(ORB_ID(distance_sensor), 1000 / 10, 2, &getSubscriptions()),
+			_sub_dist3(ORB_ID(distance_sensor), 1000 / 10, 3, &getSubscriptions()),
+			_dist_subs(),
+			_sub_lidar(nullptr),
+			_sub_sonar(nullptr),
+			
+			// publications
+			_pub_lpos(ORB_ID(vehicle_local_position), -1, &getPublications()),
+			_pub_gpos(ORB_ID(vehicle_global_position), -1, &getPublications()),
+			_pub_est_status(ORB_ID(estimator_status), -1, &getPublications()),
+			_pub_innov(ORB_ID(ekf2_innovations), -1, &getPublications()),
+			
+			// map projection
+			_map_ref(),
+			
+			// block parameters
+			_fusion(this, "FUSION"),
+			_vxy_pub_thresh(this, "VXY_PUB"),
+			_z_pub_thresh(this, "Z_PUB"),
+			_sonar_z_stddev(this, "SNR_Z"),
+			_sonar_z_offset(this, "SNR_OFF_Z"),
+			_lidar_z_stddev(this, "LDR_Z"),
+			_lidar_z_offset(this, "LDR_OFF_Z"),
+			_accel_xy_stddev(this, "ACC_XY"),
+			_accel_z_stddev(this, "ACC_Z"),
+			_baro_stddev(this, "BAR_Z"),
+			_gps_delay(this, "GPS_DELAY"),
+			_gps_xy_stddev(this, "GPS_XY"),
+			_gps_z_stddev(this, "GPS_Z"),
+			_gps_vxy_stddev(this, "GPS_VXY"),
+			_gps_vz_stddev(this, "GPS_VZ"),
+			_gps_eph_max(this, "EPH_MAX"),
+			_gps_epv_max(this, "EPV_MAX"),
+			_vision_xy_stddev(this, "VIS_XY"),
+			_vision_z_stddev(this, "VIS_Z"),
+			_vision_delay(this, "VIS_DELAY"),
+			_mocap_p_stddev(this, "VIC_P"),
+			_flow_z_offset(this, "FLW_OFF_Z"),
+			_flow_scale(this, "FLW_SCALE"),
+			//_flow_board_x_offs(NULL, "SENS_FLW_XOFF"),
+			//_flow_board_y_offs(NULL, "SENS_FLW_YOFF"),
+			_flow_min_q(this, "FLW_QMIN"),
+			_flow_r(this, "FLW_R"),
+			_flow_rr(this, "FLW_RR"),
+			_land_z_stddev(this, "LAND_Z"),
+			_land_vxy_stddev(this, "LAND_VXY"),
+			_pn_p_noise_density(this, "PN_P"),
+			_pn_v_noise_density(this, "PN_V"),
+			_pn_b_noise_density(this, "PN_B"),
+			_pn_t_noise_density(this, "PN_T"),
+			_t_max_grade(this, "T_MAX_GRADE"),
+			
+			// init origin
+			_fake_origin(this, "FAKE_ORIGIN"),
+			_init_origin_lat(this, "LAT"),
+			_init_origin_lon(this, "LON"),
+			
+			// flow gyro
+			_flow_gyro_x_high_pass(this, "FGYRO_HP"),
+			_flow_gyro_y_high_pass(this, "FGYRO_HP"),
+			
+			// stats
+			_baroStats(this, ""),
+			_sonarStats(this, ""),
+			_lidarStats(this, ""),
+			_flowQStats(this, ""),
+			_visionStats(this, ""),
+			_mocapStats(this, ""),
+			_gpsStats(this, ""),
+			
+			// low pass
+			_xLowPass(this, "X_LP"),
+			// use same lp constant for agl
+			_aglLowPass(this, "X_LP"),
+			
+			// delay
+			_xDelay(this, ""),
+			_tDelay(this, ""),
+			
+			// misc
+			_polls(),
+			_timeStamp(hrt_absolute_time()),
+			_time_origin(0),
+			_timeStampLastBaro(hrt_absolute_time()),
+			_time_last_hist(0),
+			_time_last_flow(0),
+			_time_last_baro(0),
+			_time_last_gps(0),
+			_time_last_lidar(0),
+			_time_last_sonar(0),
+			_time_init_sonar(0),
+			_time_last_vision_p(0),
+			_time_last_mocap(0),
+			_time_last_land(0),
+			
+			// reference altitudes
+			_altOrigin(0),
+			_altOriginInitialized(false),
+			_altOriginGlobal(false),
+			_baroAltOrigin(0),
+			_gpsAltOrigin(0),
+			
+			// status
+			_receivedGps(false),
+			_lastArmedState(false),
+			
+			// masks
+			_sensorTimeout(UINT16_MAX),
+			_sensorFault(0),
+			_estimatorInitialized(0)
 {
 	// assign distance subs to array
 	_dist_subs[0] = &_sub_dist0;
@@ -180,15 +180,17 @@ BlockLocalPositionEstimator::BlockLocalPositionEstimator() :
 	
 	// print fusion settings to console
 	printf("[lpe] fuse gps: %d, flow: %d, vis_pos: %d, "
-	       "vis_yaw: %d, land: %d, pub_agl_z: %d, flow_gyro: %d, "
-	       "landing_target %d\n", (_fusion.get() & FUSE_GPS) != 0, (_fusion.get() & FUSE_FLOW) != 0, (_fusion.get() & FUSE_VIS_POS) != 0, (_fusion.get() & FUSE_VIS_YAW) != 0, (_fusion.get() & FUSE_LAND) != 0, (_fusion.get() & FUSE_PUB_AGL_Z) != 0, (_fusion.get() & FUSE_FLOW_GYRO_COMP) != 0, (_fusion.get() & FUSE_LAND_TARGET) != 0);
+			"vis_yaw: %d, land: %d, pub_agl_z: %d, flow_gyro: %d, "
+			"landing_target %d\n", (_fusion.get() & FUSE_GPS) != 0, (_fusion.get() & FUSE_FLOW) != 0, (_fusion.get() & FUSE_VIS_POS) != 0, (_fusion.get() & FUSE_VIS_YAW) != 0, (_fusion.get()
+			& FUSE_LAND) != 0, (_fusion.get() & FUSE_PUB_AGL_Z) != 0, (_fusion.get() & FUSE_FLOW_GYRO_COMP) != 0, (_fusion.get() & FUSE_LAND_TARGET) != 0);
 }
 
 BlockLocalPositionEstimator::~BlockLocalPositionEstimator()
 {
 }
 
-Vector<float, BlockLocalPositionEstimator::n_x> BlockLocalPositionEstimator::dynamics(float t, const Vector<float, BlockLocalPositionEstimator::n_x> &x, const Vector<float, BlockLocalPositionEstimator::n_u> &u)
+Vector<float, BlockLocalPositionEstimator::n_x> BlockLocalPositionEstimator::dynamics(float t, const Vector<float, BlockLocalPositionEstimator::n_x> &x, const Vector<float,
+																								BlockLocalPositionEstimator::n_u> &u)
 {
 	return _A * x + _B * u;
 }
@@ -240,7 +242,8 @@ void BlockLocalPositionEstimator::update()
 					mavlink_and_console_log_info(&mavlink_log_pub, "%sDownward-facing Lidar detected with ID %i", msg_label, i);
 					
 				}
-				else if (s->get().type == distance_sensor_s::MAV_DISTANCE_SENSOR_ULTRASOUND && s->get().orientation == distance_sensor_s::ROTATION_DOWNWARD_FACING && _sub_sonar == nullptr)
+				else if (s->get().type == distance_sensor_s::MAV_DISTANCE_SENSOR_ULTRASOUND && s->get().orientation == distance_sensor_s::ROTATION_DOWNWARD_FACING
+						&& _sub_sonar == nullptr)
 				{
 					_sub_sonar = s;
 					mavlink_and_console_log_info(&mavlink_log_pub, "%sDownward-facing Sonar detected with ID %i", msg_label, i);
@@ -304,7 +307,7 @@ void BlockLocalPositionEstimator::update()
 	bool lidarUpdated = (_sub_lidar != nullptr) && _sub_lidar->updated();
 	bool sonarUpdated = (_sub_sonar != nullptr) && _sub_sonar->updated();
 	bool landUpdated = landed() && ((_timeStamp - _time_last_land) > 1.0e6f / LAND_RATE);		// throttle rate
-	        
+			
 	// get new data
 	updateSubscriptions();
 	
@@ -336,7 +339,8 @@ void BlockLocalPositionEstimator::update()
 	{
 		if (vxy_stddev_ok)
 		{
-			if (!(_sensorTimeout & SENSOR_GPS) || !(_sensorTimeout & SENSOR_FLOW) || !(_sensorTimeout & SENSOR_VISION) || !(_sensorTimeout & SENSOR_MOCAP) || !(_sensorTimeout & SENSOR_LAND) || !(_sensorTimeout & SENSOR_LAND_TARGET))
+			if (!(_sensorTimeout & SENSOR_GPS) || !(_sensorTimeout & SENSOR_FLOW) || !(_sensorTimeout & SENSOR_VISION) || !(_sensorTimeout & SENSOR_MOCAP)
+					|| !(_sensorTimeout & SENSOR_LAND) || !(_sensorTimeout & SENSOR_LAND_TARGET))
 			{
 				_estimatorInitialized |= EST_XY;
 			}

@@ -42,10 +42,10 @@ class PersistentState
 	
 public:
 	PersistentState(IStorageBackend& storage, IEventTracer& tracer) :
-			    storage_(storage),
-			    tracer_(tracer),
-			    current_term_(0),
-			    log_(storage, tracer)
+				storage_(storage),
+				tracer_(tracer),
+				current_term_(0),
+				log_(storage, tracer)
 	{
 	}
 	

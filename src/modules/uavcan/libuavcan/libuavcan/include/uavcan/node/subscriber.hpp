@@ -37,9 +37,9 @@ namespace uavcan
  */
 template<typename DataType_,
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-        typename Callback_ = std::function<void (const ReceivedDataStructure<DataType_>&)>
+		typename Callback_ = std::function<void (const ReceivedDataStructure<DataType_>&)>
 #else
-        typename Callback_ = void (*)(const ReceivedDataStructure<DataType_>&)
+		typename Callback_ = void (*)(const ReceivedDataStructure<DataType_>&)
 #endif
 >
 class UAVCAN_EXPORT Subscriber: public GenericSubscriber<DataType_, DataType_, TransferListener>
@@ -68,8 +68,8 @@ public:
 	typedef DataType_ DataType;
 
 	explicit Subscriber(INode& node) :
-			    BaseType(node),
-			    callback_()
+				BaseType(node),
+				callback_()
 	{
 		StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindMessage>::check();
 	}

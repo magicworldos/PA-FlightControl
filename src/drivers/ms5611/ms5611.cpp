@@ -233,24 +233,24 @@ protected:
 extern "C" __EXPORT int ms5611_main(int argc, char *argv[]);
 
 MS5611::MS5611(device::Device *interface, ms5611::prom_u &prom_buf, const char *path, enum MS56XX_DEVICE_TYPES device_type) :
-		    CDev("MS5611", path),
-		    _interface(interface),
-		    _prom(prom_buf.s),
-		    _measure_ticks(0),
-		    _reports(nullptr),
-		    _device_type(device_type),
-		    _collect_phase(false),
-		    _measure_phase(0),
-		    _TEMP(0),
-		    _OFF(0),
-		    _SENS(0),
-		    _msl_pressure(101325),
-		    _baro_topic(nullptr),
-		    _orb_class_instance(-1),
-		    _class_instance(-1),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "ms5611_read")),
-		    _measure_perf(perf_alloc(PC_ELAPSED, "ms5611_measure")),
-		    _comms_errors(perf_alloc(PC_COUNT, "ms5611_com_err"))
+			CDev("MS5611", path),
+			_interface(interface),
+			_prom(prom_buf.s),
+			_measure_ticks(0),
+			_reports(nullptr),
+			_device_type(device_type),
+			_collect_phase(false),
+			_measure_phase(0),
+			_TEMP(0),
+			_OFF(0),
+			_SENS(0),
+			_msl_pressure(101325),
+			_baro_topic(nullptr),
+			_orb_class_instance(-1),
+			_class_instance(-1),
+			_sample_perf(perf_alloc(PC_ELAPSED, "ms5611_read")),
+			_measure_perf(perf_alloc(PC_ELAPSED, "ms5611_measure")),
+			_comms_errors(perf_alloc(PC_COUNT, "ms5611_com_err"))
 {
 	// work_cancel in stop_cycle called from the dtor will explode if we don't do this...
 	memset(&_work, 0, sizeof(_work));
@@ -969,18 +969,18 @@ struct ms5611_bus_option
 	MS5611 *dev;
 } bus_options[] = {
 #if defined(PX4_SPIDEV_EXT_BARO) && defined(PX4_SPI_BUS_EXT)
-        {	MS5611_BUS_SPI_EXTERNAL, "/dev/ms5611_spi_ext", &MS5611_spi_interface, PX4_SPI_BUS_EXT, NULL},
+		{	MS5611_BUS_SPI_EXTERNAL, "/dev/ms5611_spi_ext", &MS5611_spi_interface, PX4_SPI_BUS_EXT, NULL},
 #endif
 #ifdef PX4_SPIDEV_BARO
-        {	MS5611_BUS_SPI_INTERNAL, "/dev/ms5611_spi_int", &MS5611_spi_interface, PX4_SPI_BUS_BARO, NULL},
+		{	MS5611_BUS_SPI_INTERNAL, "/dev/ms5611_spi_int", &MS5611_spi_interface, PX4_SPI_BUS_BARO, NULL},
 #endif
 #ifdef PX4_I2C_BUS_ONBOARD
-        {	MS5611_BUS_I2C_INTERNAL, "/dev/ms5611_int", &MS5611_i2c_interface, PX4_I2C_BUS_ONBOARD, NULL},
+		{	MS5611_BUS_I2C_INTERNAL, "/dev/ms5611_int", &MS5611_i2c_interface, PX4_I2C_BUS_ONBOARD, NULL},
 #endif
 #ifdef PX4_I2C_BUS_EXPANSION
-        { MS5611_BUS_I2C_EXTERNAL, "/dev/ms5611_ext", &MS5611_i2c_interface, PX4_I2C_BUS_EXPANSION, NULL },
+		{ MS5611_BUS_I2C_EXTERNAL, "/dev/ms5611_ext", &MS5611_i2c_interface, PX4_I2C_BUS_EXPANSION, NULL },
 #endif
-        };
+		};
 #define NUM_BUS_OPTIONS (sizeof(bus_options)/sizeof(bus_options[0]))
 
 bool start_bus(struct ms5611_bus_option &bus, enum MS56XX_DEVICE_TYPES device_type);

@@ -111,11 +111,11 @@ class ImuSensor: public SPIDevObj
 public:
 	ImuSensor(const char *device_path, unsigned int sample_interval_usec, bool mag_enabled = false) :
 #if defined(__IMU_USE_I2C)
-			    I2CDevObj("ImuSensor", device_path, IMU_CLASS_PATH, sample_interval_usec),
+				I2CDevObj("ImuSensor", device_path, IMU_CLASS_PATH, sample_interval_usec),
 #else
-			    SPIDevObj("ImuSensor", device_path, IMU_CLASS_PATH, sample_interval_usec),
+				SPIDevObj("ImuSensor", device_path, IMU_CLASS_PATH, sample_interval_usec),
 #endif
-			    m_mag_enabled(mag_enabled)
+				m_mag_enabled(mag_enabled)
 	{
 	}
 	

@@ -51,13 +51,13 @@ public:
 	static const uint16_t MaxPossibleDataTypeIDValue = MaxMessageDataTypeIDValue;
 
 	DataTypeID() :
-			    value_(0xFFFFFFFFUL)
+				value_(0xFFFFFFFFUL)
 	{
 	}
 	
 	DataTypeID(uint16_t id)  // Implicit
 	:
-			    value_(id)
+				value_(id)
 	{
 	}
 	
@@ -117,7 +117,7 @@ public:
 	static DataTypeSignatureCRC extend(uint64_t crc);
 
 	DataTypeSignatureCRC() :
-			    crc_(0xFFFFFFFFFFFFFFFFULL)
+				crc_(0xFFFFFFFFFFFFFFFFULL)
 	{
 	}
 	
@@ -139,11 +139,11 @@ class UAVCAN_EXPORT DataTypeSignature
 
 public:
 	DataTypeSignature() :
-			    value_(0)
+				value_(0)
 	{
 	}
 	explicit DataTypeSignature(uint64_t value) :
-			    value_(value)
+				value_(value)
 	{
 	}
 	
@@ -180,16 +180,16 @@ public:
 	static const unsigned MaxFullNameLen = 80;
 
 	DataTypeDescriptor() :
-			    full_name_(""),
-			    kind_(DataTypeKind(0))
+				full_name_(""),
+				kind_(DataTypeKind(0))
 	{
 	}
 	
 	DataTypeDescriptor(DataTypeKind kind, DataTypeID id, const DataTypeSignature& signature, const char* name) :
-			    signature_(signature),
-			    full_name_(name),
-			    kind_(kind),
-			    id_(id)
+				signature_(signature),
+				full_name_(name),
+				kind_(kind),
+				id_(id)
 	{
 		UAVCAN_ASSERT((kind == DataTypeKindMessage) || (kind == DataTypeKindService));
 		UAVCAN_ASSERT(name);

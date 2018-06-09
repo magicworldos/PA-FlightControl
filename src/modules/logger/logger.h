@@ -90,7 +90,7 @@ struct LoggerSubscription
 	}
 	
 	LoggerSubscription(int fd_, const orb_metadata *metadata_) :
-			    metadata(metadata_)
+				metadata(metadata_)
 	{
 		fd[0] = fd_;
 		

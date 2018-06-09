@@ -206,20 +206,20 @@ static uint8_t crc8(uint8_t *p, uint8_t len)
 extern "C" __EXPORT int teraranger_main(int argc, char *argv[]);
 
 TERARANGER::TERARANGER(uint8_t rotation, int bus, int address) :
-		    I2C("TERARANGER", TERARANGER_DEVICE_PATH, bus, address, 100000),
-		    _rotation(rotation),
-		    _min_distance(-1.0f),
-		    _max_distance(-1.0f),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _valid(0),
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "tr1_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "tr1_com_err"))
+			I2C("TERARANGER", TERARANGER_DEVICE_PATH, bus, address, 100000),
+			_rotation(rotation),
+			_min_distance(-1.0f),
+			_max_distance(-1.0f),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_valid(0),
+			_measure_ticks(0),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "tr1_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "tr1_com_err"))
 {
 	// up the retries since the device misses the first measure attempts
 	I2C::_retries = 3;

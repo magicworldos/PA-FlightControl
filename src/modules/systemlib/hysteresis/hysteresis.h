@@ -50,11 +50,11 @@ class Hysteresis
 {
 public:
 	Hysteresis(bool init_state) :
-			    _state(init_state),
-			    _requested_state(init_state),
-			    _hysteresis_time_from_true_us(0),
-			    _hysteresis_time_from_false_us(0),
-			    _last_time_to_change_state(0)
+				_state(init_state),
+				_requested_state(init_state),
+				_hysteresis_time_from_true_us(0),
+				_hysteresis_time_from_false_us(0),
+				_last_time_to_change_state(0)
 	{
 	}
 	

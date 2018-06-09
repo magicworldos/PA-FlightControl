@@ -49,7 +49,7 @@ class UAVCAN_EXPORT Multiset: Noncopyable
 #endif
 		
 		Item() :
-				    ptr(UAVCAN_NULLPTR)
+					ptr(UAVCAN_NULLPTR)
 		{
 			fill_n(pool, sizeof(pool), static_cast<unsigned char>(0));
 		}
@@ -158,7 +158,7 @@ private:
 	{
 		unsigned index;
 		IndexPredicate(unsigned target_index) :
-				    index(target_index)
+					index(target_index)
 		{
 		}
 		
@@ -173,7 +173,7 @@ private:
 		const T& reference;
 
 		ComparingPredicate(const T& ref) :
-				    reference(ref)
+					reference(ref)
 		{
 		}
 		
@@ -189,7 +189,7 @@ private:
 		Operator oper;
 
 		OperatorToFalsePredicateAdapter(Operator o) :
-				    oper(o)
+					oper(o)
 		{
 		}
 		
@@ -208,7 +208,7 @@ private:
 
 public:
 	Multiset(IPoolAllocator& allocator) :
-			    allocator_(allocator)
+				allocator_(allocator)
 	{
 	}
 	

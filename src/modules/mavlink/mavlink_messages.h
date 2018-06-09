@@ -52,9 +52,9 @@ public:
 	uint16_t (*get_id)();
 
 	StreamListItem(MavlinkStream * (*inst)(Mavlink *mavlink), const char *(*name)(), uint16_t (*id)()) :
-			    new_instance(inst),
-			    get_name(name),
-			    get_id(id)
+				new_instance(inst),
+				get_name(name),
+				get_id(id)
 	{
 	}
 	

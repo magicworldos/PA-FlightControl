@@ -351,45 +351,45 @@ FixedwingAttitudeControl *g_control = nullptr;
 }
 
 FixedwingAttitudeControl::FixedwingAttitudeControl() :
-		    
-		    _task_should_exit(false),
-		    _task_running(false),
-		    _control_task(-1),
-		    
-		    /* subscriptions */
-		    _att_sub(-1),
-		    _att_sp_sub(-1),
-		    _battery_status_sub(-1),
-		    _global_pos_sub(-1),
-		    _manual_sub(-1),
-		    _params_sub(-1),
-		    _vcontrol_mode_sub(-1),
-		    _vehicle_land_detected_sub(-1),
-		    _vehicle_status_sub(-1),
-		    
-		    /* publications */
-		    _rate_sp_pub(nullptr),
-		    _attitude_sp_pub(nullptr),
-		    _actuators_0_pub(nullptr),
-		    _actuators_2_pub(nullptr),
-		    
-		    _rates_sp_id(nullptr),
-		    _actuators_id(nullptr),
-		    _attitude_setpoint_id(nullptr),
-		    
-		    _sub_airspeed(ORB_ID(airspeed), 0, 0, nullptr),
-		    
-		    /* performance counters */
-		    _loop_perf(perf_alloc(PC_ELAPSED, "fwa_dt")),
-		    _nonfinite_input_perf(perf_alloc(PC_COUNT, "fwa_nani")),
-		    _nonfinite_output_perf(perf_alloc(PC_COUNT, "fwa_nano")),
-		    /* states */
-		    _debug(false),
-		    _flaps_applied(0),
-		    _flaperons_applied(0),
-		    _roll(0.0f),
-		    _pitch(0.0f),
-		    _yaw(0.0f)
+			
+			_task_should_exit(false),
+			_task_running(false),
+			_control_task(-1),
+			
+			/* subscriptions */
+			_att_sub(-1),
+			_att_sp_sub(-1),
+			_battery_status_sub(-1),
+			_global_pos_sub(-1),
+			_manual_sub(-1),
+			_params_sub(-1),
+			_vcontrol_mode_sub(-1),
+			_vehicle_land_detected_sub(-1),
+			_vehicle_status_sub(-1),
+			
+			/* publications */
+			_rate_sp_pub(nullptr),
+			_attitude_sp_pub(nullptr),
+			_actuators_0_pub(nullptr),
+			_actuators_2_pub(nullptr),
+			
+			_rates_sp_id(nullptr),
+			_actuators_id(nullptr),
+			_attitude_setpoint_id(nullptr),
+			
+			_sub_airspeed(ORB_ID(airspeed), 0, 0, nullptr),
+			
+			/* performance counters */
+			_loop_perf(perf_alloc(PC_ELAPSED, "fwa_dt")),
+			_nonfinite_input_perf(perf_alloc(PC_COUNT, "fwa_nani")),
+			_nonfinite_output_perf(perf_alloc(PC_COUNT, "fwa_nano")),
+			/* states */
+			_debug(false),
+			_flaps_applied(0),
+			_flaperons_applied(0),
+			_roll(0.0f),
+			_pitch(0.0f),
+			_yaw(0.0f)
 {
 	/* safely initialize structs */
 	_actuators =

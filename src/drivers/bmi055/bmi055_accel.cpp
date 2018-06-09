@@ -11,22 +11,22 @@ BMI055_ACC_INT_EN_1,
 BMI055_ACC_INT_MAP_1, };
 
 BMI055_accel::BMI055_accel(int bus, const char *path_accel, uint32_t device, enum Rotation rotation) :
-		    BMI055("BMI055_ACCEL", path_accel, bus, device, SPIDEV_MODE3, BMI055_BUS_SPEED, rotation),
-		    _accel_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_scale(0.0f),
-		    _accel_range_m_s2(0.0f),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _accel_sample_rate(BMI055_ACCEL_DEFAULT_RATE),
-		    _accel_reads(perf_alloc(PC_COUNT, "bmi055_accel_read")),
-		    _accel_filter_x(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_int(1000000 / BMI055_ACCEL_MAX_PUBLISH_RATE),
-		    _last_temperature(0),
-		    _got_duplicate(false)
+			BMI055("BMI055_ACCEL", path_accel, bus, device, SPIDEV_MODE3, BMI055_BUS_SPEED, rotation),
+			_accel_reports(nullptr),
+			_accel_scale { },
+			_accel_range_scale(0.0f),
+			_accel_range_m_s2(0.0f),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_accel_sample_rate(BMI055_ACCEL_DEFAULT_RATE),
+			_accel_reads(perf_alloc(PC_COUNT, "bmi055_accel_read")),
+			_accel_filter_x(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(BMI055_ACCEL_DEFAULT_RATE, BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_int(1000000 / BMI055_ACCEL_MAX_PUBLISH_RATE),
+			_last_temperature(0),
+			_got_duplicate(false)
 {
 	// disable debug() calls
 	_debug_enabled = false;

@@ -134,10 +134,13 @@ private:
 	pollfd _poll_fds[UAVCAN_NUM_POLL_FDS] = { };
 	unsigned _poll_fds_num = 0;
 
-	typedef uavcan::MethodBinder<UavcanEsc *, void (UavcanEsc::*)(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &, uavcan::ServiceResponseDataStructure<UavcanEsc::BeginFirmwareUpdate::Response> &)> BeginFirmwareUpdateCallBack;
+	typedef uavcan::MethodBinder<UavcanEsc *,
+			void (UavcanEsc::*)(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &, uavcan::ServiceResponseDataStructure<
+										UavcanEsc::BeginFirmwareUpdate::Response> &)> BeginFirmwareUpdateCallBack;
 
 	uavcan::ServiceServer<BeginFirmwareUpdate, BeginFirmwareUpdateCallBack> _fw_update_listner;
-	void cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<UavcanEsc::BeginFirmwareUpdate::Response> &rsp);
+	void cb_beginfirmware_update(const uavcan::ReceivedDataStructure<UavcanEsc::BeginFirmwareUpdate::Request> &req, uavcan::ServiceResponseDataStructure<
+											UavcanEsc::BeginFirmwareUpdate::Response> &rsp);
 
 public:
 	

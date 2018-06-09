@@ -57,9 +57,9 @@ __EXPORT int nshterm_main(int argc, char *argv[]);
 static void print_usage(void)
 {
 	PRINT_MODULE_DESCRIPTION("Start an NSH shell on a given port.\n"
-	                         "\n"
-	                         "This was previously used to start a shell on the USB serial port.\n"
-	                         "Now there runs mavlink, and it is possible to use a shell over mavlink.\n");
+								"\n"
+								"This was previously used to start a shell on the USB serial port.\n"
+								"Now there runs mavlink, and it is possible to use a shell over mavlink.\n");
 	
 	PRINT_MODULE_USAGE_NAME_SIMPLE("nshterm", "command");
 	PRINT_MODULE_USAGE_ARG("<file:dev>", "Device on which to start the shell (eg. /dev/ttyACM0)", false);

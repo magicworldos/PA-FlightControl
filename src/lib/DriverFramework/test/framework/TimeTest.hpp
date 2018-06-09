@@ -42,7 +42,7 @@ class TimeTest: public DFTestObj
 {
 public:
 	TimeTest() :
-			    DFTestObj("Time Test")
+				DFTestObj("Time Test")
 	{
 	}
 	~TimeTest()

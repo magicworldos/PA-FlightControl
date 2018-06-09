@@ -116,13 +116,13 @@ private:
 };
 
 DfBebopBusWrapper::DfBebopBusWrapper() :
-		    BebopBus(BEBOP_BUS_DEVICE_PATH),
-		    _battery_topic(nullptr),
-		    _esc_topic(nullptr),
-		    _battery(),
-		    _armed(false),
-		    _last_throttle(0.0f),
-		    _battery_orb_class_instance(-1)
+			BebopBus(BEBOP_BUS_DEVICE_PATH),
+			_battery_topic(nullptr),
+			_esc_topic(nullptr),
+			_battery(),
+			_armed(false),
+			_last_throttle(0.0f),
+			_battery_orb_class_instance(-1)
 {
 }
 

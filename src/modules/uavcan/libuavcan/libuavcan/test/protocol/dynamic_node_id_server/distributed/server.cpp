@@ -34,7 +34,7 @@ class CommitHandler: public uavcan::dynamic_node_id_server::distributed::IRaftLe
 	
 public:
 	CommitHandler(const std::string& id) :
-			    id_(id)
+				id_(id)
 	{
 	}
 };

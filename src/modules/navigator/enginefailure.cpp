@@ -55,8 +55,8 @@
 #define DELAY_SIGMA	0.01f
 
 EngineFailure::EngineFailure(Navigator *navigator, const char *name) :
-		    MissionBlock(navigator, name),
-		    _ef_state(EF_STATE_NONE)
+			MissionBlock(navigator, name),
+			_ef_state(EF_STATE_NONE)
 {
 	/* initial reset */
 	on_inactive();

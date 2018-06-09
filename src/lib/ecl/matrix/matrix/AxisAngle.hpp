@@ -39,7 +39,7 @@ public:
 	 * @param data_ array
 	 */
 	AxisAngle(const Type *data_) :
-			    Vector<Type, 3>(data_)
+				Vector<Type, 3>(data_)
 	{
 	}
 	
@@ -47,7 +47,7 @@ public:
 	 * Standard constructor
 	 */
 	AxisAngle() :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 	}
 	
@@ -57,7 +57,7 @@ public:
 	 * @param other Matrix31 to copy
 	 */
 	AxisAngle(const Matrix31 &other) :
-			    Vector<Type, 3>(other)
+				Vector<Type, 3>(other)
 	{
 	}
 	
@@ -71,7 +71,7 @@ public:
 	 * @param q quaternion
 	 */
 	AxisAngle(const Quaternion<Type> &q) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		AxisAngle &v = *this;
 		Type ang = Type(2.0f) * acos(q(0));
@@ -99,7 +99,7 @@ public:
 	 * @param dcm dcm to set quaternion to
 	 */
 	AxisAngle(const Dcm<Type> &dcm) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		AxisAngle &v = *this;
 		v = Quaternion<Type>(dcm);
@@ -115,7 +115,7 @@ public:
 	 * @param euler euler angle instance
 	 */
 	AxisAngle(const Euler<Type> &euler) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		AxisAngle &v = *this;
 		v = Quaternion<Type>(euler);
@@ -129,7 +129,7 @@ public:
 	 * @param z r_z*angle
 	 */
 	AxisAngle(Type x, Type y, Type z) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		AxisAngle &v = *this;
 		v(0) = x;
@@ -144,7 +144,7 @@ public:
 	 * @param angle The amount to rotate
 	 */
 	AxisAngle(const Matrix31 & axis_, Type angle_) :
-			    Vector<Type, 3>()
+				Vector<Type, 3>()
 	{
 		AxisAngle &v = *this;
 		// make sure axis is a unit vector

@@ -23,10 +23,10 @@ struct FirmwareVersionChecker: public uavcan::IFirmwareVersionChecker
 	BeginFirmwareUpdate::Response last_error_response;
 
 	FirmwareVersionChecker() :
-			    should_request_cnt(0),
-			    should_retry_cnt(0),
-			    confirmation_cnt(0),
-			    retry_quota(0)
+				should_request_cnt(0),
+				should_retry_cnt(0),
+				confirmation_cnt(0),
+				retry_quota(0)
 	{
 	}
 	
@@ -69,7 +69,7 @@ struct BeginFirmwareUpdateServer
 	uint8_t response_error_code;
 
 	BeginFirmwareUpdateServer() :
-			    response_error_code(0)
+				response_error_code(0)
 	{
 	}
 	
@@ -80,7 +80,9 @@ struct BeginFirmwareUpdateServer
 		res.optional_error_message = "foobar";
 	}
 	
-	typedef uavcan::MethodBinder<BeginFirmwareUpdateServer*, void (BeginFirmwareUpdateServer::*)(const uavcan::ReceivedDataStructure<typename BeginFirmwareUpdate::Request>&, uavcan::ServiceResponseDataStructure<typename BeginFirmwareUpdate::Response>&) const> Callback;
+	typedef uavcan::MethodBinder<BeginFirmwareUpdateServer*,
+			void (BeginFirmwareUpdateServer::*)(const uavcan::ReceivedDataStructure<typename BeginFirmwareUpdate::Request>&, uavcan::ServiceResponseDataStructure<
+														typename BeginFirmwareUpdate::Response>&) const> Callback;
 
 	Callback makeCallback()
 	{

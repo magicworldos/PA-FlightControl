@@ -200,25 +200,25 @@ extern "C" __EXPORT int hc_sr04_main(int argc, char *argv[]);
 static int sonar_isr(int irq, void *context);
 
 HC_SR04::HC_SR04(unsigned sonars) :
-		    CDev("HC_SR04", SR04_DEVICE_PATH, 0),
-		    _min_distance(SR04_MIN_DISTANCE),
-		    _max_distance(SR04_MAX_DISTANCE),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _measure_ticks(0),
-		    _collect_phase(false),
-		    _class_instance(-1),
-		    _orb_class_instance(-1),
-		    _distance_sensor_topic(nullptr),
-		    _sample_perf(perf_alloc(PC_ELAPSED, "hc_sr04_read")),
-		    _comms_errors(perf_alloc(PC_COUNT, "hc_sr04_comms_errors")),
-		    _cycle_counter(0), /* initialising counter for cycling function to zero */
-		    _cycling_rate(0), /* initialising cycling rate (which can differ depending on one sonar or multiple) */
-		    _index_counter(0), /* initialising temp sonar i2c address to zero */
-		    _sonars(sonars),
-		    _raising_time(0),
-		    _falling_time(0),
-		    _status(0)
+			CDev("HC_SR04", SR04_DEVICE_PATH, 0),
+			_min_distance(SR04_MIN_DISTANCE),
+			_max_distance(SR04_MAX_DISTANCE),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_measure_ticks(0),
+			_collect_phase(false),
+			_class_instance(-1),
+			_orb_class_instance(-1),
+			_distance_sensor_topic(nullptr),
+			_sample_perf(perf_alloc(PC_ELAPSED, "hc_sr04_read")),
+			_comms_errors(perf_alloc(PC_COUNT, "hc_sr04_comms_errors")),
+			_cycle_counter(0), /* initialising counter for cycling function to zero */
+			_cycling_rate(0), /* initialising cycling rate (which can differ depending on one sonar or multiple) */
+			_index_counter(0), /* initialising temp sonar i2c address to zero */
+			_sonars(sonars),
+			_raising_time(0),
+			_falling_time(0),
+			_status(0)
 
 {
 	/* enable debug() calls */

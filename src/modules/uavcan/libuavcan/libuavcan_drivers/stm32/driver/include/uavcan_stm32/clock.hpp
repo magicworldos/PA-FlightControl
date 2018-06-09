@@ -59,13 +59,13 @@ struct UtcSyncParams
 	uavcan::UtcDuration min_jump;          ///< Min error to jump rather than change rate
 	
 	UtcSyncParams() :
-			    offset_p(0.01F),
-			    rate_i(0.02F),
-			    rate_error_corner_freq(0.01F),
-			    max_rate_correction_ppm(300.0F),
-			    lock_thres_rate_ppm(2.0F),
-			    lock_thres_offset(uavcan::UtcDuration::fromMSec(4)),
-			    min_jump(uavcan::UtcDuration::fromMSec(10))
+				offset_p(0.01F),
+				rate_i(0.02F),
+				rate_error_corner_freq(0.01F),
+				max_rate_correction_ppm(300.0F),
+				lock_thres_rate_ppm(2.0F),
+				lock_thres_offset(uavcan::UtcDuration::fromMSec(4)),
+				min_jump(uavcan::UtcDuration::fromMSec(10))
 	{
 	}
 };

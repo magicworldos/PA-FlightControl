@@ -245,7 +245,8 @@ void get_mavlink_mode_state(struct vehicle_status_s *status, uint8_t *mavlink_st
 	*mavlink_custom_mode = custom_mode.data;
 	
 	/* set system state */
-	if (status->arming_state == vehicle_status_s::ARMING_STATE_INIT || status->arming_state == vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE || status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY_ERROR)  	// TODO review
+	if (status->arming_state == vehicle_status_s::ARMING_STATE_INIT || status->arming_state == vehicle_status_s::ARMING_STATE_IN_AIR_RESTORE
+			|| status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY_ERROR)  	// TODO review
 	{
 		*mavlink_state = MAV_STATE_UNINIT;
 		
@@ -323,8 +324,8 @@ private:
 
 protected:
 	explicit MavlinkStreamHeartbeat(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status)))
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status)))
 	{
 	}
 	
@@ -390,7 +391,7 @@ private:
 
 protected:
 	explicit MavlinkStreamStatustext(Mavlink *mavlink) :
-			    MavlinkStream(mavlink)
+				MavlinkStream(mavlink)
 	{
 	}
 	
@@ -466,9 +467,9 @@ private:
 
 protected:
 	explicit MavlinkStreamCommandLong(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _cmd_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_command))),
-			    _cmd_time(0)
+				MavlinkStream(mavlink),
+				_cmd_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_command))),
+				_cmd_time(0)
 	{
 	}
 	
@@ -550,10 +551,10 @@ private:
 
 protected:
 	explicit MavlinkStreamSysStatus(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
-			    _cpuload_sub(_mavlink->add_orb_subscription(ORB_ID(cpuload))),
-			    _battery_status_sub(_mavlink->add_orb_subscription(ORB_ID(battery_status)))
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
+				_cpuload_sub(_mavlink->add_orb_subscription(ORB_ID(cpuload))),
+				_battery_status_sub(_mavlink->add_orb_subscription(ORB_ID(battery_status)))
 	{
 	}
 	
@@ -675,17 +676,17 @@ private:
 
 protected:
 	explicit MavlinkStreamHighresIMU(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
-			    _sensor_time(0),
-			    _bias_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_bias))),
-			    _bias_time(0),
-			    _differential_pressure_sub(_mavlink->add_orb_subscription(ORB_ID(differential_pressure))),
-			    _differential_pressure_time(0),
-			    _accel_timestamp(0),
-			    _gyro_timestamp(0),
-			    _mag_timestamp(0),
-			    _baro_timestamp(0)
+				MavlinkStream(mavlink),
+				_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
+				_sensor_time(0),
+				_bias_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_bias))),
+				_bias_time(0),
+				_differential_pressure_sub(_mavlink->add_orb_subscription(ORB_ID(differential_pressure))),
+				_differential_pressure_time(0),
+				_accel_timestamp(0),
+				_gyro_timestamp(0),
+				_mag_timestamp(0),
+				_baro_timestamp(0)
 	{
 	}
 	
@@ -804,12 +805,12 @@ private:
 
 protected:
 	explicit MavlinkStreamScaledIMU(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _raw_accel_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_accel))),
-			    _raw_gyro_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_gyro))),
-			    _raw_accel_time(0),
-			    _raw_gyro_time(0),
-			    _sensor_gyro { }
+				MavlinkStream(mavlink),
+				_raw_accel_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_accel))),
+				_raw_gyro_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_gyro))),
+				_raw_accel_time(0),
+				_raw_gyro_time(0),
+				_sensor_gyro { }
 	{
 	}
 	
@@ -889,9 +890,9 @@ private:
 
 protected:
 	explicit MavlinkStreamAttitude(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
-			    _att_time(0)
+				MavlinkStream(mavlink),
+				_att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
+				_att_time(0)
 	{
 	}
 	
@@ -963,9 +964,9 @@ private:
 
 protected:
 	explicit MavlinkStreamAttitudeQuaternion(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
-			    _att_time(0)
+				MavlinkStream(mavlink),
+				_att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
+				_att_time(0)
 	{
 	}
 	
@@ -1057,21 +1058,21 @@ private:
 
 protected:
 	explicit MavlinkStreamVFRHUD(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
-			    _att_time(0),
-			    _pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
-			    _pos_time(0),
-			    _armed_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_armed))),
-			    _armed_time(0),
-			    _act0_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_0))),
-			    _act0_time(0),
-			    _act1_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_1))),
-			    _act1_time(0),
-			    _airspeed_sub(_mavlink->add_orb_subscription(ORB_ID(airspeed))),
-			    _airspeed_time(0),
-			    _sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
-			    _sensor_time(0)
+				MavlinkStream(mavlink),
+				_att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
+				_att_time(0),
+				_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
+				_pos_time(0),
+				_armed_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_armed))),
+				_armed_time(0),
+				_act0_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_0))),
+				_act0_time(0),
+				_act1_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_1))),
+				_act1_time(0),
+				_airspeed_sub(_mavlink->add_orb_subscription(ORB_ID(airspeed))),
+				_airspeed_time(0),
+				_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
+				_sensor_time(0)
 	{
 	}
 	
@@ -1182,9 +1183,9 @@ private:
 
 protected:
 	explicit MavlinkStreamGPSRawInt(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _gps_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_gps_position))),
-			    _gps_time(0)
+				MavlinkStream(mavlink),
+				_gps_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_gps_position))),
+				_gps_time(0)
 	{
 	}
 	
@@ -1259,7 +1260,7 @@ private:
 
 protected:
 	explicit MavlinkStreamSystemTime(Mavlink *mavlink) :
-			    MavlinkStream(mavlink)
+				MavlinkStream(mavlink)
 	{
 	}
 	
@@ -1319,7 +1320,7 @@ private:
 
 protected:
 	explicit MavlinkStreamTimesync(Mavlink *mavlink) :
-			    MavlinkStream(mavlink)
+				MavlinkStream(mavlink)
 	{
 	}
 	
@@ -1329,7 +1330,7 @@ protected:
 		
 		msg.tc1 = 0;
 		msg.ts1 = hrt_absolute_time() * 1000; // boot time in nanoseconds
-		        
+				
 		mavlink_msg_timesync_send_struct(_mavlink->get_channel(), &msg);
 		
 		return true;
@@ -1384,9 +1385,9 @@ private:
 
 protected:
 	explicit MavlinkStreamADSBVehicle(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sub(_mavlink->add_orb_subscription(ORB_ID(transponder_report))),
-			    _pos_time(0)
+				MavlinkStream(mavlink),
+				_pos_sub(_mavlink->add_orb_subscription(ORB_ID(transponder_report))),
+				_pos_time(0)
 	{
 	}
 	
@@ -1464,9 +1465,9 @@ private:
 
 protected:
 	explicit MavlinkStreamCollision(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _collision_sub(_mavlink->add_orb_subscription(ORB_ID(collision_report))),
-			    _collision_time(0)
+				MavlinkStream(mavlink),
+				_collision_sub(_mavlink->add_orb_subscription(ORB_ID(collision_report))),
+				_collision_time(0)
 	{
 	}
 	
@@ -1543,9 +1544,9 @@ private:
 
 protected:
 	explicit MavlinkStreamCameraTrigger(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _trigger_sub(_mavlink->add_orb_subscription(ORB_ID(camera_trigger))),
-			    _trigger_time(0)
+				MavlinkStream(mavlink),
+				_trigger_sub(_mavlink->add_orb_subscription(ORB_ID(camera_trigger))),
+				_trigger_time(0)
 	{
 	}
 	
@@ -1647,9 +1648,9 @@ private:
 
 protected:
 	explicit MavlinkStreamCameraImageCaptured(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _capture_sub(_mavlink->add_orb_subscription(ORB_ID(camera_capture))),
-			    _capture_time(0)
+				MavlinkStream(mavlink),
+				_capture_sub(_mavlink->add_orb_subscription(ORB_ID(camera_capture))),
+				_capture_time(0)
 	{
 	}
 	
@@ -1732,11 +1733,11 @@ private:
 
 protected:
 	explicit MavlinkStreamGlobalPositionInt(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
-			    _pos_time(0),
-			    _home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
-			    _home_time(0)
+				MavlinkStream(mavlink),
+				_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
+				_pos_time(0),
+				_home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
+				_home_time(0)
 	{
 	}
 	
@@ -1820,11 +1821,11 @@ private:
 
 protected:
 	explicit MavlinkStreamVisionPositionEstimate(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_vision_position))),
-			    _pos_time(0),
-			    _att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_vision_attitude))),
-			    _att_time(0)
+				MavlinkStream(mavlink),
+				_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_vision_position))),
+				_pos_time(0),
+				_att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_vision_attitude))),
+				_att_time(0)
 	{
 	}
 	
@@ -1899,9 +1900,9 @@ private:
 
 protected:
 	explicit MavlinkStreamLocalPositionNED(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position))),
-			    _pos_time(0)
+				MavlinkStream(mavlink),
+				_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position))),
+				_pos_time(0)
 	{
 	}
 	
@@ -1973,9 +1974,9 @@ private:
 
 protected:
 	explicit MavlinkStreamLocalPositionNEDCOV(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _est_sub(_mavlink->add_orb_subscription(ORB_ID(estimator_status))),
-			    _est_time(0)
+				MavlinkStream(mavlink),
+				_est_sub(_mavlink->add_orb_subscription(ORB_ID(estimator_status))),
+				_est_time(0)
 	{
 	}
 	
@@ -2059,9 +2060,9 @@ private:
 
 protected:
 	explicit MavlinkStreamEstimatorStatus(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _est_sub(_mavlink->add_orb_subscription(ORB_ID(estimator_status))),
-			    _est_time(0)
+				MavlinkStream(mavlink),
+				_est_sub(_mavlink->add_orb_subscription(ORB_ID(estimator_status))),
+				_est_time(0)
 	{
 	}
 	
@@ -2130,9 +2131,9 @@ private:
 
 protected:
 	explicit MavlinkStreamAttPosMocap(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _mocap_sub(_mavlink->add_orb_subscription(ORB_ID(att_pos_mocap))),
-			    _mocap_time(0)
+				MavlinkStream(mavlink),
+				_mocap_sub(_mavlink->add_orb_subscription(ORB_ID(att_pos_mocap))),
+				_mocap_time(0)
 	{
 	}
 	
@@ -2204,8 +2205,8 @@ private:
 
 protected:
 	explicit MavlinkStreamHomePosition(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position)))
+				MavlinkStream(mavlink),
+				_home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position)))
 	{
 	}
 	
@@ -2309,9 +2310,9 @@ private:
 
 protected:
 	explicit MavlinkStreamServoOutputRaw(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _act_sub(nullptr),
-			    _act_time(0)
+				MavlinkStream(mavlink),
+				_act_sub(nullptr),
+				_act_time(0)
 	{
 		_act_sub = _mavlink->add_orb_subscription(ORB_ID(actuator_outputs), N);
 	}
@@ -2401,9 +2402,9 @@ private:
 
 protected:
 	explicit MavlinkStreamActuatorControlTarget(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_ctrl_sub(nullptr),
-			    _att_ctrl_time(0)
+				MavlinkStream(mavlink),
+				_att_ctrl_sub(nullptr),
+				_att_ctrl_time(0)
 	{
 		// XXX this can be removed once the multiplatform system remaps topics
 		switch (N)
@@ -2498,11 +2499,11 @@ private:
 
 protected:
 	explicit MavlinkStreamHILControls(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
-			    _status_time(0),
-			    _act_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_outputs))),
-			    _act_time(0)
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
+				_status_time(0),
+				_act_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_outputs))),
+				_act_time(0)
 	{
 	}
 	
@@ -2529,7 +2530,8 @@ protected:
 			unsigned system_type = _mavlink->get_system_type();
 			
 			/* scale outputs depending on system type */
-			if (system_type == MAV_TYPE_QUADROTOR || system_type == MAV_TYPE_HEXAROTOR || system_type == MAV_TYPE_OCTOROTOR || system_type == MAV_TYPE_VTOL_DUOROTOR || system_type == MAV_TYPE_VTOL_QUADROTOR)
+			if (system_type == MAV_TYPE_QUADROTOR || system_type == MAV_TYPE_HEXAROTOR || system_type == MAV_TYPE_OCTOROTOR || system_type == MAV_TYPE_VTOL_DUOROTOR
+					|| system_type == MAV_TYPE_VTOL_QUADROTOR)
 			{
 				
 				/* multirotors: set number of rotor outputs depending on type */
@@ -2680,11 +2682,11 @@ private:
 
 protected:
 	explicit MavlinkStreamHILActuatorControls(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
-			    _status_time(0),
-			    _act_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_outputs))),
-			    _act_time(0)
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
+				_status_time(0),
+				_act_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_outputs))),
+				_act_time(0)
 	{
 	}
 	
@@ -2711,7 +2713,8 @@ protected:
 			unsigned system_type = _mavlink->get_system_type();
 			
 			/* scale outputs depending on system type */
-			if (system_type == MAV_TYPE_QUADROTOR || system_type == MAV_TYPE_HEXAROTOR || system_type == MAV_TYPE_OCTOROTOR || system_type == MAV_TYPE_VTOL_DUOROTOR || system_type == MAV_TYPE_VTOL_QUADROTOR || system_type == MAV_TYPE_VTOL_RESERVED2)
+			if (system_type == MAV_TYPE_QUADROTOR || system_type == MAV_TYPE_HEXAROTOR || system_type == MAV_TYPE_OCTOROTOR || system_type == MAV_TYPE_VTOL_DUOROTOR
+					|| system_type == MAV_TYPE_VTOL_QUADROTOR || system_type == MAV_TYPE_VTOL_RESERVED2)
 			{
 				
 				/* multirotors: set number of rotor outputs depending on type */
@@ -2852,8 +2855,8 @@ private:
 
 protected:
 	explicit MavlinkStreamPositionTargetGlobalInt(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sp_triplet_sub(_mavlink->add_orb_subscription(ORB_ID(position_setpoint_triplet)))
+				MavlinkStream(mavlink),
+				_pos_sp_triplet_sub(_mavlink->add_orb_subscription(ORB_ID(position_setpoint_triplet)))
 	{
 	}
 	
@@ -2923,9 +2926,9 @@ private:
 
 protected:
 	explicit MavlinkStreamLocalPositionSetpoint(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _pos_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position_setpoint))),
-			    _pos_sp_time(0)
+				MavlinkStream(mavlink),
+				_pos_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position_setpoint))),
+				_pos_sp_time(0)
 	{
 	}
 	
@@ -3004,11 +3007,11 @@ private:
 
 protected:
 	explicit MavlinkStreamAttitudeTarget(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_setpoint))),
-			    _att_rates_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_rates_setpoint))),
-			    _att_sp_time(0),
-			    _att_rates_sp_time(0)
+				MavlinkStream(mavlink),
+				_att_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_setpoint))),
+				_att_rates_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_rates_setpoint))),
+				_att_sp_time(0),
+				_att_rates_sp_time(0)
 	{
 	}
 	
@@ -3094,9 +3097,9 @@ private:
 
 protected:
 	explicit MavlinkStreamRCChannels(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _rc_sub(_mavlink->add_orb_subscription(ORB_ID(input_rc))),
-			    _rc_time(0)
+				MavlinkStream(mavlink),
+				_rc_sub(_mavlink->add_orb_subscription(ORB_ID(input_rc))),
+				_rc_time(0)
 	{
 	}
 	
@@ -3201,9 +3204,9 @@ private:
 
 protected:
 	explicit MavlinkStreamManualControl(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _manual_sub(_mavlink->add_orb_subscription(ORB_ID(manual_control_setpoint))),
-			    _manual_time(0)
+				MavlinkStream(mavlink),
+				_manual_sub(_mavlink->add_orb_subscription(ORB_ID(manual_control_setpoint))),
+				_manual_time(0)
 	{
 	}
 	
@@ -3281,9 +3284,9 @@ private:
 
 protected:
 	explicit MavlinkStreamOpticalFlowRad(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _flow_sub(_mavlink->add_orb_subscription(ORB_ID(optical_flow))),
-			    _flow_time(0)
+				MavlinkStream(mavlink),
+				_flow_sub(_mavlink->add_orb_subscription(ORB_ID(optical_flow))),
+				_flow_time(0)
 	{
 	}
 	
@@ -3361,9 +3364,9 @@ private:
 
 protected:
 	explicit MavlinkStreamNamedValueFloat(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_key_value))),
-			    _debug_time(0)
+				MavlinkStream(mavlink),
+				_debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_key_value))),
+				_debug_time(0)
 	{
 	}
 	
@@ -3433,9 +3436,9 @@ private:
 
 protected:
 	explicit MavlinkStreamDebug(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_value))),
-			    _debug_time(0)
+				MavlinkStream(mavlink),
+				_debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_value))),
+				_debug_time(0)
 	{
 	}
 	
@@ -3503,9 +3506,9 @@ private:
 
 protected:
 	explicit MavlinkStreamDebugVect(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_vect))),
-			    _debug_time(0)
+				MavlinkStream(mavlink),
+				_debug_sub(_mavlink->add_orb_subscription(ORB_ID(debug_vect))),
+				_debug_time(0)
 	{
 	}
 	
@@ -3578,9 +3581,9 @@ private:
 
 protected:
 	explicit MavlinkStreamNavControllerOutput(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _fw_pos_ctrl_status_sub(_mavlink->add_orb_subscription(ORB_ID(fw_pos_ctrl_status))),
-			    _tecs_status_sub(_mavlink->add_orb_subscription(ORB_ID(tecs_status)))
+				MavlinkStream(mavlink),
+				_fw_pos_ctrl_status_sub(_mavlink->add_orb_subscription(ORB_ID(fw_pos_ctrl_status))),
+				_tecs_status_sub(_mavlink->add_orb_subscription(ORB_ID(tecs_status)))
 	{
 	}
 	
@@ -3656,8 +3659,8 @@ private:
 
 protected:
 	explicit MavlinkStreamCameraCapture(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status)))
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status)))
 	{
 	}
 	
@@ -3733,9 +3736,9 @@ private:
 
 protected:
 	explicit MavlinkStreamDistanceSensor(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _distance_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(distance_sensor))),
-			    _dist_sensor_time(0)
+				MavlinkStream(mavlink),
+				_distance_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(distance_sensor))),
+				_dist_sensor_time(0)
 	{
 	}
 	
@@ -3833,12 +3836,12 @@ private:
 
 protected:
 	explicit MavlinkStreamExtendedSysState(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
-			    _landed_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_land_detected))),
-			    _pos_sp_triplet_sub(_mavlink->add_orb_subscription(ORB_ID(position_setpoint_triplet))),
-			    _control_mode_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_control_mode))),
-			    _msg()
+				MavlinkStream(mavlink),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
+				_landed_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_land_detected))),
+				_pos_sp_triplet_sub(_mavlink->add_orb_subscription(ORB_ID(position_setpoint_triplet))),
+				_control_mode_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_control_mode))),
+				_msg()
 	{
 		_msg.vtol_state = MAV_VTOL_STATE_UNDEFINED;
 		_msg.landed_state = MAV_LANDED_STATE_UNDEFINED;
@@ -3978,15 +3981,15 @@ private:
 
 protected:
 	explicit MavlinkStreamAltitude(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
-			    _global_pos_time(0),
-			    _local_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position))),
-			    _local_pos_time(0),
-			    _home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
-			    _home_time(0),
-			    _sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
-			    _sensor_time(0)
+				MavlinkStream(mavlink),
+				_global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
+				_global_pos_time(0),
+				_local_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_local_position))),
+				_local_pos_time(0),
+				_home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
+				_home_time(0),
+				_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
+				_sensor_time(0)
 	{
 	}
 	
@@ -4130,11 +4133,11 @@ private:
 
 protected:
 	explicit MavlinkStreamWind(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _wind_estimate_sub(_mavlink->add_orb_subscription(ORB_ID(wind_estimate))),
-			    _wind_estimate_time(0),
-			    _global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
-			    _global_pos_time(0)
+				MavlinkStream(mavlink),
+				_wind_estimate_sub(_mavlink->add_orb_subscription(ORB_ID(wind_estimate))),
+				_wind_estimate_time(0),
+				_global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
+				_global_pos_time(0)
 	{
 	}
 	
@@ -4215,9 +4218,9 @@ private:
 
 protected:
 	explicit MavlinkStreamMountOrientation(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _mount_orientation_sub(_mavlink->add_orb_subscription(ORB_ID(mount_orientation))),
-			    _mount_orientation_time(0)
+				MavlinkStream(mavlink),
+				_mount_orientation_sub(_mavlink->add_orb_subscription(ORB_ID(mount_orientation))),
+				_mount_orientation_time(0)
 	{
 	}
 	
@@ -4328,35 +4331,35 @@ private:
 
 protected:
 	explicit MavlinkStreamHighLatency(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _actuator_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_0))),
-			    _actuator_time(0),
-			    _airspeed_sub(_mavlink->add_orb_subscription(ORB_ID(airspeed))),
-			    _airspeed_time(0),
-			    _attitude_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_setpoint))),
-			    _attitude_sp_time(0),
-			    _attitude_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
-			    _attitude_time(0),
-			    _battery_sub(_mavlink->add_orb_subscription(ORB_ID(battery_status))),
-			    _battery_time(0),
-			    _fw_pos_ctrl_status_sub(_mavlink->add_orb_subscription(ORB_ID(fw_pos_ctrl_status))),
-			    _fw_pos_ctrl_status_time(0),
-			    _global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
-			    _global_pos_time(0),
-			    _gps_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_gps_position))),
-			    _gps_time(0),
-			    _home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
-			    _home_time(0),
-			    _landed_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_land_detected))),
-			    _landed_time(0),
-			    _mission_result_sub(_mavlink->add_orb_subscription(ORB_ID(mission_result))),
-			    _mission_result_time(0),
-			    _sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
-			    _sensor_time(0),
-			    _status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
-			    _status_time(0),
-			    _tecs_status_sub(_mavlink->add_orb_subscription(ORB_ID(tecs_status))),
-			    _tecs_time(0)
+				MavlinkStream(mavlink),
+				_actuator_sub(_mavlink->add_orb_subscription(ORB_ID(actuator_controls_0))),
+				_actuator_time(0),
+				_airspeed_sub(_mavlink->add_orb_subscription(ORB_ID(airspeed))),
+				_airspeed_time(0),
+				_attitude_sp_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_setpoint))),
+				_attitude_sp_time(0),
+				_attitude_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude))),
+				_attitude_time(0),
+				_battery_sub(_mavlink->add_orb_subscription(ORB_ID(battery_status))),
+				_battery_time(0),
+				_fw_pos_ctrl_status_sub(_mavlink->add_orb_subscription(ORB_ID(fw_pos_ctrl_status))),
+				_fw_pos_ctrl_status_time(0),
+				_global_pos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position))),
+				_global_pos_time(0),
+				_gps_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_gps_position))),
+				_gps_time(0),
+				_home_sub(_mavlink->add_orb_subscription(ORB_ID(home_position))),
+				_home_time(0),
+				_landed_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_land_detected))),
+				_landed_time(0),
+				_mission_result_sub(_mavlink->add_orb_subscription(ORB_ID(mission_result))),
+				_mission_result_time(0),
+				_sensor_sub(_mavlink->add_orb_subscription(ORB_ID(sensor_combined))),
+				_sensor_time(0),
+				_status_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_status))),
+				_status_time(0),
+				_tecs_status_sub(_mavlink->add_orb_subscription(ORB_ID(tecs_status))),
+				_tecs_time(0)
 	{
 	}
 	
@@ -4504,13 +4507,13 @@ private:
 
 protected:
 	explicit MavlinkStreamGroundTruth(Mavlink *mavlink) :
-			    MavlinkStream(mavlink),
-			    _att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_groundtruth))),
-			    _gpos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position_groundtruth))),
-			    _att_time(0),
-			    _gpos_time(0),
-			    _att(),
-			    _gpos()
+				MavlinkStream(mavlink),
+				_att_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_attitude_groundtruth))),
+				_gpos_sub(_mavlink->add_orb_subscription(ORB_ID(vehicle_global_position_groundtruth))),
+				_att_time(0),
+				_gpos_time(0),
+				_att(),
+				_gpos()
 	{
 	}
 	
@@ -4560,27 +4563,27 @@ protected:
 };
 
 const StreamListItem *streams_list[] = { new StreamListItem(&MavlinkStreamHeartbeat::new_instance, &MavlinkStreamHeartbeat::get_name_static, &MavlinkStreamHeartbeat::get_id_static), new StreamListItem(&MavlinkStreamStatustext::new_instance, &MavlinkStreamStatustext::get_name_static, &MavlinkStreamStatustext::get_id_static), new StreamListItem(&MavlinkStreamCommandLong::new_instance, &MavlinkStreamCommandLong::get_name_static, &MavlinkStreamCommandLong::get_id_static), new StreamListItem(&MavlinkStreamSysStatus::new_instance, &MavlinkStreamSysStatus::get_name_static, &MavlinkStreamSysStatus::get_id_static), new StreamListItem(&MavlinkStreamHighresIMU::new_instance, &MavlinkStreamHighresIMU::get_name_static, &MavlinkStreamHighresIMU::get_id_static), new StreamListItem(&MavlinkStreamScaledIMU::new_instance, &MavlinkStreamScaledIMU::get_name_static, &MavlinkStreamScaledIMU::get_id_static), new StreamListItem(&MavlinkStreamAttitude::new_instance, &MavlinkStreamAttitude::get_name_static, &MavlinkStreamAttitude::get_id_static), new StreamListItem(&MavlinkStreamAttitudeQuaternion::new_instance, &MavlinkStreamAttitudeQuaternion::get_name_static, &MavlinkStreamAttitudeQuaternion::get_id_static), new StreamListItem(&MavlinkStreamVFRHUD::new_instance, &MavlinkStreamVFRHUD::get_name_static, &MavlinkStreamVFRHUD::get_id_static), new StreamListItem(&MavlinkStreamGPSRawInt::new_instance, &MavlinkStreamGPSRawInt::get_name_static, &MavlinkStreamGPSRawInt::get_id_static), new StreamListItem(&MavlinkStreamSystemTime::new_instance, &MavlinkStreamSystemTime::get_name_static, &MavlinkStreamSystemTime::get_id_static), new StreamListItem(&MavlinkStreamTimesync::new_instance, &MavlinkStreamTimesync::get_name_static, &MavlinkStreamTimesync::get_id_static), new StreamListItem(&MavlinkStreamGlobalPositionInt::new_instance, &MavlinkStreamGlobalPositionInt::get_name_static, &MavlinkStreamGlobalPositionInt::get_id_static), new StreamListItem(&MavlinkStreamLocalPositionNED::new_instance, &MavlinkStreamLocalPositionNED::get_name_static, &MavlinkStreamLocalPositionNED::get_id_static), new StreamListItem(&MavlinkStreamVisionPositionEstimate::new_instance, &MavlinkStreamVisionPositionEstimate::get_name_static, &MavlinkStreamVisionPositionEstimate::get_id_static), new StreamListItem(&MavlinkStreamLocalPositionNEDCOV::new_instance, &MavlinkStreamLocalPositionNEDCOV::get_name_static, &MavlinkStreamLocalPositionNEDCOV::get_id_static), new StreamListItem(&MavlinkStreamEstimatorStatus::new_instance, &MavlinkStreamEstimatorStatus::get_name_static, &MavlinkStreamEstimatorStatus::get_id_static), new StreamListItem(&MavlinkStreamAttPosMocap::new_instance, &MavlinkStreamAttPosMocap::get_name_static, &MavlinkStreamAttPosMocap::get_id_static), new StreamListItem(&MavlinkStreamHomePosition::new_instance, &MavlinkStreamHomePosition::get_name_static, &MavlinkStreamHomePosition::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0>::new_instance, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0>::get_name_static, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1>::new_instance, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1>::get_name_static, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       2>::new_instance, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       2>::get_name_static, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       2>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      3>::new_instance, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      3>::get_name_static, &MavlinkStreamServoOutputRaw<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      3>::get_id_static), new StreamListItem(&MavlinkStreamHILControls::new_instance, &MavlinkStreamHILControls::get_name_static, &MavlinkStreamHILControls::get_id_static), new StreamListItem(&MavlinkStreamHILActuatorControls::new_instance, &MavlinkStreamHILActuatorControls::get_name_static, &MavlinkStreamHILActuatorControls::get_id_static), new StreamListItem(&MavlinkStreamPositionTargetGlobalInt::new_instance, &MavlinkStreamPositionTargetGlobalInt::get_name_static, &MavlinkStreamPositionTargetGlobalInt::get_id_static), new StreamListItem(&MavlinkStreamLocalPositionSetpoint::new_instance, &MavlinkStreamLocalPositionSetpoint::get_name_static, &MavlinkStreamLocalPositionSetpoint::get_id_static), new StreamListItem(&MavlinkStreamAttitudeTarget::new_instance, &MavlinkStreamAttitudeTarget::get_name_static, &MavlinkStreamAttitudeTarget::get_id_static), new StreamListItem(&MavlinkStreamRCChannels::new_instance, &MavlinkStreamRCChannels::get_name_static, &MavlinkStreamRCChannels::get_id_static), new StreamListItem(&MavlinkStreamManualControl::new_instance, &MavlinkStreamManualControl::get_name_static, &MavlinkStreamManualControl::get_id_static), new StreamListItem(&MavlinkStreamOpticalFlowRad::new_instance, &MavlinkStreamOpticalFlowRad::get_name_static, &MavlinkStreamOpticalFlowRad::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            0>::new_instance, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            0>::get_name_static, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            0>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           1>::new_instance, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           1>::get_name_static, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           1>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2>::new_instance, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2>::get_name_static, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         3>::new_instance, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         3>::get_name_static, &MavlinkStreamActuatorControlTarget<
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         3>::get_id_static), new StreamListItem(&MavlinkStreamNamedValueFloat::new_instance, &MavlinkStreamNamedValueFloat::get_name_static, &MavlinkStreamNamedValueFloat::get_id_static), new StreamListItem(&MavlinkStreamDebug::new_instance, &MavlinkStreamDebug::get_name_static, &MavlinkStreamDebug::get_id_static), new StreamListItem(&MavlinkStreamDebugVect::new_instance, &MavlinkStreamDebugVect::get_name_static, &MavlinkStreamDebugVect::get_id_static), new StreamListItem(&MavlinkStreamNavControllerOutput::new_instance, &MavlinkStreamNavControllerOutput::get_name_static, &MavlinkStreamNavControllerOutput::get_id_static), new StreamListItem(&MavlinkStreamCameraCapture::new_instance, &MavlinkStreamCameraCapture::get_name_static, &MavlinkStreamCameraCapture::get_id_static), new StreamListItem(&MavlinkStreamCameraTrigger::new_instance, &MavlinkStreamCameraTrigger::get_name_static, &MavlinkStreamCameraTrigger::get_id_static), new StreamListItem(&MavlinkStreamCameraImageCaptured::new_instance, &MavlinkStreamCameraImageCaptured::get_name_static, &MavlinkStreamCameraImageCaptured::get_id_static), new StreamListItem(&MavlinkStreamDistanceSensor::new_instance, &MavlinkStreamDistanceSensor::get_name_static, &MavlinkStreamDistanceSensor::get_id_static), new StreamListItem(&MavlinkStreamExtendedSysState::new_instance, &MavlinkStreamExtendedSysState::get_name_static, &MavlinkStreamExtendedSysState::get_id_static), new StreamListItem(&MavlinkStreamAltitude::new_instance, &MavlinkStreamAltitude::get_name_static, &MavlinkStreamAltitude::get_id_static), new StreamListItem(&MavlinkStreamADSBVehicle::new_instance, &MavlinkStreamADSBVehicle::get_name_static, &MavlinkStreamADSBVehicle::get_id_static), new StreamListItem(&MavlinkStreamCollision::new_instance, &MavlinkStreamCollision::get_name_static, &MavlinkStreamCollision::get_id_static), new StreamListItem(&MavlinkStreamWind::new_instance, &MavlinkStreamWind::get_name_static, &MavlinkStreamWind::get_id_static), new StreamListItem(&MavlinkStreamMountOrientation::new_instance, &MavlinkStreamMountOrientation::get_name_static, &MavlinkStreamMountOrientation::get_id_static), new StreamListItem(&MavlinkStreamHighLatency::new_instance, &MavlinkStreamHighLatency::get_name_static, &MavlinkStreamWind::get_id_static), new StreamListItem(&MavlinkStreamGroundTruth::new_instance, &MavlinkStreamGroundTruth::get_name_static, &MavlinkStreamGroundTruth::get_id_static), nullptr };
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											0>::new_instance, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											0>::get_name_static, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											0>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							1>::new_instance, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							1>::get_name_static, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							1>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			2>::new_instance, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			2>::get_name_static, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			2>::get_id_static), new StreamListItem(&MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															3>::new_instance, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															3>::get_name_static, &MavlinkStreamServoOutputRaw<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															3>::get_id_static), new StreamListItem(&MavlinkStreamHILControls::new_instance, &MavlinkStreamHILControls::get_name_static, &MavlinkStreamHILControls::get_id_static), new StreamListItem(&MavlinkStreamHILActuatorControls::new_instance, &MavlinkStreamHILActuatorControls::get_name_static, &MavlinkStreamHILActuatorControls::get_id_static), new StreamListItem(&MavlinkStreamPositionTargetGlobalInt::new_instance, &MavlinkStreamPositionTargetGlobalInt::get_name_static, &MavlinkStreamPositionTargetGlobalInt::get_id_static), new StreamListItem(&MavlinkStreamLocalPositionSetpoint::new_instance, &MavlinkStreamLocalPositionSetpoint::get_name_static, &MavlinkStreamLocalPositionSetpoint::get_id_static), new StreamListItem(&MavlinkStreamAttitudeTarget::new_instance, &MavlinkStreamAttitudeTarget::get_name_static, &MavlinkStreamAttitudeTarget::get_id_static), new StreamListItem(&MavlinkStreamRCChannels::new_instance, &MavlinkStreamRCChannels::get_name_static, &MavlinkStreamRCChannels::get_id_static), new StreamListItem(&MavlinkStreamManualControl::new_instance, &MavlinkStreamManualControl::get_name_static, &MavlinkStreamManualControl::get_id_static), new StreamListItem(&MavlinkStreamOpticalFlowRad::new_instance, &MavlinkStreamOpticalFlowRad::get_name_static, &MavlinkStreamOpticalFlowRad::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													0>::new_instance, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													0>::get_name_static, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													0>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									1>::new_instance, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									1>::get_name_static, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									1>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					2>::new_instance, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					2>::get_name_static, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					2>::get_id_static), new StreamListItem(&MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	3>::new_instance, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	3>::get_name_static, &MavlinkStreamActuatorControlTarget<
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	3>::get_id_static), new StreamListItem(&MavlinkStreamNamedValueFloat::new_instance, &MavlinkStreamNamedValueFloat::get_name_static, &MavlinkStreamNamedValueFloat::get_id_static), new StreamListItem(&MavlinkStreamDebug::new_instance, &MavlinkStreamDebug::get_name_static, &MavlinkStreamDebug::get_id_static), new StreamListItem(&MavlinkStreamDebugVect::new_instance, &MavlinkStreamDebugVect::get_name_static, &MavlinkStreamDebugVect::get_id_static), new StreamListItem(&MavlinkStreamNavControllerOutput::new_instance, &MavlinkStreamNavControllerOutput::get_name_static, &MavlinkStreamNavControllerOutput::get_id_static), new StreamListItem(&MavlinkStreamCameraCapture::new_instance, &MavlinkStreamCameraCapture::get_name_static, &MavlinkStreamCameraCapture::get_id_static), new StreamListItem(&MavlinkStreamCameraTrigger::new_instance, &MavlinkStreamCameraTrigger::get_name_static, &MavlinkStreamCameraTrigger::get_id_static), new StreamListItem(&MavlinkStreamCameraImageCaptured::new_instance, &MavlinkStreamCameraImageCaptured::get_name_static, &MavlinkStreamCameraImageCaptured::get_id_static), new StreamListItem(&MavlinkStreamDistanceSensor::new_instance, &MavlinkStreamDistanceSensor::get_name_static, &MavlinkStreamDistanceSensor::get_id_static), new StreamListItem(&MavlinkStreamExtendedSysState::new_instance, &MavlinkStreamExtendedSysState::get_name_static, &MavlinkStreamExtendedSysState::get_id_static), new StreamListItem(&MavlinkStreamAltitude::new_instance, &MavlinkStreamAltitude::get_name_static, &MavlinkStreamAltitude::get_id_static), new StreamListItem(&MavlinkStreamADSBVehicle::new_instance, &MavlinkStreamADSBVehicle::get_name_static, &MavlinkStreamADSBVehicle::get_id_static), new StreamListItem(&MavlinkStreamCollision::new_instance, &MavlinkStreamCollision::get_name_static, &MavlinkStreamCollision::get_id_static), new StreamListItem(&MavlinkStreamWind::new_instance, &MavlinkStreamWind::get_name_static, &MavlinkStreamWind::get_id_static), new StreamListItem(&MavlinkStreamMountOrientation::new_instance, &MavlinkStreamMountOrientation::get_name_static, &MavlinkStreamMountOrientation::get_id_static), new StreamListItem(&MavlinkStreamHighLatency::new_instance, &MavlinkStreamHighLatency::get_name_static, &MavlinkStreamWind::get_id_static), new StreamListItem(&MavlinkStreamGroundTruth::new_instance, &MavlinkStreamGroundTruth::get_name_static, &MavlinkStreamGroundTruth::get_id_static), nullptr };

@@ -114,7 +114,7 @@ public:
 	typedef ArrayType_ ArrayType;
 
 	CharArrayFormatter(ArrayType& array) :
-			    array_(array)
+				array_(array)
 	{
 	}
 	

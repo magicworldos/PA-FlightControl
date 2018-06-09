@@ -75,9 +75,9 @@ class BaroSensor: public I2CDevObj
 public:
 	BaroSensor(const char *device_path, unsigned int sample_interval_usec) :
 #if defined(__BARO_USE_SPI)
-			    SPIDevObj("BaroSensor", device_path, BARO_CLASS_PATH, sample_interval_usec)
+				SPIDevObj("BaroSensor", device_path, BARO_CLASS_PATH, sample_interval_usec)
 #else
-			    I2CDevObj("BaroSensor", device_path, BARO_CLASS_PATH, sample_interval_usec)
+				I2CDevObj("BaroSensor", device_path, BARO_CLASS_PATH, sample_interval_usec)
 #endif
 	{
 	}

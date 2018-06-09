@@ -69,7 +69,7 @@ static unsigned int calibration_sides = 6;			///< The total number of sides
 static constexpr unsigned int calibration_total_points = 240;		///< The total points per magnetometer
 static constexpr unsigned int calibraton_duration_seconds = 42; 	///< The total duration the routine is allowed to take
 
-static constexpr float MAG_MAX_OFFSET_LEN = 1.3f;	///< The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than ~1.3 Ga means the mag will saturate in some directions.
+static constexpr float MAG_MAX_OFFSET_LEN = 1.3f; ///< The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than ~1.3 Ga means the mag will saturate in some directions.
 
 int32_t device_ids[max_mags];
 bool internal[max_mags];
@@ -482,7 +482,9 @@ static calibrate_return mag_calibration_worker(detect_orientation_return orienta
 					orb_copy(ORB_ID(sensor_mag), worker_data->sub_mag[cur_mag], &mag);
 					
 					// Check if this measurement is good to go in
-					rejected = rejected || reject_sample(mag.x, mag.y, mag.z, worker_data->x[cur_mag], worker_data->y[cur_mag], worker_data->z[cur_mag], worker_data->calibration_counter_total[cur_mag], calibration_sides * worker_data->calibration_points_perside);
+					rejected = rejected
+							|| reject_sample(mag.x, mag.y, mag.z, worker_data->x[cur_mag], worker_data->y[cur_mag], worker_data->z[cur_mag], worker_data->calibration_counter_total[cur_mag], calibration_sides
+														* worker_data->calibration_points_perside);
 					
 					worker_data->x[cur_mag][worker_data->calibration_counter_total[cur_mag]] = mag.x;
 					worker_data->y[cur_mag][worker_data->calibration_counter_total[cur_mag]] = mag.y;
@@ -505,7 +507,8 @@ static calibrate_return mag_calibration_worker(detect_orientation_return orienta
 			{
 				calibration_counter_side++;
 				
-				unsigned new_progress = progress_percentage(worker_data) + (unsigned) ((100 / calibration_sides) * ((float) calibration_counter_side / (float) worker_data->calibration_points_perside));
+				unsigned new_progress = progress_percentage(worker_data)
+						+ (unsigned) ((100 / calibration_sides) * ((float) calibration_counter_side / (float) worker_data->calibration_points_perside));
 				
 				if (new_progress - _last_mag_progress > 3)
 				{

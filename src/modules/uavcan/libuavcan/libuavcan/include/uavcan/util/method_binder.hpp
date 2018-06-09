@@ -32,14 +32,14 @@ class UAVCAN_EXPORT MethodBinder
 	
 public:
 	MethodBinder() :
-			    obj_(),
-			    fun_()
+				obj_(),
+				fun_()
 	{
 	}
 	
 	MethodBinder(ObjectPtr o, MemFunPtr f) :
-			    obj_(o),
-			    fun_(f)
+				obj_(o),
+				fun_(f)
 	{
 	}
 	

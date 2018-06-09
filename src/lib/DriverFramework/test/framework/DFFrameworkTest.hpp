@@ -42,7 +42,7 @@ class DFFrameworkTest: public DFTestObj
 {
 public:
 	DFFrameworkTest() :
-			    DFTestObj("Framework Test")
+				DFTestObj("Framework Test")
 	{
 	}
 	~DFFrameworkTest()

@@ -504,7 +504,7 @@ uavcan::int16_t CanDriver::configureFilters(const uavcan::CanFilterConfig* filte
 		{
 			auto msg_obj = CCAN_MSG_OBJ_T();
 			msg_obj.msgobj = std::uint8_t(i + 1U + NumberOfTxMessageObjects);   // Message objects are numbered from 1
-			        
+					
 			if (i < num_configs)
 			{
 				msg_obj.mode_id = (filter_configs[i].id & uavcan::CanFrame::MaskExtID) | CAN_MSGOBJ_EXT; // Only EXT

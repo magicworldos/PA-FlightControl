@@ -62,10 +62,10 @@ GroundRoverPositionControl *g_control = nullptr;
 }
 
 GroundRoverPositionControl::GroundRoverPositionControl() :
-		    /* performance counters */
-		    _sub_attitude(ORB_ID(vehicle_attitude), 0, 0, nullptr),
-		    _sub_sensors(ORB_ID(sensor_bias), 0, 0, nullptr),
-		    _loop_perf(perf_alloc(PC_ELAPSED, "rover position control")) // TODO : do we even need these perf counters
+			/* performance counters */
+			_sub_attitude(ORB_ID(vehicle_attitude), 0, 0, nullptr),
+			_sub_sensors(ORB_ID(sensor_bias), 0, 0, nullptr),
+			_loop_perf(perf_alloc(PC_ELAPSED, "rover position control")) // TODO : do we even need these perf counters
 {
 	_parameter_handles.l1_period = param_find("GND_L1_PERIOD");
 	_parameter_handles.l1_damping = param_find("GND_L1_DAMPING");
@@ -444,7 +444,8 @@ void GroundRoverPositionControl::task_main()
 				q.copyTo(_att_sp.q_d);
 				_att_sp.q_d_valid = true;
 				
-				if (!_control_mode.flag_control_offboard_enabled || _control_mode.flag_control_position_enabled || _control_mode.flag_control_velocity_enabled || _control_mode.flag_control_acceleration_enabled)
+				if (!_control_mode.flag_control_offboard_enabled || _control_mode.flag_control_position_enabled || _control_mode.flag_control_velocity_enabled
+						|| _control_mode.flag_control_acceleration_enabled)
 				{
 					
 					/* lazily publish the setpoint only once available */

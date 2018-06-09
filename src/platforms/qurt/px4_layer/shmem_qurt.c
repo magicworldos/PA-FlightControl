@@ -159,7 +159,7 @@ void init_shared_memory(void)
 	{
 		shmem_info_p->krait_changed_index[i] = 0;
 	}
-
+	
 	PX4_INFO("adsp memory mapped\n");
 	
 }

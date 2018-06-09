@@ -41,7 +41,7 @@
 static void print_usage()
 {
 	PX4_INFO("usage: \n"
-	         "\tcfg {yada|yada|yada}");
+				"\tcfg {yada|yada|yada}");
 }
 
 extern "C" __EXPORT int cfg_main(int argc, char *argv[]);

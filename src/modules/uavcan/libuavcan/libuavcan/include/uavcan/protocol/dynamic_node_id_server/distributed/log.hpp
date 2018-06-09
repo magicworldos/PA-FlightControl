@@ -150,9 +150,9 @@ private:
 	
 public:
 	Log(IStorageBackend& storage, IEventTracer& tracer) :
-			    storage_(storage),
-			    tracer_(tracer),
-			    last_index_(0)
+				storage_(storage),
+				tracer_(tracer),
+				last_index_(0)
 	{
 	}
 	

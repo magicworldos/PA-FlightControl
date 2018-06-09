@@ -24,7 +24,7 @@ template<std::size_t MemPoolSize = 0>
 class UAVCAN_EXPORT SubNode: public INode
 {
 	typedef typename Select<(MemPoolSize > 0), PoolAllocator<MemPoolSize, MemPoolBlockSize>, // If pool size is specified, use default allocator
-	        IPoolAllocator&                               // Otherwise use reference to user-provided allocator
+			IPoolAllocator&                               // Otherwise use reference to user-provided allocator
 	>::Result Allocator;
 
 	Allocator pool_allocator_;
@@ -45,8 +45,8 @@ public:
 	 * This overload is only valid if MemPoolSize > 0.
 	 */
 	SubNode(ICanDriver& can_driver, ISystemClock& system_clock) :
-			    scheduler_(can_driver, pool_allocator_, system_clock),
-			    internal_failure_cnt_(0)
+				scheduler_(can_driver, pool_allocator_, system_clock),
+				internal_failure_cnt_(0)
 	{
 	}
 	
@@ -54,9 +54,9 @@ public:
 	 * This overload is only valid if MemPoolSize == 0.
 	 */
 	SubNode(ICanDriver& can_driver, ISystemClock& system_clock, IPoolAllocator& allocator) :
-			    pool_allocator_(allocator),
-			    scheduler_(can_driver, pool_allocator_, system_clock),
-			    internal_failure_cnt_(0)
+				pool_allocator_(allocator),
+				scheduler_(can_driver, pool_allocator_, system_clock),
+				internal_failure_cnt_(0)
 	{
 	}
 	

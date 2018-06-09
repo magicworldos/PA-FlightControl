@@ -39,14 +39,14 @@ public:
 		Key key;
 
 		KVPair() :
-				    value(),
-				    key()
+					value(),
+					key()
 		{
 		}
 		
 		KVPair(const Key& arg_key, const Value& arg_value) :
-				    value(arg_value),
-				    key(arg_key)
+					value(arg_value),
+					key(arg_key)
 		{
 		}
 		
@@ -121,7 +121,7 @@ private:
 
 public:
 	Map(IPoolAllocator& allocator) :
-			    allocator_(allocator)
+				allocator_(allocator)
 	{
 		UAVCAN_ASSERT(Key() == Key());
 	}

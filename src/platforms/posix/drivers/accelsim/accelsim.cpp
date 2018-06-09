@@ -239,35 +239,35 @@ private:
 };
 
 ACCELSIM::ACCELSIM(const char *path, enum Rotation rotation) :
-		    VirtDevObj("ACCELSIM", path, ACCEL_BASE_DEVICE_PATH, 1e6 / 400),
-		    _mag(new ACCELSIM_mag(this)),
-		    _accel_reports(nullptr),
-		    _mag_reports(nullptr),
-		    _accel_scale { },
-		    _accel_range_m_s2(0.0f),
-		    _accel_range_scale(0.0f),
-		    _accel_samplerate(0),
-		    _accel_onchip_filter_bandwith(0),
-		    _mag_scale { },
-		    _mag_range_ga(0.0f),
-		    _mag_range_scale(0.0f),
-		    _mag_samplerate(0),
-		    _accel_topic(nullptr),
-		    _accel_orb_class_instance(-1),
-		    _accel_class_instance(-1),
-		    _accel_read(0),
-		    _mag_read(0),
-		    _accel_sample_perf(perf_alloc(PC_ELAPSED, "sim_accel_read")),
-		    _mag_sample_perf(perf_alloc(PC_ELAPSED, "sim_mag_read")),
-		    _accel_reschedules(perf_alloc(PC_COUNT, "sim_accel_resched")),
-		    _bad_registers(perf_alloc(PC_COUNT, "sim_bad_registers")),
-		    _bad_values(perf_alloc(PC_COUNT, "sim_bad_values")),
-		    _accel_filter_x(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_y(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _accel_filter_z(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
-		    _rotation(rotation),
-		    _constant_accel_count(0),
-		    _last_temperature(0)
+			VirtDevObj("ACCELSIM", path, ACCEL_BASE_DEVICE_PATH, 1e6 / 400),
+			_mag(new ACCELSIM_mag(this)),
+			_accel_reports(nullptr),
+			_mag_reports(nullptr),
+			_accel_scale { },
+			_accel_range_m_s2(0.0f),
+			_accel_range_scale(0.0f),
+			_accel_samplerate(0),
+			_accel_onchip_filter_bandwith(0),
+			_mag_scale { },
+			_mag_range_ga(0.0f),
+			_mag_range_scale(0.0f),
+			_mag_samplerate(0),
+			_accel_topic(nullptr),
+			_accel_orb_class_instance(-1),
+			_accel_class_instance(-1),
+			_accel_read(0),
+			_mag_read(0),
+			_accel_sample_perf(perf_alloc(PC_ELAPSED, "sim_accel_read")),
+			_mag_sample_perf(perf_alloc(PC_ELAPSED, "sim_mag_read")),
+			_accel_reschedules(perf_alloc(PC_COUNT, "sim_accel_resched")),
+			_bad_registers(perf_alloc(PC_COUNT, "sim_bad_registers")),
+			_bad_values(perf_alloc(PC_COUNT, "sim_bad_values")),
+			_accel_filter_x(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_y(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_accel_filter_z(ACCELSIM_ACCEL_DEFAULT_RATE, ACCELSIM_ACCEL_DEFAULT_DRIVER_FILTER_FREQ),
+			_rotation(rotation),
+			_constant_accel_count(0),
+			_last_temperature(0)
 {
 	m_id.dev_id_s.bus = 1;
 	m_id.dev_id_s.devtype = DRV_ACC_DEVTYPE_ACCELSIM;
@@ -1005,11 +1005,11 @@ void ACCELSIM::mag_measure()
 }
 
 ACCELSIM_mag::ACCELSIM_mag(ACCELSIM *parent) :
-		    VirtDevObj("ACCELSIM_mag", ACCELSIM_DEVICE_PATH_MAG, MAG_BASE_DEVICE_PATH, 10000),
-		    _parent(parent),
-		    _mag_topic(nullptr),
-		    _mag_orb_class_instance(-1),
-		    _mag_class_instance(-1)
+			VirtDevObj("ACCELSIM_mag", ACCELSIM_DEVICE_PATH_MAG, MAG_BASE_DEVICE_PATH, 10000),
+			_parent(parent),
+			_mag_topic(nullptr),
+			_mag_orb_class_instance(-1),
+			_mag_class_instance(-1)
 {
 	m_id.dev_id_s.bus = 1;
 	m_id.dev_id_s.devtype = DRV_ACC_DEVTYPE_ACCELSIM;

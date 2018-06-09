@@ -28,7 +28,7 @@ struct UAVCAN_EXPORT CanRxFrame: public CanFrame
 	uint8_t iface_index;
 
 	CanRxFrame() :
-			    iface_index(0)
+				iface_index(0)
 	{
 	}
 	
@@ -54,10 +54,10 @@ public:
 		CanIOFlags flags;
 
 		Entry(const CanFrame& arg_frame, MonotonicTime arg_deadline, Qos arg_qos, CanIOFlags arg_flags) :
-				    deadline(arg_deadline),
-				    frame(arg_frame),
-				    qos(uint8_t(arg_qos)),
-				    flags(arg_flags)
+					deadline(arg_deadline),
+					frame(arg_frame),
+					qos(uint8_t(arg_qos)),
+					flags(arg_flags)
 		{
 			UAVCAN_ASSERT((qos == Volatile) || (qos == Persistent));
 			IsDynamicallyAllocatable<Entry>::check();
@@ -92,7 +92,7 @@ private:
 		const CanFrame& frm_;
 	public:
 		explicit PriorityInsertionComparator(const CanFrame& frm) :
-				    frm_(frm)
+					frm_(frm)
 		{
 		}
 		bool operator()(const Entry* entry)
@@ -111,9 +111,9 @@ private:
 
 public:
 	CanTxQueue(IPoolAllocator& allocator, ISystemClock& sysclock, std::size_t allocator_quota) :
-			    allocator_(allocator, allocator_quota),
-			    sysclock_(sysclock),
-			    rejected_frames_cnt_(0)
+				allocator_(allocator, allocator_quota),
+				sysclock_(sysclock),
+				rejected_frames_cnt_(0)
 	{
 	}
 	
@@ -146,9 +146,9 @@ struct UAVCAN_EXPORT CanIfacePerfCounters
 	uint64_t errors;
 
 	CanIfacePerfCounters() :
-			    frames_tx(0),
-			    frames_rx(0),
-			    errors(0)
+				frames_tx(0),
+				frames_rx(0),
+				errors(0)
 	{
 	}
 };
@@ -161,8 +161,8 @@ class UAVCAN_EXPORT CanIOManager: Noncopyable
 		uint64_t frames_rx;
 
 		IfaceFrameCounters() :
-				    frames_tx(0),
-				    frames_rx(0)
+					frames_tx(0),
+					frames_rx(0)
 		{
 		}
 	};

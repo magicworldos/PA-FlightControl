@@ -64,9 +64,9 @@
 //#define UDEBUG
 
 PX4IO_Uploader::PX4IO_Uploader() :
-		    _io_fd(-1),
-		    _fw_fd(-1),
-		    bl_rev(0)
+			_io_fd(-1),
+			_fw_fd(-1),
+			bl_rev(0)
 {
 }
 

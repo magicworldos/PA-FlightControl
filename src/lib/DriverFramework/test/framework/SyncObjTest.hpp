@@ -42,7 +42,7 @@ class SyncObjTest: public DFTestObj
 {
 public:
 	SyncObjTest() :
-			    DFTestObj("Sync Obj Test")
+				DFTestObj("Sync Obj Test")
 	{
 	}
 	~SyncObjTest()

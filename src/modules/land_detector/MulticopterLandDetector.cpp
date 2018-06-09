@@ -71,24 +71,24 @@ namespace land_detector
 {
 
 MulticopterLandDetector::MulticopterLandDetector() :
-		    _paramHandle(),
-		    _params(),
-		    _vehicleLocalPositionSub(-1),
-		    _vehicleLocalPositionSetpointSub(-1),
-		    _actuatorsSub(-1),
-		    _attitudeSub(-1),
-		    _sensor_bias_sub(-1),
-		    _vehicle_control_mode_sub(-1),
-		    _battery_sub(-1),
-		    _vehicleLocalPosition { },
-		    _vehicleLocalPositionSetpoint { },
-		    _actuators { },
-		    _vehicleAttitude { },
-		    _sensors { },
-		    _control_mode { },
-		    _battery { },
-		    _min_trust_start(0),
-		    _landed_time(0)
+			_paramHandle(),
+			_params(),
+			_vehicleLocalPositionSub(-1),
+			_vehicleLocalPositionSetpointSub(-1),
+			_actuatorsSub(-1),
+			_attitudeSub(-1),
+			_sensor_bias_sub(-1),
+			_vehicle_control_mode_sub(-1),
+			_battery_sub(-1),
+			_vehicleLocalPosition { },
+			_vehicleLocalPositionSetpoint { },
+			_actuators { },
+			_vehicleAttitude { },
+			_sensors { },
+			_control_mode { },
+			_battery { },
+			_min_trust_start(0),
+			_landed_time(0)
 {
 	_paramHandle.maxRotation = param_find("LNDMC_ROT_MAX");
 	_paramHandle.maxVelocity = param_find("LNDMC_XY_VEL_MAX");
@@ -252,7 +252,8 @@ bool MulticopterLandDetector::_get_maybe_landed_state()
 	// Next look if all rotation angles are not moving.
 	float maxRotationScaled = _params.maxRotation_rad_s * landThresholdFactor;
 	
-	bool rotating = (fabsf(_vehicleAttitude.rollspeed) > maxRotationScaled) || (fabsf(_vehicleAttitude.pitchspeed) > maxRotationScaled) || (fabsf(_vehicleAttitude.yawspeed) > maxRotationScaled);
+	bool rotating = (fabsf(_vehicleAttitude.rollspeed) > maxRotationScaled) || (fabsf(_vehicleAttitude.pitchspeed) > maxRotationScaled)
+			|| (fabsf(_vehicleAttitude.yawspeed) > maxRotationScaled);
 	
 	// Return status based on armed state and throttle if no position lock is available.
 	if (!_has_altitude_lock() && !rotating)

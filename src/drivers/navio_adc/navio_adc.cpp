@@ -97,7 +97,7 @@ private:
 };
 
 NavioADC::NavioADC() :
-		    DriverFramework::VirtDevObj("navio_adc", ADC0_DEVICE_PATH, ADC_BASE_DEV_PATH, 1e6 / 100)
+			DriverFramework::VirtDevObj("navio_adc", ADC0_DEVICE_PATH, ADC_BASE_DEV_PATH, 1e6 / 100)
 {
 	pthread_mutex_init(&_samples_lock, NULL);
 	

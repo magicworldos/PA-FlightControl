@@ -60,12 +60,12 @@ class RcInput
 {
 public:
 	RcInput() :
-			    _shouldExit(false),
-			    _isRunning(false),
-			    _work { },
-			    _rcinput_pub(nullptr),
-			    _channels(8), //D8R-II plus
-			    _data { }
+				_shouldExit(false),
+				_isRunning(false),
+				_work { },
+				_rcinput_pub(nullptr),
+				_channels(8), //D8R-II plus
+				_data { }
 	{
 		memset(_ch_fd, 0, sizeof(_ch_fd));
 	}

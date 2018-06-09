@@ -107,9 +107,9 @@ private:
 };
 
 DfISL29501Wrapper::DfISL29501Wrapper(/*enum Rotation rotation*/) :
-		    ISL29501(ISL_DEVICE_PATH),
-		    _range_topic(nullptr),
-		    _orb_class_instance(-1)
+			ISL29501(ISL_DEVICE_PATH),
+			_range_topic(nullptr),
+			_orb_class_instance(-1)
 {
 }
 

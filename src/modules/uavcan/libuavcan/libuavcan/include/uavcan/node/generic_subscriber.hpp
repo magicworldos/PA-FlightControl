@@ -52,12 +52,12 @@ class UAVCAN_EXPORT ReceivedDataStructure: public DataType_, Noncopyable
 	
 protected:
 	ReceivedDataStructure() :
-			    _transfer_(UAVCAN_NULLPTR)
+				_transfer_(UAVCAN_NULLPTR)
 	{
 	}
 	
 	ReceivedDataStructure(const IncomingTransfer* arg_transfer) :
-			    _transfer_(arg_transfer)
+				_transfer_(arg_transfer)
 	{
 		UAVCAN_ASSERT(arg_transfer != UAVCAN_NULLPTR);
 	}
@@ -118,8 +118,8 @@ protected:
 	uint32_t failure_count_;
 
 	explicit GenericSubscriberBase(INode& node) :
-			    node_(node),
-			    failure_count_(0)
+				node_(node),
+				failure_count_(0)
 	{
 	}
 	
@@ -169,8 +169,8 @@ class UAVCAN_EXPORT GenericSubscriber: public GenericSubscriberBase
 		
 	public:
 		TransferForwarder(SelfType& obj, const DataTypeDescriptor& data_type, uint16_t max_buffer_size, IPoolAllocator& allocator) :
-				    TransferListenerType(obj.node_.getDispatcher().getTransferPerfCounter(), data_type, max_buffer_size, allocator),
-				    obj_(obj)
+					TransferListenerType(obj.node_.getDispatcher().getTransferPerfCounter(), data_type, max_buffer_size, allocator),
+					obj_(obj)
 		{
 		}
 	};
@@ -191,13 +191,13 @@ protected:
 		}
 		
 		ReceivedDataStructureSpec(const IncomingTransfer* arg_transfer) :
-				    ReceivedDataStructure<DataStruct>(arg_transfer)
+					ReceivedDataStructure<DataStruct>(arg_transfer)
 		{
 		}
 	};
 
 	explicit GenericSubscriber(INode& node) :
-			    GenericSubscriberBase(node)
+				GenericSubscriberBase(node)
 	{
 	}
 	

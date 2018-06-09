@@ -42,10 +42,10 @@
 #define DISTANCE_TIMEOUT 100000		// time in usec after which laser is considered dead
 
 TerrainEstimator::TerrainEstimator() :
-		    _distance_last(0.0f),
-		    _terrain_valid(false),
-		    _time_last_distance(0),
-		    _time_last_gps(0)
+			_distance_last(0.0f),
+			_terrain_valid(false),
+			_time_last_distance(0),
+			_time_last_gps(0)
 {
 	memset(&_x._data[0], 0, sizeof(_x._data));
 	_u_z = 0.0f;

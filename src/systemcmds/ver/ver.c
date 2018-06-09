@@ -291,9 +291,9 @@ int ver_main(int argc, char *argv[])
 					if (errata != NULL)
 					{
 						printf("\nWARNING   WARNING   WARNING!\n"
-						       "Revision %c has a silicon errata:\n"
-						       "%s"
-						       "\nhttps://pixhawk.org/help/errata\n\n", rev, errata);
+								"Revision %c has a silicon errata:\n"
+								"%s"
+								"\nhttps://pixhawk.org/help/errata\n\n", rev, errata);
 					}
 				}
 				

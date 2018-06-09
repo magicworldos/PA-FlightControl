@@ -272,7 +272,8 @@ int rc_calibration_check(orb_advert_t *mavlink_log_pub, bool report_fail, bool i
 		
 		if (report_fail)
 		{
-			mavlink_log_critical(mavlink_log_pub, "%d config error%s for %d RC channel%s.", total_fail_count, (total_fail_count > 1) ? "s" : "", channels_failed, (channels_failed > 1) ? "s" : "");
+			mavlink_log_critical(mavlink_log_pub, "%d config error%s for %d RC channel%s.", total_fail_count, (total_fail_count > 1) ? "s" : "", channels_failed,
+					(channels_failed > 1) ? "s" : "");
 		}
 		
 		usleep(100000);

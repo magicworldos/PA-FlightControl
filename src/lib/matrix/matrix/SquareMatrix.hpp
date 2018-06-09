@@ -25,17 +25,17 @@ class SquareMatrix: public Matrix<Type, M, M>
 {
 public:
 	SquareMatrix() :
-			    Matrix<Type, M, M>()
+				Matrix<Type, M, M>()
 	{
 	}
 	
 	SquareMatrix(const Type *data_) :
-			    Matrix<Type, M, M>(data_)
+				Matrix<Type, M, M>(data_)
 	{
 	}
 	
 	SquareMatrix(const Matrix<Type, M, M> &other) :
-			    Matrix<Type, M, M>(other)
+				Matrix<Type, M, M>(other)
 	{
 	}
 	

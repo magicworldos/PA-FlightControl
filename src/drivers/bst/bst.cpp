@@ -210,11 +210,11 @@ private:
 static BST *g_bst = nullptr;
 
 BST::BST(int bus) :
-		    I2C("bst", BST_DEVICE_PATH, bus, BST_ADDR
+			I2C("bst", BST_DEVICE_PATH, bus, BST_ADDR
 #ifdef __PX4_NUTTX
-		        , 100000 /* maximum speed supported */
+				, 100000 /* maximum speed supported */
 #endif
-		        )
+				)
 {
 }
 

@@ -64,7 +64,7 @@ void init()
 static std::uint64_t sampleFromCriticalSection(const volatile std::uint64_t* const value)
 {
 	const std::uint32_t reload = SysTick->LOAD + 1;  // SysTick counts downwards, hence the value subtracted from reload
-	        
+			
 	volatile std::uint64_t time = *value;
 	volatile std::uint32_t cycles = reload - SysTick->VAL;
 	

@@ -46,7 +46,7 @@ public:
 	typedef ResponseDataType_ ResponseDataType;
 
 	ServiceResponseDataStructure() :
-			    _enabled_(true)
+				_enabled_(true)
 	{
 	}
 	
@@ -87,10 +87,10 @@ public:
  */
 template<typename DataType_,
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-        typename Callback_ = std::function<void (const ReceivedDataStructure<typename DataType_::Request>&,
-		        ServiceResponseDataStructure<typename DataType_::Response>&)>
+		typename Callback_ = std::function<void (const ReceivedDataStructure<typename DataType_::Request>&,
+				ServiceResponseDataStructure<typename DataType_::Response>&)>
 #else
-        typename Callback_ = void (*)(const ReceivedDataStructure<typename DataType_::Request>&, ServiceResponseDataStructure<typename DataType_::Response>&)
+		typename Callback_ = void (*)(const ReceivedDataStructure<typename DataType_::Request>&, ServiceResponseDataStructure<typename DataType_::Response>&)
 #endif
 >
 class UAVCAN_EXPORT ServiceServer: public GenericSubscriber<DataType_, typename DataType_::Request, TransferListener>
@@ -145,13 +145,13 @@ private:
 	
 public:
 	explicit ServiceServer(INode& node) :
-			    SubscriberType(node),
-			    publisher_(node, getDefaultTxTimeout()),
-			    callback_(),
-			    response_failure_count_(0)
+				SubscriberType(node),
+				publisher_(node, getDefaultTxTimeout()),
+				callback_(),
+				response_failure_count_(0)
 	{
 		UAVCAN_ASSERT(getTxTimeout() == getDefaultTxTimeout());  // Making sure it is valid
-		        
+				
 		StaticAssert<DataTypeKind(DataType::DataTypeKind) == DataTypeKindService>::check();
 	}
 	

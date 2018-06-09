@@ -276,7 +276,8 @@ int MS5525::collect()
 	
 	const float temperature_c = TEMP * 0.01f;
 	
-	differential_pressure_s diff_pressure = { .timestamp = hrt_absolute_time(), .error_count = perf_event_count(_comms_errors), .differential_pressure_raw_pa = diff_press_pa_raw - _diff_pres_offset, .differential_pressure_filtered_pa = _filter.apply(diff_press_pa_raw) - _diff_pres_offset, .temperature = temperature_c, .device_id = _device_id.devid };
+	differential_pressure_s diff_pressure = { .timestamp = hrt_absolute_time(), .error_count = perf_event_count(_comms_errors), .differential_pressure_raw_pa = diff_press_pa_raw
+			- _diff_pres_offset, .differential_pressure_filtered_pa = _filter.apply(diff_press_pa_raw) - _diff_pres_offset, .temperature = temperature_c, .device_id = _device_id.devid };
 	
 	if (_airspeed_pub != nullptr && !(_pub_blocked))
 	{

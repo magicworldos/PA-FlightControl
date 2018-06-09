@@ -60,8 +60,8 @@ class HMC5883: public MagSensor
 {
 public:
 	HMC5883(const char *device_path) :
-			    MagSensor(device_path, HMC5883_MEASURE_INTERVAL_US),
-			    _measurement_requested(false)
+				MagSensor(device_path, HMC5883_MEASURE_INTERVAL_US),
+				_measurement_requested(false)
 	{
 		m_id.dev_id_s.devtype = DRV_DF_DEVTYPE_HMC5883;
 		m_id.dev_id_s.address = HMC5883_SLAVE_ADDRESS;

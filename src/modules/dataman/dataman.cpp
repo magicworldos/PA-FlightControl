@@ -214,7 +214,9 @@ static const unsigned g_per_item_max_index[DM_KEY_NUM_KEYS] = { DM_KEY_SAFE_POIN
 #define DM_SECTOR_HDR_SIZE 4	/* data manager per item header overhead */
 
 /* Table of the len of each item type */
-static const unsigned g_per_item_size[DM_KEY_NUM_KEYS] = { sizeof(struct mission_save_point_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_fence_point_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_s) + DM_SECTOR_HDR_SIZE, sizeof(struct dataman_compat_s) + DM_SECTOR_HDR_SIZE };
+static const unsigned g_per_item_size[DM_KEY_NUM_KEYS] = { sizeof(struct mission_save_point_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_fence_point_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s)
+		+ DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_item_s) + DM_SECTOR_HDR_SIZE, sizeof(struct mission_s) + DM_SECTOR_HDR_SIZE, sizeof(struct dataman_compat_s)
+		+ DM_SECTOR_HDR_SIZE };
 
 /* Table of offset for index 0 of each item type */
 static unsigned int g_key_offsets[DM_KEY_NUM_KEYS];

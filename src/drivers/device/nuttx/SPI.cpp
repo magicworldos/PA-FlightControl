@@ -58,16 +58,16 @@ namespace device
 {
 
 SPI::SPI(const char *name, const char *devname, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-		    // base class
-		    CDev(name, devname),
-		    // public
-		    // protected
-		    locking_mode(LOCK_PREEMPTION),
-		    // private
-		    _device(device),
-		    _mode(mode),
-		    _frequency(frequency),
-		    _dev(nullptr)
+			// base class
+			CDev(name, devname),
+			// public
+			// protected
+			locking_mode(LOCK_PREEMPTION),
+			// private
+			_device(device),
+			_mode(mode),
+			_frequency(frequency),
+			_dev(nullptr)
 {
 	// fill in _device_id fields for a SPI device
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;

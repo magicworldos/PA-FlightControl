@@ -19,8 +19,8 @@ class EventTracer: public uavcan::dynamic_node_id_server::IEventTracer
 		const uavcan::int64_t argument;
 
 		EventLogEntry(uavcan::dynamic_node_id_server::TraceCode arg_code, uavcan::int64_t arg_argument) :
-				    code(arg_code),
-				    argument(arg_argument)
+					code(arg_code),
+					argument(arg_argument)
 		{
 		}
 	};
@@ -31,13 +31,13 @@ class EventTracer: public uavcan::dynamic_node_id_server::IEventTracer
 
 public:
 	EventTracer() :
-			    startup_ts_(SystemClockDriver().getMonotonic())
+				startup_ts_(SystemClockDriver().getMonotonic())
 	{
 	}
 	
 	EventTracer(const std::string& id) :
-			    id_(id),
-			    startup_ts_(SystemClockDriver().getMonotonic())
+				id_(id),
+				startup_ts_(SystemClockDriver().getMonotonic())
 	{
 	}
 	

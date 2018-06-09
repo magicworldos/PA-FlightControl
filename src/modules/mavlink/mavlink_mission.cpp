@@ -68,8 +68,8 @@ uint16_t MavlinkMissionManager::_geofence_update_counter = 0;
 		 (_msg.target_component == MAV_COMP_ID_ALL)))
 
 MavlinkMissionManager::MavlinkMissionManager(Mavlink *mavlink) :
-		    _verbose(mavlink->verbose()),
-		    _mavlink(mavlink)
+			_verbose(mavlink->verbose()),
+			_mavlink(mavlink)
 {
 	_offboard_mission_sub = orb_subscribe(ORB_ID(offboard_mission));
 	_mission_result_sub = orb_subscribe(ORB_ID(mission_result));
@@ -1265,7 +1265,9 @@ void MavlinkMissionManager::handle_mission_item_both(const mavlink_message_t *ms
 			{
 				// check that we don't get a wrong item (hardening against wrong client implementations, the list here
 				// does not need to be complete)
-				if (mission_item.nav_cmd == MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_FENCE_CIRCLE_INCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_FENCE_CIRCLE_EXCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_RALLY_POINT)
+				if (mission_item.nav_cmd == MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION
+						|| mission_item.nav_cmd == MAV_CMD_NAV_FENCE_CIRCLE_INCLUSION || mission_item.nav_cmd == MAV_CMD_NAV_FENCE_CIRCLE_EXCLUSION
+						|| mission_item.nav_cmd == MAV_CMD_NAV_RALLY_POINT)
 				{
 					check_failed = true;
 					
@@ -1317,7 +1319,8 @@ void MavlinkMissionManager::handle_mission_item_both(const mavlink_message_t *ms
 				
 				if (!check_failed)
 				{
-					write_failed = dm_write(DM_KEY_FENCE_POINTS, wp.seq + 1, DM_PERSIST_POWER_ON_RESET, &mission_fence_point, sizeof(mission_fence_point_s)) != sizeof(mission_fence_point_s);
+					write_failed = dm_write(DM_KEY_FENCE_POINTS, wp.seq + 1, DM_PERSIST_POWER_ON_RESET, &mission_fence_point, sizeof(mission_fence_point_s))
+							!= sizeof(mission_fence_point_s);
 				}
 				
 			}
@@ -1330,7 +1333,8 @@ void MavlinkMissionManager::handle_mission_item_both(const mavlink_message_t *ms
 				mission_save_point.lon = mission_item.lon;
 				mission_save_point.alt = mission_item.altitude;
 				mission_save_point.frame = mission_item.frame;
-				write_failed = dm_write(DM_KEY_SAFE_POINTS, wp.seq + 1, DM_PERSIST_POWER_ON_RESET, &mission_save_point, sizeof(mission_save_point_s)) != sizeof(mission_save_point_s);
+				write_failed = dm_write(DM_KEY_SAFE_POINTS, wp.seq + 1, DM_PERSIST_POWER_ON_RESET, &mission_save_point, sizeof(mission_save_point_s))
+						!= sizeof(mission_save_point_s);
 			}
 				break;
 				
@@ -1495,7 +1499,8 @@ void MavlinkMissionManager::handle_mission_clear_all(const mavlink_message_t *ms
 
 int MavlinkMissionManager::parse_mavlink_mission_item(const mavlink_mission_item_t *mavlink_mission_item, struct mission_item_s *mission_item)
 {
-	if (mavlink_mission_item->frame == MAV_FRAME_GLOBAL || mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT || (_int_mode && (mavlink_mission_item->frame == MAV_FRAME_GLOBAL_INT || mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)))
+	if (mavlink_mission_item->frame == MAV_FRAME_GLOBAL || mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT
+			|| (_int_mode && (mavlink_mission_item->frame == MAV_FRAME_GLOBAL_INT || mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT)))
 	{
 		
 		// Switch to int mode if that is what we are receiving

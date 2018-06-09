@@ -29,15 +29,15 @@ int extctl_cmd_init(void)
 		usleep(100 * 1000);
 	}
 	while (!updated);
-
+	
 	if (_cmd_pub == NULL)
 	{
 		_cmd_pub = orb_advertise(ORB_ID(vehicle_command), &_vehicle_command);
 	}
-
-	_vehicle_command.target_system = 1;//state.system_id;
-	_vehicle_command.target_component = 1;//state.component_id;
-
+	
+	_vehicle_command.target_system = 1; //state.system_id;
+	_vehicle_command.target_component = 1; //state.component_id;
+	
 	return 0;
 }
 
@@ -48,7 +48,7 @@ int extctl_cmd_handle(void *data)
 	{
 		return -1;
 	}
-
+	
 	_vehicle_command.command = cmd->command;
 	_vehicle_command.param1 = cmd->param1;
 	_vehicle_command.param2 = cmd->param2;
@@ -57,13 +57,13 @@ int extctl_cmd_handle(void *data)
 	_vehicle_command.param5 = cmd->param5;
 	_vehicle_command.param6 = cmd->param6;
 	_vehicle_command.param7 = cmd->param7;
-
+	
 	orb_publish(ORB_ID(vehicle_command), _cmd_pub, &_vehicle_command);
-
+	
 #ifdef __EXTCTL_DEBUG_
 	mavlink_log_info(&_extctl_mavlink_log_pub, "[extctl] cmd %d %d %d %4.2f %4.2f", _vehicle_command.target_system, _vehicle_command.target_component, _vehicle_command.command, (double )_vehicle_command.param1, (double )_vehicle_command.param2);
 #endif
-
+	
 	return 0;
 }
 

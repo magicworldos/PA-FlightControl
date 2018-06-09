@@ -45,25 +45,25 @@ public:
 	}
 	
 	TransferSender(Dispatcher& dispatcher, const DataTypeDescriptor& data_type, CanTxQueue::Qos qos, MonotonicDuration max_transfer_interval = getDefaultMaxTransferInterval()) :
-			    max_transfer_interval_(max_transfer_interval),
-			    dispatcher_(dispatcher),
-			    priority_(TransferPriority::Default),
-			    qos_(CanTxQueue::Qos()),
-			    flags_(CanIOFlags(0)),
-			    iface_mask_(AllIfacesMask),
-			    allow_anonymous_transfers_(false)
+				max_transfer_interval_(max_transfer_interval),
+				dispatcher_(dispatcher),
+				priority_(TransferPriority::Default),
+				qos_(CanTxQueue::Qos()),
+				flags_(CanIOFlags(0)),
+				iface_mask_(AllIfacesMask),
+				allow_anonymous_transfers_(false)
 	{
 		init(data_type, qos);
 	}
 	
 	TransferSender(Dispatcher& dispatcher, MonotonicDuration max_transfer_interval = getDefaultMaxTransferInterval()) :
-			    max_transfer_interval_(max_transfer_interval),
-			    dispatcher_(dispatcher),
-			    priority_(TransferPriority::Default),
-			    qos_(CanTxQueue::Qos()),
-			    flags_(CanIOFlags(0)),
-			    iface_mask_(AllIfacesMask),
-			    allow_anonymous_transfers_(false)
+				max_transfer_interval_(max_transfer_interval),
+				dispatcher_(dispatcher),
+				priority_(TransferPriority::Default),
+				qos_(CanTxQueue::Qos()),
+				flags_(CanIOFlags(0)),
+				iface_mask_(AllIfacesMask),
+				allow_anonymous_transfers_(false)
 	{
 	}
 	

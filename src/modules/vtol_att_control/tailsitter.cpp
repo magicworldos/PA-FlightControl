@@ -49,11 +49,11 @@
 #define PITCH_TRANSITION_BACK -0.25f	// pitch angle to switch to MC
 
 Tailsitter::Tailsitter(VtolAttitudeControl *attc) :
-		    VtolType(attc),
-		    _min_front_trans_dur(0.5f),
-		    _thrust_transition_start(0.0f),
-		    _yaw_transition(0.0f),
-		    _pitch_transition_start(0.0f)
+			VtolType(attc),
+			_min_front_trans_dur(0.5f),
+			_thrust_transition_start(0.0f),
+			_yaw_transition(0.0f),
+			_pitch_transition_start(0.0f)
 {
 	_vtol_schedule.flight_mode = MC_MODE;
 	_vtol_schedule.transition_start = 0;
@@ -252,13 +252,17 @@ void Tailsitter::update_transition_state()
 	{
 		
 		/** create time dependant pitch angle set point + 0.2 rad overlap over the switch value*/
-		_v_att_sp->pitch_body = _pitch_transition_start - (fabsf(PITCH_TRANSITION_FRONT_P1 - _pitch_transition_start) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.front_trans_dur * 1000000.0f));
+		_v_att_sp->pitch_body = _pitch_transition_start
+				- (fabsf(PITCH_TRANSITION_FRONT_P1 - _pitch_transition_start) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start)
+						/ (_params_tailsitter.front_trans_dur * 1000000.0f));
 		_v_att_sp->pitch_body = math::constrain(_v_att_sp->pitch_body, PITCH_TRANSITION_FRONT_P1 - 0.2f, _pitch_transition_start);
 		
 		/** create time dependant throttle signal higher than  in MC and growing untill  P2 switch speed reached */
 		if (_airspeed->indicated_airspeed_m_s <= _params_tailsitter.airspeed_trans)
 		{
-			_thrust_transition = _thrust_transition_start + (fabsf(THROTTLE_TRANSITION_MAX * _thrust_transition_start) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.front_trans_dur * 1000000.0f));
+			_thrust_transition = _thrust_transition_start
+					+ (fabsf(THROTTLE_TRANSITION_MAX * _thrust_transition_start) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start)
+							/ (_params_tailsitter.front_trans_dur * 1000000.0f));
 			_thrust_transition = math::constrain(_thrust_transition, _thrust_transition_start, (1.0f + THROTTLE_TRANSITION_MAX) * _thrust_transition_start);
 			_v_att_sp->thrust = _thrust_transition;
 		}
@@ -293,7 +297,9 @@ void Tailsitter::update_transition_state()
 		/** create time dependant pitch angle set point  + 0.2 rad overlap over the switch value*/
 		if (_v_att_sp->pitch_body >= (PITCH_TRANSITION_FRONT_P2 - 0.2f))
 		{
-			_v_att_sp->pitch_body = PITCH_TRANSITION_FRONT_P1 - (fabsf(PITCH_TRANSITION_FRONT_P2 - PITCH_TRANSITION_FRONT_P1) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.front_trans_dur_p2 * 1000000.0f));
+			_v_att_sp->pitch_body = PITCH_TRANSITION_FRONT_P1
+					- (fabsf(PITCH_TRANSITION_FRONT_P2 - PITCH_TRANSITION_FRONT_P1) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start)
+							/ (_params_tailsitter.front_trans_dur_p2 * 1000000.0f));
 			
 			if (_v_att_sp->pitch_body <= (PITCH_TRANSITION_FRONT_P2 - 0.2f))
 			{
@@ -308,7 +314,6 @@ void Tailsitter::update_transition_state()
 
 		//_mc_roll_weight = 1.0f - 1.0f * ((float)hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.front_trans_dur_p2 * 1000000.0f));
 		//_mc_pitch_weight = 1.0f - 1.0f * ((float)hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.front_trans_dur_p2 * 1000000.0f));
-		
 		_mc_roll_weight = 0.0f;
 		_mc_pitch_weight = 0.0f;
 		
@@ -326,7 +331,8 @@ void Tailsitter::update_transition_state()
 		}
 		
 		/** create time dependant pitch angle set point stating at -pi/2 + 0.2 rad overlap over the switch value*/
-		_v_att_sp->pitch_body = M_PI_2_F + _pitch_transition_start + fabsf(PITCH_TRANSITION_BACK + 1.57f) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.back_trans_dur * 1000000.0f);
+		_v_att_sp->pitch_body = M_PI_2_F + _pitch_transition_start
+				+ fabsf(PITCH_TRANSITION_BACK + 1.57f) * (float) hrt_elapsed_time(&_vtol_schedule.transition_start) / (_params_tailsitter.back_trans_dur * 1000000.0f);
 		_v_att_sp->pitch_body = math::constrain(_v_att_sp->pitch_body, -2.0f, PITCH_TRANSITION_BACK + 0.2f);
 		
 		//  throttle value is decreesed

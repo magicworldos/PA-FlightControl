@@ -138,10 +138,10 @@ extern "C" __EXPORT int irlock_main(int argc, char *argv[]);
 
 /** constructor **/
 IRLOCK::IRLOCK(int bus, int address) :
-		    I2C("irlock", IRLOCK0_DEVICE_PATH, bus, address, 400000),
-		    _reports(nullptr),
-		    _sensor_ok(false),
-		    _read_failures(0)
+			I2C("irlock", IRLOCK0_DEVICE_PATH, bus, address, 400000),
+			_reports(nullptr),
+			_sensor_ok(false),
+			_read_failures(0)
 {
 	memset(&_work, 0, sizeof(_work));
 }

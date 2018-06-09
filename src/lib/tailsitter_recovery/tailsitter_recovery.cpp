@@ -39,8 +39,8 @@
 #include <math.h>
 
 TailsitterRecovery::TailsitterRecovery() :
-		    _in_recovery_mode(false),
-		    _yaw_ff(0.0f)
+			_in_recovery_mode(false),
+			_yaw_ff(0.0f)
 {
 	_att_p(0) = _att_p(1) = _att_p(2) = 4.0f;
 }
@@ -156,9 +156,11 @@ void TailsitterRecovery::calcOptimalRates(math::Quaternion &q, math::Quaternion 
 	float x = tilt_angle;
 	float y = tilt_dir;
 	
-	rates_opt(1) = (pwx_ky1 * (M_PI_2_F - y) + pwx_ky2 * powf(M_PI_2_F - y, 2)) * (pwx_kx1 * x * SigmoidFunction(pwx_sx1 * (pwx_sx0 - x)) - pwx_kx1 * x * expf(pwx_sx1 * (pwx_sx0 - M_PI_F)) * SigmoidFunction(pwx_sx1 * (M_PI_F - pwx_sx0)));
+	rates_opt(1) = (pwx_ky1 * (M_PI_2_F - y) + pwx_ky2 * powf(M_PI_2_F - y, 2))
+			* (pwx_kx1 * x * SigmoidFunction(pwx_sx1 * (pwx_sx0 - x)) - pwx_kx1 * x * expf(pwx_sx1 * (pwx_sx0 - M_PI_F)) * SigmoidFunction(pwx_sx1 * (M_PI_F - pwx_sx0)));
 	rates_opt(0) = pwy_kx1 * x + powf((M_PI_2_F - y) / (M_PI_2_F), 2) * (-pwy_kx1 * x * SigmoidFunction(pwy_sx1 * (pwy_sx0 - x)));
-	rates_opt(2) = (pwz_ky1 * (M_PI_2_F - y) + pwz_ky2 * powf(M_PI_2_F - y, 2)) * (pwz_kx1 * (x - M_PI_F) * SigmoidFunction(pwz_sx1 * (x - pwz_sx0)) - pwz_kx1 * (x - M_PI_F) * SigmoidFunction(-pwz_sx0 * pwz_sx1));
+	rates_opt(2) = (pwz_ky1 * (M_PI_2_F - y) + pwz_ky2 * powf(M_PI_2_F - y, 2))
+			* (pwz_kx1 * (x - M_PI_F) * SigmoidFunction(pwz_sx1 * (x - pwz_sx0)) - pwz_kx1 * (x - M_PI_F) * SigmoidFunction(-pwz_sx0 * pwz_sx1));
 	rates_opt(0) *= -sign_x;
 	rates_opt(1) *= -sign_y * 1.5f;
 	rates_opt(2) *= -sign_z;

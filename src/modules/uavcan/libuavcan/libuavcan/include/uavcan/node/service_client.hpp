@@ -34,8 +34,8 @@ struct ServiceCallID
 	}
 	
 	ServiceCallID(NodeID arg_server_node_id, TransferID arg_transfer_id) :
-			    server_node_id(arg_server_node_id),
-			    transfer_id(arg_transfer_id)
+				server_node_id(arg_server_node_id),
+				transfer_id(arg_transfer_id)
 	{
 	}
 	
@@ -74,9 +74,9 @@ private:
 	
 public:
 	ServiceCallResult(Status arg_status, ServiceCallID arg_call_id, ResponseFieldType& arg_response) :
-			    status_(arg_status),
-			    call_id_(arg_call_id),
-			    response_(arg_response)
+				status_(arg_status),
+				call_id_(arg_call_id),
+				response_(arg_response)
 	{
 		UAVCAN_ASSERT(call_id_.isValid());
 		UAVCAN_ASSERT((status_ == Success) || (status_ == ErrorTimeout));
@@ -120,7 +120,8 @@ public:
 template<typename Stream, typename DataType>
 static Stream& operator<<(Stream& s, const ServiceCallResult<DataType>& scr)
 {
-	s << "# Service call result [" << DataType::getDataTypeFullName() << "] " << (scr.isSuccessful() ? "OK" : "FAILURE") << " server_node_id=" << int(scr.getCallID().server_node_id.get()) << " tid=" << int(scr.getCallID().transfer_id.get()) << "\n";
+	s << "# Service call result [" << DataType::getDataTypeFullName() << "] " << (scr.isSuccessful() ? "OK" : "FAILURE") << " server_node_id="
+			<< int(scr.getCallID().server_node_id.get()) << " tid=" << int(scr.getCallID().transfer_id.get()) << "\n";
 	if (scr.isSuccessful())
 	{
 		s << scr.getResponse();
@@ -150,10 +151,10 @@ protected:
 
 	public:
 		CallState(INode& node, ServiceClientBase& owner, ServiceCallID call_id) :
-				    DeadlineHandler(node.getScheduler()),
-				    owner_(owner),
-				    id_(call_id),
-				    timed_out_(false)
+					DeadlineHandler(node.getScheduler()),
+					owner_(owner),
+					id_(call_id),
+					timed_out_(false)
 		{
 			UAVCAN_ASSERT(id_.isValid());
 			DeadlineHandler::startWithDelay(owner_.request_timeout_);
@@ -184,7 +185,7 @@ protected:
 	{
 		const ServiceCallID id;
 		CallStateMatchingPredicate(ServiceCallID reference) :
-				    id(reference)
+					id(reference)
 		{
 		}
 		bool operator()(const CallState& state) const
@@ -197,7 +198,7 @@ protected:
 	{
 		const NodeID server_node_id;
 		ServerSearchPredicate(NodeID nid) :
-				    server_node_id(nid)
+					server_node_id(nid)
 		{
 		}
 		bool operator()(const CallState& state) const
@@ -209,9 +210,9 @@ protected:
 	MonotonicDuration request_timeout_;
 
 	ServiceClientBase(INode& node) :
-			    DeadlineHandler(node.getScheduler()),
-			    data_type_descriptor_(UAVCAN_NULLPTR),
-			    request_timeout_(getDefaultRequestTimeout())
+				DeadlineHandler(node.getScheduler()),
+				data_type_descriptor_(UAVCAN_NULLPTR),
+				request_timeout_(getDefaultRequestTimeout())
 	{
 	}
 	
@@ -262,9 +263,9 @@ public:
  */
 template<typename DataType_,
 #if UAVCAN_CPP_VERSION >= UAVCAN_CPP11
-        typename Callback_ = std::function<void (const ServiceCallResult<DataType_>&)>
+		typename Callback_ = std::function<void (const ServiceCallResult<DataType_>&)>
 #else
-        typename Callback_ = void (*)(const ServiceCallResult<DataType_>&)
+		typename Callback_ = void (*)(const ServiceCallResult<DataType_>&)
 #endif
 >
 class UAVCAN_EXPORT ServiceClient: public GenericSubscriber<DataType_, typename DataType_::Response, TransferListenerWithFilter>, public ServiceClientBase
@@ -288,7 +289,7 @@ private:
 		ServiceClient& owner;
 
 		TimeoutCallbackCaller(ServiceClient& arg_owner) :
-				    owner(arg_owner)
+					owner(arg_owner)
 		{
 		}
 		
@@ -328,11 +329,11 @@ public:
 	 * @param callback  Callback instance. Optional, can be assigned later.
 	 */
 	explicit ServiceClient(INode& node, const Callback& callback = Callback()) :
-			    SubscriberType(node),
-			    ServiceClientBase(node),
-			    call_registry_(node.getAllocator()),
-			    publisher_(node, getDefaultRequestTimeout()),
-			    callback_(callback)
+				SubscriberType(node),
+				ServiceClientBase(node),
+				call_registry_(node.getAllocator()),
+				publisher_(node, getDefaultRequestTimeout()),
+				callback_(callback)
 	{
 		setPriority(TransferPriority::MiddleLower);
 		setRequestTimeout(getDefaultRequestTimeout());
@@ -496,7 +497,7 @@ template<typename DataType_, typename Callback_>
 bool ServiceClient<DataType_, Callback_>::shouldAcceptFrame(const RxFrame& frame) const
 {
 	UAVCAN_ASSERT(frame.getTransferType() == TransferTypeServiceResponse); // Other types filtered out by dispatcher
-	        
+			
 	return UAVCAN_NULLPTR != call_registry_.find(CallStateMatchingPredicate(ServiceCallID(frame.getSrcNodeID(), frame.getTransferID())));
 	
 }

@@ -24,7 +24,7 @@ void BlockLocalPositionEstimator::mocapInit()
 	if (_mocapStats.getCount() > REQ_MOCAP_INIT_COUNT)
 	{
 		mavlink_and_console_log_info(&mavlink_log_pub, "[lpe] mocap position init: "
-		                             "%5.2f, %5.2f, %5.2f m std %5.2f, %5.2f, %5.2f m", double(_mocapStats.getMean()(0)), double(_mocapStats.getMean()(1)), double(_mocapStats.getMean()(2)), double(_mocapStats.getStdDev()(0)), double(_mocapStats.getStdDev()(1)), double(_mocapStats.getStdDev()(2)));
+										"%5.2f, %5.2f, %5.2f m std %5.2f, %5.2f, %5.2f m", double(_mocapStats.getMean()(0)), double(_mocapStats.getMean()(1)), double(_mocapStats.getMean()(2)), double(_mocapStats.getStdDev()(0)), double(_mocapStats.getStdDev()(1)), double(_mocapStats.getStdDev()(2)));
 		_sensorTimeout &= ~SENSOR_MOCAP;
 		_sensorFault &= ~SENSOR_MOCAP;
 		

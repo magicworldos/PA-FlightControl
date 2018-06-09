@@ -58,8 +58,8 @@
 //#define debug(fmt, args...)	do { printf("[mixer] " fmt "\n", ##args); } while(0)
 
 SimpleMixer::SimpleMixer(ControlCallback control_cb, uintptr_t cb_handle, mixer_simple_s *mixinfo) :
-		    Mixer(control_cb, cb_handle),
-		    _pinfo(mixinfo)
+			Mixer(control_cb, cb_handle),
+			_pinfo(mixinfo)
 {
 }
 

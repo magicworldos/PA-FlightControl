@@ -44,10 +44,10 @@
 #define MOTOR_BIT(x) (1<<(x))
 
 UavcanEscController::UavcanEscController(uavcan::INode &node) :
-		    _node(node),
-		    _uavcan_pub_raw_cmd(node),
-		    _uavcan_sub_status(node),
-		    _orb_timer(node)
+			_node(node),
+			_uavcan_pub_raw_cmd(node),
+			_uavcan_sub_status(node),
+			_orb_timer(node)
 {
 	_uavcan_pub_raw_cmd.setPriority(UAVCAN_COMMAND_TRANSFER_PRIORITY);
 	

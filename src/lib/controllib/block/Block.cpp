@@ -49,8 +49,8 @@ namespace control
 {
 
 Block::Block(SuperBlock *parent, const char *name) :
-		    _name(name),
-		    _parent(parent)
+			_name(name),
+			_parent(parent)
 {
 	if (getParent() != nullptr)
 	{

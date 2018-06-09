@@ -47,7 +47,7 @@ class VCDevExample
 {
 public:
 	VCDevExample() :
-			    _node(0)
+				_node(0)
 	{
 	}
 	

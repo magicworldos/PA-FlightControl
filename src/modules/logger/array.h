@@ -48,8 +48,8 @@ class Array
 
 public:
 	Array() :
-			    _size(0),
-			    _overflow(false)
+				_size(0),
+				_overflow(false)
 	{
 	}
 	

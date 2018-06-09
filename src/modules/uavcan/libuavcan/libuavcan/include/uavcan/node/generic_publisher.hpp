@@ -26,9 +26,9 @@ class GenericPublisherBase: Noncopyable
 
 protected:
 	GenericPublisherBase(INode& node, MonotonicDuration tx_timeout, MonotonicDuration max_transfer_interval) :
-			    sender_(node.getDispatcher(), max_transfer_interval),
-			    tx_timeout_(tx_timeout),
-			    node_(node)
+				sender_(node.getDispatcher(), max_transfer_interval),
+				tx_timeout_(tx_timeout),
+				node_(node)
 	{
 		setTxTimeout(tx_timeout);
 #if UAVCAN_DEBUG
@@ -111,7 +111,7 @@ class UAVCAN_EXPORT GenericPublisher: public GenericPublisherBase
 	struct ZeroTransferBuffer: public StaticTransferBufferImpl
 	{
 		ZeroTransferBuffer() :
-				    StaticTransferBufferImpl(UAVCAN_NULLPTR, 0)
+					StaticTransferBufferImpl(UAVCAN_NULLPTR, 0)
 		{
 		}
 	};
@@ -134,7 +134,7 @@ public:
 	 * @param max_transfer_interval     Maximum expected time interval between subsequent publications. Leave default.
 	 */
 	GenericPublisher(INode& node, MonotonicDuration tx_timeout, MonotonicDuration max_transfer_interval = TransferSender::getDefaultMaxTransferInterval()) :
-			    GenericPublisherBase(node, tx_timeout, max_transfer_interval)
+				GenericPublisherBase(node, tx_timeout, max_transfer_interval)
 	{
 	}
 	

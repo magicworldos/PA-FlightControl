@@ -77,13 +77,13 @@
 #define UBX_DEBUG(...)		{/*GPS_WARN(__VA_ARGS__);*/}
 
 GPSDriverUBX::GPSDriverUBX(Interface gpsInterface, GPSCallbackPtr callback, void *callback_user, struct vehicle_gps_position_s *gps_position, struct satellite_info_s *satellite_info, uint8_t dynamic_model) :
-		    GPSHelper(callback, callback_user),
-		    _gps_position(gps_position),
-		    _satellite_info(satellite_info),
-		    _interface(gpsInterface),
-		    _survey_in_acc_limit(UBX_TX_CFG_TMODE3_SVINACCLIMIT),
-		    _survey_in_min_dur(UBX_TX_CFG_TMODE3_SVINMINDUR),
-		    _dyn_model(dynamic_model)
+			GPSHelper(callback, callback_user),
+			_gps_position(gps_position),
+			_satellite_info(satellite_info),
+			_interface(gpsInterface),
+			_survey_in_acc_limit(UBX_TX_CFG_TMODE3_SVINACCLIMIT),
+			_survey_in_min_dur(UBX_TX_CFG_TMODE3_SVINMINDUR),
+			_dyn_model(dynamic_model)
 {
 	decodeInit();
 }
@@ -579,7 +579,7 @@ GPSDriverUBX::parseChar(const uint8_t b)
 			;
 			addByteToChecksum(b);
 			_rx_payload_length |= b << 8;	// calculate payload size
-			        
+					
 			if (payloadRxInit() != 0)
 			{	// start payload reception
 				// payload will not be handled, discard message
@@ -1144,7 +1144,8 @@ GPSDriverUBX::payloadRxDone()
 			_gps_position->c_variance_rad = (float) _buf.payload_rx_nav_pvt.headAcc * M_DEG_TO_RAD_F * 1e-5f;
 			
 			//Check if time and date fix flags are good
-			if ((_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDDATE) && (_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDTIME) && (_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_FULLYRESOLVED))
+			if ((_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDDATE) && (_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDTIME)
+					&& (_buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_FULLYRESOLVED))
 			{
 				/* convert to unix timestamp */
 				struct tm timeinfo;
@@ -1252,7 +1253,7 @@ GPSDriverUBX::payloadRxDone()
 			
 			_gps_position->hdop = _buf.payload_rx_nav_dop.hDOP * 0.01f;	// from cm to m
 			_gps_position->vdop = _buf.payload_rx_nav_dop.vDOP * 0.01f;	// from cm to m
-			        
+					
 			ret = 1;
 			break;
 			

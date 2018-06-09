@@ -23,17 +23,17 @@ public:
 	typedef Matrix<Type, M, 1> MatrixM1;
 
 	Vector() :
-			    MatrixM1()
+				MatrixM1()
 	{
 	}
 	
 	Vector(const MatrixM1 & other) :
-			    MatrixM1(other)
+				MatrixM1(other)
 	{
 	}
 	
 	Vector(const Type *data_) :
-			    MatrixM1(data_)
+				MatrixM1(data_)
 	{
 	}
 	

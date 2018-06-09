@@ -84,7 +84,7 @@ public:
 	static const int TEST_FAIL = 1;
 
 	ImuTester() :
-			    m_sensor(IMU_DEVICE_PATH, true)
+				m_sensor(IMU_DEVICE_PATH, true)
 	{
 	}
 	

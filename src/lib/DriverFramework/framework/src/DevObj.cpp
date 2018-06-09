@@ -43,15 +43,15 @@
 using namespace DriverFramework;
 
 DevObj::DevObj(const char *name, const char *dev_path, const char *dev_class_path, DeviceBusType bus_type, unsigned int sample_interval_usecs) :
-		    m_name(nullptr),
-		    m_dev_path(nullptr),
-		    m_dev_class_path(nullptr),
-		    m_dev_instance_path(nullptr),
-		    m_sample_interval_usecs(sample_interval_usecs),
-		    m_id { },
-		    m_pub_blocked(false),
-		    m_driver_instance(-1),
-		    m_refcount(0)
+			m_name(nullptr),
+			m_dev_path(nullptr),
+			m_dev_class_path(nullptr),
+			m_dev_instance_path(nullptr),
+			m_sample_interval_usecs(sample_interval_usecs),
+			m_id { },
+			m_pub_blocked(false),
+			m_driver_instance(-1),
+			m_refcount(0)
 {
 	m_id.dev_id_s.bus = 0;
 	m_id.dev_id_s.address = 0;

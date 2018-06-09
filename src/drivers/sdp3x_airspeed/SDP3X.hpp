@@ -78,7 +78,7 @@ class SDP3X: public Airspeed
 {
 public:
 	SDP3X(int bus, int address = I2C_ADDRESS_1_SDP3X, const char *path = PATH_SDP3X) :
-			    Airspeed(bus, address, CONVERSION_INTERVAL, path)
+				Airspeed(bus, address, CONVERSION_INTERVAL, path)
 	{
 	}
 	

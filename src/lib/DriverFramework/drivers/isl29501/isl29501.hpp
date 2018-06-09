@@ -68,9 +68,9 @@ class ISL29501: public I2CDevObj
 {
 public:
 	ISL29501(const char *device_path) :
-			    I2CDevObj("RangeFinder", device_path, ISL_CLASS_PATH, ISL_MEASURE_INTERVAL_US),
-			    _detected(false),
-			    _read_failure(false)
+				I2CDevObj("RangeFinder", device_path, ISL_CLASS_PATH, ISL_MEASURE_INTERVAL_US),
+				_detected(false),
+				_read_failure(false)
 	{
 		set_slave_addr(ISL_SLAVE_ADDRESS);
 	}

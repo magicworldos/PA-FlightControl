@@ -76,7 +76,7 @@ static void usage();
 static void usage()
 {
 	fprintf(stderr, "usage: roboclaw "
-	        "{start|stop|status|test}\n\n");
+			"{start|stop|status|test}\n\n");
 }
 
 /**

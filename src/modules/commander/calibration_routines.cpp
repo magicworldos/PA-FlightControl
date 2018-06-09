@@ -147,7 +147,7 @@ int sphere_fit_least_squares(const float x[], const float y[], const float z[], 
 	float z_sum = z_sumplain / size;        //sum( Z[n] )
 	float z_sum2 = z_sumsq / size;    //sum( Z[n]^2 )
 	float z_sum3 = z_sumcube / size;    //sum( Z[n]^3 )
-	        
+			
 	float XY = xy_sum / size;        //sum( X[n] * Y[n] )
 	float XZ = xz_sum / size;        //sum( X[n] * Z[n] )
 	float YZ = yz_sum / size;        //sum( Y[n] * Z[n] )
@@ -157,7 +157,7 @@ int sphere_fit_least_squares(const float x[], const float y[], const float z[], 
 	float Y2Z = y2z_sum / size;    //sum( Y[n]^2 * Z[n] )
 	float Z2X = z2x_sum / size;    //sum( Z[n]^2 * X[n] )
 	float Z2Y = z2y_sum / size;    //sum( Z[n]^2 * Y[n] )
-	        
+			
 	//Reduction of multiplications
 	float F0 = x_sum2 + y_sum2 + z_sum2;
 	float F1 = 0.5f * F0;
@@ -868,7 +868,8 @@ bool calibrate_cancel_check(orb_advert_t *mavlink_log_pub, int cancel_sub)
 		// ignore internal commands, such as VEHICLE_CMD_DO_MOUNT_CONTROL from vmount
 		if (cmd.from_external)
 		{
-			if (cmd.command == vehicle_command_s::VEHICLE_CMD_PREFLIGHT_CALIBRATION && (int) cmd.param1 == 0 && (int) cmd.param2 == 0 && (int) cmd.param3 == 0 && (int) cmd.param4 == 0 && (int) cmd.param5 == 0 && (int) cmd.param6 == 0)
+			if (cmd.command == vehicle_command_s::VEHICLE_CMD_PREFLIGHT_CALIBRATION && (int) cmd.param1 == 0 && (int) cmd.param2 == 0 && (int) cmd.param3 == 0
+					&& (int) cmd.param4 == 0 && (int) cmd.param5 == 0 && (int) cmd.param6 == 0)
 			{
 				calibrate_answer_command(mavlink_log_pub, cmd, vehicle_command_s::VEHICLE_CMD_RESULT_ACCEPTED);
 				mavlink_log_critical(mavlink_log_pub, CAL_QGC_CANCELLED_MSG);

@@ -77,7 +77,7 @@ namespace
 CanIface* ifaces[UAVCAN_STM32_NUM_IFACES] = {
 UAVCAN_NULLPTR
 #if UAVCAN_STM32_NUM_IFACES > 1
-        , UAVCAN_NULLPTR
+		, UAVCAN_NULLPTR
 #endif
 };
 
@@ -285,16 +285,16 @@ int CanIface::computeTimings(const uavcan::uint32_t target_bitrate, Timings& out
 		uavcan::uint16_t sample_point_permill;
 
 		BsPair() :
-				    bs1(0),
-				    bs2(0),
-				    sample_point_permill(0)
+					bs1(0),
+					bs2(0),
+					sample_point_permill(0)
 		{
 		}
 		
 		BsPair(uavcan::uint8_t bs1_bs2_sum, uavcan::uint8_t arg_bs1) :
-				    bs1(arg_bs1),
-				    bs2(uavcan::uint8_t(bs1_bs2_sum - bs1)),
-				    sample_point_permill(uavcan::uint16_t(1000 * (1 + bs1) / (1 + bs1 + bs2)))
+					bs1(arg_bs1),
+					bs2(uavcan::uint8_t(bs1_bs2_sum - bs1)),
+					sample_point_permill(uavcan::uint16_t(1000 * (1 + bs1) / (1 + bs1 + bs2)))
 		{
 			UAVCAN_ASSERT(bs1_bs2_sum > arg_bs1);
 		}
@@ -594,13 +594,13 @@ int CanIface::init(const uavcan::uint32_t bitrate, const OperatingMode mode)
 	 * Hardware initialization (the hardware has already confirmed initialization mode, see above)
 	 */
 	can_->MCR = bxcan::MCR_ABOM | bxcan::MCR_AWUM | bxcan::MCR_INRQ;  // RM page 648
-	        
+			
 	can_->BTR = ((timings.sjw & 3U) << 24) | ((timings.bs1 & 15U) << 16) | ((timings.bs2 & 7U) << 20) | (timings.prescaler & 1023U) | ((mode == SilentMode) ? bxcan::BTR_SILM : 0);
 	
 	can_->IER = bxcan::IER_TMEIE |   // TX mailbox empty
-	        bxcan::IER_FMPIE0 |  // RX FIFO 0 is not empty
-	        bxcan::IER_FMPIE1;   // RX FIFO 1 is not empty
-	        
+			bxcan::IER_FMPIE0 |  // RX FIFO 0 is not empty
+			bxcan::IER_FMPIE1;   // RX FIFO 1 is not empty
+			
 	can_->MCR &= ~bxcan::MCR_INRQ;   // Leave init mode
 	
 	if (!waitMsrINakBitStateChange(false))
@@ -619,7 +619,7 @@ int CanIface::init(const uavcan::uint32_t bitrate, const OperatingMode mode)
 		
 		can_->FMR &= 0xFFFFC0F1;
 		can_->FMR |= static_cast<uavcan::uint32_t>(NumFilters) << 8;  // Slave (CAN2) gets half of the filters
-		        
+				
 		can_->FFA1R = 0;                           // All assigned to FIFO0 by default
 		can_->FM1R = 0;                            // Indentifier Mask mode
 		
@@ -741,7 +741,7 @@ void CanIface::handleRxInterrupt(uavcan::uint8_t fifo_index, uavcan::uint64_t ut
 	frame.data[7] = uavcan::uint8_t(0xFF & (rf.RDHR >> 24));
 	
 	*rfr_reg = bxcan::RFR_RFOM | bxcan::RFR_FOVR | bxcan::RFR_FULL;  // Release FIFO entry we just read
-	        
+			
 	/*
 	 * Store with timeout into the FIFO buffer and signal update event
 	 */

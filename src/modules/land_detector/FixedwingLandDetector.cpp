@@ -129,7 +129,8 @@ bool FixedwingLandDetector::_get_landed_state()
 		_accel_horz_lp = _accel_horz_lp * 0.8f + acc_hor * 0.18f;
 		
 		// crude land detector for fixedwing
-		landDetected = _velocity_xy_filtered < _params.maxVelocity && _velocity_z_filtered < _params.maxClimbRate && _airspeed_filtered < _params.maxAirSpeed && _accel_horz_lp < _params.maxIntVelocity;
+		landDetected = _velocity_xy_filtered < _params.maxVelocity && _velocity_z_filtered < _params.maxClimbRate && _airspeed_filtered < _params.maxAirSpeed
+				&& _accel_horz_lp < _params.maxIntVelocity;
 		
 	}
 	else

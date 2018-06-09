@@ -230,10 +230,10 @@ private:
 };
 
 Sensors::Sensors(bool hil_enabled) :
-		    _hil_enabled(hil_enabled),
-		    _loop_perf(perf_alloc(PC_ELAPSED, "sensors")),
-		    _rc_update(_parameters),
-		    _voted_sensors_update(_parameters, hil_enabled)
+			_hil_enabled(hil_enabled),
+			_loop_perf(perf_alloc(PC_ELAPSED, "sensors")),
+			_rc_update(_parameters),
+			_voted_sensors_update(_parameters, hil_enabled)
 {
 	initialize_parameter_handles(_parameter_handles);
 	
@@ -480,7 +480,7 @@ void Sensors::adc_poll(struct sensor_combined_s &raw)
 					
 					/* calculate airspeed, raw is the difference from */
 					float voltage = (float) (buf_adc[i].am_data) * 3.3f / 4096.0f * 2.0f;  // V_ref/4096 * (voltage divider factor)
-					        
+							
 					/**
 					 * The voltage divider pulls the signal down, only act on
 					 * a valid voltage from a connected sensor. Also assume a non-
