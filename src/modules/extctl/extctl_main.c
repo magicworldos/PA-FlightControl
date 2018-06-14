@@ -59,7 +59,7 @@ int extctl_read(int argc, char *argv[])
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_sp_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_pos_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_rc_send, NULL);
-	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_land_send, NULL);
+	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_status_send, NULL);
 	
 	int (*p_handle)(void *) = NULL;
 	
@@ -87,6 +87,10 @@ int extctl_read(int argc, char *argv[])
 					p_handle = &extctl_cmd_handle;
 					break;
 					
+				case DATA_TYPE_STATUS:
+					p_handle = &extctl_status_handle;
+					break;
+
 				default:
 					break;
 			}

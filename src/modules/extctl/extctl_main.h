@@ -14,7 +14,7 @@
 #include "extctl_pos.h"
 #include "extctl_rc.h"
 #include "extctl_cmd.h"
-#include "extctl_land.h"
+#include "extctl_status.h"
 
 int extctl_main(int argc, char *argv[]);
 
