@@ -68,14 +68,17 @@ int extctl_status_send(void)
 		}
 
 		orb_check(home_pos_sub, &updated);
-		if (updated || fabs(home_pos.lat + home_pos.lon) < DBL_EPSILON)
+		if (updated || !sys_status.homed)
 		{
 			orb_copy(ORB_ID(home_position), home_pos_sub, &home_pos);
-			sys_status.home_lat = home_pos.lat;
-			sys_status.home_lon = home_pos.lon;
-			sys_status.home_alt = home_pos.alt;
-			sys_status.homed = true;
-			status |= (1 << 4);
+			if (fabs(home_pos.lat + home_pos.lon) > DBL_EPSILON)
+			{
+				sys_status.home_lat = home_pos.lat;
+				sys_status.home_lon = home_pos.lon;
+				sys_status.home_alt = home_pos.alt;
+				sys_status.homed = true;
+				status |= (1 << 4);
+			}
 		}
 
 		if (status)
