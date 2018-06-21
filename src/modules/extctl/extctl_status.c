@@ -20,11 +20,13 @@ int extctl_status_send(void)
 	int vec_state_sub = orb_subscribe(ORB_ID(vehicle_status));
 	int armed_state_sub = orb_subscribe(ORB_ID(actuator_armed));
 	int land_state_sub = orb_subscribe(ORB_ID(vehicle_land_detected));
+	int home_pos_sub = orb_subscribe(ORB_ID(home_position));
 
 	struct commander_state_s cmd_state;
 	struct vehicle_status_s vec_state;
 	struct actuator_armed_s arm_state;
 	struct vehicle_land_detected_s land_state;
+	struct home_position_s home_pos;
 
 	sys_status_s sys_status = { 0 };
 
@@ -63,6 +65,17 @@ int extctl_status_send(void)
 			orb_copy(ORB_ID(vehicle_land_detected), land_state_sub, &land_state);
 			sys_status.landed = land_state.landed;
 			status |= (1 << 3);
+		}
+
+		orb_check(home_pos_sub, &updated);
+		if (updated || fabs(home_pos.lat + home_pos.lon) < DBL_EPSILON)
+		{
+			orb_copy(ORB_ID(home_position), home_pos_sub, &home_pos);
+			sys_status.home_lat = home_pos.lat;
+			sys_status.home_lon = home_pos.lon;
+			sys_status.home_alt = home_pos.alt;
+			sys_status.homed = true;
+			status |= (1 << 4);
 		}
 
 		if (status)

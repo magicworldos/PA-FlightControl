@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <float.h>
 #include <string.h>
 #include <pthread.h>
 #include <poll.h>
@@ -43,6 +44,7 @@
 #include <uORB/topics/commander_state.h>
 #include <uORB/topics/vehicle_status.h>
 #include <uORB/topics/actuator_armed.h>
+#include <uORB/topics/home_position.h>
 #include <uORB/topics/extctl_sp.h>
 
 #define DEV_NAME			"/dev/ttyS2"
@@ -132,6 +134,10 @@ typedef struct sys_status_s
 	uint8_t nav_state;
 	bool armed;
 	bool landed;
+	bool homed;
+	double home_lat;
+	double home_lon;
+	float home_alt;
 } sys_status_s;
 
 typedef struct rc_s

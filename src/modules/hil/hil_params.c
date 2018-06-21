@@ -46,7 +46,7 @@
  * @max 900000000
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_INT32(HIL_REF_LAT, 418782246);
+PARAM_DEFINE_INT32(HIL_REF_LAT, 405397970);
 
 /**
  * Ref longitude * 1E7 for HIL 
@@ -57,7 +57,7 @@ PARAM_DEFINE_INT32(HIL_REF_LAT, 418782246);
  * @max 1800000000
  * @group Multicopter Attitude Control
  */
-PARAM_DEFINE_INT32(HIL_REF_LON, 1234143249);
+PARAM_DEFINE_INT32(HIL_REF_LON, 1215037566);
 
 /**
  * Ref altitude * 1E3 for HIL 
