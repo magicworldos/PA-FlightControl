@@ -30,17 +30,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
-if (${OS} STREQUAL "nuttx")
-	list(APPEND MODULE_CFLAGS -Wframe-larger-than=4000)
-endif()
 px4_add_module(
 	MODULE modules__hil
 	MAIN hil
-	STACK 3500
-	COMPILE_FLAGS ${MODULE_CFLAGS}
+	STACK_MAIN 1200
 	SRCS
-		hil_main.cpp
+		hil_main.c
+		matrix.c
 	DEPENDS
 		platforms__common
 	)
-# vim: set noet ft=cmake fenc=utf-8 ff=unix : 
