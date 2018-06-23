@@ -169,21 +169,21 @@ void hil_cal(double theta_t)
 	hil_maxmin(&Acc_body.v[AT(1, 0, Acc_body.n)], MAX_ACC_BODY, -MAX_ACC_BODY);
 	hil_maxmin(&Acc_body.v[AT(2, 0, Acc_body.n)], MAX_ACC_BODY, -MAX_ACC_BODY);
 
-	double AccAir0 = Aa_xy;
-	double AccAir1 = Aa_xy;
-	double AccAir2 = Aa_xy;
+	double AccAir0 = fabs(Vel_body.v[AT(0, 0, Vel_global.n)]) / Aair;
+	double AccAir1 = fabs(Vel_body.v[AT(1, 0, Vel_global.n)]) / Aair;
+	double AccAir2 = fabs(Vel_body.v[AT(2, 0, Vel_global.n)]) / Aair;
 
 	if (Vel_body.v[AT(0, 0, Vel_global.n)] > 0)
 	{
-		AccAir0 = -Aa_xy;
+		AccAir0 = -fabs(Vel_body.v[AT(0, 0, Vel_global.n)]) / Aair;
 	}
 	if (Vel_body.v[AT(1, 0, Vel_global.n)] > 0)
 	{
-		AccAir1 = -Aa_xy;
+		AccAir1 = -fabs(Vel_body.v[AT(1, 0, Vel_global.n)]) / Aair;
 	}
 	if (Vel_body.v[AT(2, 0, Vel_global.n)] > 0)
 	{
-		AccAir2 = -Aa_z;
+		AccAir2 = -fabs(Vel_body.v[AT(2, 0, Vel_global.n)]) / Aair;
 	}
 
 	//由加速度积分计算速度

@@ -45,8 +45,7 @@
 #define Ka_y			(3.6)					//旋转角加速度系数y
 #define Ka_z			(0.2)					//旋转角加速度系数z
 
-#define Aa_xy			(0.1)					//空气阻尼加速度xy
-#define Aa_z			(0.5)						//空气阻尼加速度z
+#define Aair			(5)					//空气阻尼加速度xy
 
 #define Kacc_x			(16.0)					//机体加速度系数x
 #define Kacc_y			(16.0)					//机体加速度系数y
