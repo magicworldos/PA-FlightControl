@@ -316,7 +316,7 @@ function(px4_add_common_flags)
 		-Wall
 		-Warray-bounds
 		-Wdisabled-optimization
-		-Werror
+		#-Werror
 		-Wextra
 		-Wfatal-errors
 		-Wfloat-equal
@@ -331,8 +331,10 @@ function(px4_add_common_flags)
 		-Wuninitialized
 		-Wunknown-pragmas
 		-Wunused-variable
-
+		-Wno-cast-function-type
 		-Wno-unused-parameter
+		-Wno-shadow
+		-Wno-ignored-qualifiers
 		)
 
 	if (${CMAKE_C_COMPILER_ID} MATCHES ".*Clang.*")
