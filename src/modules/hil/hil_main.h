@@ -35,18 +35,21 @@
 
 #define MAX_ANGLE_RATE	(90.0 * M_PI / 180.0)	//角速度限幅	弧度/s^2
 #define MAX_ANGLE		(60.0 * M_PI / 180.0)	//角度限幅 弧度/s
-#define MAX_ACC_BODY	(25)					//机体加速度限幅 m/s^2
+#define MAX_ACC_BODY	(60)					//机体加速度限幅 m/s^2
 #define MAX_VEL_BODY_XY	(35)					//机体速度限幅水平方向 m/s
 #define MAX_VEL_BODY_Z	(5)						//机体速度限幅垂直方向 m/s
 #define MIN_MID_ZERO	(0.01)					//中位归0限幅
-#define ACC_MID			(0.4)					//控制量升力中位值(0.0~1.0)
+#define ACC_MID			(0.45)					//控制量升力中位值(0.0~1.0)
 
 #define Ka_x			(3.6)					//旋转角加速度系数x
 #define Ka_y			(3.6)					//旋转角加速度系数y
 #define Ka_z			(0.2)					//旋转角加速度系数z
 
-#define Kacc_x			(6.0)					//机体加速度系数x
-#define Kacc_y			(6.0)					//机体加速度系数y
+#define Aa_xy			(0.1)					//空气阻尼加速度xy
+#define Aa_z			(0.5)						//空气阻尼加速度z
+
+#define Kacc_x			(16.0)					//机体加速度系数x
+#define Kacc_y			(16.0)					//机体加速度系数y
 #define Kacc_z			(6.0)					//机体加速度系数z
 
 #define M 3
