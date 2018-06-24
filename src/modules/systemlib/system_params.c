@@ -155,7 +155,7 @@ PARAM_DEFINE_INT32(SYS_PARAM_VER, 1);
  * @reboot_required true
  * @group System
  */
-PARAM_DEFINE_INT32(SYS_LOGGER, 0);
+PARAM_DEFINE_INT32(SYS_LOGGER, 1);
 
 /**
  * Enable stack checking
