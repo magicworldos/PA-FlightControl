@@ -335,6 +335,8 @@ function(px4_add_common_flags)
 		-Wno-unused-parameter
 		-Wno-shadow
 		-Wno-ignored-qualifiers
+		-Wno-stringop-truncation
+		-Wno-format-truncation
 		)
 
 	if (${CMAKE_C_COMPILER_ID} MATCHES ".*Clang.*")

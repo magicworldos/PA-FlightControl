@@ -156,7 +156,7 @@ int uORB::DeviceNode::open(device::file_t *filp)
 			return -ENOMEM;
 		}
 		
-		memset(sd, 0, sizeof(*sd));
+		memset((void*)sd, 0, sizeof(*sd));
 		
 		/* default to no pending update */
 		sd->generation = _generation;

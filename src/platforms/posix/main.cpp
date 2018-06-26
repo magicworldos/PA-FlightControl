@@ -200,7 +200,7 @@ static string pwd()
 static void print_prompt()
 {
 	cout.flush();
-	cout << "pxh> ";
+	cout << "PA3> ";
 	cout.flush();
 }
 
@@ -265,9 +265,9 @@ static void run_cmd(const vector<string> &appargs, bool exit_on_fail, bool silen
 static void usage()
 {
 	
-	cout << "./px4 [-d] [data_directory] startup_config [-h]" << endl;
+	cout << "./pa3 [-d] [data_directory] startup_config [-h]" << endl;
 	cout << "   -d            - Optional flag to run the app in daemon mode and does not listen for user input." << endl;
-	cout << "                   This is needed if px4 is intended to be run as a upstart job on linux" << endl;
+	cout << "                   This is needed if pa3 is intended to be run as a upstart job on linux" << endl;
 	cout << "<data_directory> - directory where ROMFS and posix-configs are located (if not given, CWD is used)" << endl;
 	cout << "<startup_config> - config file for starting/stopping px4 modules" << endl;
 	cout << "   -h            - help/usage information" << endl;
@@ -502,7 +502,7 @@ int main(int argc, char **argv)
 	DriverFramework::Framework::initialize();
 	px4::init_once();
 	
-	px4::init(argc, argv, "px4");
+	px4::init(argc, argv, "pa3");
 	
 	// if commandfile is present, process the commands from the file
 	if (!commands_file.empty())

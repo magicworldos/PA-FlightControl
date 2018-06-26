@@ -1953,7 +1953,7 @@ void Logger::write_header()
 	// write the Flags message: this MUST be written right after the ulog header
 	ulog_message_flag_bits_s flag_bits;
 	
-	memset(&flag_bits, 0, sizeof(flag_bits));
+	memset((void*)&flag_bits, 0, sizeof(flag_bits));
 	flag_bits.msg_size = sizeof(flag_bits) - ULOG_MSG_HEADER_LEN;
 	flag_bits.msg_type = static_cast<uint8_t>(ULogMessageType::FLAG_BITS);
 	
