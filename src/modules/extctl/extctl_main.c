@@ -8,7 +8,7 @@
 #include "extctl_main.h"
 
 //#define __EXTCTL_DEBUG_
-
+extern int _socket_id;
 bool _extctl_should_exit = false;
 orb_advert_t _extctl_mavlink_log_pub;
 
@@ -18,6 +18,7 @@ static uint8_t _buff[SIZE_BUFF];
 static sem_t _sem_w;
 
 static int _serial_fd = -1;
+
 static int _frame_pos_head0 = 0;
 static int _frame_pos_head1 = 0;
 static int _frame_pos_len_frame = 0;
@@ -45,17 +46,24 @@ int start(int argc, char *argv[])
 
 int extctl_read(int argc, char *argv[])
 {
-	_serial_fd = open(DEV_NAME, O_RDWR | O_NONBLOCK);
+	pthread_t pthddr;
+
+#ifdef __PX4_POSIX
+	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &server_start, NULL);
+#else
+	_serial_fd = open(DEV_NAME, O_WRONLY | O_NONBLOCK);
 	if (_serial_fd < 0)
 	{
 		return -1;
 	}
 	set_opt(_serial_fd, DEV_BAUDRATE, 8, 'N', 1);
-	
+#endif
+
+	warnx("open dev ok");
+
 	extctl_sp_init();
 	extctl_cmd_init();
 	
-	pthread_t pthddr;
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_sp_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_pos_send, NULL);
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &extctl_rc_send, NULL);
@@ -82,6 +90,7 @@ int extctl_read(int argc, char *argv[])
 					
 				case DATA_TYPE_RC:
 					p_handle = &extctl_rc_handle;
+					break;
 					
 				case DATA_TYPE_CMD:
 					p_handle = &extctl_cmd_handle;
@@ -175,11 +184,16 @@ int send_data_buff(void *data, int data_type, int data_len)
 
 int send_frame_write(char *frame, int len)
 {
-	int wlen = 0;
-	if (_serial_fd > 0)
+#ifdef __PX4_POSIX
+	_serial_fd = _socket_id;
+#else
+#endif
+
+	if (_serial_fd < 0)
 	{
-		wlen = write(_serial_fd, frame, len);
+		return 0;
 	}
+	int wlen = write(_serial_fd, frame, len);
 	return wlen;
 }
 
@@ -303,6 +317,16 @@ int frame_parse()
 
 void frame_read_data(void)
 {
+#ifdef __PX4_POSIX
+	_serial_fd = _socket_id;
+#else
+#endif
+
+	if (_serial_fd < 0)
+	{
+		return;
+	}
+
 	uint8_t tmp_serial_buf[SIZE_BUFF];
 	int len = read(_serial_fd, tmp_serial_buf, SIZE_BUFF);
 	for (int i = 0; i < len; i++)
@@ -340,6 +364,8 @@ int crc16_check(uint8_t *buff, uint8_t len, uint16_t crc16)
 	return 0;
 }
 
+#ifdef __PX4_POSIX
+#else
 int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 {
 	struct termios newtio, oldtio;
@@ -349,7 +375,7 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 		perror("SetupSerial 1");
 		return -1;
 	}
-	bzero(&newtio, sizeof(newtio));
+	memset(&newtio, 0, sizeof(newtio));
 	//步骤一，设置字符大小
 	newtio.c_cflag |= CLOCAL | CREAD;
 	newtio.c_cflag &= ~CSIZE;
@@ -405,6 +431,7 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 	printf("set done!\n");
 	return 0;
 }
+#endif
 
 int extctl_main(int argc, char *argv[])
 {

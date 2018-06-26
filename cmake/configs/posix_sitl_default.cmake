@@ -111,6 +111,8 @@ set(config_module_list
 	modules/systemlib/param
 	modules/systemlib
 	modules/uORB
+	modules/hil
+	modules/extctl
 
 	#
 	# Libraries

@@ -227,7 +227,7 @@ status_flags_s *status_flags, float avionics_power_rail_voltage, uint8_t arm_req
 						feedback_provided = true;
 						valid_transition = false;
 					}
-#if CONFIG_HIL_MODE == 1
+#ifdef CONFIG_HIL_MODE
 #else
 					// Perform power checks only if circuit breaker is not
 					// engaged for these checks

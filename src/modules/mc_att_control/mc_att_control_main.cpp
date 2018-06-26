@@ -1124,7 +1124,9 @@ void MulticopterAttitudeControl::task_main()
 	
 	while (!_task_should_exit)
 	{
-		
+#ifdef CONFIG_HIL_MODE
+		usleep(10);
+#else
 		poll_fds.fd = _sensor_gyro_sub[_selected_gyro];
 		
 		/* wait for up to 100ms for data */
@@ -1135,7 +1137,7 @@ void MulticopterAttitudeControl::task_main()
 		{
 			continue;
 		}
-		
+
 		/* this is undesirable but not much we can do - might want to flag unhappy status */
 		if (pret < 0)
 		{
@@ -1144,11 +1146,14 @@ void MulticopterAttitudeControl::task_main()
 			usleep(100000);
 			continue;
 		}
-		
+#endif
 		perf_begin(_loop_perf);
-		
+
+#ifdef CONFIG_HIL_MODE
+#else
 		/* run controller on gyro changes */
 		if (poll_fds.revents & POLLIN)
+#endif
 		{
 			static uint64_t last_run = 0;
 			float dt = (hrt_absolute_time() - last_run) / 1000000.0f;
@@ -1280,7 +1285,6 @@ void MulticopterAttitudeControl::task_main()
 			if (_v_control_mode.flag_control_rates_enabled)
 			{
 				control_attitude_rates(dt);
-				
 				/* publish actuator controls */
 				_actuators.control[0] = (PX4_ISFINITE(_att_control(0))) ? _att_control(0) : 0.0f;
 				_actuators.control[1] = (PX4_ISFINITE(_att_control(1))) ? _att_control(1) : 0.0f;
@@ -1308,7 +1312,6 @@ void MulticopterAttitudeControl::task_main()
 				{
 					if (_actuators_0_pub != nullptr)
 					{
-						
 						orb_publish(_actuators_id, _actuators_0_pub, &_actuators);
 						perf_end(_controller_latency_perf);
 						
@@ -1400,7 +1403,6 @@ void MulticopterAttitudeControl::task_main()
 				}
 			}
 		}
-		
 		perf_end(_loop_perf);
 	}
 	

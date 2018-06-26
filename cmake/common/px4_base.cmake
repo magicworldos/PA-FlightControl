@@ -316,7 +316,7 @@ function(px4_add_common_flags)
 		-Wall
 		-Warray-bounds
 		-Wdisabled-optimization
-		#-Werror
+		-Werror
 		-Wextra
 		-Wfatal-errors
 		-Wfloat-equal
@@ -346,13 +346,13 @@ function(px4_add_common_flags)
 				-Wno-varargs
 				-Wno-address-of-packed-member
 				-Wno-unknown-warning-option
-				-Wunused-but-set-variable
+				-Wno-unused-but-set-variable
 				#-Wdouble-promotion # needs work first
 			)
 		endif()
 	else()
 		list(APPEND warnings
-			-Wunused-but-set-variable
+			-Wno-unused-but-set-variable
 			-Wformat=1
 			-Wdouble-promotion
 		)

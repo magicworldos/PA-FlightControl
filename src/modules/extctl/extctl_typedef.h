@@ -34,6 +34,29 @@
 #include <systemlib/err.h>
 #include <termios.h>
 #include <semaphore.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <string.h>
+#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <netinet/in.h>
+#include <sys/un.h>
+#include <arpa/inet.h>
+#include <setjmp.h>
+#include <sys/syscall.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <poll.h>
 #include <systemlib/mavlink_log.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_global_position.h>
@@ -47,7 +70,12 @@
 #include <uORB/topics/home_position.h>
 #include <uORB/topics/extctl_sp.h>
 
-#define DEV_NAME			"/dev/ttyS2"
+#ifdef __PX4_POSIX
+#define UNIX_DOMAIN 		"/tmp/UNIX.domain"
+#else
+#define DEV_NAME			"/dev/ttyUSB2"
+#endif
+
 #define DEV_BAUDRATE		(B115200)
 #define DEV_RATE_BASE		(1000 * 1000)
 #define DEV_RATE_READ		(DEV_RATE_BASE / 30)

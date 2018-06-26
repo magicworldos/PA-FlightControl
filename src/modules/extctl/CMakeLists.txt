@@ -42,6 +42,7 @@ px4_add_module(
 		extctl_sp.c
 		extctl_cmd.c
 		extctl_status.c
+		extctl_socket.c
 	DEPENDS
 		platforms__common
 	)

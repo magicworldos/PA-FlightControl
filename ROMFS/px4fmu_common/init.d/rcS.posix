@@ -1,0 +1,24 @@
+uorb start
+
+param load
+
+param set SYS_AUTOSTART 4001
+
+commander start
+
+navigator start
+
+land_detector start multicopter
+
+mc_pos_control start
+
+mc_att_control start
+
+mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+
+extctl start
+
+hil start
+
+mavlink boot_complete
+

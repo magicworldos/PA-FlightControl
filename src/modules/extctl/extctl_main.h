@@ -14,15 +14,18 @@
 #include "extctl_pos.h"
 #include "extctl_rc.h"
 #include "extctl_cmd.h"
+#include "extctl_socket.h"
 #include "extctl_status.h"
+
+#ifdef __PX4_POSIX
+#define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
+#endif
 
 int extctl_main(int argc, char *argv[]);
 
 static int start(int argc, char *argv[]);
 
 static int extctl_read(int argc, char *argv[]);
-
-extern void bzero(void *s, int n);
 
 static int frame_pos(int len_data);
 
@@ -42,6 +45,9 @@ static uint16_t crc16_value(uint8_t *buff, uint8_t len);
 
 static int crc16_check(uint8_t *buff, uint8_t len, uint16_t crc16);
 
+#ifdef __PX4_POSIX
+#else
 static int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop);
+#endif
 
 #endif /* SRC_DRIVERS_Extern_CONTROL_EXTERN_CONTROL_H_ */

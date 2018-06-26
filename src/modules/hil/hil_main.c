@@ -191,8 +191,6 @@ void hil_cal(double theta_t)
 	Vel_body.v[AT(1, 0, Vel_body.n)] += (Acc_body.v[AT(1, 0, Acc_body.n)] + AccAir1) * theta_t;
 	Vel_body.v[AT(2, 0, Vel_body.n)] += (Acc_body.v[AT(2, 0, Acc_body.n)] + AccAir2) * theta_t;
 
-	//mavlink_log_info(&_mavlink_log_pub, "%+4.3f %+4.3f %+4.3f %+4.3f", Acc_body.v[0], AccAir0, Acc_body.v[1], AccAir1);
-
 	hil_maxmin(&Vel_body.v[AT(0, 0, Vel_global.n)], MAX_VEL_BODY_XY, -MAX_VEL_BODY_XY);
 	hil_maxmin(&Vel_body.v[AT(1, 0, Vel_global.n)], MAX_VEL_BODY_XY, -MAX_VEL_BODY_XY);
 	hil_maxmin(&Vel_body.v[AT(2, 0, Vel_global.n)], MAX_VEL_BODY_Z, -MAX_VEL_BODY_Z);

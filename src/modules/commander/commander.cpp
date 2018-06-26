@@ -2686,7 +2686,7 @@ void Commander::run()
 			{
 				if (!status_flags.gps_failure)
 				{
-#if CONFIG_HIL_MODE == 1
+#ifdef CONFIG_HIL_MODE
 #else
 					mavlink_log_critical(&mavlink_log_pub, "GPS signal noisy");
 #endif
@@ -2709,7 +2709,7 @@ void Commander::run()
 					status_changed = true;
 					if (status_flags.condition_home_position_valid)
 					{
-#if CONFIG_HIL_MODE == 1
+#ifdef CONFIG_HIL_MODE
 #else
 						mavlink_log_critical(&mavlink_log_pub, "GPS fix regained");
 #endif

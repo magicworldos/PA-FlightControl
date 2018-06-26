@@ -33,6 +33,10 @@
 
 #include "matrix.h"
 
+#ifdef __PX4_POSIX
+#define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
+#endif
+
 #define MAX_ANGLE_RATE	(90.0 * M_PI / 180.0)	//角速度限幅	弧度/s^2
 #define MAX_ANGLE		(60.0 * M_PI / 180.0)	//角度限幅 弧度/s
 #define MAX_ACC_BODY	(60)					//机体加速度限幅 m/s^2
