@@ -1,8 +1,13 @@
+#!/bin/bash
+
 uorb start
 
 param load
 
 param set SYS_AUTOSTART 4001
+
+#sdlog2 start -r 100 -a -b 9 -t
+logger start -t -b 200
 
 commander start
 
