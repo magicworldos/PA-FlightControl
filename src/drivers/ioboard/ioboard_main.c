@@ -79,7 +79,6 @@ int stop(void)
 
 int ioboard_write(int argc, char *argv[])
 {
-
 	_serial_fd = open(_dev_name, O_WRONLY | O_NONBLOCK);
 	if (_serial_fd < 0)
 	{

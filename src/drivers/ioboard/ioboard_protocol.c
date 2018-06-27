@@ -191,7 +191,7 @@ int protocal_frame_mk_data(char *frame, int len_frame, char *data, int type, int
 	frame[_fpos.foot0] = FRM_FOOT_0;
 	frame[_fpos.foot1] = FRM_FOOT_1;
 
-	return OK;
+	return 0;
 }
 
 int protocal_send_frame_write(char *frame, int len)
