@@ -4,11 +4,27 @@ uorb start
 
 param load
 
-param set SYS_AUTOSTART 4001
+#param set SYS_AUTOSTART 4001
+
+#df_mpu9250_wrapper start -R 10
+
+#df_hmc5883_wrapper start
+
+#df_ms5611_wrapper start
+
+#navio_rgbled start
+
+#navio_adc start
+
+#gps start -d /dev/spidev0.0 -i spi -p ubx
+
+#sensors start
+
+#ekf2 start
 
 commander start
 
-navigator start
+#navigator start
 
 land_detector start multicopter
 
@@ -24,10 +40,10 @@ hil start
 
 linux_pwm_out start -p uorb
 
-ioboard start -d /dev/ttyUSB2 -s 115200
+ioboard start -d /dev/ttyUSB2 -s 57600
 
 #sdlog2 start -r 100 -a -b 9 -t
-logger start -t -b 200
+#logger start -t -b 200
 
 mavlink boot_complete
 

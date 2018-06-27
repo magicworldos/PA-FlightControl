@@ -7,7 +7,7 @@
 
 #include "ioboard_main.h"
 
-#define __DEBUG_INFO_
+//#define __DEBUG_INFO_
 
 bool _ioboard_should_exit = false;
 static sem_t _sem_w;
@@ -42,7 +42,7 @@ int ioboard_write(int argc, char *argv[])
 		warnx("can not open dev %s.", _dev_name);
 		return -1;
 	}
-	ioboard_set_opt(_serial_fd, DEV_BAUDRATE, 8, 'N', 1);
+	ioboard_set_opt(_serial_fd, _dev_baudrate, 8, 'N', 1);
 
 	pthread_t pthddr;
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &ioboard_read, NULL);
@@ -69,6 +69,7 @@ int ioboard_write(int argc, char *argv[])
 				for (int i = 0; i < s_pwm_output.num_outputs; i++)
 				{
 					printf("%5d", s_pwm_output.pwm[i]);
+					write(_serial_fd, &s_pwm_output.pwm[i], 2);
 				}
 				printf("]\n");
 			}

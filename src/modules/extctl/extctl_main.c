@@ -59,8 +59,6 @@ int extctl_read(int argc, char *argv[])
 	set_opt(_serial_fd, DEV_BAUDRATE, 8, 'N', 1);
 #endif
 
-	warnx("open dev ok");
-
 	extctl_sp_init();
 	extctl_cmd_init();
 	
@@ -406,8 +404,38 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 			newtio.c_cflag &= ~PARENB;
 			break;
 	}
-	cfsetispeed(&newtio, nSpeed);
-	cfsetospeed(&newtio, nSpeed);
+	switch (nSpeed)
+	{
+		case 9600:
+			cfsetispeed(&newtio, B9600);
+			cfsetospeed(&newtio, B9600);
+			break;
+
+		case 19200:
+			cfsetispeed(&newtio, B19200);
+			cfsetospeed(&newtio, B19200);
+			break;
+
+		case 57600:
+			cfsetispeed(&newtio, B57600);
+			cfsetospeed(&newtio, B57600);
+			break;
+
+		case 115200:
+			cfsetispeed(&newtio, B115200);
+			cfsetospeed(&newtio, B115200);
+			break;
+
+		case 230400:
+			cfsetispeed(&newtio, B230400);
+			cfsetospeed(&newtio, B230400);
+			break;
+
+		default:
+			cfsetispeed(&newtio, B115200);
+			cfsetospeed(&newtio, B115200);
+			break;
+	}
 	//设置停止位
 	if (nStop == 1)
 	{
