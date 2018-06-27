@@ -37,6 +37,7 @@ px4_add_module(
 	STACK_MAIN 1200
 	SRCS
 		ioboard_main.c
+		ioboard_protocol.c
 	DEPENDS
 		platforms__common
 	)

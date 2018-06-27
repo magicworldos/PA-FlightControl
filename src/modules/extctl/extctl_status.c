@@ -83,7 +83,7 @@ int extctl_status_send(void)
 
 		if (status)
 		{
-			extctl_send_data_buff(&sys_status, DATA_TYPE_STATUS, sizeof(sys_status_s));
+			extctl_protocal_write(&sys_status, DATA_TYPE_STATUS, sizeof(sys_status_s));
 		}
 		usleep(DEV_RATE_STATUS);
 	}

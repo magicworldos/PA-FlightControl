@@ -42,7 +42,7 @@ int extctl_rc_send(void)
 				rc.values[i] = in_rc.values[i];
 			}
 			
-			extctl_send_data_buff(&rc, DATA_TYPE_RC, sizeof(rc_s));
+			extctl_protocal_write(&rc, DATA_TYPE_RC, sizeof(rc_s));
 		}
 		usleep(DEV_RATE_RC);
 	}

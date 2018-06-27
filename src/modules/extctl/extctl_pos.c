@@ -69,7 +69,7 @@ int extctl_pos_send(void)
 		
 		if (status_pos)
 		{
-			extctl_send_data_buff(&pos, DATA_TYPE_POS, sizeof(vehicle_pos_s));
+			extctl_protocal_write(&pos, DATA_TYPE_POS, sizeof(vehicle_pos_s));
 		}
 		usleep(DEV_RATE_POS);
 	}

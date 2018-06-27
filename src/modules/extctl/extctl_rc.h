@@ -9,6 +9,7 @@
 #define SRC_MODULES_EXTCTL_EXTCTL_RC_H_
 
 #include "extctl_typedef.h"
+#include "extctl_protocol.h"
 
 int extctl_rc_handle(void *data);
 
