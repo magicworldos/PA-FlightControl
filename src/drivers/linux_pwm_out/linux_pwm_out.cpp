@@ -56,6 +56,7 @@
 #include "navio_sysfs.h"
 #include "PCA9685.h"
 #include "ocpoc_mmap.h"
+#include "uorb_pwm.h"
 
 namespace linux_pwm_out
 {
@@ -222,6 +223,12 @@ void task_main(int argc, char *argv[])
 		PX4_INFO("Starting PWM output in ocpoc_mmap mode");
 		pwm_out = new OcpocMmapPWMOut(_max_num_outputs);
 		
+	}
+	else if (strcmp(_protocol, "uorb") == 0)
+	{
+		PX4_INFO("Starting PWM output in UORB mode");
+		pwm_out = new UORBPwm(_max_num_outputs);
+
 	}
 	else /* navio */
 	{
@@ -468,7 +475,7 @@ void usage()
 	PX4_INFO("                       (default /sys/class/pwm/pwmchip0)");
 	PX4_INFO("       -m mixerfile : path to mixerfile");
 	PX4_INFO("                       (default ROMFS/px4fmu_common/mixers/quad_x.main.mix)");
-	PX4_INFO("       -p protocol : driver output protocol (navio|pca9685|ocpoc_mmap)");
+	PX4_INFO("       -p protocol : driver output protocol (navio|pca9685|ocpoc_mmap|uorb)");
 	PX4_INFO("                       (default is navio)");
 	PX4_INFO("       -n num_outputs : maximum number of outputs the driver should use");
 	PX4_INFO("                       (default is 8)");

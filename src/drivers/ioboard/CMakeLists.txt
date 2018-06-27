@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2015-2016 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2015 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -30,17 +30,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
+
 px4_add_module(
-	MODULE drivers__linux_pwm_out
-	MAIN linux_pwm_out
-	COMPILE_FLAGS
+	MODULE modules__ioboard
+	MAIN ioboard
+	STACK_MAIN 1200
 	SRCS
-		PCA9685.cpp
-		navio_sysfs.cpp
-		linux_pwm_out.cpp
-		ocpoc_mmap.cpp
-		uorb_pwm.cpp
+		ioboard_main.c
 	DEPENDS
 		platforms__common
 	)
-# vim: set noet ft=cmake fenc=utf-8 ff=unix :

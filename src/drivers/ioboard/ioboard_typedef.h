@@ -5,8 +5,8 @@
  *      Author: lidq
  */
 
-#ifndef SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
-#define SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_
+#ifndef SRC_DRIVERS_IOBOARD_IOBOARD_TYPEDEF_H_
+#define SRC_DRIVERS_IOBOARD_IOBOARD_TYPEDEF_H_
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -57,33 +57,20 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <poll.h>
-#include <systemlib/mavlink_log.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_global_position.h>
-#include <uORB/topics/vehicle_command.h>
-#include <uORB/topics/vehicle_status.h>
-#include <uORB/topics/vehicle_land_detected.h>
-#include <uORB/topics/input_rc.h>
-#include <uORB/topics/commander_state.h>
-#include <uORB/topics/vehicle_status.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/home_position.h>
-#include <uORB/topics/extctl_sp.h>
+#include <px4_getopt.h>
+
+#include <uORB/topics/pwm_output.h>
 
 #ifdef __PX4_POSIX
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
-#define UNIX_DOMAIN 		"/tmp/UNIX.domain"
-#else
-#define DEV_NAME			"/dev/ttyUSB2"
 #endif
+
+#define DEV_NAME			"/dev/ttyAMA0"
 
 #define DEV_BAUDRATE		(B115200)
 #define DEV_RATE_BASE		(1000 * 1000)
-#define DEV_RATE_READ		(DEV_RATE_BASE / 30)
-#define DEV_RATE_POS		(DEV_RATE_BASE / 10)
-#define DEV_RATE_RC			(DEV_RATE_BASE / 10)
-#define DEV_RATE_SP			(DEV_RATE_BASE / 10)
-#define DEV_RATE_STATUS		(DEV_RATE_BASE / 5)
+#define DEV_RATE_W			(DEV_RATE_BASE / 100)
+#define DEV_RATE_R			(DEV_RATE_BASE / 100)
 
 #define FRM_HEAD_0			0X55
 #define FRM_HEAD_1			0XAA

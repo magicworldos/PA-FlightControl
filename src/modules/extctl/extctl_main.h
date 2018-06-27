@@ -17,10 +17,6 @@
 #include "extctl_socket.h"
 #include "extctl_status.h"
 
-#ifdef __PX4_POSIX
-#define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
-#endif
-
 int extctl_main(int argc, char *argv[]);
 
 static int start(int argc, char *argv[]);

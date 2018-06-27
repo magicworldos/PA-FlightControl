@@ -78,6 +78,7 @@ set(msg_files
 	position_setpoint_triplet.msg
 	power_button_state.msg
 	pwm_input.msg
+	pwm_output.msg
 	qshell_req.msg
 	rc_channels.msg
 	rc_parameter_map.msg

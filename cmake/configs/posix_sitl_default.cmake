@@ -14,6 +14,8 @@ set(config_module_list
 	drivers/ms4525_airspeed
 	drivers/ms5525_airspeed
 	drivers/sdp3x_airspeed
+	drivers/linux_pwm_out
+	drivers/ioboard
 
 	modules/sensors
 	platforms/posix/drivers/accelsim
