@@ -94,7 +94,7 @@
 #define PAR_LEN				1
 #define PAR_END				2
 
-#define SIZE_BUFF			(0x200)
+#define SIZE_BUFF			(0x800)
 
 typedef struct s_buff
 {
@@ -199,6 +199,6 @@ enum data_type
 	DATA_TYPE_END,
 };
 
-int send_data_buff(void *data, int data_type, int data_len);
+int extctl_send_data_buff(void *data, int data_type, int data_len);
 
 #endif /* SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_ */

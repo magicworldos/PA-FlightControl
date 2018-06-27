@@ -81,7 +81,7 @@
 #define PAR_LEN				1
 #define PAR_END				2
 
-#define SIZE_BUFF			(0x200)
+#define SIZE_BUFF			(0x800)
 
 typedef struct s_buff
 {
@@ -94,98 +94,63 @@ typedef struct s_buff
 	uint32_t user_buf_over;
 } s_buff;
 
-typedef struct vehicle_pos_s
+typedef struct pwm_out_s
 {
-	//position local
-	struct
-	{
-		float x;
-		float y;
-		float z;
-	};
-	struct
-	{
-		float vx;
-		float vy;
-		float vz;
-	};
-	//position global
-	struct
-	{
-		double lat;
-		double lon;
-		float alt;
-	};
-	struct
-	{
-		float vel_n;
-		float vel_e;
-		float vel_d;
-	};
-} vehicle_pos_s;
+	uint16_t num_outputs;
+	uint16_t pwm[16];
 
-typedef struct vehicle_sp_s
-{
-	bool run_pos_control;
-	bool run_alt_control;
-	bool run_yaw_control;
-	float sp_yaw;
-	struct
-	{
-		float sp_x;
-		float sp_y;
-		float sp_z;
-	};
-	struct
-	{
-		float vel_sp_x;
-		float vel_sp_y;
-		float vel_sp_z;
-	};
-} vehicle_sp_s;
+} pwm_out_s;
 
-typedef struct sys_status_s
-{
-	uint8_t main_state;
-	uint8_t nav_state;
-	bool armed;
-	bool landed;
-	bool homed;
-	double home_lat;
-	double home_lon;
-	float home_alt;
-} sys_status_s;
-
-typedef struct rc_s
+typedef struct rc_input_s
 {
 	bool rc_failsafe;
 	bool rc_lost;
 	uint32_t channel_count;
 	uint16_t values[18];
-} rc_s;
+} rc_input_s;
 
-typedef struct cmd_s
+typedef struct gps_s
 {
-	uint32_t command;
-	float param1;
-	float param2;
-	float param3;
-	float param4;
-	float param5;
-	float param6;
-	float param7;
-} cmd_s;
+	uint64_t timestamp;
+	uint64_t time_utc_usec;
+	int32_t lat;
+	int32_t lon;
+	int32_t alt;
+	int32_t alt_ellipsoid;
+	float s_variance_m_s;
+	float c_variance_rad;
+	float eph;
+	float epv;
+	float hdop;
+	float vdop;
+	int32_t noise_per_ms;
+	int32_t jamming_indicator;
+	float vel_m_s;
+	float vel_n_m_s;
+	float vel_e_m_s;
+	float vel_d_m_s;
+	float cog_rad;
+	int32_t timestamp_time_relative;
+	uint8_t fix_type;
+	bool vel_ned_valid;
+	uint8_t satellites_used;
+	uint8_t _padding0[5];
+} gps_s;
+
+typedef struct battery_s
+{
+	float vcc;
+} battery_s;
 
 enum data_type
 {
-	DATA_TYPE_POS = 0,
-	DATA_TYPE_SP,
-	DATA_TYPE_RC,
-	DATA_TYPE_CMD,
-	DATA_TYPE_STATUS,
+	DATA_TYPE_PWM_OUTPUT = 0,
+	DATA_TYPE_RC_INPUT,
+	DATA_TYPE_GPS,
+	DATA_TYPE_BATTERY,
 	DATA_TYPE_END,
 };
 
-int send_data_buff(void *data, int data_type, int data_len);
+int ioboard_send_data_buff(void *data, int data_type, int data_len);
 
 #endif /* SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_ */

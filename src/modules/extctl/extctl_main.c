@@ -30,6 +30,23 @@ static int _frame_pos_crc1 = 0;
 static int _frame_pos_foot0 = 0;
 static int _frame_pos_foot1 = 0;
 
+int extctl_main(int argc, char *argv[])
+{
+	if (strcmp(argv[1], "start") == 0)
+	{
+		start(argc, argv);
+		return OK;
+	}
+
+	if (strcmp(argv[1], "stop") == 0)
+	{
+		stop();
+		return OK;
+	}
+
+	return -1;
+}
+
 int start(int argc, char *argv[])
 {
 	sem_init(&_sem_w, 0, 1);
@@ -42,6 +59,15 @@ int start(int argc, char *argv[])
 	int task_id = px4_task_spawn_cmd("exctl", SCHED_DEFAULT, SCHED_PRIORITY_FAST_DRIVER, CONFIG_PTHREAD_STACK_DEFAULT, entry_point, (char * const *) argv);
 	
 	return task_id;
+}
+
+int stop(void)
+{
+	_extctl_should_exit = true;
+	//wait task_main exit
+	usleep(200 * 1000);
+
+	return OK;
 }
 
 int extctl_read(int argc, char *argv[])
@@ -161,7 +187,7 @@ int frame_mk_data(char *frame, int len_frame, char *data, int type, int len_data
 	return OK;
 }
 
-int send_data_buff(void *data, int data_type, int data_len)
+int extctl_send_data_buff(void *data, int data_type, int data_len)
 {
 	if (data == NULL)
 	{
@@ -193,15 +219,6 @@ int send_frame_write(char *frame, int len)
 	}
 	int wlen = write(_serial_fd, frame, len);
 	return wlen;
-}
-
-int stop(void)
-{
-	_extctl_should_exit = true;
-	//wait task_main exit
-	usleep(200 * 1000);
-	
-	return OK;
 }
 
 int frame_count(s_buff *lb)
@@ -461,19 +478,3 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 }
 #endif
 
-int extctl_main(int argc, char *argv[])
-{
-	if (strcmp(argv[1], "start") == 0)
-	{
-		start(argc, argv);
-		return OK;
-	}
-	
-	if (strcmp(argv[1], "stop") == 0)
-	{
-		stop();
-		return OK;
-	}
-	
-	return -1;
-}

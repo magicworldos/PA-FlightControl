@@ -337,6 +337,7 @@ function(px4_add_common_flags)
 		-Wno-ignored-qualifiers
 		-Wno-stringop-truncation
 		-Wno-format-truncation
+		-Wno-unused-function
 		)
 
 	if (${CMAKE_C_COMPILER_ID} MATCHES ".*Clang.*")
@@ -370,7 +371,7 @@ function(px4_add_common_flags)
 
 	set(c_warnings
 		-Wbad-function-cast
-		-Wstrict-prototypes
+		-Wno-strict-prototypes
 		-Wmissing-prototypes
 		-Wnested-externs
 		)

@@ -32,7 +32,7 @@ mc_pos_control start
 
 mc_att_control start
 
-mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+#mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
 
 extctl start
 
@@ -40,7 +40,7 @@ hil start
 
 linux_pwm_out start -p uorb
 
-ioboard start -d /dev/ttyUSB2 -s 57600
+ioboard start -d /dev/ttyUSB0 -s 115200
 
 #sdlog2 start -r 100 -a -b 9 -t
 #logger start -t -b 200
