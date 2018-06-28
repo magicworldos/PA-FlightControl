@@ -1,3 +1,10 @@
+/*
+ * timer_tick.c
+ *
+ *  Created on: Jun 25, 2017
+ *      Author: lidq
+ */
+
 #include <timer.h>
 
 __IO u32 timer_delay = 0;
