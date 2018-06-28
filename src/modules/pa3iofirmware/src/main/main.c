@@ -10,8 +10,6 @@ int main(int argc, char* argv[])
 
 	led_init();
 
-	led0_off();
-
 	pwmout_init();
 
 	uart1_init();
@@ -22,9 +20,10 @@ int main(int argc, char* argv[])
 
 	while (1)
 	{
-		led0_blink(500 * 1000);
+		led0_blink(50);
 
 		timer_delay_ms(10);
 	}
-}
 
+	return 0;
+}

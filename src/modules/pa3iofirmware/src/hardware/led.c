@@ -18,21 +18,23 @@ void led_init()
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+	GPIO_SetBits(GPIOC, GPIO_Pin_13);
 }
 
 void led0_on()
 {
-	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+	GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 }
 
 void led0_off()
 {
-	GPIO_SetBits(GPIOA, GPIO_Pin_4);
+	GPIO_SetBits(GPIOC, GPIO_Pin_13);
 }
 
-void led0_blink(u32 usecs)
+void led0_blink(u32 msecs)
 {
-	if (timer_tick % usecs < usecs / 2)
+	if (timer_tick % msecs < msecs / 2)
 	{
 		led0_on();
 	}
