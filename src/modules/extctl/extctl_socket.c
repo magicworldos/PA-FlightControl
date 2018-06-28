@@ -233,9 +233,12 @@ void exception_handler(int sig)
 	}
 	else
 	{
-		printf("Release socket %d\n", _socket_id);
-		server_close_socket(_socket_id);
-		_socket_id = -1;
+		if(_socket_id > -1)
+		{
+			printf("Release socket %d\n", _socket_id);
+			server_close_socket(_socket_id);
+			_socket_id = -1;
+		}
 	}
 }
 

@@ -744,7 +744,7 @@ void GPS::run()
 				default:
 				break;
 			}
-			warnx("gps mode %d\n", _mode);
+
 			/* the Ashtech driver lies about successful configuration and the
 			 * MTK driver is not well tested, so we really only trust the UBX
 			 * driver for an advance publication
@@ -769,9 +769,10 @@ void GPS::run()
 					if (helper_ret & 1)
 					{	
 
-						printf("lat %d, lon %d, alt %d, ", _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
-						printf("valid %d ms %f, nv %f, ev %f, dv %f, ", _report_gps_pos.vel_ned_valid, (double)_report_gps_pos.vel_m_s, (double)_report_gps_pos.vel_n_m_s, (double)_report_gps_pos.vel_e_m_s, (double)_report_gps_pos.vel_d_m_s);
-						printf("sates %d\n", _p_report_sat_info->count);
+//						printf("mode %d, lat %d, lon %d, alt %d, ", _mode, _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
+//						printf("valid %d ms %f, nv %f, ev %f, dv %f, ", _report_gps_pos.vel_ned_valid, (double)_report_gps_pos.vel_m_s, (double)_report_gps_pos.vel_n_m_s, (double)_report_gps_pos.vel_e_m_s, (double)_report_gps_pos.vel_d_m_s);
+//						printf("sates %d\n", _report_gps_pos.satellites_used);
+
 						publish();
 
 						last_rate_count++;
