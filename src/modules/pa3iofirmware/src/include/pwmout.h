@@ -14,7 +14,7 @@
 #define TIM_PERIOD			(2000 -1)
 #define TIM_PULSE			(1000 - 1)
 #define PWM_FAILSAFE		(800)
-#define PWM_NUMCOUNTS		(8)
+#define PWM_NUMCOUNTS		(16)
 
 void pwmout_init(void);
 

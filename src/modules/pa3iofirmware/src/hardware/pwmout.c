@@ -7,7 +7,7 @@
 
 #include <pwmout.h>
 
-uint16_t pwmout[PWM_NUMCOUNTS] = { 0 };
+uint16_t _pwmout[PWM_NUMCOUNTS] = { 0 };
 
 void pwmout_init()
 {
@@ -97,18 +97,18 @@ void pwmout_set_failsafe()
 {
 	for (int i = 0; i < PWM_NUMCOUNTS; i++)
 	{
-		pwmout[i] = PWM_FAILSAFE;
+		_pwmout[i] = PWM_FAILSAFE;
 	}
 }
 
 void pwmout_set_value()
 {
-	TIM_SetCompare1(TIM2, pwmout[0]);
-	TIM_SetCompare2(TIM2, pwmout[1]);
-	TIM_SetCompare3(TIM2, pwmout[2]);
-	TIM_SetCompare4(TIM2, pwmout[3]);
-	TIM_SetCompare1(TIM3, pwmout[4]);
-	TIM_SetCompare2(TIM3, pwmout[5]);
-	TIM_SetCompare3(TIM3, pwmout[6]);
-	TIM_SetCompare4(TIM3, pwmout[7]);
+	TIM_SetCompare1(TIM2, _pwmout[0]);
+	TIM_SetCompare2(TIM2, _pwmout[1]);
+	TIM_SetCompare3(TIM2, _pwmout[2]);
+	TIM_SetCompare4(TIM2, _pwmout[3]);
+	TIM_SetCompare1(TIM3, _pwmout[4]);
+	TIM_SetCompare2(TIM3, _pwmout[5]);
+	TIM_SetCompare3(TIM3, _pwmout[6]);
+	TIM_SetCompare4(TIM3, _pwmout[7]);
 }

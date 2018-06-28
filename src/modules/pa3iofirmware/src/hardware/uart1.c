@@ -7,6 +7,8 @@
 
 #include <uart1.h>
 
+extern s_buff _recv;
+
 void uart1_init(void)
 {
 	uart1_gpio_configuration();
@@ -33,7 +35,7 @@ void uart1_configuration(void)
 	USART_InitTypeDef usart1_init_struct;
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 	USART_Cmd(USART1, ENABLE);
-	usart1_init_struct.USART_BaudRate = 1152000;
+	usart1_init_struct.USART_BaudRate = USART_BAUDRATE;
 	usart1_init_struct.USART_WordLength = USART_WordLength_8b;
 	usart1_init_struct.USART_StopBits = USART_StopBits_1;
 	usart1_init_struct.USART_Parity = USART_Parity_No;
@@ -68,9 +70,11 @@ void USART1_IRQHandler(void)
 		while ((USART1->SR & USART_SR_RXNE) == 0)
 		{
 		}
-		uint16_t ch = USART_ReceiveData(USART1);
-		if (ch == 0)
+		_recv.buff[_recv.head] = USART_ReceiveData(USART1);
+		_recv.head = (_recv.head + 1) % _recv.size;
+		if (_recv.head == _recv.tail)
 		{
+			_recv.over++;
 		}
 	}
 }

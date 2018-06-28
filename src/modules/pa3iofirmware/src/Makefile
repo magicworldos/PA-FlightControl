@@ -19,6 +19,7 @@ objs:
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/pwmout.o -c $(PATH_HARDWARE)/pwmout.c
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/led.o -c $(PATH_HARDWARE)/led.c
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/uart1.o -c $(PATH_HARDWARE)/uart1.c
+	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/protocol.o -c $(PATH_HARDWARE)/protocol.c
 
 app.a:
 	$(AR) cr $(PATH_TARGET)/app.a $(PATH_TARGET)/*.o

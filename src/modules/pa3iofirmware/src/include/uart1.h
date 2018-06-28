@@ -9,6 +9,9 @@
 #define SRC_UART_H_
 
 #include <typedef.h>
+#include <protocol.h>
+
+#define USART_BAUDRATE	(115200)
 
 void uart1_init(void);
 
