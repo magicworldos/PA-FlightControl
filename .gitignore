@@ -69,5 +69,8 @@ posix-configs/SITL/init/test/*_generated
 /parameters.md
 /parameters.xml
 /modules
-
+src/modules/pa3iofirmware/release
+src/modules/pa3iofirmware/release/*
+src/modules/pa3iofirmware/src/release
+src/modules/pa3iofirmware/src/release/*
 *.gcov
