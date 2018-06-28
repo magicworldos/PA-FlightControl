@@ -768,6 +768,10 @@ void GPS::run()
 				{	
 					if (helper_ret & 1)
 					{	
+
+						printf("lat %d, lon %d, alt %d, ", _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
+						printf("valid %d ms %f, nv %f, ev %f, dv %f, ", _report_gps_pos.vel_ned_valid, (double)_report_gps_pos.vel_m_s, (double)_report_gps_pos.vel_n_m_s, (double)_report_gps_pos.vel_e_m_s, (double)_report_gps_pos.vel_d_m_s);
+						printf("sates %d\n", _p_report_sat_info->count);
 						publish();
 
 						last_rate_count++;
