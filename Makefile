@@ -59,6 +59,9 @@ endif
 #  explicity set default build target
 all: posix_sitl_default
 
+pa3io:
+	cd src/modules/pa3iofirmware && make
+
 # Parsing
 # --------------------------------------------------------------------
 # assume 1st argument passed is the main target, the
