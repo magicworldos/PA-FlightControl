@@ -19,7 +19,11 @@
 #define PAR_LEN				1
 #define PAR_END				2
 
+#ifdef __PX4_POSIX
 #define SIZE_BUFF			(0x800)
+#else
+#define SIZE_BUFF			(0x200)
+#endif
 
 typedef struct s_buff
 {

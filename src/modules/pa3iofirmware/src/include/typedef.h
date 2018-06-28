@@ -23,6 +23,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define NO_MKTIME
+
+typedef uint64_t hrt_abstime;
+typedef hrt_abstime gps_abstime;
+
 typedef struct pwm_out_s
 {
 	uint16_t num_outputs;
@@ -38,7 +43,7 @@ typedef struct rc_input_s
 	uint16_t values[18];
 } rc_input_s;
 
-typedef struct gps_s
+typedef struct vehicle_gps_position_s
 {
 	uint64_t timestamp;
 	uint64_t time_utc_usec;
@@ -65,6 +70,18 @@ typedef struct gps_s
 	uint8_t satellites_used;
 	uint8_t _padding0[5];
 } gps_s;
+
+typedef struct satellite_info_s
+{
+	uint64_t timestamp;
+	uint8_t count;
+	uint8_t svid[20];
+	uint8_t used[20];
+	uint8_t elevation[20];
+	uint8_t azimuth[20];
+	uint8_t snr[20];
+	uint8_t _padding0[3];
+} sate_s;
 
 typedef struct battery_s
 {

@@ -744,7 +744,7 @@ void GPS::run()
 				default:
 				break;
 			}
-
+			warnx("gps mode %d\n", _mode);
 			/* the Ashtech driver lies about successful configuration and the
 			 * MTK driver is not well tested, so we really only trust the UBX
 			 * driver for an advance publication
@@ -766,7 +766,6 @@ void GPS::run()
 
 				while ((helper_ret = _helper->receive(TIMEOUT_5HZ)) > 0 && !should_exit())
 				{	
-
 					if (helper_ret & 1)
 					{	
 						publish();
