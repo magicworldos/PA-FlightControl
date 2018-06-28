@@ -16,6 +16,6 @@ void led0_on(void);
 
 void led0_off(void);
 
-void led0_blink(u32 usecs);
+void led0_blink(u32 msecs);
 
 #endif

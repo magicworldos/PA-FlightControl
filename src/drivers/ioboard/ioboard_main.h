@@ -21,6 +21,12 @@ static int ioboard_write(int argc, char *argv[]);
 
 static int ioboard_read(void);
 
+static int ioboard_handle_gps(void *data);
+
+static int ioboard_handle_rc(void *data);
+
+static int ioboard_handle_battery(void *data);
+
 static int ioboard_set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop);
 
 #endif /* SRC_DRIVERS_IOBOARD_IOBOARD_MAIN_H_ */

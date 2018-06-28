@@ -34,7 +34,8 @@ void led0_off()
 
 void led0_blink(u32 msecs)
 {
-	if (timer_tick % msecs < msecs / 2)
+	u32 usecs = msecs * 1000;
+	if (timer_tick % usecs < usecs / 2)
 	{
 		led0_on();
 	}

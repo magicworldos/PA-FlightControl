@@ -21,4 +21,10 @@ static void handle_protocol(void);
 
 static void handle_pwmout(void *data);
 
+static void send_gps(void);
+
+static void send_rc(void);
+
+static void send_battery(void);
+
 #endif /* SRC_MODULES_PA3IOFIRMWARE_SRC_INCLUDE_MAIN_H_ */

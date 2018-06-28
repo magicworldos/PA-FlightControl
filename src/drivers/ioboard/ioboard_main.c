@@ -79,7 +79,7 @@ int stop(void)
 
 int ioboard_write(int argc, char *argv[])
 {
-	_serial_fd = open(_dev_name, O_WRONLY | O_NONBLOCK);
+	_serial_fd = open(_dev_name, O_RDWR | O_NONBLOCK);
 	if (_serial_fd < 0)
 	{
 		warnx("can not open dev %s.", _dev_name);
@@ -134,10 +134,87 @@ int ioboard_write(int argc, char *argv[])
 
 int ioboard_read(void)
 {
+	char buff[SIZE_BUFF] = { 0 };
+	int len = 0;
+	int type = 0;
+
 	while (!_ioboard_should_exit)
 	{
+		if (ioboard_protocal_read(buff, &len, &type))
+		{
+			int (*p_handle)(void *) = NULL;
+
+			switch (type)
+			{
+				case DATA_TYPE_GPS:
+					p_handle = &ioboard_handle_gps;
+					break;
+
+				case DATA_TYPE_RC_INPUT:
+					p_handle = &ioboard_handle_rc;
+					break;
+
+				case DATA_TYPE_BATTERY:
+					p_handle = &ioboard_handle_battery;
+					break;
+
+				default:
+					break;
+			}
+
+			if (p_handle != NULL)
+			{
+				p_handle(buff);
+			}
+		}
+
 		usleep(DEV_RATE_R);
 	}
+
+	return 0;
+}
+
+int ioboard_handle_gps(void *data)
+{
+	gps_s *gps = data;
+	if (gps == NULL)
+	{
+		return -1;
+	}
+
+//	printf("GPS: %d %d %d %f %f %f\n", gps->lat, gps->lon, gps->alt, (double) gps->vel_n_m_s, (double) gps->vel_e_m_s, (double) gps->vel_d_m_s);
+
+	return 0;
+}
+
+int ioboard_handle_rc(void *data)
+{
+	rc_input_s *rc = data;
+	if (rc == NULL)
+	{
+		return -1;
+	}
+
+//	printf("RC: ");
+//	for (int i = 0; i < (int) rc->channel_count; i++)
+//	{
+//		printf("%4d", rc->values[i]);
+//	}
+//	printf("\n");
+
+	return 0;
+}
+
+int ioboard_handle_battery(void *data)
+{
+	battery_s *battery = data;
+	if (battery == NULL)
+	{
+		return -1;
+	}
+
+//	printf("BATTERY: %f\n", (double)battery->vcc);
+
 	return 0;
 }
 
