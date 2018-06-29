@@ -13,15 +13,20 @@
 #include <timer.h>
 #include <protocol.h>
 #include <uart1.h>
+#include <uart2.h>
 #include <pwmout.h>
 
 int main(int argc, char* argv[]);
 
 static void handle_protocol(void);
 
+static void handle_gps(void *data);
+
+static void handle_rc(void);
+
 static void handle_pwmout(void *data);
 
-static void send_gps(void);
+static void read_gps(void);
 
 static void send_rc(void);
 

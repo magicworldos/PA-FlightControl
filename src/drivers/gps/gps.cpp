@@ -86,15 +86,23 @@
 #include "devices/src/mtk.h"
 #include "devices/src/ashtech.h"
 
+//#define __ORB_MODE
+
 #define TIMEOUT_5HZ 500
 #define RATE_MEASUREMENT_PERIOD 5000000
 #define GPS_WAIT_BEFORE_READ	20		// ms, wait before reading to save read() calls
 
+#ifdef __ORB_MODE
+
+static orb_advert_t _orb_gps_drv_w_topic;
+
 static int _orb_gps_drv_w_instance;
 static int _orb_gps_drv_r_instance;
-static orb_advert_t _orb_gps_drv_w_topic;
-static gps_drv_r_s _gps_drv_r;
+
 static gps_drv_w_s _gps_drv_w;
+static gps_drv_r_s _gps_drv_r;
+
+#endif
 
 /* struct for dynamic allocation of satellite info data */
 struct GPS_Sat_Info
@@ -294,8 +302,10 @@ GPS::GPS(const char *path, gps_driver_mode_t mode, GPSHelper::Interface interfac
 	/* enforce null termination */
 	_port[sizeof(_port) - 1] = '\0';
 	
+#ifdef __ORB_MODE
 	_orb_gps_drv_w_topic = orb_advertise_multi(ORB_ID(gps_drv_w), &_gps_drv_w, &_orb_gps_drv_w_instance, ORB_PRIO_HIGH);
 	_orb_gps_drv_r_instance = orb_subscribe(ORB_ID(gps_drv_r));
+#endif
 
 	/* create satellite info data object if requested */
 	if (enable_sat_info)
@@ -368,9 +378,31 @@ int GPS::callback(GPSCallbackType type, void *data1, int data2, void *user)
 		case GPSCallbackType::writeDeviceData:
 			gps->dumpGpsData((uint8_t *) data1, (size_t) data2, true);
 
-#ifdef __PX4_POSIX
-			orb_publish(ORB_ID(gps_drv_w), _orb_gps_drv_w_topic, &_gps_drv_w);
-			warnx("pub orb");
+#ifdef __ORB_MODE
+			if (data2 > 150)
+			{
+				memcpy(_gps_drv_w.data, data1, 150);
+				_gps_drv_w.len = 150;
+				orb_publish(ORB_ID(gps_drv_w), _orb_gps_drv_w_topic, &_gps_drv_w);
+				usleep(1 * 1000);
+
+				//warnx("gps pub A1 %d", 150);
+
+				memcpy(_gps_drv_w.data, (char *)data1 + 150, data2 - 150);
+				_gps_drv_w.len = data2 - 150;
+				orb_publish(ORB_ID(gps_drv_w), _orb_gps_drv_w_topic, &_gps_drv_w);
+
+				//warnx("gps pub A2 %d", data2 - 150);
+			}
+			else
+			{
+				memcpy(_gps_drv_w.data, data1, data2);
+				_gps_drv_w.len = data2;
+				orb_publish(ORB_ID(gps_drv_w), _orb_gps_drv_w_topic, &_gps_drv_w);
+
+				//warnx("gps pub B %d", data2);
+			}
+
 			return data2;
 #else
 			return write(gps->_serial_fd, data1, (size_t) data2);
@@ -399,13 +431,15 @@ int GPS::pollOrRead(uint8_t *buf, size_t buf_length, int timeout)
 {
 	handleInjectDataTopic();
 
-#ifdef __PX4_POSIX
+#ifdef __ORB_MODE
 	bool updated = false;
 	orb_check(_orb_gps_drv_r_instance, &updated);
-	warnx("sub orb");
 	if (updated)
 	{
 		orb_copy(ORB_ID(gps_drv_r), _orb_gps_drv_r_instance, &_gps_drv_r);
+		memcpy(buf, _gps_drv_r.data, _gps_drv_r.len);
+
+		//warnx("gps sub %d", _gps_drv_r.len);
 		return _gps_drv_r.len;
 	}
 	return 0;
@@ -420,7 +454,7 @@ int GPS::pollOrRead(uint8_t *buf, size_t buf_length, int timeout)
 //two pollings use different underlying mechanisms (at least under posix), which makes this
 //impossible. Instead we limit the maximum polling interval and regularly check for new orb
 //messages.
-//FIXME: add a unified poll() API
+//add a unified poll() API
 	const int max_timeout = 50;
 
 	pollfd fds[1];
@@ -515,6 +549,8 @@ bool GPS::injectData(uint8_t *data, size_t len)
 
 int GPS::setBaudrate(unsigned baud)
 {
+#ifdef __ORB_MODE
+#else
 	/* process baud rate */
 	int speed;
 
@@ -610,6 +646,8 @@ int GPS::setBaudrate(unsigned baud)
 		return -1;
 	}
 
+#endif
+
 	return 0;
 }
 
@@ -687,6 +725,8 @@ void GPS::run()
 {
 	if (!_fake_gps)
 	{
+#ifdef __ORB_MODE
+#else
 		/* open the serial port */
 		_serial_fd = ::open(_port, O_RDWR | O_NOCTTY);
 
@@ -695,6 +735,7 @@ void GPS::run()
 			PX4_ERR("GPS: failed to open serial port: %s err: %d", _port, errno);
 			return;
 		}
+#endif
 	}
 	
 	_orb_inject_data_fd = orb_subscribe(ORB_ID(gps_inject_data));
@@ -775,14 +816,14 @@ void GPS::run()
 				default:
 				break;
 			}
-
+			//printf("modeA %d %d\n", _mode, _baudrate);
 			/* the Ashtech driver lies about successful configuration and the
 			 * MTK driver is not well tested, so we really only trust the UBX
 			 * driver for an advance publication
 			 */
 			if (_helper && _helper->configure(_baudrate, GPSHelper::OutputMode::GPS) == 0)
 			{	
-
+				//printf("modeB %d\n", _mode);
 				/* reset report */
 				memset(&_report_gps_pos, 0, sizeof(_report_gps_pos));
 
@@ -797,12 +838,13 @@ void GPS::run()
 
 				while ((helper_ret = _helper->receive(TIMEOUT_5HZ)) > 0 && !should_exit())
 				{	
+					//printf("modeC %d\n", _mode);
 					if (helper_ret & 1)
 					{
 
-//						printf("mode %d, lat %d, lon %d, alt %d, ", _mode, _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
-//						printf("valid %d ms %f, nv %f, ev %f, dv %f, ", _report_gps_pos.vel_ned_valid, (double)_report_gps_pos.vel_m_s, (double)_report_gps_pos.vel_n_m_s, (double)_report_gps_pos.vel_e_m_s, (double)_report_gps_pos.vel_d_m_s);
-//						printf("sates %d\n", _report_gps_pos.satellites_used);
+						printf("mode %d, lat %d, lon %d, alt %d, ", _mode, _report_gps_pos.lat, _report_gps_pos.lon, _report_gps_pos.alt);
+						printf("valid %d ms %f, nv %f, ev %f, dv %f, ", _report_gps_pos.vel_ned_valid, (double)_report_gps_pos.vel_m_s, (double)_report_gps_pos.vel_n_m_s, (double)_report_gps_pos.vel_e_m_s, (double)_report_gps_pos.vel_d_m_s);
+						printf("sates %d\n", _report_gps_pos.satellites_used);
 
 						publish();
 

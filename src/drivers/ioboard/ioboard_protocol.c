@@ -223,6 +223,15 @@ void protocal_frame_read_data(void)
 
 	uint8_t tmp_serial_buf[SIZE_BUFF];
 	int len = read(_fd, tmp_serial_buf, SIZE_BUFF);
+//	if (len > 0)
+//	{
+//		printf("len %d[", len);
+//		for (int i = 0; i < len; i++)
+//		{
+//			printf("%02x ", tmp_serial_buf[i]);
+//		}
+//		printf("\n");
+//	}
 	for (int i = 0; i < len; i++)
 	{
 		_recv.buff[_recv.head] = tmp_serial_buf[i];

@@ -14,6 +14,9 @@ bool _ioboard_should_exit = false;
 static int _serial_fd = -1;
 static char _dev_name[128] = DEV_NAME;
 static int _dev_baudrate = DEV_BAUDRATE;
+static int _orb_class_instance = -1;
+static gps_drv_s _gps;
+static orb_advert_t _orb_gps_topic = NULL;
 
 int ioboard_main(int argc, char *argv[])
 {
@@ -93,8 +96,11 @@ int ioboard_write(int argc, char *argv[])
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &ioboard_read, NULL);
 
 	int sub_pwm_output = orb_subscribe(ORB_ID(pwm_output));
+	int sub_gps_w = orb_subscribe(ORB_ID(gps_drv_w));
 	struct pwm_output_s s_pwm_output;
+	struct gps_drv_w_s s_gps_w;
 	pwm_out_s s_pwm_out = { 0 };
+	gps_drv_s s_gps_drv_w = { 0 };
 
 #ifdef __DEBUG_INFO_
 	uint32_t i = 0;
@@ -114,19 +120,17 @@ int ioboard_write(int argc, char *argv[])
 				s_pwm_out.pwm[i] = s_pwm_output.pwm[i];
 			}
 			ioboard_protocal_write(&s_pwm_out, DATA_TYPE_PWM_OUTPUT, sizeof(pwm_out_s));
-
-#ifdef __DEBUG_INFO_
-			if (i++ % 10 == 0)
-			{
-				printf("CH %2d [", s_pwm_output.num_outputs);
-				for (int i = 0; i < s_pwm_output.num_outputs; i++)
-				{
-					printf("%5d", s_pwm_output.pwm[i]);
-				}
-				printf("]\n");
-			}
-#endif
 		}
+
+		orb_check(sub_gps_w, &updated);
+		if (updated)
+		{
+			orb_copy(ORB_ID(gps_drv_w), sub_gps_w, &s_gps_w);
+			memcpy(s_gps_drv_w.data, s_gps_w.data, s_gps_w.len);
+			s_gps_drv_w.len = s_gps_w.len;
+			ioboard_protocal_write(&s_gps_drv_w, DATA_TYPE_GPS, sizeof(gps_drv_s));
+		}
+
 		usleep(DEV_RATE_W);
 	}
 	return 0;
@@ -138,6 +142,7 @@ int ioboard_read(void)
 	int len = 0;
 	int type = 0;
 
+	_orb_gps_topic = orb_advertise_multi(ORB_ID(gps_drv_r), &_gps, &_orb_class_instance, ORB_PRIO_HIGH);
 	while (!_ioboard_should_exit)
 	{
 		if (ioboard_protocal_read(buff, &len, &type))
@@ -176,14 +181,22 @@ int ioboard_read(void)
 
 int ioboard_handle_gps(void *data)
 {
-	gps_s *gps = data;
+	gps_drv_s *gps = data;
 	if (gps == NULL)
 	{
 		return -1;
 	}
-
-//	printf("GPS: %d %d %d %f %f %f\n", gps->lat, gps->lon, gps->alt, (double) gps->vel_n_m_s, (double) gps->vel_e_m_s, (double) gps->vel_d_m_s);
-
+	memcpy(_gps.data, gps->data, gps->len);
+	_gps.len = gps->len;
+	if (_gps.len > 0)
+	{
+//		printf("%d\n", _gps.len);
+//		for (int i = 0; i < _gps.len; i++)
+//		{
+//			printf("%c", _gps.data[i]);
+//		}
+		orb_publish(ORB_ID(gps_drv_r), _orb_gps_topic, &_gps);
+	}
 	return 0;
 }
 
@@ -268,6 +281,11 @@ int ioboard_set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop)
 		case 19200:
 			cfsetispeed(&newtio, B19200);
 			cfsetospeed(&newtio, B19200);
+			break;
+
+		case 38400:
+			cfsetispeed(&newtio, B38400);
+			cfsetospeed(&newtio, B38400);
 			break;
 
 		case 57600:

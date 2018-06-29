@@ -43,45 +43,11 @@ typedef struct rc_input_s
 	uint16_t values[18];
 } rc_input_s;
 
-typedef struct vehicle_gps_position_s
+typedef struct gps_drv_s
 {
-	uint64_t timestamp;
-	uint64_t time_utc_usec;
-	int32_t lat;
-	int32_t lon;
-	int32_t alt;
-	int32_t alt_ellipsoid;
-	float s_variance_m_s;
-	float c_variance_rad;
-	float eph;
-	float epv;
-	float hdop;
-	float vdop;
-	int32_t noise_per_ms;
-	int32_t jamming_indicator;
-	float vel_m_s;
-	float vel_n_m_s;
-	float vel_e_m_s;
-	float vel_d_m_s;
-	float cog_rad;
-	int32_t timestamp_time_relative;
-	uint8_t fix_type;
-	bool vel_ned_valid;
-	uint8_t satellites_used;
-	uint8_t _padding0[5];
-} gps_s;
-
-typedef struct satellite_info_s
-{
-	uint64_t timestamp;
-	uint8_t count;
-	uint8_t svid[20];
-	uint8_t used[20];
-	uint8_t elevation[20];
-	uint8_t azimuth[20];
-	uint8_t snr[20];
-	uint8_t _padding0[3];
-} sate_s;
+	uint8_t len;
+	char data[150];
+} gps_drv_s;
 
 typedef struct battery_s
 {

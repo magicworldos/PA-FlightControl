@@ -1,2 +1,2 @@
 uint8 len
-uint8[255] data
+uint8[150] data

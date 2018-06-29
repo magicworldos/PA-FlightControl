@@ -9,7 +9,6 @@
 #define SRC_DRIVERS_PROTOCOL_H_
 
 #include <typedef.h>
-#include <uart1.h>
 
 #define FRM_HEAD_0			0X55
 #define FRM_HEAD_1			0XAA

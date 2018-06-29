@@ -16,8 +16,8 @@ param load
 
 #navio_adc start
 
-gps start -d /dev/ttyUSB0 -i uart
-#-p ubx
+#gps start -d /dev/null -i uart
+gps start -d /dev/ttyUSB0 -i uart -p ubx
 
 #sensors start
 
@@ -39,9 +39,9 @@ extctl start
 
 hil start
 
-#linux_pwm_out start -p uorb
+linux_pwm_out start -p uorb
 
-#ioboard start -d /dev/ttyUSB2 -s 115200
+ioboard start -d /dev/ttyUSB1 -s 115200
 
 #sdlog2 start -r 100 -a -b 9 -t
 #logger start -t -b 200

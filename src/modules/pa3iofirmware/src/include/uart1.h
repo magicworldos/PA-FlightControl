@@ -5,13 +5,13 @@
  *      Author: lidq
  */
 
-#ifndef SRC_UART_H_
-#define SRC_UART_H_
+#ifndef SRC_UART1_H_
+#define SRC_UART1_H_
 
 #include <typedef.h>
 #include <protocol.h>
 
-#define USART_BAUDRATE	(115200)
+#define USART1_BAUDRATE	(115200)
 
 void uart1_init(void);
 
