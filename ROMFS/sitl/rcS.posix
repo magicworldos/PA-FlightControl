@@ -4,7 +4,7 @@ uorb start
 
 param load
 
-#param set SYS_AUTOSTART 4001
+param set SYS_AUTOSTART 4001
 
 #df_mpu9250_wrapper start -R 10
 
@@ -16,12 +16,11 @@ param load
 
 #navio_adc start
 
-#gps start -d /dev/null -i uart
-gps start -d /dev/ttyUSB0 -i uart -p ubx
+#gps start -d /dev/ttyUSB1 -i uart -p ubx
 
-#sensors start
+sensors start
 
-#ekf2 start
+ekf2 start
 
 commander start
 
@@ -33,7 +32,7 @@ mc_pos_control start
 
 mc_att_control start
 
-#mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+mavlink start -r 800000 -b 115200 -d /dev/ttyUSB2 -m config
 
 extctl start
 
@@ -46,5 +45,5 @@ ioboard start -d /dev/ttyUSB1 -s 115200
 #sdlog2 start -r 100 -a -b 9 -t
 #logger start -t -b 200
 
-#mavlink boot_complete
+mavlink boot_complete
 

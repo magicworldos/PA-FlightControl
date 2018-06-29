@@ -2,10 +2,13 @@
 
 extern uint16_t _pwmout[PWM_NUMCOUNTS];
 
+static rc_input_s _rc = { 0 };
+static uint16_t _rc_values[16] = { 0 };
+static uint8_t _rc_flag = 0;
+
 static char _pro_buff[SIZE_BUFF] = { 0 };
 static int _pro_len = 0;
 static int _pro_type = 0;
-static gps_drv_s _gps;
 
 int main(int argc, char* argv[])
 {
@@ -33,20 +36,16 @@ int main(int argc, char* argv[])
 		if (t % 10 == 0)
 		{
 			handle_protocol();
-			read_gps();
+
+			read_rc();
 		}
 		//10 ms
 		if (t % 100 == 0)
 		{
-			handle_rc();
-			send_rc();
-		}
-		//1s
-		if (t % 1000 == 575)
-		{
 			send_battery();
 		}
 
+		led0_blink(100);
 		timer_delay_ms(1);
 
 		t++;
@@ -67,10 +66,6 @@ void handle_protocol(void)
 				p_handle = &handle_pwmout;
 				break;
 
-			case DATA_TYPE_GPS:
-				p_handle = &handle_gps;
-				break;
-
 			default:
 				break;
 		}
@@ -82,23 +77,20 @@ void handle_protocol(void)
 	}
 }
 
-void handle_gps(void *data)
+void read_rc(void)
 {
-	gps_drv_s *gps = data;
-	if (gps == NULL)
+	if (sbus_read(_rc_values, &_rc_flag))
 	{
-		return;
-	}
-	if (gps->len > 0)
-	{
-		led0_blink(10);
-		uart2_write(gps->data, gps->len);
-	}
-}
+		_rc.channel_count = 16;
+		_rc.rc_failsafe = _rc_flag >> 4 & 1;
+		_rc.rc_lost = 0;
+		for (int i = 0; i < 16; i++)
+		{
+			_rc.values[i] = _rc_values[i];
+		}
 
-void handle_rc(void)
-{
-
+		protocal_write(&_rc, DATA_TYPE_RC_INPUT, sizeof(rc_input_s));
+	}
 }
 
 void handle_pwmout(void *data)
@@ -119,28 +111,6 @@ void handle_pwmout(void *data)
 		_pwmout[i] = pwm->pwm[i];
 	}
 	pwmout_set_value();
-}
-
-void read_gps(void)
-{
-	_gps.len = uart2_read(_gps.data, sizeof(_gps.data));
-	if (_gps.len > 0)
-	{
-		protocal_write(&_gps, DATA_TYPE_GPS, sizeof(gps_drv_s));
-	}
-}
-
-static void send_rc(void)
-{
-//	rc_input_s rc = { 0 };
-//	rc.rc_failsafe = false;
-//	rc.rc_lost = false;
-//	rc.channel_count = 18;
-//	for (int i = 0; i < rc.channel_count; i++)
-//	{
-//		rc.values[i] = 800;
-//	}
-//	protocal_write(&rc, DATA_TYPE_RC_INPUT, sizeof(rc_input_s));
 }
 
 static void send_battery(void)

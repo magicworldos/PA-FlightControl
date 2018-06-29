@@ -43,12 +43,6 @@ typedef struct rc_input_s
 	uint16_t values[18];
 } rc_input_s;
 
-typedef struct gps_drv_s
-{
-	uint8_t len;
-	char data[150];
-} gps_drv_s;
-
 typedef struct battery_s
 {
 	float vcc;
@@ -58,7 +52,6 @@ enum data_type
 {
 	DATA_TYPE_PWM_OUTPUT = 0,
 	DATA_TYPE_RC_INPUT,
-	DATA_TYPE_GPS,
 	DATA_TYPE_BATTERY,
 	DATA_TYPE_END,
 };

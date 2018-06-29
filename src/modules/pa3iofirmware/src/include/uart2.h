@@ -11,7 +11,7 @@
 #include <typedef.h>
 #include <protocol.h>
 
-#define USART2_BAUDRATE	(9600)
+#define USART2_BAUDRATE	(100000)
 
 void uart2_init(void);
 
@@ -23,7 +23,7 @@ u8 uart2_putchar(u8 ch);
 
 void uart2_write(char* buf, int len);
 
-int uart2_buff_count(s_buff *lb);
+int uart2_buff_count(void);
 
 int uart2_read(char* buf, int len);
 

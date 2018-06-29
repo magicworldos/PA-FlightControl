@@ -60,8 +60,7 @@
 #include <px4_getopt.h>
 
 #include <uORB/topics/pwm_output.h>
-#include <uORB/topics/gps_drv_w.h>
-#include <uORB/topics/gps_drv_r.h>
+#include <uORB/topics/input_rc.h>
 
 #ifdef __PX4_POSIX
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
@@ -89,12 +88,6 @@ typedef struct rc_input_s
 	uint16_t values[18];
 } rc_input_s;
 
-typedef struct gps_drv_s
-{
-	uint8_t len;
-	char data[150];
-} gps_drv_s;
-
 typedef struct battery_s
 {
 	float vcc;
@@ -104,7 +97,6 @@ enum data_type
 {
 	DATA_TYPE_PWM_OUTPUT = 0,
 	DATA_TYPE_RC_INPUT,
-	DATA_TYPE_GPS,
 	DATA_TYPE_BATTERY,
 	DATA_TYPE_END,
 };

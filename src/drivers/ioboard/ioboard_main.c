@@ -7,16 +7,15 @@
 
 #include "ioboard_main.h"
 
-//#define __DEBUG_INFO_
-
 bool _ioboard_should_exit = false;
 
 static int _serial_fd = -1;
 static char _dev_name[128] = DEV_NAME;
 static int _dev_baudrate = DEV_BAUDRATE;
-static int _orb_class_instance = -1;
-static gps_drv_s _gps;
-static orb_advert_t _orb_gps_topic = NULL;
+
+static struct input_rc_s _orb_rc = { 0 };
+static int _orb_rc_instance = -1;
+static orb_advert_t _orb_rc_topic = NULL;
 
 int ioboard_main(int argc, char *argv[])
 {
@@ -96,15 +95,8 @@ int ioboard_write(int argc, char *argv[])
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &ioboard_read, NULL);
 
 	int sub_pwm_output = orb_subscribe(ORB_ID(pwm_output));
-	int sub_gps_w = orb_subscribe(ORB_ID(gps_drv_w));
 	struct pwm_output_s s_pwm_output;
-	struct gps_drv_w_s s_gps_w;
 	pwm_out_s s_pwm_out = { 0 };
-	gps_drv_s s_gps_drv_w = { 0 };
-
-#ifdef __DEBUG_INFO_
-	uint32_t i = 0;
-#endif
 
 	while (!_ioboard_should_exit)
 	{
@@ -122,15 +114,6 @@ int ioboard_write(int argc, char *argv[])
 			ioboard_protocal_write(&s_pwm_out, DATA_TYPE_PWM_OUTPUT, sizeof(pwm_out_s));
 		}
 
-		orb_check(sub_gps_w, &updated);
-		if (updated)
-		{
-			orb_copy(ORB_ID(gps_drv_w), sub_gps_w, &s_gps_w);
-			memcpy(s_gps_drv_w.data, s_gps_w.data, s_gps_w.len);
-			s_gps_drv_w.len = s_gps_w.len;
-			ioboard_protocal_write(&s_gps_drv_w, DATA_TYPE_GPS, sizeof(gps_drv_s));
-		}
-
 		usleep(DEV_RATE_W);
 	}
 	return 0;
@@ -142,7 +125,8 @@ int ioboard_read(void)
 	int len = 0;
 	int type = 0;
 
-	_orb_gps_topic = orb_advertise_multi(ORB_ID(gps_drv_r), &_gps, &_orb_class_instance, ORB_PRIO_HIGH);
+	_orb_rc_topic = orb_advertise_multi(ORB_ID(input_rc), &_orb_rc, &_orb_rc_instance, ORB_PRIO_DEFAULT);
+
 	while (!_ioboard_should_exit)
 	{
 		if (ioboard_protocal_read(buff, &len, &type))
@@ -151,10 +135,6 @@ int ioboard_read(void)
 
 			switch (type)
 			{
-				case DATA_TYPE_GPS:
-					p_handle = &ioboard_handle_gps;
-					break;
-
 				case DATA_TYPE_RC_INPUT:
 					p_handle = &ioboard_handle_rc;
 					break;
@@ -179,27 +159,6 @@ int ioboard_read(void)
 	return 0;
 }
 
-int ioboard_handle_gps(void *data)
-{
-	gps_drv_s *gps = data;
-	if (gps == NULL)
-	{
-		return -1;
-	}
-	memcpy(_gps.data, gps->data, gps->len);
-	_gps.len = gps->len;
-	if (_gps.len > 0)
-	{
-//		printf("%d\n", _gps.len);
-//		for (int i = 0; i < _gps.len; i++)
-//		{
-//			printf("%c", _gps.data[i]);
-//		}
-		orb_publish(ORB_ID(gps_drv_r), _orb_gps_topic, &_gps);
-	}
-	return 0;
-}
-
 int ioboard_handle_rc(void *data)
 {
 	rc_input_s *rc = data;
@@ -208,12 +167,28 @@ int ioboard_handle_rc(void *data)
 		return -1;
 	}
 
-//	printf("RC: ");
+//	printf("RC: %d[", (int) rc->channel_count);
 //	for (int i = 0; i < (int) rc->channel_count; i++)
 //	{
-//		printf("%4d", rc->values[i]);
+//		printf("%4u ", rc->values[i]);
 //	}
-//	printf("\n");
+//	printf("]\n");
+
+	_orb_rc.timestamp_last_signal = hrt_absolute_time();
+	_orb_rc.channel_count = rc->channel_count;
+	_orb_rc.rssi = 100;
+	_orb_rc.rc_failsafe = rc->rc_failsafe;
+	_orb_rc.rc_lost = rc->rc_lost;
+	_orb_rc.rc_lost_frame_count = 0;
+	_orb_rc.rc_total_frame_count = 100;
+	_orb_rc.rc_ppm_frame_length = 0;
+	_orb_rc.input_source = RC_INPUT_SOURCE_PX4IO_SBUS;
+	for (int i = 0; i < (int) rc->channel_count; i++)
+	{
+		_orb_rc.values[i] = rc->values[i];
+	}
+
+	orb_publish(ORB_ID(input_rc), _orb_rc_topic, &_orb_rc);
 
 	return 0;
 }

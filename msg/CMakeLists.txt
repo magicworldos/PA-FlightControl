@@ -58,8 +58,6 @@ set(msg_files
 	follow_target.msg
 	fw_pos_ctrl_status.msg
 	geofence_result.msg
-	gps_drv_r.msg
-	gps_drv_w.msg
 	gps_dump.msg
 	gps_inject_data.msg
 	home_position.msg

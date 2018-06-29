@@ -13,12 +13,12 @@ extern bool _extctl_should_exit;
 extern orb_advert_t _extctl_mavlink_log_pub;
 
 static struct extctl_sp_s _orb_sp = { 0 };
-static int _orb_class_instance = -1;
+static int _orb_sp_instance = -1;
 static orb_advert_t _orb_sp_topic = NULL;
 
 int extctl_sp_init(void)
 {
-	_orb_sp_topic = orb_advertise_multi(ORB_ID(extctl_sp), &_orb_sp, &_orb_class_instance, ORB_PRIO_HIGH);
+	_orb_sp_topic = orb_advertise_multi(ORB_ID(extctl_sp), &_orb_sp, &_orb_sp_instance, ORB_PRIO_DEFAULT);
 	orb_publish(ORB_ID(extctl_sp), _orb_sp_topic, &_orb_sp);
 	
 	return 0;

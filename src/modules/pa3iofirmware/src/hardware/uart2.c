@@ -68,19 +68,19 @@ void uart2_write(char* buf, int len)
 	}
 }
 
-int uart2_buff_count(s_buff *lb)
+int uart2_buff_count(void)
 {
-	int16_t n = lb->head - lb->tail;
+	int16_t n = _recv2.head - _recv2.tail;
 	if (n < 0)
 	{
-		n += lb->size;
+		n += _recv2.size;
 	}
 	return n;
 }
 
 int uart2_read(char* buf, int len)
 {
-	int cnt = uart2_buff_count(&_recv2);
+	int cnt = uart2_buff_count();
 	for (int i = 0; i < cnt; i++)
 	{
 		buf[i] = _recv2.buff[_recv2.tail];

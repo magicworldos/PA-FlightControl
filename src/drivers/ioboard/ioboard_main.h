@@ -21,8 +21,6 @@ static int ioboard_write(int argc, char *argv[]);
 
 static int ioboard_read(void);
 
-static int ioboard_handle_gps(void *data);
-
 static int ioboard_handle_rc(void *data);
 
 static int ioboard_handle_battery(void *data);

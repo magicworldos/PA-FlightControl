@@ -20,6 +20,7 @@ objs:
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/led.o -c $(PATH_HARDWARE)/led.c
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/uart1.o -c $(PATH_HARDWARE)/uart1.c
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/uart2.o -c $(PATH_HARDWARE)/uart2.c
+	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/sbus.o -c $(PATH_HARDWARE)/sbus.c
 	$(CC) $(CFLAGSlib) -o $(PATH_TARGET)/protocol.o -c $(PATH_HARDWARE)/protocol.c
 
 app.a:
