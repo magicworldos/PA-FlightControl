@@ -77,8 +77,6 @@
 #include <uORB/topics/satellite_info.h>
 #include <uORB/topics/gps_inject_data.h>
 #include <uORB/topics/gps_dump.h>
-#include <uORB/topics/gps_drv_r.h>
-#include <uORB/topics/gps_drv_w.h>
 
 #include <board_config.h>
 
