@@ -16,6 +16,7 @@ set(config_module_list
 	drivers/sdp3x_airspeed
 	drivers/linux_pwm_out
 	drivers/ioboard
+	drivers/joy
 
 	modules/sensors
 	platforms/posix/drivers/accelsim
