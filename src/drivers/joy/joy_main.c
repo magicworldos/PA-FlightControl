@@ -15,6 +15,11 @@ static struct input_rc_s _orb_rc = { 0 };
 static int _orb_rc_instance = -1;
 static orb_advert_t _orb_rc_topic = NULL;
 
+static float values[16] = { 0 };
+static float values_curr[16] = { 0 };
+static float values_last[16] = { 0 };
+static int rc_nums = 0;
+
 int joy_main(int argc, char *argv[])
 {
 	int ch;
@@ -85,106 +90,120 @@ int joy_run(int argc, char *argv[])
 	_orb_rc_topic = orb_advertise_multi(ORB_ID(input_rc), &_orb_rc, &_orb_rc_instance, ORB_PRIO_DEFAULT);
 
 	uint8_t buff[DEV_BUFF_SIZE] = { 0 };
-	uint16_t values[16] = { 0 };
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 16; i++)
 	{
-		values[i] = 1000;
+		values[i] = RC_PWM_MIN;
+		values_curr[i] = RC_PWM_MIN;
+		values_last[i] = RC_PWM_MIN;
 	}
 
 	while (!_should_exit)
 	{
 		int len = read(_fd, buff, DEV_BUFF_SIZE);
-		if (len > 0)
+
+		if (len >= 8)
 		{
-			if (buff[2] == 0x00)
-			{
-				values[0] = PWM_MIN;
-			}
-			else if (buff[2] == 0x7f)
-			{
-				values[0] = PWM_MID;
-			}
-			else if (buff[2] == 0xff)
-			{
-				values[0] = PWM_MAX;
-			}
-
-			if (buff[3] == 0x00)
-			{
-				values[1] = PWM_MAX;
-			}
-			else if (buff[3] == 0x7f)
-			{
-				values[1] = PWM_MID;
-			}
-			else if (buff[3] == 0xff)
-			{
-				values[1] = PWM_MIN;
-			}
-
-			if ((buff[5] >> 4) & 0x1)
-			{
-				values[2] = PWM_MIN;
-			}
-			else if ((buff[5] >> 7) & 0x1)
-			{
-				values[2] = PWM_MAX;
-			}
-			else
-			{
-				values[2] = PWM_MID;
-			}
-
-			if ((buff[5] >> 5) & 0x1)
-			{
-				values[3] = PWM_MAX;
-			}
-			else if ((buff[5] >> 6) & 0x1)
-			{
-				values[3] = PWM_MIN;
-			}
-			else
-			{
-				values[3] = PWM_MID;
-			}
-
-			if ((buff[6] >> 0) & 0x1)
-			{
-				values[4] = PWM_MIN;
-			}
-			else if ((buff[6] >> 2) & 0x1)
-			{
-				values[4] = PWM_MAX;
-			}
-
-			if ((buff[6] >> 1) & 0x1)
-			{
-				values[5] = PWM_MIN;
-			}
-			else if ((buff[6] >> 3) & 0x1)
-			{
-				values[5] = PWM_MAX;
-			}
-
-//			printf("%d[", len);
-//			for (int i = 0; i < len; i++)
-//			{
-//				printf("%02x ", buff[i]);
-//			}
-//			printf("]\n");
+			parse_joy(buff, len);
 		}
 
-		publish_rc(values, 6);
+		publish_rc();
 
 		usleep(DEV_RATE_R);
 	}
 	return 0;
 }
 
-void publish_rc(uint16_t *values, int ch_nums)
+void parse_joy(uint8_t *buff, int len)
+{
+	if (buff[2] == 0x00)
+	{
+		values[0] = RC_PWM_MIN;
+	}
+	else if (buff[2] == 0x7f)
+	{
+		values[0] = RC_PWM_MID;
+	}
+	else if (buff[2] == 0xff)
+	{
+		values[0] = RC_PWM_MAX;
+	}
+
+	if (buff[3] == 0x00)
+	{
+		values[1] = RC_PWM_MAX;
+	}
+	else if (buff[3] == 0x7f)
+	{
+		values[1] = RC_PWM_MID;
+	}
+	else if (buff[3] == 0xff)
+	{
+		values[1] = RC_PWM_MIN;
+	}
+
+	if ((buff[5] >> 4) & 0x1)
+	{
+		values[2] = RC_PWM_MIN;
+	}
+	else if ((buff[5] >> 7) & 0x1)
+	{
+		values[2] = RC_PWM_MAX;
+	}
+	else
+	{
+		values[2] = RC_PWM_MID;
+	}
+
+	if ((buff[5] >> 5) & 0x1)
+	{
+		values[3] = RC_PWM_MAX;
+	}
+	else if ((buff[5] >> 6) & 0x1)
+	{
+		values[3] = RC_PWM_MIN;
+	}
+	else
+	{
+		values[3] = RC_PWM_MID;
+	}
+
+	if ((buff[6] >> 0) & 0x1)
+	{
+		values[4] = RC_PWM_MIN;
+	}
+	else if ((buff[6] >> 2) & 0x1)
+	{
+		values[4] = RC_PWM_MAX;
+	}
+
+	if ((buff[6] >> 1) & 0x1)
+	{
+		values[5] = RC_PWM_MIN;
+	}
+	else if ((buff[6] >> 3) & 0x1)
+	{
+		values[5] = RC_PWM_MAX;
+	}
+
+	for (int i = 0; i < RC_NUMS; i++)
+	{
+		if (i < 4)
+		{
+			values_curr[i] = values[i] * RC_PWM_SOFT + values_last[i] * (1.0f - RC_PWM_SOFT);
+		}
+		else
+		{
+			values_curr[i] = values[i];
+		}
+		values_last[i] = values_curr[i];
+	}
+
+}
+
+void publish_rc(void)
 {
 	_orb_rc.timestamp_last_signal = hrt_absolute_time();
-	_orb_rc.channel_count = ch_nums;
+	_orb_rc.channel_count = rc_nums;
 	_orb_rc.rssi = 100;
 	_orb_rc.rc_failsafe = 0;
 	_orb_rc.rc_lost = 0;
@@ -193,11 +212,10 @@ void publish_rc(uint16_t *values, int ch_nums)
 	_orb_rc.rc_ppm_frame_length = 0;
 	_orb_rc.input_source = RC_INPUT_SOURCE_PX4IO_SBUS;
 
-	for (int i = 0; i < ch_nums; i++)
+	for (int i = 0; i < RC_NUMS; i++)
 	{
-		_orb_rc.values[i] = values[i];
-		printf("%5d", values[i]);
-
+		_orb_rc.values[i] = values_curr[i];
+		printf("%5.0f ", (double) values_curr[i]);
 	}
 	printf("\n");
 

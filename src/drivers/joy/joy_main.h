@@ -19,6 +19,8 @@ static int stop(void);
 
 static int joy_run(int argc, char *argv[]);
 
-static void publish_rc(uint16_t *values, int ch_nums);
+static void parse_joy(uint8_t *buff, int len);
+
+static void publish_rc(void);
 
 #endif /* SRC_DRIVERS_JOY_JOY_MAIN_H_ */

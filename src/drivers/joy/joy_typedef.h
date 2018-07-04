@@ -71,9 +71,11 @@
 #define DEV_RATE_BASE		(1000 * 1000)
 #define DEV_RATE_R			(DEV_RATE_BASE / 100)
 
-#define PWM_MAX				(2000)
-#define PWM_MID				(1500)
-#define PWM_MIN				(1000)
+#define RC_NUMS				(6)
+#define RC_PWM_SOFT			(0.05f)
+#define RC_PWM_MAX			(2000)
+#define RC_PWM_MID			(1500)
+#define RC_PWM_MIN			(1000)
 
 
 #endif /* SRC_MODULES_EXTCTL_EXTCTL_TYPEDEF_H_ */
