@@ -72,7 +72,7 @@
 #define DEV_RATE_R			(DEV_RATE_BASE / 100)
 
 #define RC_NUMS				(6)
-#define RC_PWM_SOFT			(0.05f)
+#define RC_PWM_SOFT			(0.1f)
 #define RC_PWM_MAX			(2000)
 #define RC_PWM_MID			(1500)
 #define RC_PWM_MIN			(1000)

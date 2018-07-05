@@ -59,15 +59,15 @@ void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double theta)
 	R_vb->v[AT(2, 2, R_vb->n)] = 1;
 }
 
-void AngularAcc_body_from_omega(double *omega_val, double *a0, double *a1, double *a2)
+void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, double *a2)
 {
 	double f0 = omega_val[1] - omega_val[3];
 	double f1 = omega_val[0] - omega_val[2];
 	double f2 = (omega_val[0] + omega_val[2]) - (omega_val[1] + omega_val[3]);
 
-	*a0 = Ka_x * f0;
-	*a1 = Ka_y * f1;
-	*a2 = Ka_z * f2;
+	*a0 = Kv_x * f0;
+	*a1 = Kv_y * f1;
+	*a2 = Kv_z * f2;
 }
 
 void hil_init(void)
@@ -145,7 +145,7 @@ void hil_cal(double theta_t)
 	matrix_mult(&omega, &mixer, &control);
 	//matrix_display(&omega);
 
-	AngularAcc_body_from_omega(omega.v, &AngularVel_body.v[AT(0, 0, AngularVel_body.n)], &AngularVel_body.v[AT(1, 0, AngularVel_body.n)], &AngularVel_body.v[AT(2, 0, AngularVel_body.n)]);
+	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[AT(0, 0, AngularVel_body.n)], &AngularVel_body.v[AT(1, 0, AngularVel_body.n)], &AngularVel_body.v[AT(2, 0, AngularVel_body.n)]);
 	hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 	hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 	hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);

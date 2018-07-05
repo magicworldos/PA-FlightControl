@@ -113,6 +113,11 @@ int joy_run(int argc, char *argv[])
 
 void parse_joy(uint8_t *buff, int len)
 {
+//	for (int i = 0; i < len; i++)
+//	{
+//		printf("%02x ", buff[i]);
+//	}
+//	printf("\n");
 	if (buff[2] == 0x00)
 	{
 		values[0] = RC_PWM_MIN;

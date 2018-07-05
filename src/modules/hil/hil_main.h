@@ -39,21 +39,21 @@
 
 #define MAX_ANGLE_RATE	(180.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
 #define MAX_ANGLE		(60.0 * M_PI / 180.0)	//角度限幅 弧度/s
-#define MAX_ACC_BODY	(90)					//机体加速度限幅 m/s^2
-#define MAX_VEL_BODY_XY	(35)					//机体速度限幅水平方向 m/s
+#define MAX_ACC_BODY	(15)					//机体加速度限幅 m/s^2
+#define MAX_VEL_BODY_XY	(25)					//机体速度限幅水平方向 m/s
 #define MAX_VEL_BODY_Z	(12)					//机体速度限幅垂直方向 m/s
-#define MIN_MID_ZERO	(0.01)					//中位归0限幅
+#define MIN_MID_ZERO	(0.02)					//中位归0限幅
 #define ACC_MID			(0.45)					//控制量升力中位值(0.0~1.0)
 
-#define Ka_x			(9.0)					//旋转角加速度系数x
-#define Ka_y			(9.0)					//旋转角加速度系数y
-#define Ka_z			(0.12)					//旋转角加速度系数z
+#define Kv_x			(0.13)					//旋转角速度系数x
+#define Kv_y			(0.13)					//旋转角速度系数y
+#define Kv_z			(0.025)					//旋转角速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 
-#define Kacc_x			(13.0)					//机体加速度系数x
-#define Kacc_y			(13.0)					//机体加速度系数y
-#define Kacc_z			(13.0)					//机体加速度系数z
+#define Kacc_x			(160.0)					//机体加速度系数x
+#define Kacc_y			(160.0)					//机体加速度系数y
+#define Kacc_z			(160.0)					//机体加速度系数z
 
 #define M 3
 #define N 3
@@ -69,7 +69,7 @@ struct quat
 
 static void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double theta);
 
-static void AngularAcc_body_from_omega(double *omega, double *a0, double *a1, double *a2);
+static void AngularVel_body_from_omega(double *omega, double *a0, double *a1, double *a2);
 
 static void hil_init(void);
 
