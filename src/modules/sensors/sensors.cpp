@@ -643,7 +643,6 @@ void Sensors::run()
 	
 	while (!should_exit())
 	{
-		
 		/* use the best-voted gyro to pace output */
 		poll_fds.fd = _voted_sensors_update.best_gyro_fd();
 		
@@ -652,7 +651,12 @@ void Sensors::run()
 		int pret = px4_poll(&poll_fds, 1, 50);
 		
 		/* if pret == 0 it timed out - periodic check for should_exit(), etc. */
+#ifdef CONFIG_HIL_MODE
+		if (pret < 0)
+		{
 
+		}
+#else
 		/* this is undesirable but not much we can do - might want to flag unhappy status */
 		if (pret < 0)
 		{
@@ -668,7 +672,8 @@ void Sensors::run()
 			
 			continue;
 		}
-		
+#endif
+
 		perf_begin(_loop_perf);
 		
 		/* check vehicle status for changes to publication state */
@@ -682,7 +687,7 @@ void Sensors::run()
 		adc_poll(raw);
 		
 		diff_pres_poll(raw);
-		
+
 		if (raw.timestamp > 0)
 		{
 			
@@ -704,7 +709,7 @@ void Sensors::run()
 				
 			}
 		}
-		
+
 		/* keep adding sensors as long as we are not armed,
 		 * when not adding sensors poll for param updates
 		 */
@@ -723,7 +728,7 @@ void Sensors::run()
 			/* check rc parameter map for updates */
 			_rc_update.rc_parameter_map_poll(_parameter_handles);
 		}
-		
+
 		/* Look for new r/c input data */
 		_rc_update.rc_poll(_parameter_handles);
 		

@@ -2913,7 +2913,7 @@ void Commander::run()
 			/* prevent further feedback until the mission changes */
 			_last_mission_instance = _mission_result.instance_count;
 		}
-		
+
 		/* RC input check */
 		if (!status_flags.rc_input_blocked && sp_man.timestamp != 0 && (hrt_absolute_time() < sp_man.timestamp + (uint64_t) (rc_loss_timeout * 1e6f)))
 		{
@@ -3834,7 +3834,6 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 	// reset the position and velocity validity calculation to give the best change of being able to select
 	// the desired mode
 	reset_posvel_validity(global_position, local_position, changed);
-	
 	/* offboard switch overrides main switch */
 	if (sp_man.offboard_switch == manual_control_setpoint_s::SWITCH_POS_ON)
 	{
@@ -3950,7 +3949,6 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 				
 				if (new_mode == commander_state_s::MAIN_STATE_AUTO_RTL)
 				{
-					
 					/* fall back to position control */
 					new_mode = commander_state_s::MAIN_STATE_AUTO_LOITER;
 					print_reject_mode(status_local, "AUTO RTL");
@@ -4020,7 +4018,6 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 				
 				if (new_mode == commander_state_s::MAIN_STATE_POSCTL)
 				{
-					
 					/* fall back to altitude control */
 					new_mode = commander_state_s::MAIN_STATE_ALTCTL;
 					print_reject_mode(status_local, "POSITION CONTROL");
@@ -4048,7 +4045,6 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 				
 				if (new_mode == commander_state_s::MAIN_STATE_STAB)
 				{
-					
 					/* fall back to manual */
 					new_mode = commander_state_s::MAIN_STATE_MANUAL;
 					print_reject_mode(status_local, "STABILIZED");
@@ -4064,7 +4060,7 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 		
 		return res;
 	}
-	
+
 	/* offboard and RTL switches off or denied, check main mode switch */
 	switch (sp_man.mode_switch)
 	{
@@ -4172,7 +4168,6 @@ transition_result_t set_main_state_rc(struct vehicle_status_s *status_local, veh
 				{
 					break;	// changed successfully or already in this state
 				}
-				
 				print_reject_mode(status_local, "POSITION CONTROL");
 			}
 			

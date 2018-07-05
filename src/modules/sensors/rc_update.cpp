@@ -268,14 +268,14 @@ void RCUpdate::rc_poll(const ParameterHandles &parameter_handles)
 {
 	bool rc_updated;
 	orb_check(_rc_sub, &rc_updated);
-	
+
 	if (rc_updated)
 	{
 		/* read low-level values from FMU or IO RC inputs (PPM, Spektrum, S.Bus) */
 		struct rc_input_values rc_input;
 		
 		orb_copy(ORB_ID(input_rc), _rc_sub, &rc_input);
-		
+
 		/* detect RC signal loss */
 		bool signal_lost;
 		

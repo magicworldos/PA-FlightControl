@@ -22,7 +22,7 @@ joy start -d /dev/hidraw4
 
 sensors start
 
-ekf2 start
+#ekf2 start
 
 commander start
 
@@ -34,7 +34,7 @@ mc_pos_control start
 
 mc_att_control start
 
-#mavlink start -r 800000 -b 115200 -d /dev/ttyUSB2 -m config
+mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
 
 extctl start
 

@@ -18,7 +18,6 @@ static orb_advert_t _orb_rc_topic = NULL;
 static float values[16] = { 0 };
 static float values_curr[16] = { 0 };
 static float values_last[16] = { 0 };
-static int rc_nums = 0;
 
 int joy_main(int argc, char *argv[])
 {
@@ -100,7 +99,6 @@ int joy_run(int argc, char *argv[])
 	while (!_should_exit)
 	{
 		int len = read(_fd, buff, DEV_BUFF_SIZE);
-
 		if (len >= 8)
 		{
 			parse_joy(buff, len);
@@ -202,22 +200,24 @@ void parse_joy(uint8_t *buff, int len)
 
 void publish_rc(void)
 {
-	_orb_rc.timestamp_last_signal = hrt_absolute_time();
-	_orb_rc.channel_count = rc_nums;
+	uint64_t time = hrt_absolute_time();
+	_orb_rc.timestamp = time;
+	_orb_rc.timestamp_last_signal = time;
+	_orb_rc.channel_count = RC_NUMS;
 	_orb_rc.rssi = 100;
 	_orb_rc.rc_failsafe = 0;
 	_orb_rc.rc_lost = 0;
 	_orb_rc.rc_lost_frame_count = 0;
-	_orb_rc.rc_total_frame_count = 100;
-	_orb_rc.rc_ppm_frame_length = 0;
-	_orb_rc.input_source = RC_INPUT_SOURCE_PX4IO_SBUS;
+	_orb_rc.rc_total_frame_count = 1;
+	_orb_rc.rc_ppm_frame_length = 100;
+	_orb_rc.input_source = RC_INPUT_SOURCE_PX4FMU_SBUS;
 
 	for (int i = 0; i < RC_NUMS; i++)
 	{
-		_orb_rc.values[i] = values_curr[i];
-		printf("%5.0f ", (double) values_curr[i]);
+		_orb_rc.values[i] = values_curr[i] + 0.5f;
+		//printf("%5d ", _orb_rc.values[i]);
 	}
-	printf("\n");
+	//printf("\n");
 
 	orb_publish(ORB_ID(input_rc), _orb_rc_topic, &_orb_rc);
 }
