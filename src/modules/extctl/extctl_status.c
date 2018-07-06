@@ -28,7 +28,7 @@ int extctl_status_send(void)
 	struct vehicle_land_detected_s land_state;
 	struct home_position_s home_pos;
 
-	sys_status_s sys_status = { 0 };
+	struct ext_sys_status_s sys_status = { 0 };
 
 	while (!_extctl_should_exit)
 	{
@@ -83,7 +83,7 @@ int extctl_status_send(void)
 
 		if (status)
 		{
-			extctl_protocal_write(&sys_status, DATA_TYPE_STATUS, sizeof(sys_status_s));
+			extctl_protocal_write(&sys_status, DATA_TYPE_STATUS, sizeof(struct ext_sys_status_s));
 		}
 		usleep(DEV_RATE_STATUS);
 	}

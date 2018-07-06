@@ -11,7 +11,7 @@ extern bool _extctl_should_exit;
 
 int extctl_pos_handle(void *data)
 {
-	vehicle_pos_s *pos = data;
+	struct ext_vehicle_pos_s *pos = data;
 	if (pos == NULL)
 	{
 		return -1;
@@ -28,7 +28,7 @@ int extctl_pos_send(void)
 	struct vehicle_local_position_s pos_local;
 	struct vehicle_global_position_s pos_global;
 	
-	vehicle_pos_s pos = { 0 };
+	struct ext_vehicle_pos_s pos = { 0 };
 	
 	while (!_extctl_should_exit)
 	{
@@ -69,7 +69,7 @@ int extctl_pos_send(void)
 		
 		if (status_pos)
 		{
-			extctl_protocal_write(&pos, DATA_TYPE_POS, sizeof(vehicle_pos_s));
+			extctl_protocal_write(&pos, DATA_TYPE_POS, sizeof(struct ext_vehicle_pos_s));
 		}
 		usleep(DEV_RATE_POS);
 	}

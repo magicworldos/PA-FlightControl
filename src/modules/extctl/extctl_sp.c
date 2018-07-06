@@ -26,7 +26,7 @@ int extctl_sp_init(void)
 
 int extctl_sp_handle(void *data)
 {
-	vehicle_sp_s *sp = data;
+	struct ext_vehicle_sp_s *sp = data;
 	if (sp == NULL)
 	{
 		return -1;

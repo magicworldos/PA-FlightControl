@@ -125,6 +125,11 @@ set(msg_files
 	hil_sensor.msg
 	hil_status.msg
 	extctl_sp.msg
+	ext_cmd.msg
+	ext_rc.msg
+	ext_sys_status.msg
+	ext_vehicle_pos.msg
+	ext_vehicle_sp.msg
 	)
 
 

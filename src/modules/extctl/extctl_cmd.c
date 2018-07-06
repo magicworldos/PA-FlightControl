@@ -43,7 +43,7 @@ int extctl_cmd_init(void)
 
 int extctl_cmd_handle(void *data)
 {
-	cmd_s *cmd = data;
+	struct ext_cmd_s *cmd = data;
 	if (cmd == NULL)
 	{
 		return -1;

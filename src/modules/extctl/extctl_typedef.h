@@ -69,103 +69,26 @@
 #include <uORB/topics/actuator_armed.h>
 #include <uORB/topics/home_position.h>
 #include <uORB/topics/extctl_sp.h>
+#include <uORB/topics/ext_vehicle_pos.h>
+#include <uORB/topics/ext_vehicle_sp.h>
+#include <uORB/topics/ext_rc.h>
+#include <uORB/topics/ext_sys_status.h>
+#include <uORB/topics/ext_cmd.h>
 
 #ifdef __PX4_POSIX
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
-#define UNIX_DOMAIN 		"/tmp/UNIX.domain"
+#define UNIX_DOMAIN 					"/tmp/UNIX.domain"
 #else
-#define DEV_NAME			"/dev/ttyUSB2"
+#define DEV_NAME						"/dev/ttyUSB2"
 #endif
 
-#define DEV_BAUDRATE		(B115200)
-#define DEV_RATE_BASE		(1000 * 1000)
-#define DEV_RATE_READ		(DEV_RATE_BASE / 30)
-#define DEV_RATE_POS		(DEV_RATE_BASE / 10)
-#define DEV_RATE_RC			(DEV_RATE_BASE / 10)
-#define DEV_RATE_SP			(DEV_RATE_BASE / 10)
-#define DEV_RATE_STATUS		(DEV_RATE_BASE / 5)
-
-typedef struct vehicle_pos_s
-{
-	//position local
-	struct
-	{
-		float x;
-		float y;
-		float z;
-	};
-	struct
-	{
-		float vx;
-		float vy;
-		float vz;
-	};
-	//position global
-	struct
-	{
-		double lat;
-		double lon;
-		float alt;
-	};
-	struct
-	{
-		float vel_n;
-		float vel_e;
-		float vel_d;
-	};
-} vehicle_pos_s;
-
-typedef struct vehicle_sp_s
-{
-	bool run_pos_control;
-	bool run_alt_control;
-	bool run_yaw_control;
-	float sp_yaw;
-	struct
-	{
-		float sp_x;
-		float sp_y;
-		float sp_z;
-	};
-	struct
-	{
-		float vel_sp_x;
-		float vel_sp_y;
-		float vel_sp_z;
-	};
-} vehicle_sp_s;
-
-typedef struct sys_status_s
-{
-	uint8_t main_state;
-	uint8_t nav_state;
-	bool armed;
-	bool landed;
-	bool homed;
-	double home_lat;
-	double home_lon;
-	float home_alt;
-} sys_status_s;
-
-typedef struct rc_s
-{
-	bool rc_failsafe;
-	bool rc_lost;
-	uint32_t channel_count;
-	uint16_t values[18];
-} rc_s;
-
-typedef struct cmd_s
-{
-	uint32_t command;
-	float param1;
-	float param2;
-	float param3;
-	float param4;
-	float param5;
-	float param6;
-	float param7;
-} cmd_s;
+#define DEV_BAUDRATE					(B115200)
+#define DEV_RATE_BASE					(1000 * 1000)
+#define DEV_RATE_READ					(DEV_RATE_BASE / 30)
+#define DEV_RATE_POS					(DEV_RATE_BASE / 10)
+#define DEV_RATE_RC						(DEV_RATE_BASE / 10)
+#define DEV_RATE_SP						(DEV_RATE_BASE / 10)
+#define DEV_RATE_STATUS					(DEV_RATE_BASE / 5)
 
 enum data_type
 {
