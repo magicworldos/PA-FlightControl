@@ -10,6 +10,8 @@
 
 #include <typedef.h>
 
+#define __MINI_BOARD_MODE_
+
 #define TIM_PRESCALER		(72)
 #define TIM_PERIOD			(2000 -1)
 #define TIM_PULSE			(1000 - 1)

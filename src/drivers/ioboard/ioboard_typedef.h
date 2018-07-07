@@ -61,6 +61,7 @@
 
 #include <uORB/topics/pwm_output.h>
 #include <uORB/topics/input_rc.h>
+#include <uORB/topics/battery_status.h>
 
 #ifdef __PX4_POSIX
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
@@ -72,6 +73,8 @@
 #define DEV_RATE_BASE		(1000 * 1000)
 #define DEV_RATE_W			(DEV_RATE_BASE / 100)
 #define DEV_RATE_R			(DEV_RATE_BASE / 100)
+
+#define VCC_SOFT			(0.004f)
 
 typedef struct pwm_out_s
 {

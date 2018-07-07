@@ -28,7 +28,11 @@ void pwmout_gpio_config()
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
+#ifdef __MINI_BOARD_MODE_
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+#else
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_6 | GPIO_Pin_7;
+#endif
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
@@ -58,6 +62,8 @@ void pwmout_mode_config()
 	TIM_OCInitStructure.TIM_Pulse = TIM_PULSE;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
+#ifdef __MINI_BOARD_MODE_
+#else
 	//OUT1
 	TIM_OC1Init(TIM2, &TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);
@@ -70,6 +76,7 @@ void pwmout_mode_config()
 	//OUT4
 	TIM_OC4Init(TIM2, &TIM_OCInitStructure);
 	TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable);
+#endif
 	//OUT5
 	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
@@ -85,8 +92,11 @@ void pwmout_mode_config()
 
 	pwmout_set_failsafe();
 
+#ifdef __MINI_BOARD_MODE_
+#else
 	TIM_ARRPreloadConfig(TIM2, ENABLE);
 	TIM_Cmd(TIM2, ENABLE);
+#endif
 	TIM_ARRPreloadConfig(TIM3, ENABLE);
 	TIM_Cmd(TIM3, ENABLE);
 
@@ -99,14 +109,18 @@ void pwmout_set_failsafe()
 	{
 		_pwmout[i] = PWM_FAILSAFE;
 	}
+	pwmout_set_value();
 }
 
 void pwmout_set_value()
 {
+#ifdef __MINI_BOARD_MODE_
+#else
 	TIM_SetCompare1(TIM2, _pwmout[0]);
 	TIM_SetCompare2(TIM2, _pwmout[1]);
 	TIM_SetCompare3(TIM2, _pwmout[2]);
 	TIM_SetCompare4(TIM2, _pwmout[3]);
+#endif
 	TIM_SetCompare1(TIM3, _pwmout[4]);
 	TIM_SetCompare2(TIM3, _pwmout[5]);
 	TIM_SetCompare3(TIM3, _pwmout[6]);

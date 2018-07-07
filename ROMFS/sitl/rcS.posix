@@ -6,23 +6,9 @@ param load
 
 param set SYS_AUTOSTART 4001
 
-#df_mpu9250_wrapper start -R 10
-
-#df_hmc5883_wrapper start
-
-#df_ms5611_wrapper start
-
-#navio_rgbled start
-
-#navio_adc start
-
-#gps start -d /dev/ttyUSB1 -i uart -p ubx
-
 joy start -d /dev/hidraw4
 
 sensors start
-
-#ekf2 start
 
 commander start
 
@@ -34,7 +20,7 @@ mc_pos_control start
 
 mc_att_control start
 
-mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+mavlink start -r 800000 -b 115200 -d /dev/ttyUSB1 -m config
 
 extctl start
 
@@ -42,7 +28,7 @@ hil start
 
 linux_pwm_out start -p uorb
 
-#ioboard start -d /dev/ttyUSB1 -s 115200
+ioboard start -d /dev/ttyUSB0 -s 115200
 
 #sdlog2 start -r 100 -a -b 9 -t
 #logger start -t -b 200

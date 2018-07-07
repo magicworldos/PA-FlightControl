@@ -307,6 +307,8 @@ int DfHmc5883Wrapper::_publish(struct mag_sensor_data &data)
 	mag_report.y = (mag_val(1) - _mag_calibration.y_offset) * _mag_calibration.y_scale;
 	mag_report.z = (mag_val(2) - _mag_calibration.z_offset) * _mag_calibration.z_scale;
 	
+	//warnx("5883 %6.3f %6.3f %6.3f", (double)mag_report.x, (double)mag_report.y, (double)mag_report.z);
+
 	// TODO: get these right
 	//mag_report.scaling = -1.0f;
 	//mag_report.range_m_s2 = -1.0f;

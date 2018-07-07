@@ -10,13 +10,26 @@ static char _pro_buff[SIZE_BUFF] = { 0 };
 static int _pro_len = 0;
 static int _pro_type = 0;
 
+static void handle_protocol(void);
+
+static void read_rc(void);
+
+static void handle_pwmout(void *data);
+
+static void read_battery(void);
+
+static int32_t protocal_heart = 0;
+
 int main(int argc, char* argv[])
 {
 	SystemInit();
 
 	led_init();
 
+	//暂时关闭
 	pwmout_init();
+
+	battery_init();
 
 	uart1_init();
 
@@ -32,23 +45,22 @@ int main(int argc, char* argv[])
 
 	while (1)
 	{
-		//10 ms
-		if (t % 10 == 0)
+		handle_protocol();
+		read_rc();
+		read_battery();
+
+		if (protocal_heart > 0)
 		{
-			handle_protocol();
-
-			read_rc();
+			protocal_heart--;
+			led0_blink(1000);
 		}
-		//10 ms
-		if (t % 100 == 0)
+		else
 		{
-			send_battery();
+			pwmout_set_failsafe();
+			led0_blink(100);
 		}
 
-		led0_blink(100);
-		timer_delay_ms(1);
-
-		t++;
+		timer_delay_ms(10);
 	}
 
 	return 0;
@@ -60,6 +72,8 @@ void handle_protocol(void)
 
 	if (protocal_read(_pro_buff, &_pro_len, &_pro_type))
 	{
+		protocal_heart = PROTOCAL_LIFE;
+
 		switch (_pro_type)
 		{
 			case DATA_TYPE_PWM_OUTPUT:
@@ -110,13 +124,14 @@ void handle_pwmout(void *data)
 	{
 		_pwmout[i] = pwm->pwm[i];
 	}
+	//暂时关闭
 	pwmout_set_value();
 }
 
-static void send_battery(void)
+void read_battery(void)
 {
-//	battery_s battery = { 0 };
-//	battery.vcc = 2.4;
-//
-//	protocal_write(&battery, DATA_TYPE_BATTERY, sizeof(battery_s));
+	float vcc = battery_read();
+	battery_s battery = { 0 };
+	battery.vcc = vcc;
+	protocal_write(&battery, DATA_TYPE_BATTERY, sizeof(battery_s));
 }
