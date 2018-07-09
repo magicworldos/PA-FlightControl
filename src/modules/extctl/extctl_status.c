@@ -48,6 +48,7 @@ int extctl_status_send(void)
 		{
 			orb_copy(ORB_ID(vehicle_status), vec_state_sub, &vec_state);
 			sys_status.nav_state = vec_state.nav_state;
+			sys_status.arming_state = vec_state.arming_state;
 			status |= (1 << 1);
 		}
 
