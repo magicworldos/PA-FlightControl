@@ -150,6 +150,19 @@ void hil_cal(double theta_t)
 	hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 	hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 
+	if (fabs(AngularVel_body.v[0]) < MIN_MID_ZERO)
+	{
+		AngularVel_body.v[0] = 0;
+	}
+	if (fabs(AngularVel_body.v[1]) < MIN_MID_ZERO)
+	{
+		AngularVel_body.v[1] = 0;
+	}
+	if (fabs(AngularVel_body.v[2]) < MIN_MID_ZERO)
+	{
+		AngularVel_body.v[2] = 0;
+	}
+
 	//由角速度积分计算姿态角
 	Angular_body.v[AT(0, 0, Angular_body.n)] += AngularVel_body.v[AT(0, 0, AngularVel_body.n)] * theta_t;
 	Angular_body.v[AT(1, 0, Angular_body.n)] += AngularVel_body.v[AT(1, 0, AngularVel_body.n)] * theta_t;
