@@ -16,15 +16,8 @@
 #include <uart2.h>
 #include <pwmout.h>
 #include <sbus.h>
+#include <battery.h>
 
 int main(int argc, char* argv[]);
-
-static void handle_protocol(void);
-
-static void read_rc(void);
-
-static void handle_pwmout(void *data);
-
-static void send_battery(void);
 
 #endif /* SRC_MODULES_PA3IOFIRMWARE_SRC_INCLUDE_MAIN_H_ */

@@ -21,6 +21,8 @@
 
 #define SIZE_BUFF			(0x800)
 
+#define PROTOCAL_LIFE		(100)
+
 typedef struct s_buff
 {
 	int16_t head;

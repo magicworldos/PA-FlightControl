@@ -17,6 +17,10 @@ static struct input_rc_s _orb_rc = { 0 };
 static int _orb_rc_instance = -1;
 static orb_advert_t _orb_rc_topic = NULL;
 
+static struct battery_status_s _orb_battery = { 0 };
+static int _orb_battery_instance = -1;
+static orb_advert_t _orb_battery_topic = NULL;
+
 int ioboard_main(int argc, char *argv[])
 {
 	int ch;
@@ -126,6 +130,7 @@ int ioboard_read(void)
 	int type = 0;
 
 	_orb_rc_topic = orb_advertise_multi(ORB_ID(input_rc), &_orb_rc, &_orb_rc_instance, ORB_PRIO_DEFAULT);
+	_orb_battery_topic = orb_advertise_multi(ORB_ID(battery_status), &_orb_battery, &_orb_battery_instance, ORB_PRIO_DEFAULT);
 
 	while (!_ioboard_should_exit)
 	{
@@ -201,7 +206,30 @@ int ioboard_handle_battery(void *data)
 		return -1;
 	}
 
-//	printf("BATTERY: %f\n", (double)battery->vcc);
+	static float vcc_last = 0.0f;
+	static float vcc = 0;
+	vcc = battery->vcc * VCC_SOFT + vcc_last * (1.0f - VCC_SOFT);
+	vcc_last = vcc;
+
+	static float vcc2_last = 0.0f;
+	static float vcc2 = 0.0f;
+
+	vcc2 = vcc * VCC_SOFT + vcc2_last * (1.0f - VCC_SOFT);
+	vcc2_last = vcc2;
+
+	_orb_battery.voltage_v = battery->vcc;
+	_orb_battery.voltage_filtered_v = vcc2;
+	_orb_battery.current_a = -1;
+	_orb_battery.current_filtered_a = -1;
+	_orb_battery.discharged_mah = -1;
+	_orb_battery.remaining = -1;
+	_orb_battery.scale = -1;
+	_orb_battery.cell_count = 3;
+	_orb_battery.connected = true;
+	_orb_battery.system_source = true;
+	_orb_battery.priority = 0;
+
+	orb_publish(ORB_ID(battery_status), _orb_battery_topic, &_orb_battery);
 
 	return 0;
 }

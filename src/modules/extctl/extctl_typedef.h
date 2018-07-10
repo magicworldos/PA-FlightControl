@@ -90,7 +90,7 @@
 #define DEV_RATE_SP						(DEV_RATE_BASE / 10)
 #define DEV_RATE_STATUS					(DEV_RATE_BASE / 5)
 
-enum data_type
+enum EXTCTL_DATA_TYPE
 {
 	DATA_TYPE_POS = 0,
 	DATA_TYPE_SP,

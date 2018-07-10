@@ -1,5 +1,6 @@
 uint8 main_state
 uint8 nav_state
+uint8 arming_state
 bool armed
 bool landed
 bool homed
