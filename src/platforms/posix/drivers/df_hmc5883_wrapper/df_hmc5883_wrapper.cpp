@@ -324,6 +324,7 @@ int DfHmc5883Wrapper::_publish(struct mag_sensor_data &data)
 		}
 		else
 		{
+			//warnx("%.4f %.4f %.4f", (double)mag_report.x, (double)mag_report.y, (double)mag_report.z);
 			orb_publish(ORB_ID(sensor_mag), _mag_topic, &mag_report);
 		}
 		

@@ -196,6 +196,7 @@ int DfMS5611Wrapper::_publish(struct baro_sensor_data &data)
 		}
 		else
 		{
+			//warnx("%.4f", (double)baro_report.altitude);
 			orb_publish(ORB_ID(sensor_baro), _baro_topic, &baro_report);
 		}
 	}
