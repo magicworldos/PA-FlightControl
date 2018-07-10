@@ -115,14 +115,19 @@ void pwmout_set_failsafe()
 void pwmout_set_value()
 {
 #ifdef __MINI_BOARD_MODE_
+	TIM_SetCompare1(TIM3, _pwmout[1]);
+	TIM_SetCompare2(TIM3, _pwmout[3]);
+	TIM_SetCompare3(TIM3, _pwmout[2]);
+	TIM_SetCompare4(TIM3, _pwmout[0]);
 #else
 	TIM_SetCompare1(TIM2, _pwmout[0]);
 	TIM_SetCompare2(TIM2, _pwmout[1]);
 	TIM_SetCompare3(TIM2, _pwmout[2]);
 	TIM_SetCompare4(TIM2, _pwmout[3]);
-#endif
 	TIM_SetCompare1(TIM3, _pwmout[4]);
 	TIM_SetCompare2(TIM3, _pwmout[5]);
 	TIM_SetCompare3(TIM3, _pwmout[6]);
 	TIM_SetCompare4(TIM3, _pwmout[7]);
+#endif
+
 }

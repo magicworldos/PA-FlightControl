@@ -115,6 +115,10 @@ int ioboard_write(int argc, char *argv[])
 			{
 				s_pwm_out.pwm[i] = s_pwm_output.pwm[i];
 			}
+//			s_pwm_out.pwm[0] = s_pwm_output.pwm[1];
+//			s_pwm_out.pwm[1] = s_pwm_output.pwm[3];
+//			s_pwm_out.pwm[2] = s_pwm_output.pwm[2];
+//			s_pwm_out.pwm[3] = s_pwm_output.pwm[0];
 			ioboard_protocal_write(&s_pwm_out, DATA_TYPE_PWM_OUTPUT, sizeof(pwm_out_s));
 		}
 
