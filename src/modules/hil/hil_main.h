@@ -43,7 +43,7 @@
 #define MAX_VEL_BODY_XY	(10)					//机体速度限幅水平方向 m/s
 #define MAX_VEL_BODY_Z	(10)
 
-#define MAX_F	(82.0)
+//#define MAX_F	(24.0)
 
 #define MAX_ACC_GLABOL		(15)
 #define MAX_ACC_GLABOL_Z	(15)//机体加速度限幅 m/s^2
@@ -54,9 +54,9 @@
 #define MIN_MID_ZERO	(0.001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(7.0)					//旋转角加速度系数x
-#define Kv_y			(7.0)					//旋转角加速度系数y
-#define Kv_z			(0.02)					//旋转角加速度系数z
+#define Kv_x			(7.5)					//旋转角加速度系数x
+#define Kv_y			(7.5)					//旋转角加速度系数y
+#define Kv_z			(0.03)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 

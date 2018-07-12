@@ -14,10 +14,10 @@ static double home_alt = 50.0;
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
-static double mixer_thro = 1.8;
+static double mixer_thro = 1.0;
 
-static double f_omega = 10.0;
-static double m_kg = 2.8;
+static double f_omega = 7.0;
+static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 
 //static orb_advert_t _mavlink_log_pub = NULL;
@@ -220,9 +220,9 @@ void hil_cal(double theta_t)
 //根据omega计算机体系拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
 
-	hil_maxmin(&F_body.v[AT(0, 0, F_global.n)], MAX_F, -MAX_F);
-	hil_maxmin(&F_body.v[AT(1, 0, F_global.n)], MAX_F, -MAX_F);
-	hil_maxmin(&F_body.v[AT(2, 0, Acc_global.n)], MAX_F, -MAX_F);
+//	hil_maxmin(&F_body.v[AT(0, 0, F_global.n)], MAX_F, -MAX_F);
+//	hil_maxmin(&F_body.v[AT(1, 0, F_global.n)], MAX_F, -MAX_F);
+//	hil_maxmin(&F_body.v[AT(2, 0, Acc_global.n)], MAX_F, -MAX_F);
 
 //matrix_display(&F_body);
 
