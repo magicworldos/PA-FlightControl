@@ -16,8 +16,8 @@ static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
 static double mixer_thro = 1.5;
 
-static double f_omega = 18.0;
-static double m_kg = 2.5;
+static double f_omega = 9.6;
+static double m_kg = 5.8;
 static double g_ms2 = 9.80665;
 
 //static orb_advert_t _mavlink_log_pub = NULL;
@@ -74,11 +74,26 @@ void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, 
 	R_vb->v[AT(2, 2, R_vb->n)] = cos(angle_y) * cos(angle_x);
 }
 
+void TransMatrix_R_Q_set_value(s_Matrix *R_vb, double w, double x, double y, double z)
+{
+	R_vb->v[AT(0, 0, R_vb->n)] = 1.0 - 2.0 * (y * y + z * z);
+	R_vb->v[AT(0, 1, R_vb->n)] = 2.0 * (x * y - z * w);
+	R_vb->v[AT(0, 2, R_vb->n)] = 2.0 * (x * z + y * w);
+
+	R_vb->v[AT(1, 0, R_vb->n)] = 2.0 * (x * y + z * w);
+	R_vb->v[AT(1, 1, R_vb->n)] = 1.0 - 2.0 * (x * x + z * z);
+	R_vb->v[AT(1, 2, R_vb->n)] = 2.0 * (y * z - x * w);
+
+	R_vb->v[AT(2, 0, R_vb->n)] = 2.0 * (x * z - y * w);
+	R_vb->v[AT(2, 1, R_vb->n)] = 2.0 * (y * z + x * w);
+	R_vb->v[AT(2, 2, R_vb->n)] = 1.0 - 2.0 * (x * x + y * y);
+}
+
 void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, double *a2)
 {
-	double f0 = omega_val[1] - omega_val[3];
-	double f1 = omega_val[0] - omega_val[2];
-	double f2 = (omega_val[0] + omega_val[2]) - (omega_val[1] + omega_val[3]);
+	double f0 = omega_val[1] * omega_val[1] - omega_val[3] * omega_val[3];
+	double f1 = omega_val[0] * omega_val[0] - omega_val[2] * omega_val[2];
+	double f2 = (omega_val[0] * omega_val[0] + omega_val[2] * omega_val[2]) - (omega_val[1] * omega_val[1] + omega_val[3] * omega_val[3]);
 
 	*a0 = Kv_x * f0;
 	*a1 = Kv_y * f1;
@@ -89,7 +104,7 @@ void F_body_from_omega(double *omega_val, double *f_body_x, double *f_body_y, do
 {
 	*f_body_x = 0;
 	*f_body_y = 0;
-	*f_body_z = (omega_val[0] + omega_val[2] + omega_val[1] + omega_val[3]) * f_omega;
+	*f_body_z = (omega_val[0] * omega_val[0] + omega_val[1] * omega_val[1] + omega_val[2] * omega_val[2] + omega_val[3] * omega_val[3]) * f_omega;
 }
 
 void Acc_global_from_F(double *f_global, double *acc_x, double *acc_y, double *acc_z)
@@ -178,77 +193,78 @@ void hil_cal(double theta_t)
 	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
 	hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 	hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
 
-	//matrix_display(&AngularVel_body);
+//matrix_display(&AngularVel_body);
 
 	Angular_body.v[AT(0, 0, Angular_body.n)] += AngularVel_body.v[AT(0, 0, AngularVel_body.n)] * theta_t;
 	Angular_body.v[AT(1, 0, Angular_body.n)] += AngularVel_body.v[AT(1, 0, AngularVel_body.n)] * theta_t;
 	Angular_body.v[AT(2, 0, Angular_body.n)] += AngularVel_body.v[AT(2, 0, AngularVel_body.n)] * theta_t;
 	hil_maxmin(&Angular_body.v[AT(0, 0, Angular_body.n)], MAX_ANGLE, -MAX_ANGLE);
 	hil_maxmin(&Angular_body.v[AT(1, 0, Angular_body.n)], MAX_ANGLE, -MAX_ANGLE);
-	//matrix_display(&Angular_body);
+//	Angular_body.v[2] = 180.0 * M_PI / 180.0;
+//matrix_display(&Angular_body);
 
-	//计算变换矩阵
-	TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
-	//根据omega计算机体系拉力
+//计算变换矩阵
+	//TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
+
+	struct quat q_value = { 0 };
+	double angle[3];
+	angle[0] = -Angular_body.v[AT(0, 0, Angular_body.n)];
+	angle[1] = -Angular_body.v[AT(1, 0, Angular_body.n)];
+	angle[2] = Angular_body.v[AT(2, 0, Angular_body.n)];
+	hil_angle2q(angle, &q_value);
+
+	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
+
+//根据omega计算机体系拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
-	//matrix_display(&F_body);
 
-	//将机体系拉力根据变换矩阵转为惯性系拉力
+	hil_maxmin(&F_body.v[AT(0, 0, F_global.n)], MAX_F, -MAX_F);
+	hil_maxmin(&F_body.v[AT(1, 0, F_global.n)], MAX_F, -MAX_F);
+	hil_maxmin(&F_body.v[AT(2, 0, Acc_global.n)], MAX_F, -MAX_F);
+
+//matrix_display(&F_body);
+
+//将机体系拉力根据变换矩阵转为惯性系拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
-	//matrix_display(&F_global);
+//matrix_display(&F_global);
 
-	//在惯性系下z轴F减去自身重力
+//在惯性系下z轴F减去自身重力
 	F_global.v[2] -= m_kg * g_ms2;
+
+
+
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);
+	hil_maxmin(&Acc_global.v[AT(0, 0, Acc_global.n)], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
+	hil_maxmin(&Acc_global.v[AT(1, 0, Acc_global.n)], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
+	hil_maxmin(&Acc_global.v[AT(2, 0, Acc_global.n)], MAX_ACC_GLABOL_Z, -MAX_ACC_GLABOL_Z);
 //	matrix_display(&Acc_global);
 
-//	hil_maxmin(&Acc_body.v[AT(0, 0, Acc_body.n)], MAX_ACC_BODY, -MAX_ACC_BODY);
-//	hil_maxmin(&Acc_body.v[AT(1, 0, Acc_body.n)], MAX_ACC_BODY, -MAX_ACC_BODY);
-//	hil_maxmin(&Acc_body.v[AT(2, 0, Acc_body.n)], MAX_ACC_BODY, -MAX_ACC_BODY);
-
-//
-//	double AccAir0 = fabs(Vel_body.v[AT(0, 0, Vel_global.n)]) / Aair;
-//	double AccAir1 = fabs(Vel_body.v[AT(1, 0, Vel_global.n)]) / Aair;
-//	double AccAir2 = fabs(Vel_body.v[AT(2, 0, Vel_global.n)]) / Aair;
-//
-//	if (Vel_body.v[AT(0, 0, Vel_global.n)] > 0)
-//	{
-//		AccAir0 = -fabs(Vel_body.v[AT(0, 0, Vel_global.n)]) / Aair;
-//	}
-//	if (Vel_body.v[AT(1, 0, Vel_global.n)] > 0)
-//	{
-//		AccAir1 = -fabs(Vel_body.v[AT(1, 0, Vel_global.n)]) / Aair;
-//	}
-//	if (Vel_body.v[AT(2, 0, Vel_global.n)] > 0)
-//	{
-//		AccAir2 = -fabs(Vel_body.v[AT(2, 0, Vel_global.n)]) / Aair;
-//	}
-//
 	Vel_global.v[AT(0, 0, Vel_global.n)] += Acc_global.v[AT(0, 0, Acc_global.n)] * theta_t;
 	Vel_global.v[AT(1, 0, Vel_global.n)] += Acc_global.v[AT(1, 0, Acc_global.n)] * theta_t;
 	Vel_global.v[AT(2, 0, Vel_global.n)] += Acc_global.v[AT(2, 0, Acc_global.n)] * theta_t;
-	//matrix_display(&Vel_global);
+//	matrix_display(&Vel_global);
 
-	hil_maxmin(&Vel_body.v[AT(0, 0, Vel_global.n)], MAX_VEL_BODY_XY, -MAX_VEL_BODY_XY);
-	hil_maxmin(&Vel_body.v[AT(1, 0, Vel_global.n)], MAX_VEL_BODY_XY, -MAX_VEL_BODY_XY);
-	hil_maxmin(&Vel_body.v[AT(2, 0, Vel_global.n)], MAX_VEL_BODY_Z, -MAX_VEL_BODY_Z);
+	hil_maxmin(&Vel_body.v[AT(0, 0, Vel_global.n)], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
+	hil_maxmin(&Vel_body.v[AT(1, 0, Vel_global.n)], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
+	hil_maxmin(&Vel_body.v[AT(2, 0, Vel_global.n)], MAX_VEL_GLABOL_Z, -MAX_VEL_GLABOL_Z);
 
 //	matrix_display(&Vel_body);
 
-//	if (fabs(Vel_global.v[0]) < MIN_MID_ZERO)
-//	{
-//		Vel_global.v[0] = 0;
-//	}
-//	if (fabs(Vel_global.v[1]) < MIN_MID_ZERO)
-//	{
-//		Vel_global.v[1] = 0;
-//	}
-//	if (fabs(Vel_global.v[2]) < MIN_MID_ZERO)
-//	{
-//		Vel_global.v[2] = 0;
-//	}
-//
+	if (fabs(Vel_global.v[0]) < MIN_MID_ZERO)
+	{
+		Vel_global.v[0] = 0;
+	}
+	if (fabs(Vel_global.v[1]) < MIN_MID_ZERO)
+	{
+		Vel_global.v[1] = 0;
+	}
+	if (fabs(Vel_global.v[2]) < MIN_MID_ZERO)
+	{
+		Vel_global.v[2] = 0;
+	}
+
 	Pos_global.v[AT(0, 0, Pos_global.n)] += Vel_global.v[AT(0, 0, Vel_global.n)] * theta_t;
 	Pos_global.v[AT(1, 0, Pos_global.n)] += Vel_global.v[AT(1, 0, Vel_global.n)] * theta_t;
 	Pos_global.v[AT(2, 0, Pos_global.n)] += Vel_global.v[AT(2, 0, Vel_global.n)] * theta_t;
@@ -279,7 +295,7 @@ void hil_pub_att(void)
 	s_att_hil.timestamp = hrt_absolute_time();
 	s_att_hil.rollspeed = AngularVel_body.v[AT(0, 0, AngularVel_body.n)];
 	s_att_hil.pitchspeed = AngularVel_body.v[AT(1, 0, AngularVel_body.n)];
-	s_att_hil.yawspeed = AngularVel_body.v[AT(2, 0, AngularVel_body.n)] * 180.0 / M_PI;
+	s_att_hil.yawspeed = AngularVel_body.v[AT(2, 0, AngularVel_body.n)];
 
 	s_att_hil.q[0] = q_value.w;
 	s_att_hil.q[1] = q_value.x;
@@ -318,7 +334,7 @@ void hil_pub_local_pos(void)
 	s_local_pos_hil.vx = Vel_global.v[AT(0, 0, Vel_global.n)];
 	s_local_pos_hil.vy = Vel_global.v[AT(1, 0, Vel_global.n)];
 	s_local_pos_hil.vz = -Vel_global.v[AT(2, 0, Vel_global.n)];
-	s_local_pos_hil.yaw = Angular_body.v[AT(2, 0, Angular_body.n)] * 180.0 / M_PI;
+	s_local_pos_hil.yaw = Angular_body.v[AT(2, 0, Angular_body.n)];
 	s_local_pos_hil.xy_global = true;
 	s_local_pos_hil.z_global = true;
 	s_local_pos_hil.ref_timestamp = hrt_absolute_time();
@@ -358,11 +374,11 @@ void hil_pub_global_pos(void)
 	s_global_pos_hil.alt = alt;
 	s_global_pos_hil.vel_n = Vel_global.v[AT(0, 0, Vel_global.n)];
 	s_global_pos_hil.vel_e = Vel_global.v[AT(1, 0, Vel_global.n)];
-	s_global_pos_hil.vel_d = Vel_global.v[AT(2, 0, Vel_global.n)];
-	s_global_pos_hil.yaw = Angular_body.v[AT(2, 0, Angular_body.n)] * 180.0 / M_PI;
+	s_global_pos_hil.vel_d = -Vel_global.v[AT(2, 0, Vel_global.n)];
+	s_global_pos_hil.yaw = Angular_body.v[AT(2, 0, Angular_body.n)];
 	s_global_pos_hil.eph = 0.01;
 	s_global_pos_hil.epv = 0.01;
-	s_global_pos_hil.terrain_alt = -z;
+	s_global_pos_hil.terrain_alt = 0;
 	s_global_pos_hil.terrain_alt_valid = false;
 	s_global_pos_hil.dead_reckoning = false;
 
@@ -393,16 +409,16 @@ void hil_pub_gps(void)
 	s_gps_hil.alt = (int32_t) (alt * 1000);
 	s_gps_hil.satellites_used = 23;
 	s_gps_hil.time_utc_usec = hrt_absolute_time();
-	s_gps_hil.s_variance_m_s = 0.01f;
-	s_gps_hil.c_variance_rad = 0.01f;
+	s_gps_hil.s_variance_m_s = 0.0f;
+	s_gps_hil.c_variance_rad = 0.0f;
 	s_gps_hil.fix_type = 3;
 	s_gps_hil.eph = 0.01f;
 	s_gps_hil.epv = 0.01f;
 	s_gps_hil.vel_n_m_s = Vel_global.v[AT(0, 0, Vel_global.n)];
 	s_gps_hil.vel_e_m_s = Vel_global.v[AT(1, 0, Vel_global.n)];
-	s_gps_hil.vel_d_m_s = Vel_global.v[AT(2, 0, Vel_global.n)];
+	s_gps_hil.vel_d_m_s = -Vel_global.v[AT(2, 0, Vel_global.n)];
 	s_gps_hil.vel_m_s = sqrtf(s_gps_hil.vel_n_m_s * s_gps_hil.vel_n_m_s + s_gps_hil.vel_e_m_s * s_gps_hil.vel_e_m_s + s_gps_hil.vel_d_m_s * s_gps_hil.vel_d_m_s);
-	s_gps_hil.cog_rad = Angular_body.v[AT(2, 0, Angular_body.n)] * 180.0 / M_PI;
+	s_gps_hil.cog_rad = Angular_body.v[AT(2, 0, Angular_body.n)];
 	s_gps_hil.vel_ned_valid = true;
 
 	if (_gps_pub == NULL)
