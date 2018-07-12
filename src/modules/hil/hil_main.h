@@ -36,14 +36,14 @@
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
 #endif
 
-#define MAX_ANGLE_RATE		(90.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
+#define MAX_ANGLE_RATE		(210.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
 #define MAX_ANGLE_RATE_Z	(5.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
 #define MAX_ANGLE		(45.0 * M_PI / 180.0)	//角度限幅 弧度/s
 #define MAX_ACC_BODY	(90)					//机体加速度限幅 m/s^2
 #define MAX_VEL_BODY_XY	(10)					//机体速度限幅水平方向 m/s
 #define MAX_VEL_BODY_Z	(10)
 
-#define MAX_F	(62.0)
+#define MAX_F	(82.0)
 
 #define MAX_ACC_GLABOL		(15)
 #define MAX_ACC_GLABOL_Z	(15)//机体加速度限幅 m/s^2
@@ -54,8 +54,8 @@
 #define MIN_MID_ZERO	(0.001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(3.0)					//旋转角加速度系数x
-#define Kv_y			(3.0)					//旋转角加速度系数y
+#define Kv_x			(7.0)					//旋转角加速度系数x
+#define Kv_y			(7.0)					//旋转角加速度系数y
 #define Kv_z			(0.02)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy

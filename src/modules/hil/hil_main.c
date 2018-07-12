@@ -14,10 +14,10 @@ static double home_alt = 50.0;
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
-static double mixer_thro = 1.5;
+static double mixer_thro = 1.8;
 
-static double f_omega = 9.6;
-static double m_kg = 5.8;
+static double f_omega = 10.0;
+static double m_kg = 2.8;
 static double g_ms2 = 9.80665;
 
 //static orb_advert_t _mavlink_log_pub = NULL;
@@ -109,9 +109,9 @@ void F_body_from_omega(double *omega_val, double *f_body_x, double *f_body_y, do
 
 void Acc_global_from_F(double *f_global, double *acc_x, double *acc_y, double *acc_z)
 {
-	*acc_x = f_global[0] * m_kg;
-	*acc_y = f_global[1] * m_kg;
-	*acc_z = f_global[2] * m_kg;
+	*acc_x = f_global[0] / m_kg;
+	*acc_y = f_global[1] / m_kg;
+	*acc_z = f_global[2] / m_kg;
 }
 
 void hil_init(void)
