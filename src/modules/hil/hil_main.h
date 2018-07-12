@@ -45,9 +45,9 @@
 #define MIN_MID_ZERO	(0.001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(50.0)					//旋转角加速度系数x
-#define Kv_y			(50.0)					//旋转角加速度系数y
-#define Kv_z			(0.15)					//旋转角加速度系数z
+#define Kv_x			(0.6)					//旋转角加速度系数x
+#define Kv_y			(0.6)					//旋转角加速度系数y
+#define Kv_z			(0.00)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 
@@ -67,9 +67,13 @@ struct quat
 	float z;
 };
 
-static void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double theta);
+static void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, double angle_z);
 
 static void AngularVel_body_from_omega(double *omega, double *a0, double *a1, double *a2);
+
+static void F_body_from_omega(double *omega_val, double *f_body_x, double *f_body_y, double *f_body_z);
+
+static void Acc_global_from_F(double *f_global, double *acc_x, double *acc_y, double *acc_z);
 
 static void hil_init(void);
 
