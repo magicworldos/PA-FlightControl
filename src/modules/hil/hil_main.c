@@ -142,13 +142,18 @@ void hil_maxmin(double *val, double max, double min)
 void hil_cal(double theta_t)
 {
 	//根据控制量和混控矩阵计算电机输出
-	matrix_mult(&omega, &mixer, &control);
+	//matrix_mult(&omega, &mixer, &control);
 	//matrix_display(&omega);
 
-	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[AT(0, 0, AngularVel_body.n)], &AngularVel_body.v[AT(1, 0, AngularVel_body.n)], &AngularVel_body.v[AT(2, 0, AngularVel_body.n)]);
-	hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	//AngularVel_body_from_omega(omega.v, &AngularVel_body.v[AT(0, 0, AngularVel_body.n)], &AngularVel_body.v[AT(1, 0, AngularVel_body.n)], &AngularVel_body.v[AT(2, 0, AngularVel_body.n)]);
+	//hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	//hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	//hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+
+	AngularVel_body.v[AT(0, 0, AngularVel_body.n)] = control.v[0] * Kv_x;
+	AngularVel_body.v[AT(1, 0, AngularVel_body.n)] = control.v[1] * Kv_y;
+	AngularVel_body.v[AT(2, 0, AngularVel_body.n)] = control.v[2] * Kv_z;
+
 
 	if (fabs(AngularVel_body.v[0]) < MIN_MID_ZERO)
 	{
