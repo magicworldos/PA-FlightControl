@@ -141,15 +141,6 @@ void hil_maxmin(double *val, double max, double min)
 
 void hil_cal(double theta_t)
 {
-	//根据控制量和混控矩阵计算电机输出
-	//matrix_mult(&omega, &mixer, &control);
-	//matrix_display(&omega);
-
-	//AngularVel_body_from_omega(omega.v, &AngularVel_body.v[AT(0, 0, AngularVel_body.n)], &AngularVel_body.v[AT(1, 0, AngularVel_body.n)], &AngularVel_body.v[AT(2, 0, AngularVel_body.n)]);
-	//hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	//hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	//hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-
 	AngularVel_body.v[AT(0, 0, AngularVel_body.n)] = control.v[0] * Kv_x;
 	AngularVel_body.v[AT(1, 0, AngularVel_body.n)] = control.v[1] * Kv_y;
 	AngularVel_body.v[AT(2, 0, AngularVel_body.n)] = control.v[2] * Kv_z;
@@ -168,7 +159,6 @@ void hil_cal(double theta_t)
 		AngularVel_body.v[2] = 0;
 	}
 
-	//由角速度积分计算姿态角
 	Angular_body.v[AT(0, 0, Angular_body.n)] += AngularVel_body.v[AT(0, 0, AngularVel_body.n)] * theta_t;
 	Angular_body.v[AT(1, 0, Angular_body.n)] += AngularVel_body.v[AT(1, 0, AngularVel_body.n)] * theta_t;
 	Angular_body.v[AT(2, 0, Angular_body.n)] += AngularVel_body.v[AT(2, 0, AngularVel_body.n)] * theta_t;
@@ -176,10 +166,8 @@ void hil_cal(double theta_t)
 	hil_maxmin(&Angular_body.v[AT(1, 0, Angular_body.n)], MAX_ANGLE, -MAX_ANGLE);
 	//matrix_display(&Angular_body);
 
-	//根据欧拉角计算变换矩阵
 	TransMatrix_R_vb_set_value(&R_trans_matrix, -Angular_body.v[AT(2, 0, Angular_body.n)]);
 
-	//根据omega计算机体动力
 	Acc_body.v[AT(0, 0, Acc_body.n)] = -Angular_body.v[AT(1, 0, Angular_body.n)] * Kacc_x;
 	Acc_body.v[AT(1, 0, Acc_body.n)] = Angular_body.v[AT(0, 0, Angular_body.n)] * Kacc_y;
 	Acc_body.v[AT(2, 0, Acc_body.n)] = (control.v[AT(3, 0, control.n)] - ACC_MID) * Kacc_z;
@@ -204,7 +192,6 @@ void hil_cal(double theta_t)
 		AccAir2 = -fabs(Vel_body.v[AT(2, 0, Vel_global.n)]) / Aair;
 	}
 
-	//由加速度积分计算速度
 	Vel_body.v[AT(0, 0, Vel_body.n)] += (Acc_body.v[AT(0, 0, Acc_body.n)] + AccAir0) * theta_t;
 	Vel_body.v[AT(1, 0, Vel_body.n)] += (Acc_body.v[AT(1, 0, Acc_body.n)] + AccAir1) * theta_t;
 	Vel_body.v[AT(2, 0, Vel_body.n)] += (Acc_body.v[AT(2, 0, Acc_body.n)] + AccAir2) * theta_t;
@@ -213,7 +200,6 @@ void hil_cal(double theta_t)
 	hil_maxmin(&Vel_body.v[AT(1, 0, Vel_global.n)], MAX_VEL_BODY_XY, -MAX_VEL_BODY_XY);
 	hil_maxmin(&Vel_body.v[AT(2, 0, Vel_global.n)], MAX_VEL_BODY_Z, -MAX_VEL_BODY_Z);
 
-	//根据变换矩阵计算惯性系下速度
 	matrix_mult(&Vel_global, &R_trans_matrix, &Vel_body);
 	if (fabs(Vel_global.v[0]) < MIN_MID_ZERO)
 	{
@@ -228,7 +214,6 @@ void hil_cal(double theta_t)
 		Vel_global.v[2] = 0;
 	}
 
-	//在惯性系下由速度积分计算位移
 	Pos_global.v[AT(0, 0, Pos_global.n)] += Vel_global.v[AT(0, 0, Vel_global.n)] * theta_t;
 	Pos_global.v[AT(1, 0, Pos_global.n)] += Vel_global.v[AT(1, 0, Vel_global.n)] * theta_t;
 	Pos_global.v[AT(2, 0, Pos_global.n)] += Vel_global.v[AT(2, 0, Vel_global.n)] * theta_t;
