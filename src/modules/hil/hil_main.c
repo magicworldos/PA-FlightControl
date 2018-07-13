@@ -14,9 +14,9 @@ static double home_alt = 50.0;
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
-static double mixer_thro = 2.3;
+static double mixer_thro = 1.8;
 
-static double f_omega = 3.8;
+static double f_omega = 4.2;
 static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 

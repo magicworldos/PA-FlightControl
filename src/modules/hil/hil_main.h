@@ -40,8 +40,8 @@
 #define MAX_ANGLE_RATE_Z	(10.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
 #define MAX_ANGLE			(45.0 * M_PI / 180.0)	//角度限幅 弧度/s
 
-#define MAX_F_XY			(42.0)
-#define MAX_F_Z				(42.0)
+#define MAX_F_XY			(82.0)
+#define MAX_F_Z				(82.0)
 
 #define MAX_ACC_GLABOL		(35)
 #define MAX_ACC_GLABOL_Z	(35)
