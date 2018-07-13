@@ -16,7 +16,7 @@ static double mixer_pitch = 1.0;
 static double mixer_yaw = 0.1;
 static double mixer_thro = 1.0;
 
-static double f_omega = 28.2;
+static double f_omega = 28.0;
 static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 
@@ -96,7 +96,7 @@ void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, doubl
 	double f0 = omega_val[1] * omega_val[1] - omega_val[3] * omega_val[3];
 	double f1 = omega_val[0] * omega_val[0] - omega_val[2] * omega_val[2];
 	double f2 = (omega_val[0] * omega_val[0] + omega_val[2] * omega_val[2]) - (omega_val[1] * omega_val[1] + omega_val[3] * omega_val[3]);
-	warnx("%12.8f", f2);
+
 	*a0 = Kv_x * f0;
 	*a1 = Kv_y * f1;
 	*a2 = Kv_z * f2;
@@ -189,72 +189,35 @@ void hil_maxmin(double *val, double max, double min)
 	}
 }
 
-void hil_mid_zero(double *val)
-{
-	if (fabs(*val) < MIN_MID_ZERO)
-	{
-		*val = 0;
-	}
-}
-
 void hil_cal(double theta_t)
 {
 	matrix_mult(&omega, &mixer, &control);
-//	omega.v[0] = (output.v[0] + 1.0) / 2.0;
-//	omega.v[1] = (output.v[1] + 1.0) / 2.0;
-//	omega.v[2] = (output.v[2] + 1.0) / 2.0;
-//	omega.v[3] = (output.v[3] + 1.0) / 2.0;
 	hil_maxmin(&omega.v[0], 1.0, 0.0);
 	hil_maxmin(&omega.v[1], 1.0, 0.0);
 	hil_maxmin(&omega.v[2], 1.0, 0.0);
 	hil_maxmin(&omega.v[3], 1.0, 0.0);
-	matrix_display(&omega);
-	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
-	//matrix_display(&AngularVel_body);
 
-//	hil_maxmin(&AngularVel_body.v[0], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-//	hil_maxmin(&AngularVel_body.v[1], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-//	hil_maxmin(&AngularVel_body.v[2], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
+	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
 
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
 	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
 	Angular_body.v[2] += AngularVel_body.v[2] * theta_t;
 
-	//matrix_display(&Angular_body);
-	warnx("%8.6f %8.6f %8.6f", Angular_body.v[0] * 180.0 / M_PI, Angular_body.v[1] * 180.0 / M_PI, Angular_body.v[2] * 180.0 / M_PI);
-//	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
-//	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
-
-//Angular_body.v[2] = 0;
-
-//	struct quat q_value = { 0 };
-//	double angle[3];
-//	angle[0] = Angular_body.v[0];
-//	angle[1] = -Angular_body.v[1];
-//	angle[2] = Angular_body.v[2];
-//	hil_angle2q(angle, &q_value);
-//	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
+	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
+	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
 
 	TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
 
-	//根据omega计算机体系拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
-	//matrix_display(&F_body);
 
-	//将机体系拉力根据变换矩阵转为惯性系拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
-//	matrix_display(&F_global);
-
-//在惯性系下z轴F减去自身重力
 	F_global.v[2] -= m_kg * g_ms2;
 
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);
-	//matrix_display(&Acc_global);
 
 	Vel_global.v[0] += Acc_global.v[0] * theta_t;
 	Vel_global.v[1] += Acc_global.v[1] * theta_t;
 	Vel_global.v[2] += Acc_global.v[2] * theta_t;
-	//matrix_display(&Vel_global);
 
 	Pos_global.v[0] += Vel_global.v[0] * theta_t;
 	Pos_global.v[1] += Vel_global.v[1] * theta_t;
