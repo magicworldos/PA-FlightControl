@@ -192,12 +192,15 @@ void hil_maxmin(double *val, double max, double min)
 void hil_cal(double theta_t)
 {
 	matrix_mult(&omega, &mixer, &control);
-	hil_maxmin(&omega.v[0], 1.0, 0.0);
-	hil_maxmin(&omega.v[1], 1.0, 0.0);
-	hil_maxmin(&omega.v[2], 1.0, 0.0);
-	hil_maxmin(&omega.v[3], 1.0, 0.0);
+	hil_maxmin(&omega.v[0], 1.5, 0.0);
+	hil_maxmin(&omega.v[1], 1.5, 0.0);
+	hil_maxmin(&omega.v[2], 1.5, 0.0);
+	hil_maxmin(&omega.v[3], 1.5, 0.0);
 
 	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
+
+	hil_maxmin(&AngularVel_body.v[0], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	hil_maxmin(&AngularVel_body.v[1], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
 
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
 	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
