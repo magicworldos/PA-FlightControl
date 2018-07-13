@@ -13,7 +13,7 @@ static double home_alt = 50.0;
 
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
-static double mixer_yaw = 1.0;
+static double mixer_yaw = 0.1;
 static double mixer_thro = 1.0;
 
 static double f_omega = 28.2;
@@ -96,7 +96,7 @@ void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, doubl
 	double f0 = omega_val[1] * omega_val[1] - omega_val[3] * omega_val[3];
 	double f1 = omega_val[0] * omega_val[0] - omega_val[2] * omega_val[2];
 	double f2 = (omega_val[0] * omega_val[0] + omega_val[2] * omega_val[2]) - (omega_val[1] * omega_val[1] + omega_val[3] * omega_val[3]);
-
+	warnx("%12.8f", f2);
 	*a0 = Kv_x * f0;
 	*a1 = Kv_y * f1;
 	*a2 = Kv_z * f2;
@@ -130,12 +130,12 @@ void hil_init(void)
 
 	mixer.v[AT(1, 0, mixer.n)] = mixer_roll;
 	mixer.v[AT(1, 1, mixer.n)] = 0;
-	mixer.v[AT(1, 2, mixer.n)] = mixer_yaw;
+	mixer.v[AT(1, 2, mixer.n)] = -mixer_yaw;
 	mixer.v[AT(1, 3, mixer.n)] = mixer_thro;
 
 	mixer.v[AT(2, 0, mixer.n)] = 0;
 	mixer.v[AT(2, 1, mixer.n)] = -mixer_pitch;
-	mixer.v[AT(2, 2, mixer.n)] = -mixer_yaw;
+	mixer.v[AT(2, 2, mixer.n)] = mixer_yaw;
 	mixer.v[AT(2, 3, mixer.n)] = mixer_thro;
 
 	mixer.v[AT(3, 0, mixer.n)] = -mixer_roll;
@@ -219,8 +219,9 @@ void hil_cal(double theta_t)
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
 	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
 	Angular_body.v[2] += AngularVel_body.v[2] * theta_t;
+
 	//matrix_display(&Angular_body);
-//	warnx("%8.6f %8.6f %8.6f", Angular_body.v[0] * 180.0 / M_PI, Angular_body.v[1] * 180.0 / M_PI, Angular_body.v[2] * 180.0 / M_PI);
+	warnx("%8.6f %8.6f %8.6f", Angular_body.v[0] * 180.0 / M_PI, Angular_body.v[1] * 180.0 / M_PI, Angular_body.v[2] * 180.0 / M_PI);
 //	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
 //	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
 
@@ -244,7 +245,7 @@ void hil_cal(double theta_t)
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
 //	matrix_display(&F_global);
 
-	//在惯性系下z轴F减去自身重力
+//在惯性系下z轴F减去自身重力
 	F_global.v[2] -= m_kg * g_ms2;
 
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);

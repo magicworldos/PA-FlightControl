@@ -53,9 +53,9 @@
 #define MIN_MID_ZERO	(0.00001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(16.0)					//旋转角加速度系数x
-#define Kv_y			(16.0)					//旋转角加速度系数y
-#define Kv_z			(0.00)					//旋转角加速度系数z
+#define Kv_x			(25.0)					//旋转角加速度系数x
+#define Kv_y			(25.0)					//旋转角加速度系数y
+#define Kv_z			(0.26)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 
