@@ -68,7 +68,8 @@ static char _device[64] = "/sys/class/pwm/pwmchip0";
 static char _protocol[64] = "navio";
 static int _max_num_outputs = 8; ///< maximum number of outputs the driver should use
 //static char _mixer_filename[64] = "ROMFS/px4fmu_common/mixers/quad_x.main.mix";
-static char _mixer_filename[64] = "quad_x.main.mix";
+static char _mixer_filename[64] = "ROMFS/px4fmu_common/mixers/quad_+.main.mix";
+//static char _mixer_filename[64] = "quad_x.main.mix";
 
 // subscriptions
 int _controls_subs[actuator_controls_s::NUM_ACTUATOR_CONTROL_GROUPS];

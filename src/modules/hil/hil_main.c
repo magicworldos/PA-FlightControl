@@ -14,9 +14,9 @@ static double home_alt = 50.0;
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
-static double mixer_thro = 1.8;
+static double mixer_thro = 1.0;
 
-static double f_omega = 4.2;
+static double f_omega = 28.2;
 static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 
@@ -32,6 +32,8 @@ static struct map_projection_reference_s _ref_pos;
 
 //控制量
 static s_Matrix control;
+
+static s_Matrix output;
 //混控矩阵
 static s_Matrix mixer;
 //电机转数
@@ -117,6 +119,7 @@ void Acc_global_from_F(double *f_global, double *acc_x, double *acc_y, double *a
 void hil_init(void)
 {
 	matrix_init(&control, 4, 1);
+	matrix_init(&output, 4, 1);
 
 	matrix_init(&mixer, 4, 4);
 
@@ -127,12 +130,12 @@ void hil_init(void)
 
 	mixer.v[AT(1, 0, mixer.n)] = mixer_roll;
 	mixer.v[AT(1, 1, mixer.n)] = 0;
-	mixer.v[AT(1, 2, mixer.n)] = -mixer_yaw;
+	mixer.v[AT(1, 2, mixer.n)] = mixer_yaw;
 	mixer.v[AT(1, 3, mixer.n)] = mixer_thro;
 
 	mixer.v[AT(2, 0, mixer.n)] = 0;
 	mixer.v[AT(2, 1, mixer.n)] = -mixer_pitch;
-	mixer.v[AT(2, 2, mixer.n)] = mixer_yaw;
+	mixer.v[AT(2, 2, mixer.n)] = -mixer_yaw;
 	mixer.v[AT(2, 3, mixer.n)] = mixer_thro;
 
 	mixer.v[AT(3, 0, mixer.n)] = -mixer_roll;
@@ -197,64 +200,60 @@ void hil_mid_zero(double *val)
 void hil_cal(double theta_t)
 {
 	matrix_mult(&omega, &mixer, &control);
-
+//	omega.v[0] = (output.v[0] + 1.0) / 2.0;
+//	omega.v[1] = (output.v[1] + 1.0) / 2.0;
+//	omega.v[2] = (output.v[2] + 1.0) / 2.0;
+//	omega.v[3] = (output.v[3] + 1.0) / 2.0;
+	hil_maxmin(&omega.v[0], 1.0, 0.0);
+	hil_maxmin(&omega.v[1], 1.0, 0.0);
+	hil_maxmin(&omega.v[2], 1.0, 0.0);
+	hil_maxmin(&omega.v[3], 1.0, 0.0);
+	matrix_display(&omega);
 	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
-	hil_maxmin(&AngularVel_body.v[0], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[1], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[2], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
-	hil_mid_zero(&AngularVel_body.v[0]);
-	hil_mid_zero(&AngularVel_body.v[1]);
-	hil_mid_zero(&AngularVel_body.v[2]);
+	//matrix_display(&AngularVel_body);
+
+//	hil_maxmin(&AngularVel_body.v[0], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+//	hil_maxmin(&AngularVel_body.v[1], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+//	hil_maxmin(&AngularVel_body.v[2], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
 
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
 	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
 	Angular_body.v[2] += AngularVel_body.v[2] * theta_t;
-	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
-	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
-	hil_mid_zero(&Angular_body.v[0]);
-	hil_mid_zero(&Angular_body.v[1]);
+	//matrix_display(&Angular_body);
+//	warnx("%8.6f %8.6f %8.6f", Angular_body.v[0] * 180.0 / M_PI, Angular_body.v[1] * 180.0 / M_PI, Angular_body.v[2] * 180.0 / M_PI);
+//	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
+//	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
 
-	struct quat q_value = { 0 };
-	double angle[3];
-	angle[0] = -Angular_body.v[0];
-	angle[1] = -Angular_body.v[1];
-	angle[2] = Angular_body.v[2];
-	hil_angle2q(angle, &q_value);
+//Angular_body.v[2] = 0;
 
-	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
+//	struct quat q_value = { 0 };
+//	double angle[3];
+//	angle[0] = Angular_body.v[0];
+//	angle[1] = -Angular_body.v[1];
+//	angle[2] = Angular_body.v[2];
+//	hil_angle2q(angle, &q_value);
+//	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
+
+	TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
 
 	//根据omega计算机体系拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
-
 	//matrix_display(&F_body);
 
 	//将机体系拉力根据变换矩阵转为惯性系拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
-	//matrix_display(&F_global);
+//	matrix_display(&F_global);
 
 	//在惯性系下z轴F减去自身重力
 	F_global.v[2] -= m_kg * g_ms2;
 
-	hil_maxmin(&F_global.v[0], MAX_F_XY, -MAX_F_XY);
-	hil_maxmin(&F_global.v[1], MAX_F_XY, -MAX_F_XY);
-	hil_maxmin(&F_global.v[2], MAX_F_Z, -MAX_F_Z);
-
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);
-	hil_maxmin(&Acc_global.v[0], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
-	hil_maxmin(&Acc_global.v[1], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
-	hil_mid_zero(&Acc_global.v[0]);
-	hil_mid_zero(&Acc_global.v[1]);
-	hil_mid_zero(&Acc_global.v[2]);
+	//matrix_display(&Acc_global);
 
 	Vel_global.v[0] += Acc_global.v[0] * theta_t;
 	Vel_global.v[1] += Acc_global.v[1] * theta_t;
 	Vel_global.v[2] += Acc_global.v[2] * theta_t;
-	hil_maxmin(&Vel_global.v[0], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
-	hil_maxmin(&Vel_global.v[1], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
-	hil_maxmin(&Vel_global.v[2], MAX_VEL_GLABOL_Z, -MAX_VEL_GLABOL_Z);
-	hil_mid_zero(&Vel_global.v[0]);
-	hil_mid_zero(&Vel_global.v[1]);
-	hil_mid_zero(&Vel_global.v[2]);
+	//matrix_display(&Vel_global);
 
 	Pos_global.v[0] += Vel_global.v[0] * theta_t;
 	Pos_global.v[1] += Vel_global.v[1] * theta_t;
@@ -422,9 +421,11 @@ int hil_task_main(int argc, char *argv[])
 {
 	int control_sub = orb_subscribe(ORB_ID(actuator_controls_0));
 	int armed_sub = orb_subscribe(ORB_ID(actuator_armed));
+	int output_sub = orb_subscribe(ORB_ID(actuator_outputs));
 
 	struct actuator_controls_s s_actuators = { 0 };
 	struct actuator_armed_s s_armed = { 0 };
+	struct actuator_outputs_s s_output = { 0 };
 
 	bool updated = false;
 
@@ -446,7 +447,7 @@ int hil_task_main(int argc, char *argv[])
 		usleep(10 * 1000);
 
 		curr_time = hrt_absolute_time();
-		theta_t = (float) (curr_time - last_time) / (float) (1000 * 1000);
+		theta_t = (float) (curr_time - last_time) / (float) (1000.0 * 1000.0);
 		last_time = curr_time;
 
 		orb_check(control_sub, &updated);
@@ -455,16 +456,27 @@ int hil_task_main(int argc, char *argv[])
 			orb_copy(ORB_ID(actuator_controls), control_sub, &s_actuators);
 		}
 
+		orb_check(output_sub, &updated);
+		if (updated)
+		{
+			orb_copy(ORB_ID(actuator_outputs), output_sub, &s_output);
+		}
+
 		orb_check(armed_sub, &updated);
 		if (updated)
 		{
 			orb_copy(ORB_ID(actuator_armed), armed_sub, &s_armed);
 		}
 
-		control.v[AT(0, 0, control.n)] = s_actuators.control[0];
-		control.v[AT(1, 0, control.n)] = s_actuators.control[1];
-		control.v[AT(2, 0, control.n)] = s_actuators.control[2];
-		control.v[AT(3, 0, control.n)] = s_actuators.control[3];
+		control.v[0] = s_actuators.control[0];
+		control.v[1] = s_actuators.control[1];
+		control.v[2] = s_actuators.control[2];
+		control.v[3] = s_actuators.control[3];
+
+		output.v[0] = s_output.output[0];
+		output.v[1] = s_output.output[1];
+		output.v[2] = s_output.output[2];
+		output.v[3] = s_output.output[3];
 
 		hil_cal(theta_t);
 

@@ -25,6 +25,7 @@
 #include <uORB/topics/actuator_controls.h>
 #include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/actuator_armed.h>
+#include <uORB/topics/actuator_outputs.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/vehicle_gps_position.h>
 #include <uORB/topics/vehicle_global_position.h>
@@ -37,24 +38,24 @@
 #endif
 
 #define MAX_ANGLE_RATE		(180.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
-#define MAX_ANGLE_RATE_Z	(10.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
+#define MAX_ANGLE_RATE_Z	(90.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
 #define MAX_ANGLE			(45.0 * M_PI / 180.0)	//角度限幅 弧度/s
 
-#define MAX_F_XY			(82.0)
-#define MAX_F_Z				(82.0)
+#define MAX_F_XY			(12.0)
+#define MAX_F_Z				(12.0)
 
 #define MAX_ACC_GLABOL		(35)
 #define MAX_ACC_GLABOL_Z	(35)
-#define MAX_VEL_GLABOL_XY	(8)
-#define MAX_VEL_GLABOL_Z	(8)
+#define MAX_VEL_GLABOL_XY	(15)
+#define MAX_VEL_GLABOL_Z	(15)
 
 //机体速度限幅垂直方向 m/s
-#define MIN_MID_ZERO	(0.001)					//中位归0限幅
+#define MIN_MID_ZERO	(0.00001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(2.8)					//旋转角加速度系数x
-#define Kv_y			(2.8)					//旋转角加速度系数y
-#define Kv_z			(0.03)					//旋转角加速度系数z
+#define Kv_x			(16.0)					//旋转角加速度系数x
+#define Kv_y			(16.0)					//旋转角加速度系数y
+#define Kv_z			(0.00)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 
