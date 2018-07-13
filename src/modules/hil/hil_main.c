@@ -14,9 +14,9 @@ static double home_alt = 50.0;
 static double mixer_roll = 1.0;
 static double mixer_pitch = 1.0;
 static double mixer_yaw = 1.0;
-static double mixer_thro = 1.0;
+static double mixer_thro = 2.3;
 
-static double f_omega = 7.0;
+static double f_omega = 3.8;
 static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 
@@ -186,89 +186,79 @@ void hil_maxmin(double *val, double max, double min)
 	}
 }
 
+void hil_mid_zero(double *val)
+{
+	if (fabs(*val) < MIN_MID_ZERO)
+	{
+		*val = 0;
+	}
+}
+
 void hil_cal(double theta_t)
 {
 	matrix_mult(&omega, &mixer, &control);
 
 	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
-	hil_maxmin(&AngularVel_body.v[AT(0, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[AT(1, 0, AngularVel_body.n)], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
-	hil_maxmin(&AngularVel_body.v[AT(2, 0, AngularVel_body.n)], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
+	hil_maxmin(&AngularVel_body.v[0], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	hil_maxmin(&AngularVel_body.v[1], MAX_ANGLE_RATE, -MAX_ANGLE_RATE);
+	hil_maxmin(&AngularVel_body.v[2], MAX_ANGLE_RATE_Z, -MAX_ANGLE_RATE_Z);
+	hil_mid_zero(&AngularVel_body.v[0]);
+	hil_mid_zero(&AngularVel_body.v[1]);
+	hil_mid_zero(&AngularVel_body.v[2]);
 
-//matrix_display(&AngularVel_body);
-
-	Angular_body.v[AT(0, 0, Angular_body.n)] += AngularVel_body.v[AT(0, 0, AngularVel_body.n)] * theta_t;
-	Angular_body.v[AT(1, 0, Angular_body.n)] += AngularVel_body.v[AT(1, 0, AngularVel_body.n)] * theta_t;
-	Angular_body.v[AT(2, 0, Angular_body.n)] += AngularVel_body.v[AT(2, 0, AngularVel_body.n)] * theta_t;
-	hil_maxmin(&Angular_body.v[AT(0, 0, Angular_body.n)], MAX_ANGLE, -MAX_ANGLE);
-	hil_maxmin(&Angular_body.v[AT(1, 0, Angular_body.n)], MAX_ANGLE, -MAX_ANGLE);
-//	Angular_body.v[2] = 180.0 * M_PI / 180.0;
-//matrix_display(&Angular_body);
-
-//计算变换矩阵
-	//TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
+	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
+	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
+	Angular_body.v[2] += AngularVel_body.v[2] * theta_t;
+	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
+	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
+	hil_mid_zero(&Angular_body.v[0]);
+	hil_mid_zero(&Angular_body.v[1]);
 
 	struct quat q_value = { 0 };
 	double angle[3];
-	angle[0] = -Angular_body.v[AT(0, 0, Angular_body.n)];
-	angle[1] = -Angular_body.v[AT(1, 0, Angular_body.n)];
-	angle[2] = Angular_body.v[AT(2, 0, Angular_body.n)];
+	angle[0] = -Angular_body.v[0];
+	angle[1] = -Angular_body.v[1];
+	angle[2] = Angular_body.v[2];
 	hil_angle2q(angle, &q_value);
 
 	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
 
-//根据omega计算机体系拉力
+	//根据omega计算机体系拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
 
-//	hil_maxmin(&F_body.v[AT(0, 0, F_global.n)], MAX_F, -MAX_F);
-//	hil_maxmin(&F_body.v[AT(1, 0, F_global.n)], MAX_F, -MAX_F);
-//	hil_maxmin(&F_body.v[AT(2, 0, Acc_global.n)], MAX_F, -MAX_F);
+	//matrix_display(&F_body);
 
-//matrix_display(&F_body);
-
-//将机体系拉力根据变换矩阵转为惯性系拉力
+	//将机体系拉力根据变换矩阵转为惯性系拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
-//matrix_display(&F_global);
+	//matrix_display(&F_global);
 
-//在惯性系下z轴F减去自身重力
+	//在惯性系下z轴F减去自身重力
 	F_global.v[2] -= m_kg * g_ms2;
 
-
+	hil_maxmin(&F_global.v[0], MAX_F_XY, -MAX_F_XY);
+	hil_maxmin(&F_global.v[1], MAX_F_XY, -MAX_F_XY);
+	hil_maxmin(&F_global.v[2], MAX_F_Z, -MAX_F_Z);
 
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);
-	hil_maxmin(&Acc_global.v[AT(0, 0, Acc_global.n)], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
-	hil_maxmin(&Acc_global.v[AT(1, 0, Acc_global.n)], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
-	hil_maxmin(&Acc_global.v[AT(2, 0, Acc_global.n)], MAX_ACC_GLABOL_Z, -MAX_ACC_GLABOL_Z);
-//	matrix_display(&Acc_global);
+	hil_maxmin(&Acc_global.v[0], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
+	hil_maxmin(&Acc_global.v[1], MAX_ACC_GLABOL, -MAX_ACC_GLABOL);
+	hil_mid_zero(&Acc_global.v[0]);
+	hil_mid_zero(&Acc_global.v[1]);
+	hil_mid_zero(&Acc_global.v[2]);
 
-	Vel_global.v[AT(0, 0, Vel_global.n)] += Acc_global.v[AT(0, 0, Acc_global.n)] * theta_t;
-	Vel_global.v[AT(1, 0, Vel_global.n)] += Acc_global.v[AT(1, 0, Acc_global.n)] * theta_t;
-	Vel_global.v[AT(2, 0, Vel_global.n)] += Acc_global.v[AT(2, 0, Acc_global.n)] * theta_t;
-//	matrix_display(&Vel_global);
+	Vel_global.v[0] += Acc_global.v[0] * theta_t;
+	Vel_global.v[1] += Acc_global.v[1] * theta_t;
+	Vel_global.v[2] += Acc_global.v[2] * theta_t;
+	hil_maxmin(&Vel_global.v[0], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
+	hil_maxmin(&Vel_global.v[1], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
+	hil_maxmin(&Vel_global.v[2], MAX_VEL_GLABOL_Z, -MAX_VEL_GLABOL_Z);
+	hil_mid_zero(&Vel_global.v[0]);
+	hil_mid_zero(&Vel_global.v[1]);
+	hil_mid_zero(&Vel_global.v[2]);
 
-	hil_maxmin(&Vel_body.v[AT(0, 0, Vel_global.n)], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
-	hil_maxmin(&Vel_body.v[AT(1, 0, Vel_global.n)], MAX_VEL_GLABOL_XY, -MAX_VEL_GLABOL_XY);
-	hil_maxmin(&Vel_body.v[AT(2, 0, Vel_global.n)], MAX_VEL_GLABOL_Z, -MAX_VEL_GLABOL_Z);
-
-//	matrix_display(&Vel_body);
-
-	if (fabs(Vel_global.v[0]) < MIN_MID_ZERO)
-	{
-		Vel_global.v[0] = 0;
-	}
-	if (fabs(Vel_global.v[1]) < MIN_MID_ZERO)
-	{
-		Vel_global.v[1] = 0;
-	}
-	if (fabs(Vel_global.v[2]) < MIN_MID_ZERO)
-	{
-		Vel_global.v[2] = 0;
-	}
-
-	Pos_global.v[AT(0, 0, Pos_global.n)] += Vel_global.v[AT(0, 0, Vel_global.n)] * theta_t;
-	Pos_global.v[AT(1, 0, Pos_global.n)] += Vel_global.v[AT(1, 0, Vel_global.n)] * theta_t;
-	Pos_global.v[AT(2, 0, Pos_global.n)] += Vel_global.v[AT(2, 0, Vel_global.n)] * theta_t;
-//matrix_display(&Pos_global);
+	Pos_global.v[0] += Vel_global.v[0] * theta_t;
+	Pos_global.v[1] += Vel_global.v[1] * theta_t;
+	Pos_global.v[2] += Vel_global.v[2] * theta_t;
 }
 
 void hil_angle2q(double *xyz, struct quat *q)

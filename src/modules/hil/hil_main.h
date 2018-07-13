@@ -36,33 +36,31 @@
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
 #endif
 
-#define MAX_ANGLE_RATE		(210.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
-#define MAX_ANGLE_RATE_Z	(5.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
-#define MAX_ANGLE		(45.0 * M_PI / 180.0)	//角度限幅 弧度/s
-#define MAX_ACC_BODY	(90)					//机体加速度限幅 m/s^2
-#define MAX_VEL_BODY_XY	(10)					//机体速度限幅水平方向 m/s
-#define MAX_VEL_BODY_Z	(10)
+#define MAX_ANGLE_RATE		(180.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
+#define MAX_ANGLE_RATE_Z	(10.0 * M_PI / 180.0)	//角速度限幅 弧度/s^2
+#define MAX_ANGLE			(45.0 * M_PI / 180.0)	//角度限幅 弧度/s
 
-//#define MAX_F	(24.0)
+#define MAX_F_XY			(42.0)
+#define MAX_F_Z				(42.0)
 
-#define MAX_ACC_GLABOL		(15)
-#define MAX_ACC_GLABOL_Z	(15)//机体加速度限幅 m/s^2
-#define MAX_VEL_GLABOL_XY	(15)					//机体速度限幅水平方向 m/s
-#define MAX_VEL_GLABOL_Z	(15)
+#define MAX_ACC_GLABOL		(35)
+#define MAX_ACC_GLABOL_Z	(35)
+#define MAX_VEL_GLABOL_XY	(8)
+#define MAX_VEL_GLABOL_Z	(8)
 
 //机体速度限幅垂直方向 m/s
 #define MIN_MID_ZERO	(0.001)					//中位归0限幅
 #define ACC_MID			(0.50)					//控制量升力中位值(0.0~1.0)
 
-#define Kv_x			(7.5)					//旋转角加速度系数x
-#define Kv_y			(7.5)					//旋转角加速度系数y
+#define Kv_x			(2.8)					//旋转角加速度系数x
+#define Kv_y			(2.8)					//旋转角加速度系数y
 #define Kv_z			(0.03)					//旋转角加速度系数z
 
 #define Aair			(3)						//空气阻尼加速度xy
 
-#define Kacc_x			(65.0)					//机体加速度系数x
-#define Kacc_y			(65.0)					//机体加速度系数y
-#define Kacc_z			(65.0)					//机体加速度系数z
+#define Kacc_x			(6.0)					//机体加速度系数x
+#define Kacc_y			(6.0)					//机体加速度系数y
+#define Kacc_z			(6.0)					//机体加速度系数z
 
 #define M 3
 #define N 3
@@ -91,6 +89,8 @@ static void hil_init(void);
 static void hil_zero(void);
 
 static void hil_maxmin(double *val, double max, double min);
+
+static void hil_mid_zero(double *val);
 
 static void hil_cal(double theta_t);
 
