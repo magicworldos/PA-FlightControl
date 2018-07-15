@@ -38,12 +38,12 @@
 #endif
 
 #define MAX_ANGLE		(60.0 * M_PI / 180.0)	//角度限幅 弧度/s
-#define MAX_ANGLE_RATE	(270.0 * M_PI / 180.0)	//角度限幅 弧度/s
+#define MAX_ANGLE_RATE	(960.0 * M_PI / 180.0)	//角度限幅 弧度/s
 
 
-#define Kv_x			(23.0)					//旋转角加速度系数x
-#define Kv_y			(23.0)					//旋转角加速度系数y
-#define Kv_z			(0.26)					//旋转角加速度系数z
+#define Kv_x			(9.6)					//旋转角加速度系数x
+#define Kv_y			(9.6)					//旋转角加速度系数y
+#define Kv_z			(0.05)					//旋转角加速度系数z
 
 #define M 3
 #define N 3
