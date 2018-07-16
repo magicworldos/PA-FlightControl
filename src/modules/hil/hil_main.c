@@ -17,34 +17,21 @@ static orb_advert_t _gps_pub = NULL;
 static struct quat q_reset = { 0 };
 static struct map_projection_reference_s _ref_pos;
 
-//控制量
-static s_Matrix control;
+static s_Matrix control;			//控制量
+static s_Matrix output;				//混控输出
+static s_Matrix omega;				//电机转数
+static s_Matrix R_trans_matrix;		//变换矩阵
 
-static s_Matrix output;
-//电机转数
-static s_Matrix omega;
-//变换矩阵
-static s_Matrix R_trans_matrix;
-//机体加速度
-static s_Matrix Acc_body;
-//机体速度
-static s_Matrix Vel_body;
-//机体系拉力
-static s_Matrix F_body;
-//惯性系拉力
-static s_Matrix F_global;
-//惯性系速度
-static s_Matrix Acc_global;
-//惯性系速度
-static s_Matrix Vel_global;
-//惯性系位移
-static s_Matrix Pos_global;
-//机体角加速度
-static s_Matrix AngularAcc_body;
-//机体角速度
-static s_Matrix AngularVel_body;
-//姿态角度
-static s_Matrix Angular_body;
+static s_Matrix F_body;				//机体系拉力
+static s_Matrix F_global;			//惯性系拉力
+static s_Matrix Acc_body;			//机体加速度
+
+static s_Matrix Acc_global;			//惯性系速度
+static s_Matrix Vel_global;			//惯性系速度
+static s_Matrix Pos_global;			//惯性系位移
+
+static s_Matrix AngularVel_body;	//机体角速度
+static s_Matrix Angular_body;		//姿态角度
 
 //欧拉角变换矩阵
 void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, double angle_z)
@@ -96,37 +83,36 @@ void hil_init(void)
 {
 	matrix_init(&control, 4, 1);
 	matrix_init(&output, 4, 1);
-
 	matrix_init(&omega, 4, 1);
+	matrix_init(&R_trans_matrix, 3, 3);
 
-	matrix_init(&R_trans_matrix, M, N);
+	matrix_init(&F_body, 3, 1);
+	matrix_init(&F_global, 3, 1);
+	matrix_init(&Acc_body, 3, 1);
 
-	matrix_init(&F_body, M, 1);
-	matrix_init(&F_global, M, 1);
-	matrix_init(&Acc_body, M, 1);
-	matrix_init(&Vel_body, M, 1);
-	matrix_init(&Acc_global, M, 1);
-	matrix_init(&Vel_global, M, 1);
-	matrix_init(&Pos_global, M, 1);
+	matrix_init(&Acc_global, 3, 1);
+	matrix_init(&Vel_global, 3, 1);
+	matrix_init(&Pos_global, 3, 1);
 
-	matrix_init(&AngularAcc_body, M, 1);
-	matrix_init(&AngularVel_body, M, 1);
-	matrix_init(&Angular_body, M, 1);
+	matrix_init(&AngularVel_body, 3, 1);
+	matrix_init(&Angular_body, 3, 1);
 }
 
 void hil_zero(void)
 {
 	matrix_zero(&control);
+	matrix_zero(&output);
 	matrix_zero(&omega);
-
 	matrix_zero(&R_trans_matrix);
 
+	matrix_zero(&F_body);
+	matrix_zero(&F_global);
 	matrix_zero(&Acc_body);
-	matrix_zero(&Vel_body);
+
+	matrix_zero(&Acc_global);
 	matrix_zero(&Vel_global);
 	matrix_zero(&Pos_global);
 
-	matrix_zero(&AngularAcc_body);
 	matrix_zero(&AngularVel_body);
 	matrix_zero(&Angular_body);
 }
@@ -180,6 +166,7 @@ void hil_cal(double theta_t)
 
 	//变换矩阵左乘机体系拉力得到惯性系下的拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
+
 	//惯性系下减去垂直方向自身的重力
 	F_global.v[2] -= M_KG * G_MS2;
 
@@ -424,13 +411,7 @@ int hil_task_main(int argc, char *argv[])
 
 		if (Pos_global.v[AT(2, 0, Pos_global.n)] <= 0)
 		{
-			matrix_zero(&AngularAcc_body);
-			matrix_zero(&AngularVel_body);
-			matrix_zero(&Angular_body);
-			matrix_zero(&Acc_body);
-			matrix_zero(&Vel_body);
-			matrix_zero(&Vel_global);
-			matrix_zero(&Pos_global);
+			hil_zero();
 		}
 
 		hil_pub_att();

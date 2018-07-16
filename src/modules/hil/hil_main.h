@@ -49,8 +49,6 @@
 #define I_Y				(0.04348)					//y轴转动惯量
 #define I_Z				(6.667)						//z轴转动惯量
 
-#define M 3
-#define N 3
 #define AT(i, j, n) (i * n + j)
 
 struct quat
