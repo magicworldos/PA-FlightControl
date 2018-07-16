@@ -37,13 +37,17 @@
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
 #endif
 
-#define MAX_ANGLE		(60.0 * M_PI / 180.0)	//角度限幅 弧度/s
-//#define MAX_ANGLE_RATE	(960.0 * M_PI / 180.0)	//角度限幅 弧度/s
+#define home_lat		40.5397970
+#define home_lon		121.5037566
+#define home_alt		50.0
 
-
-#define Kv_x			(23.0)					//旋转角加速度系数x
-#define Kv_y			(23.0)					//旋转角加速度系数y
-#define Kv_z			(0.15)					//旋转角加速度系数z
+#define MAX_ANGLE		(60.0 * M_PI / 180.0)		//角度限幅 弧度/s
+#define F_OMEGA			(28.0)						//转桨拉力系数
+#define M_KG			(1.8)						//质量 kg
+#define G_MS2			(9.80665)					//重力加速度 米/s^2
+#define I_X				(0.04348)					//x轴转动惯量
+#define I_Y				(0.04348)					//y轴转动惯量
+#define I_Z				(6.667)						//z轴转动惯量
 
 #define M 3
 #define N 3
@@ -60,8 +64,6 @@ struct quat
 static void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, double angle_z);
 
 static void TransMatrix_R_Q_set_value(s_Matrix *R_vb, double w, double x, double y, double z);
-
-static void AngularVel_body_from_omega(double *omega, double *a0, double *a1, double *a2);
 
 static void F_body_from_omega(double *omega_val, double *f_body_x, double *f_body_y, double *f_body_z);
 

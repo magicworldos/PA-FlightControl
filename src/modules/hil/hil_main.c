@@ -7,19 +7,6 @@
 
 #include "hil_main.h"
 
-static double home_lat = 40.5397970;
-static double home_lon = 121.5037566;
-static double home_alt = 50.0;
-
-static double mixer_roll = 1.0;
-static double mixer_pitch = 1.0;
-static double mixer_yaw = 0.1;
-static double mixer_thro = 1.0;
-
-static double f_omega = 28.0;
-static double m_kg = 1.8;
-static double g_ms2 = 9.80665;
-
 //static orb_advert_t _mavlink_log_pub = NULL;
 
 static orb_advert_t _att_pub = NULL;
@@ -34,8 +21,6 @@ static struct map_projection_reference_s _ref_pos;
 static s_Matrix control;
 
 static s_Matrix output;
-//混控矩阵
-static s_Matrix mixer;
 //电机转数
 static s_Matrix omega;
 //变换矩阵
@@ -61,6 +46,7 @@ static s_Matrix AngularVel_body;
 //姿态角度
 static s_Matrix Angular_body;
 
+//欧拉角变换矩阵
 void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, double angle_z)
 {
 	R_vb->v[AT(0, 0, R_vb->n)] = cos(angle_z) * cos(angle_y);
@@ -76,84 +62,40 @@ void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, 
 	R_vb->v[AT(2, 2, R_vb->n)] = cos(angle_y) * cos(angle_x);
 }
 
+//四元数据变换矩阵
 void TransMatrix_R_Q_set_value(s_Matrix *R_vb, double w, double x, double y, double z)
 {
-//	R_vb->v[AT(0, 0, R_vb->n)] = 1.0 - 2.0 * (y * y + z * z);
-//	R_vb->v[AT(0, 1, R_vb->n)] = 2.0 * (x * y - z * w);
-//	R_vb->v[AT(0, 2, R_vb->n)] = 2.0 * (x * z + y * w);
-//
-//	R_vb->v[AT(1, 0, R_vb->n)] = 2.0 * (x * y + z * w);
-//	R_vb->v[AT(1, 1, R_vb->n)] = 1.0 - 2.0 * (x * x + z * z);
-//	R_vb->v[AT(1, 2, R_vb->n)] = 2.0 * (y * z - x * w);
-//
-//	R_vb->v[AT(2, 0, R_vb->n)] = 2.0 * (x * z - y * w);
-//	R_vb->v[AT(2, 1, R_vb->n)] = 2.0 * (y * z + x * w);
-//	R_vb->v[AT(2, 2, R_vb->n)] = 1.0 - 2.0 * (x * x + y * y);
+	R_vb->v[AT(0, 0, R_vb->n)] = 1.0 - 2.0 * y * y - 2.0 * z * z;
+	R_vb->v[AT(0, 1, R_vb->n)] = 2.0 * x * y - 2.0 * w * z;
+	R_vb->v[AT(0, 2, R_vb->n)] = 2.0 * x * z + 2.0 * w * y;
 
-	R_vb->v[AT(0, 0, R_vb->n)] = 1 - 2 *  y * y - 2 * z * z;
-	R_vb->v[AT(0, 1, R_vb->n)] = 2 * x * y - 2 * w * z;
-	R_vb->v[AT(0, 2, R_vb->n)] = 2 * x * z + 2 * w * y;
+	R_vb->v[AT(1, 0, R_vb->n)] = 2.0 * x * y + 2.0 * w * z;
+	R_vb->v[AT(1, 1, R_vb->n)] = 1.0 - 2.0 * x * x - 2.0 * z * z;
+	R_vb->v[AT(1, 2, R_vb->n)] = 2.0 * y * z - 2.0 * w * x;
 
-	R_vb->v[AT(1, 0, R_vb->n)] = 2 * x * y + 2 * w * z;
-	R_vb->v[AT(1, 1, R_vb->n)] = 1 - 2 * x * x - 2 * z * z;
-	R_vb->v[AT(1, 2, R_vb->n)] = 2 * y * z - 2 * w * x;
-
-	R_vb->v[AT(2, 0, R_vb->n)] = 2 * x * z - 2 * w * y;
-	R_vb->v[AT(2, 1, R_vb->n)] = 2 * y * z + 2 * w * x;
-	R_vb->v[AT(2, 2, R_vb->n)] = 1 - 2 * x * x - 2 * y * y;
-}
-
-void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, double *a2)
-{
-	double f0 = omega_val[1] * omega_val[1] - omega_val[3] * omega_val[3];
-	double f1 = omega_val[0] * omega_val[0] - omega_val[2] * omega_val[2];
-	double f2 = (omega_val[0] * omega_val[0] + omega_val[2] * omega_val[2]) - (omega_val[1] * omega_val[1] + omega_val[3] * omega_val[3]);
-
-	*a0 = Kv_x * f0;
-	*a1 = Kv_y * f1;
-	*a2 = Kv_z * f2;
+	R_vb->v[AT(2, 0, R_vb->n)] = 2.0 * x * z - 2.0 * w * y;
+	R_vb->v[AT(2, 1, R_vb->n)] = 2.0 * y * z + 2.0 * w * x;
+	R_vb->v[AT(2, 2, R_vb->n)] = 1.0 - 2.0 * x * x - 2.0 * y * y;
 }
 
 void F_body_from_omega(double *omega_val, double *f_body_x, double *f_body_y, double *f_body_z)
 {
-	*f_body_x = 0;
-	*f_body_y = 0;
-	*f_body_z = (omega_val[0] * omega_val[0] + omega_val[1] * omega_val[1] + omega_val[2] * omega_val[2] + omega_val[3] * omega_val[3]) * f_omega;
+	*f_body_x = 0.0;
+	*f_body_y = 0.0;
+	*f_body_z = (omega_val[0] * omega_val[0] + omega_val[1] * omega_val[1] + omega_val[2] * omega_val[2] + omega_val[3] * omega_val[3]) * F_OMEGA;
 }
 
 void Acc_global_from_F(double *f_global, double *acc_x, double *acc_y, double *acc_z)
 {
-	*acc_x = f_global[0] / m_kg;
-	*acc_y = f_global[1] / m_kg;
-	*acc_z = f_global[2] / m_kg;
+	*acc_x = f_global[0] / M_KG;
+	*acc_y = f_global[1] / M_KG;
+	*acc_z = f_global[2] / M_KG;
 }
 
 void hil_init(void)
 {
 	matrix_init(&control, 4, 1);
 	matrix_init(&output, 4, 1);
-
-	matrix_init(&mixer, 4, 4);
-
-	mixer.v[AT(0, 0, mixer.n)] = 0;
-	mixer.v[AT(0, 1, mixer.n)] = mixer_pitch;
-	mixer.v[AT(0, 2, mixer.n)] = mixer_yaw;
-	mixer.v[AT(0, 3, mixer.n)] = mixer_thro;
-
-	mixer.v[AT(1, 0, mixer.n)] = mixer_roll;
-	mixer.v[AT(1, 1, mixer.n)] = 0;
-	mixer.v[AT(1, 2, mixer.n)] = -mixer_yaw;
-	mixer.v[AT(1, 3, mixer.n)] = mixer_thro;
-
-	mixer.v[AT(2, 0, mixer.n)] = 0;
-	mixer.v[AT(2, 1, mixer.n)] = -mixer_pitch;
-	mixer.v[AT(2, 2, mixer.n)] = mixer_yaw;
-	mixer.v[AT(2, 3, mixer.n)] = mixer_thro;
-
-	mixer.v[AT(3, 0, mixer.n)] = -mixer_roll;
-	mixer.v[AT(3, 1, mixer.n)] = 0;
-	mixer.v[AT(3, 2, mixer.n)] = -mixer_yaw;
-	mixer.v[AT(3, 3, mixer.n)] = mixer_thro;
 
 	matrix_init(&omega, 4, 1);
 
@@ -203,41 +145,53 @@ void hil_maxmin(double *val, double max, double min)
 
 void hil_cal(double theta_t)
 {
+	//混控后的桨转数
 	omega.v[0] = (output.v[0] + 1.0) / 2.0;
 	omega.v[1] = (output.v[1] + 1.0) / 2.0;
 	omega.v[2] = (output.v[2] + 1.0) / 2.0;
 	omega.v[3] = (output.v[3] + 1.0) / 2.0;
 
-	AngularVel_body.v[0] = control.v[0] * Kv_x;
-	AngularVel_body.v[1] = control.v[1] * Kv_y;
-	AngularVel_body.v[2] = control.v[2] * Kv_z;
+	//根据转动惯量计算角速度
+	AngularVel_body.v[0] = control.v[0] / I_X;
+	AngularVel_body.v[1] = control.v[1] / I_Y;
+	AngularVel_body.v[2] = control.v[2] / I_Z;
 
+	//根据角速度积分得到角度
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
 	Angular_body.v[1] += AngularVel_body.v[1] * theta_t;
 	Angular_body.v[2] += AngularVel_body.v[2] * theta_t;
 
+	//角度限幅
 	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
 	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
 
+	//根据欧拉角计算四元数
 	struct quat q_value = { 0 };
 	double angle[3];
 	angle[0] = -Angular_body.v[0];
 	angle[1] = -Angular_body.v[1];
 	angle[2] = Angular_body.v[2];
 	hil_angle2q(angle, &q_value);
+	//设置四元数变换矩阵的值
 	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
 
+	//计算机体系下的拉力
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
 
+	//变换矩阵左乘机体系拉力得到惯性系下的拉力
 	matrix_mult(&F_global, &R_trans_matrix, &F_body);
-	F_global.v[2] -= m_kg * g_ms2;
+	//惯性系下减去垂直方向自身的重力
+	F_global.v[2] -= M_KG * G_MS2;
 
+	//根据惯性系下的拉力计算惯性系下的加速度
 	Acc_global_from_F(F_global.v, &Acc_global.v[0], &Acc_global.v[1], &Acc_global.v[2]);
 
+	//根据加速度积分得到速度
 	Vel_global.v[0] += Acc_global.v[0] * theta_t;
 	Vel_global.v[1] += Acc_global.v[1] * theta_t;
 	Vel_global.v[2] += Acc_global.v[2] * theta_t;
 
+	//根据速度积分得到位置
 	Pos_global.v[0] += Vel_global.v[0] * theta_t;
 	Pos_global.v[1] += Vel_global.v[1] * theta_t;
 	Pos_global.v[2] += Vel_global.v[2] * theta_t;
