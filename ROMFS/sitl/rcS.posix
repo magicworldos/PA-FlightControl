@@ -6,6 +6,14 @@ param load
 
 param set SYS_AUTOSTART 4001
 
+param set CAL_ACC0_EN 1
+param set CAL_ACC0_ID 1246218
+
+param set CAL_GYRO0_EN 1
+param set CAL_GYRO0_ID 2163722
+
+param set CAL_MAG0_ID 73225
+
 joy start -d /dev/hidraw4
 
 sensors start
