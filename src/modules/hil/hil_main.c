@@ -16,7 +16,7 @@ static double mixer_pitch = 1.0;
 static double mixer_yaw = 0.1;
 static double mixer_thro = 1.0;
 
-static double f_omega = 23.0;
+static double f_omega = 28.0;
 static double m_kg = 1.8;
 static double g_ms2 = 9.80665;
 
@@ -78,17 +78,29 @@ void TransMatrix_R_vb_set_value(s_Matrix *R_vb, double angle_x, double angle_y, 
 
 void TransMatrix_R_Q_set_value(s_Matrix *R_vb, double w, double x, double y, double z)
 {
-	R_vb->v[AT(0, 0, R_vb->n)] = 1.0 - 2.0 * (y * y + z * z);
-	R_vb->v[AT(0, 1, R_vb->n)] = 2.0 * (x * y - z * w);
-	R_vb->v[AT(0, 2, R_vb->n)] = 2.0 * (x * z + y * w);
+//	R_vb->v[AT(0, 0, R_vb->n)] = 1.0 - 2.0 * (y * y + z * z);
+//	R_vb->v[AT(0, 1, R_vb->n)] = 2.0 * (x * y - z * w);
+//	R_vb->v[AT(0, 2, R_vb->n)] = 2.0 * (x * z + y * w);
+//
+//	R_vb->v[AT(1, 0, R_vb->n)] = 2.0 * (x * y + z * w);
+//	R_vb->v[AT(1, 1, R_vb->n)] = 1.0 - 2.0 * (x * x + z * z);
+//	R_vb->v[AT(1, 2, R_vb->n)] = 2.0 * (y * z - x * w);
+//
+//	R_vb->v[AT(2, 0, R_vb->n)] = 2.0 * (x * z - y * w);
+//	R_vb->v[AT(2, 1, R_vb->n)] = 2.0 * (y * z + x * w);
+//	R_vb->v[AT(2, 2, R_vb->n)] = 1.0 - 2.0 * (x * x + y * y);
 
-	R_vb->v[AT(1, 0, R_vb->n)] = 2.0 * (x * y + z * w);
-	R_vb->v[AT(1, 1, R_vb->n)] = 1.0 - 2.0 * (x * x + z * z);
-	R_vb->v[AT(1, 2, R_vb->n)] = 2.0 * (y * z - x * w);
+	R_vb->v[AT(0, 0, R_vb->n)] = 1 - 2 *  y * y - 2 * z * z;
+	R_vb->v[AT(0, 1, R_vb->n)] = 2 * x * y - 2 * w * z;
+	R_vb->v[AT(0, 2, R_vb->n)] = 2 * x * z + 2 * w * y;
 
-	R_vb->v[AT(2, 0, R_vb->n)] = 2.0 * (x * z - y * w);
-	R_vb->v[AT(2, 1, R_vb->n)] = 2.0 * (y * z + x * w);
-	R_vb->v[AT(2, 2, R_vb->n)] = 1.0 - 2.0 * (x * x + y * y);
+	R_vb->v[AT(1, 0, R_vb->n)] = 2 * x * y + 2 * w * z;
+	R_vb->v[AT(1, 1, R_vb->n)] = 1 - 2 * x * x - 2 * z * z;
+	R_vb->v[AT(1, 2, R_vb->n)] = 2 * y * z - 2 * w * x;
+
+	R_vb->v[AT(2, 0, R_vb->n)] = 2 * x * z - 2 * w * y;
+	R_vb->v[AT(2, 1, R_vb->n)] = 2 * y * z + 2 * w * x;
+	R_vb->v[AT(2, 2, R_vb->n)] = 1 - 2 * x * x - 2 * y * y;
 }
 
 void AngularVel_body_from_omega(double *omega_val, double *a0, double *a1, double *a2)
@@ -191,21 +203,13 @@ void hil_maxmin(double *val, double max, double min)
 
 void hil_cal(double theta_t)
 {
-//	matrix_mult(&omega, &mixer, &control);
-//	hil_maxmin(&omega.v[0], 1.5, 0.0);
-//	hil_maxmin(&omega.v[1], 1.5, 0.0);
-//	hil_maxmin(&omega.v[2], 1.5, 0.0);
-//	hil_maxmin(&omega.v[3], 1.5, 0.0);
-//
-//	AngularVel_body_from_omega(omega.v, &AngularVel_body.v[0], &AngularVel_body.v[1], &AngularVel_body.v[2]);
-
 	omega.v[0] = (output.v[0] + 1.0) / 2.0;
 	omega.v[1] = (output.v[1] + 1.0) / 2.0;
 	omega.v[2] = (output.v[2] + 1.0) / 2.0;
 	omega.v[3] = (output.v[3] + 1.0) / 2.0;
 
-	AngularVel_body.v[0] = control.v[1] * Kv_x;
-	AngularVel_body.v[1] = control.v[0] * Kv_y;
+	AngularVel_body.v[0] = control.v[0] * Kv_x;
+	AngularVel_body.v[1] = control.v[1] * Kv_y;
 	AngularVel_body.v[2] = control.v[2] * Kv_z;
 
 	Angular_body.v[0] += AngularVel_body.v[0] * theta_t;
@@ -215,7 +219,13 @@ void hil_cal(double theta_t)
 	hil_maxmin(&Angular_body.v[0], MAX_ANGLE, -MAX_ANGLE);
 	hil_maxmin(&Angular_body.v[1], MAX_ANGLE, -MAX_ANGLE);
 
-	TransMatrix_R_vb_set_value(&R_trans_matrix, Angular_body.v[0], Angular_body.v[1], Angular_body.v[2]);
+	struct quat q_value = { 0 };
+	double angle[3];
+	angle[0] = -Angular_body.v[0];
+	angle[1] = -Angular_body.v[1];
+	angle[2] = Angular_body.v[2];
+	hil_angle2q(angle, &q_value);
+	TransMatrix_R_Q_set_value(&R_trans_matrix, q_value.w, q_value.x, q_value.y, q_value.z);
 
 	F_body_from_omega(omega.v, &F_body.v[0], &F_body.v[1], &F_body.v[2]);
 
@@ -248,15 +258,15 @@ void hil_pub_att(void)
 {
 	struct quat q_value = { 0 };
 	double angle[3];
-	angle[0] = Angular_body.v[1];
-	angle[1] = Angular_body.v[0];
+	angle[0] = Angular_body.v[0];
+	angle[1] = Angular_body.v[1];
 	angle[2] = Angular_body.v[2];
 	hil_angle2q(angle, &q_value);
 
 	struct vehicle_attitude_s s_att_hil;
 	s_att_hil.timestamp = hrt_absolute_time();
-	s_att_hil.rollspeed = AngularVel_body.v[1];
-	s_att_hil.pitchspeed = AngularVel_body.v[0];
+	s_att_hil.rollspeed = AngularVel_body.v[0];
+	s_att_hil.pitchspeed = AngularVel_body.v[1];
 	s_att_hil.yawspeed = AngularVel_body.v[2];
 
 	s_att_hil.q[0] = q_value.w;
@@ -290,11 +300,11 @@ void hil_pub_local_pos(void)
 	s_local_pos_hil.z_valid = true;
 	s_local_pos_hil.v_xy_valid = true;
 	s_local_pos_hil.v_z_valid = true;
-	s_local_pos_hil.x = -Pos_global.v[1];
-	s_local_pos_hil.y = -Pos_global.v[0];
+	s_local_pos_hil.x = Pos_global.v[0];
+	s_local_pos_hil.y = Pos_global.v[1];
 	s_local_pos_hil.z = -Pos_global.v[2];
-	s_local_pos_hil.vx = -Vel_global.v[1];
-	s_local_pos_hil.vy = -Vel_global.v[0];
+	s_local_pos_hil.vx = Vel_global.v[0];
+	s_local_pos_hil.vy = Vel_global.v[1];
 	s_local_pos_hil.vz = -Vel_global.v[2];
 	s_local_pos_hil.yaw = Angular_body.v[2];
 	s_local_pos_hil.xy_global = true;
@@ -319,8 +329,8 @@ void hil_pub_local_pos(void)
 
 void hil_pub_global_pos(void)
 {
-	double x = -Pos_global.v[1];
-	double y = Pos_global.v[0];
+	double x = Pos_global.v[0];
+	double y = Pos_global.v[1];
 	double z = Pos_global.v[2];
 
 	double lat = home_lat;
@@ -334,8 +344,8 @@ void hil_pub_global_pos(void)
 	s_global_pos_hil.lat = lat;
 	s_global_pos_hil.lon = lon;
 	s_global_pos_hil.alt = alt;
-	s_global_pos_hil.vel_n = -Vel_global.v[1];
-	s_global_pos_hil.vel_e = -Vel_global.v[0];
+	s_global_pos_hil.vel_n = Vel_global.v[0];
+	s_global_pos_hil.vel_e = Vel_global.v[1];
 	s_global_pos_hil.vel_d = -Vel_global.v[2];
 	s_global_pos_hil.yaw = Angular_body.v[2];
 	s_global_pos_hil.eph = 0.01;
@@ -354,8 +364,8 @@ void hil_pub_global_pos(void)
 
 void hil_pub_gps(void)
 {
-	double x = -Pos_global.v[1];
-	double y = Pos_global.v[0];
+	double x = Pos_global.v[0];
+	double y = Pos_global.v[1];
 	double z = Pos_global.v[2];
 
 	double lat = home_lat;
@@ -376,8 +386,8 @@ void hil_pub_gps(void)
 	s_gps_hil.fix_type = 3;
 	s_gps_hil.eph = 0.01f;
 	s_gps_hil.epv = 0.01f;
-	s_gps_hil.vel_n_m_s = -Vel_global.v[1];
-	s_gps_hil.vel_e_m_s = -Vel_global.v[0];
+	s_gps_hil.vel_n_m_s = Vel_global.v[0];
+	s_gps_hil.vel_e_m_s = Vel_global.v[1];
 	s_gps_hil.vel_d_m_s = -Vel_global.v[2];
 	s_gps_hil.vel_m_s = sqrtf(s_gps_hil.vel_n_m_s * s_gps_hil.vel_n_m_s + s_gps_hil.vel_e_m_s * s_gps_hil.vel_e_m_s + s_gps_hil.vel_d_m_s * s_gps_hil.vel_d_m_s);
 	s_gps_hil.cog_rad = Angular_body.v[AT(2, 0, Angular_body.n)];
