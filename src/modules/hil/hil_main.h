@@ -45,9 +45,9 @@
 #define F_OMEGA			(28.0)						//转桨拉力系数
 #define M_KG			(1.8)						//质量 kg
 #define G_MS2			(9.80665)					//重力加速度 米/s^2
-#define I_X				(0.04348)					//x轴转动惯量
-#define I_Y				(0.04348)					//y轴转动惯量
-#define I_Z				(6.667)						//z轴转动惯量
+#define I_X				(1.0 / 18.0)				//x轴转动惯量
+#define I_Y				(1.0 / 18.0)				//y轴转动惯量
+#define I_Z				(1.0 / 0.15)						//z轴转动惯量
 
 #define AT(i, j, n) (i * n + j)
 

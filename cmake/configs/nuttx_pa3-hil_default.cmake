@@ -179,42 +179,4 @@ set(config_module_list
 	platforms/common
 	platforms/nuttx
 	platforms/nuttx/px4_layer
-
-	#
-	# OBC challenge
-	#
-	examples/bottle_drop
-
-	#
-	# Rover apps
-	#
-	examples/rover_steering_control
-
-	#
-	# Segway
-	#
-	examples/segway
-
-	#
-	# Demo apps
-	#
-
-	# Tutorial code from
-	# https://px4.io/dev/px4_simple_app
-	examples/px4_simple_app
-
-	# Tutorial code from
-	# https://px4.io/dev/daemon
-	examples/px4_daemon_app
-
-	# Tutorial code from
-	# https://px4.io/dev/debug_values
-	examples/px4_mavlink_debug
-
-	# Tutorial code from
-	# https://px4.io/dev/example_fixedwing_control
-	examples/fixedwing_control
-
-	# Hardware test
-	examples/hwtest
 )
