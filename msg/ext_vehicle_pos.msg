@@ -13,3 +13,5 @@ float32 alt
 float32 vel_n
 float32 vel_e
 float32 vel_d
+
+float32 yaw

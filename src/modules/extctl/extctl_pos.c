@@ -48,6 +48,8 @@ int extctl_pos_send(void)
 			pos.vy = pos_local.vy;
 			pos.vz = pos_local.vz;
 			
+			pos.yaw = pos_local.yaw;
+
 			status_pos |= (1 << 0);
 		}
 		
