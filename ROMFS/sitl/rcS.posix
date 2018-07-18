@@ -28,7 +28,8 @@ mc_pos_control start
 
 mc_att_control start
 
-mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+#mavlink start -r 800000 -b 115200 -d /dev/ttyUSB0 -m config
+mavlink start -r 800000 -u 14556 -m config
 
 extctl start
 
