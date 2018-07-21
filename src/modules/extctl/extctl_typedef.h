@@ -79,7 +79,7 @@
 #define CONFIG_PTHREAD_STACK_DEFAULT	(2048)
 #define UNIX_DOMAIN 					"/tmp/UNIX.domain"
 #else
-#define DEV_NAME						"/dev/ttyUSB2"
+#define DEV_NAME						"/dev/ttyS2"
 #endif
 
 #define DEV_BAUDRATE					(B115200)

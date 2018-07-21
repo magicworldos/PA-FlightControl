@@ -131,12 +131,19 @@ void hil_maxmin(double *val, double max, double min)
 
 void hil_cal(double theta_t)
 {
+#ifdef __PX4_POSIX
 	//混控后的桨转数
 	omega.v[0] = (output.v[0] + 1.0) / 2.0;
 	omega.v[1] = (output.v[1] + 1.0) / 2.0;
 	omega.v[2] = (output.v[2] + 1.0) / 2.0;
 	omega.v[3] = (output.v[3] + 1.0) / 2.0;
-
+#else
+	//混控后的桨转数
+	omega.v[0] = control.v[3];
+	omega.v[1] = control.v[3];
+	omega.v[2] = control.v[3];
+	omega.v[3] = control.v[3];
+#endif
 	//根据转动惯量计算角速度
 	AngularVel_body.v[0] = control.v[0] / I_X;
 	AngularVel_body.v[1] = control.v[1] / I_Y;

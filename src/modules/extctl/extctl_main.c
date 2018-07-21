@@ -54,7 +54,7 @@ int extctl_read(int argc, char *argv[])
 #ifdef __PX4_POSIX
 	pthread_create(&pthddr, (const pthread_attr_t*) NULL, (void* (*)(void*)) &server_start, NULL);
 #else
-	_serial_fd = open(DEV_NAME, O_WRONLY | O_NONBLOCK);
+	_serial_fd = open(DEV_NAME, O_RDWR | O_NONBLOCK);
 	if (_serial_fd < 0)
 	{
 		return -1;
@@ -78,10 +78,17 @@ int extctl_read(int argc, char *argv[])
 	int len = 0;
 	int type = 0;
 
+#ifdef __EXTCTL_DEBUG_
+	mavlink_log_info(&_extctl_mavlink_log_pub, "[extctl] start ....");
+#endif
+
 	while (!_extctl_should_exit)
 	{
 		if (extctl_protocal_read(buff, &len, &type))
 		{
+#ifdef __EXTCTL_DEBUG_
+	mavlink_log_info(&_extctl_mavlink_log_pub, "[extctl] %d %d", len, type);
+#endif
 			p_handle = NULL;
 
 			switch (type)
