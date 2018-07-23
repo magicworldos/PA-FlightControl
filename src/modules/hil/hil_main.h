@@ -42,7 +42,9 @@
 #define home_alt		50.0
 
 #define MAX_ANGLE		(60.0 * M_PI / 180.0)		//角度限幅 弧度/s
-#define F_OMEGA			(18.0)						//转桨拉力系数
+#define MAX_VEL_XY		(15.0)						//速度限幅 m/s
+#define MAX_VEL_Z		(3.0)						//速度限幅 m/s
+#define F_OMEGA			(32.0)						//转桨拉力系数
 #define M_KG			(1.8)						//质量 kg
 #define G_MS2			(9.80665)					//重力加速度 米/s^2
 #define I_X				(1.0 / 18.0)				//x轴转动惯量

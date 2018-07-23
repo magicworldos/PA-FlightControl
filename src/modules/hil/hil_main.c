@@ -184,6 +184,9 @@ void hil_cal(double theta_t)
 	Vel_global.v[0] += Acc_global.v[0] * theta_t;
 	Vel_global.v[1] += Acc_global.v[1] * theta_t;
 	Vel_global.v[2] += Acc_global.v[2] * theta_t;
+	hil_maxmin(&Vel_global.v[0], MAX_VEL_XY, -MAX_VEL_XY);
+	hil_maxmin(&Vel_global.v[1], MAX_VEL_XY, -MAX_VEL_XY);
+	hil_maxmin(&Vel_global.v[2], MAX_VEL_Z, -MAX_VEL_Z);
 
 	//根据速度积分得到位置
 	Pos_global.v[0] += Vel_global.v[0] * theta_t;
