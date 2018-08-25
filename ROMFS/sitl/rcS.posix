@@ -18,6 +18,8 @@ joy start -d /dev/hidraw4
 
 sensors start
 
+dataman start
+
 commander start
 
 navigator start
