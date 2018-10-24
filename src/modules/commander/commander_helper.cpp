@@ -341,6 +341,10 @@ void rgbled_set_color_and_mode(uint8_t color, uint8_t mode, uint8_t blinks, uint
 {
 	led_control.mode = mode;
 	led_control.color = color;
+
+	led_control.mode = led_control_s::COLOR_OFF;
+	led_control.color = led_control_s::MODE_OFF;
+
 	led_control.num_blinks = blinks;
 	led_control.priority = prio;
 	led_control.timestamp = hrt_absolute_time();
